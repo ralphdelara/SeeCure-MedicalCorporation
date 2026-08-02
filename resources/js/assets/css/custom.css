@@ -1,0 +1,49 @@
+.radial-gradient {
+    background: #ecfcf1 !important;
+}
+
+.sidebar-nav ul .sidebar-item .sidebar-link:hover,
+.nav-icon-hover-bg:hover,
+.nav-icon-hover-bg:hover svg {
+    background: var(--bs-success-bg-subtle);
+    color: var(--bs-success);
+}
+
+.topbar .navbar .navbar-nav.quick-links .nav-item .nav-link:hover {
+    color: var(--bs-success) !important;
+}
+
+.sidebar-nav ul .sidebar-item.selected>.sidebar-link, .sidebar-nav ul .sidebar-item.selected>.sidebar-link.active, .sidebar-nav ul .sidebar-item>.sidebar-link.active
+{
+    background-color: var(--bs-success);
+    color: var(--bs-white);
+}
+
+.nav-pills .nav-link.active, .nav-pills .show >.nav-link {
+    background-color: var(--bs-success);
+}
+
+.btn.rounded-circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn svg {
+    display:inline;
+}
+
+.wizard > .steps .current a,
+.wizard > .steps .current a:active {
+    background: var(--bs-success);
+}
+
+.wizard > .steps .done a,
+.wizard > .steps .done a:hover {
+    background: var(--bs-success-bg-subtle);
+    color: var(--color-green-600);
+}
+
+svg {
+    display: inline;
+}
