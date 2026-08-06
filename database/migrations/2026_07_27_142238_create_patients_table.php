@@ -17,26 +17,27 @@ return new class extends Migration
             $table->string('first_name');
             $table->string('middle_name')->nullable();
             $table->string('date_of_birth')->nullable();
+            $table->string('age')->nullable();
             $table->string('contact_number1')->nullable();
             $table->string('contact_number2')->nullable();
             $table->text('email')->nullable();
             $table->string('occupation')->nullable();
+            $table->text('philhealth_id')->nullable();
 
             $table->string('house_no')->nullable();
             $table->text('street')->nullable();
-            $table->foreignId('barangay_id')->constrained();
-            $table->foreignId('city_id')->constrained();
-            $table->foreignId('province_id')->constrained();
+            $table->foreignId('barangay_id')->nullable()->constrained();
+            $table->foreignId('city_id')->nullable()->constrained();
+            $table->foreignId('province_id')->nullable()->constrained();
+
+            $table->foreignId('gender_id')->nullable()->constrained();
+            $table->foreignId('civil_status_id')->nullable()->constrained();
+            $table->foreignId('nationality_id')->nullable()->constrained();
+            $table->foreignId('status_id')->constrained('patient_statuses', 'id');
+            $table->foreignId('patient_suffix_id')->nullable()->constrained();
+            $table->foreignId('created_by')->constrained('users', 'id');
 
             $table->text('photo')->nullable();
-            $table->decimal('credit_limit', 12, 2)->constrained()->nullable();
-
-            $table->foreignId('gender_id')->constrained()->nullable();
-            $table->foreignId('civil_status_id')->constrained()->nullable();
-            $table->foreignId('nationality_id')->constrained()->nullable();
-            $table->foreignId('status_id')->constrained('patient_statuses', 'id')->nullable();
-            $table->foreignId('patient_suffix_id')->constrained()->nullable();
-            $table->foreignId('created_by')->constrained('users', 'id');
             $table->timestamps();
         });
     }

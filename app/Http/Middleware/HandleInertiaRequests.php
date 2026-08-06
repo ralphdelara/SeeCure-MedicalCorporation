@@ -39,28 +39,23 @@ class HandleInertiaRequests extends Middleware
 
         if ($user) {
             // Eager load to prevent N+1
-            $user = $user->loadMissing([
-                'professions.profession',
-                'specialties.specialty',
-                'departments.department',
-            ]);
+            $user = $user->loadMissing(['professions', 'specialties', 'departments']);
 
             $professions = $user->professions->map(fn ($item) => [
-                'id' => $item->profession?->id,
-                'name' => $item->profession?->profession,
+                'id'   => $item->profession->id,
+                'name' => $item->profession->name,
             ])->values()->all();
 
             $specialties = $user->specialties->map(fn ($item) => [
-                'id' => $item->specialty?->id,
-                'name' => $item->specialty?->specialty,
+                'id'   => $item->specialty->id,
+                'name' => $item->specialty->name,
             ])->values()->all();
 
             $departments = $user->departments->map(fn ($item) => [
-                'id' => $item->department?->id,
-                'name' => $item->department?->department,
+                'id'   => $item->department->id,
+                'name' => $item->department->name,
             ])->values()->all();
         }
-
 
         $user = $user?->toArray();
         unset($user['user_profession'], $user['user_specialty'], $user['user_department']);
@@ -69,17 +64,17 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'name' => config('app.name'),
             'auth' => [
-                'user' => $user,
+                'user'        => $user,
                 'professions' => [
-                    'ids' => array_column($professions ?? [], 'id'),
+                    'ids'         => array_column($professions ?? [], 'id'),
                     'professions' => array_column($professions ?? [], 'name'),
                 ],
                 'specialties' => [
-                    'ids' => array_column($specialties ?? [], 'id'),
+                    'ids'         => array_column($specialties ?? [], 'id'),
                     'specialties' => array_column($specialties ?? [], 'name'),
                 ],
                 'departments' => [
-                    'ids' => array_column($departments ?? [], 'id'),
+                    'ids'         => array_column($departments ?? [], 'id'),
                     'departments' => array_column($departments ?? [], 'name'),
                 ],
             ],

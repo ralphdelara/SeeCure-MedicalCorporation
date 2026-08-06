@@ -2,10 +2,36 @@
 
 namespace App\Models;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $id
+ * @property int $patient_id
+ * @property int $audit_type_id
+ * @property array<array-key, mixed> $action
+ * @property int $created_by
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
+ * @property-read User|null $createdBy
+ * @property-read Patient $patient
+ * @property-read AuditType|null $type
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit whereAction($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit whereAuditTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit wherePatientId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit whereUpdatedAt($value)
+ *
+ * @mixin \Eloquent
+ */
 #[Fillable([
     'patient_id',
     'audit_type_id',

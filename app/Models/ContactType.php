@@ -5,8 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ContactType newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ContactType newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ContactType query()
+ *
+ * @mixin \Eloquent
+ */
 #[Fillable([
-    'contact_type',
+    'name',
 ])]
 class ContactType extends Model
 {
@@ -15,7 +22,7 @@ class ContactType extends Model
     protected function casts(): array
     {
         return [
-            'contact_type' => 'encrypted',
+            'name' => 'encrypted',
         ];
     }
 }

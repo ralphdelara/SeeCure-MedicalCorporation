@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('specialties', function (Blueprint $table) {
             $table->id();
-            $table->string('specialty');
+            $table->string('name');
             $table->string('suffix')->nullable();
         });
     }

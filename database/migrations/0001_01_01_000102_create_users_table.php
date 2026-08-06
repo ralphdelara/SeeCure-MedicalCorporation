@@ -21,7 +21,7 @@ return new class extends Migration
 
             $table->string('full_name_index', 64)->nullable()->index();
 
-            $table->foreignId('gender_id')->constrained()->nullable();
+            $table->foreignId('gender_id')->nullable()->constrained();
             $table->string('date_of_birth')->nullable();
 
             $table->string('contact_number')->nullable();
@@ -32,15 +32,15 @@ return new class extends Migration
             $table->foreignId('barangay_id')->nullable();
             $table->foreignId('city_id')->nullable();
             $table->foreignId('province_id')->nullable();
-
-            $table->text('photo')->nullable();
-
+            $table->string('license_no')->nullable();
+            $table->string('ptr_no')->nullable();
             $table->string('date_hired')->nullable();
             $table->string('date_resigned')->nullable();
             $table->string('status');
             $table->rememberToken();
             $table->foreignId('position_id')->constrained();
             $table->foreignId('created_by')->constrained('users', 'id');
+            $table->text('photo')->nullable();
             $table->timestamps();
         });
 

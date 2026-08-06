@@ -13,12 +13,12 @@ class DepartmentSeeder extends Seeder
     public function run(): void
     {
         Department::fillAndInsert([
-            ['department' => 'Administrator'],
-            ['department' => 'Consultation'],
-            ['department' => 'Finance'],
-            ['department' => 'Information Technology'],
-            ['department' => 'Laboratory'],
-            ['department' => 'Pharmacy'],
+            ['name' => 'Administrator'],
+            ['name' => 'Consultation'],
+            ['name' => 'Finance'],
+            ['name' => 'Information Technology'],
+            ['name' => 'Laboratory'],
+            ['name' => 'Pharmacy'],
         ]);
     }
 }

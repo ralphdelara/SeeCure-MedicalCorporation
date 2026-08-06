@@ -13,11 +13,11 @@ class RoleSeeder extends Seeder
     public function run(): void
     {
         Role::fillAndInsert([
-            ['role' => 'Cashier'],
-            ['role' => 'Front Desk'],
-            ['role' => 'Laboratory'],
-            ['role' => 'Medical Practitioner'],
-            ['role' => 'System Administrator'],
+            ['name' => 'Cashier'],
+            ['name' => 'Front Desk'],
+            ['name' => 'Laboratory'],
+            ['name' => 'Medical Practitioner'],
+            ['name' => 'System Administrator'],
         ]);
     }
 }

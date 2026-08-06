@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('consultation_statuses', function (Blueprint $table) {
             $table->id();
-            $table->string('status');
+            $table->string('name');
         });
     }
 
