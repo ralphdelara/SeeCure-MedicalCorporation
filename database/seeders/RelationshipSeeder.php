@@ -13,17 +13,17 @@ class RelationshipSeeder extends Seeder
     public function run(): void
     {
         Relationship::fillAndInsert([
-            ['relationship' => 'Parent'],
-            ['relationship' => 'Spouse'],
-            ['relationship' => 'Child'],
-            ['relationship' => 'Sibling'],
-            ['relationship' => 'Legal Guardian'],
-            ['relationship' => 'Foster Parent'],
-            ['relationship' => 'Grandparent'],
-            ['relationship' => 'Grandchild'],
-            ['relationship' => 'Aunt / Uncle'],
-            ['relationship' => 'Cousin'],
-            ['relationship' => 'Others'],
+            ['name' => 'Parent'],
+            ['name' => 'Spouse'],
+            ['name' => 'Child'],
+            ['name' => 'Sibling'],
+            ['name' => 'Legal Guardian'],
+            ['name' => 'Foster Parent'],
+            ['name' => 'Grandparent'],
+            ['name' => 'Grandchild'],
+            ['name' => 'Aunt / Uncle'],
+            ['name' => 'Cousin'],
+            ['name' => 'Others'],
         ]);
     }
 }

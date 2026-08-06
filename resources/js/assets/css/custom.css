@@ -13,13 +13,15 @@
     color: var(--bs-success) !important;
 }
 
-.sidebar-nav ul .sidebar-item.selected>.sidebar-link, .sidebar-nav ul .sidebar-item.selected>.sidebar-link.active, .sidebar-nav ul .sidebar-item>.sidebar-link.active
-{
+.sidebar-nav ul .sidebar-item.selected > .sidebar-link,
+.sidebar-nav ul .sidebar-item.selected > .sidebar-link.active,
+.sidebar-nav ul .sidebar-item > .sidebar-link.active {
     background-color: var(--bs-success);
     color: var(--bs-white);
 }
 
-.nav-pills .nav-link.active, .nav-pills .show >.nav-link {
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
     background-color: var(--bs-success);
 }
 
@@ -30,7 +32,7 @@
 }
 
 .btn svg {
-    display:inline;
+    display: inline;
 }
 
 .wizard > .steps .current a,
@@ -46,4 +48,33 @@
 
 svg {
     display: inline;
+}
+
+.form-group {
+    padding: 5px;
+}
+
+.form-check.form-check-inline {
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Older IE/Edge */
+    user-select: none; /* Standard syntax */
+}
+
+/* Spin image */
+.spinning-image {
+    width: 200px; /* Optional sizing */
+    height: 200px;
+    margin-top: -100px;
+    animation: spin 3s linear infinite; /* 3 seconds per full loop, smooth, non-stop */
+}
+
+/* Define the spinning behavior */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }

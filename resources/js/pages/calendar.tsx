@@ -3,10 +3,13 @@ import { Breadcrumbs } from '@/components/breadcrumbs';
 
 export default function Calendar() {
     const breadcrumbs = {};
+
     return (
         <>
             <Head title="Calendar" />
-            <Breadcrumbs breadcrumbs={breadcrumbs} title="Calendar"/>
+            <Breadcrumbs breadcrumbs={breadcrumbs} title="Calendar">
+                &nbsp;
+            </Breadcrumbs>
         </>
     );
 }

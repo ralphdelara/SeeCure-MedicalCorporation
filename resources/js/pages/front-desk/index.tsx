@@ -1,13 +1,10 @@
 import { Head } from '@inertiajs/react';
 import { Breadcrumbs } from '@/components/breadcrumbs';
+import Cashier from './cashier';
 import Consultation from './consultation';
 import ConsultationQueue from './consultation-queue';
 import Laboratory from './laboratory';
-import Cashier from './cashier';
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { IconPlus } from '@tabler/icons-react';
-import AddPatient from './add-patient';
+import QueuePatient from './queue-patient-modal';
 
 export default function FrontDesk() {
     const breadcrumbs = {};
@@ -16,7 +13,7 @@ export default function FrontDesk() {
         <>
             <Head title="Front Desk" />
             <Breadcrumbs breadcrumbs={breadcrumbs} title="Front Desk">
-                <AddPatient />
+                <QueuePatient />
             </Breadcrumbs>
 
             <div className="row">

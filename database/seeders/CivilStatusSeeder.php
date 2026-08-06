@@ -13,16 +13,16 @@ class CivilStatusSeeder extends Seeder
     public function run(): void
     {
         CivilStatus::fillAndInsert([
-            ['civil_status' => 'Single'],
-            ['civil_status' => 'Married'],
-            ['civil_status' => 'Widowed'],
-            ['civil_status' => 'Divorced'],
-            ['civil_status' => 'Separated'],
-            ['civil_status' => 'Anulled'],
-            ['civil_status' => 'Cohabiting/Common-law'],
-            ['civil_status' => 'Registered Partnership'],
-            ['civil_status' => 'Newborn'],
-            ['civil_status' => 'Child'],
+            ['name' => 'Single'],
+            ['name' => 'Married'],
+            ['name' => 'Widowed'],
+            ['name' => 'Divorced'],
+            ['name' => 'Separated'],
+            ['name' => 'Anulled'],
+            ['name' => 'Cohabiting/Common-law'],
+            ['name' => 'Registered Partnership'],
+            ['name' => 'Newborn'],
+            ['name' => 'Child'],
         ]);
     }
 }

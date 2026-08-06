@@ -13,23 +13,11 @@ return new class extends Migration
     {
         Schema::create('consultations', function (Blueprint $table) {
             $table->id();
-            // front desk input
             $table->foreignId('patient_id')->constrained();
-            $table->text('reason');
-            $table->string('last_menstrual_date')->nullable();
-            $table->string('hypertensive')->nullable();
-            $table->string('diabetic')->nullable();
-            $table->string('asthmatic')->nullable();
-            $table->string('drug_allergy')->nullable();
-            $table->string('drug_allergy_text')->nullable();
-            $table->string('food_allergy')->nullable();
-            $table->string('food_allergy_text')->nullable();
 
-            // doctor input
-            $table->text('subjective')->nullable();
-            $table->text('assessment')->nullable();
-            $table->text('plan')->nullable();
-            $table->text('diagnosis')->nullable();
+            $table->text('guardian_name')->nullable();
+            $table->string('guardian_contact_number')->nullable();
+            $table->text('guardian_email')->nullable();
 
             $table->foreignId('status_id')->constrained('consultation_statuses', 'id');
             $table->foreignId('doctor_id')->constrained('users', 'id');

@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 export default () => {
     return (
         <div className="card">
@@ -8,13 +6,19 @@ export default () => {
                     <h4 className="card-title">Queue</h4>
                 </div>
                 <div className="table-responsive">
-                    <table className="table stylish-table  mb-0 text-nowrap consultation">
+                    <table className="stylish-table consultation mb-0 table text-nowrap">
                         <thead>
                             <tr>
-                                <th className="border-0 text-muted fw-normal" style={{ width: '85%' }}>
+                                <th
+                                    className="fw-normal border-0 text-muted"
+                                    style={{ width: '85%' }}
+                                >
                                     Patient
                                 </th>
-                                <th className="border-0 text-muted fw-normal" style={{ width: '15%' }}>
+                                <th
+                                    className="fw-normal border-0 text-muted"
+                                    style={{ width: '15%' }}
+                                >
                                     Status
                                 </th>
                             </tr>
@@ -43,4 +47,4 @@ export default () => {
             </div>
         </div>
     );
-}
+};

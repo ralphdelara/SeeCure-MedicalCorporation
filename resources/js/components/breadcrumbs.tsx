@@ -1,8 +1,8 @@
-import { Link } from '@inertiajs/react';
+//import { Link } from '@inertiajs/react';
 import React from 'react';
 
 export function Breadcrumbs({
-    breadcrumbs,
+    //breadcrumbs,
     title,
     children,
 }: {
@@ -11,7 +11,7 @@ export function Breadcrumbs({
     children: React.ReactNode;
 }) {
     return (
-        <div className="card bg-success-subtle shadow-none position-relative overflow-hidden mb-4">
+        <div className="card bg-success-subtle position-relative mb-4 overflow-hidden shadow-none">
             <div className="card-body px-4 py-3">
                 <div className="row align-items-center">
                     <div className="col-6">
@@ -19,16 +19,21 @@ export function Breadcrumbs({
                         <nav aria-label="breadcrumb">
                             <ol className="breadcrumb">
                                 <li className="breadcrumb-item">
-                                    <a className="text-muted text-decoration-none" href="../main/index.html">Home</a>
+                                    <a
+                                        className="text-decoration-none text-muted"
+                                        href="../main/index.html"
+                                    >
+                                        Home
+                                    </a>
                                 </li>
-                                <li className="breadcrumb-item" aria-current="page">{title}</li>
+                                <li className="breadcrumb-item" aria-current="page">
+                                    {title}
+                                </li>
                             </ol>
                         </nav>
                     </div>
                     <div className="col-6">
-                        <div className="d-flex justify-content-end">
-                            {children}
-                        </div>
+                        <div className="d-flex justify-content-end">{children}</div>
                     </div>
                 </div>
             </div>

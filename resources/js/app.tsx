@@ -1,16 +1,13 @@
 import { createInertiaApp } from '@inertiajs/react';
-import { Toaster } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { initializeTheme } from '@/hooks/use-appearance';
 import AppLayout from '@/layouts/app-layout';
 import AuthLayout from '@/layouts/auth-layout';
-import SettingsLayout from '@/layouts/settings/layout';
 import '@/assets/css/styles.css';
 import '@/assets/css/custom.css';
 import '@/assets/css/tooltip.css';
-import '@/assets/libs/simplebar/dist/simplebar.min.js';
 import '@/assets/js/theme/app.min.js';
-import '@/assets/js/theme/theme.js';
+import '@/assets/libs/simplebar/dist/simplebar.min.js';
 //favicon
 import '@/assets/images/logos/favicon.ico';
 import '@/assets/images/logos/android-chrome-192x192.png';
@@ -27,24 +24,15 @@ createInertiaApp({
                 return null;
             case name.startsWith('auth/'):
                 return AuthLayout;
-            case name.startsWith('settings/'):
-                return [AppLayout, SettingsLayout];
             default:
                 return AppLayout;
         }
     },
     strictMode: true,
     withApp(app) {
-        return (
-            <TooltipProvider delayDuration={0}>
-                {app}
-                <Toaster />
-            </TooltipProvider>
-        );
+        return <TooltipProvider delayDuration={0}>{app}</TooltipProvider>;
     },
-    progress: {
-        color: '#4B5563',
-    },
+    progress: false,
 });
 
 // This will set light / dark mode on load...

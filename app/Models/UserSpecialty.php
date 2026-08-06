@@ -6,6 +6,22 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $id
+ * @property int $user_id
+ * @property int $specialty_id
+ * @property-read Specialty $specialty
+ * @property-read User $user
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSpecialty newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSpecialty newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSpecialty query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSpecialty whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSpecialty whereSpecialtyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSpecialty whereUserId($value)
+ *
+ * @mixin \Eloquent
+ */
 #[Fillable([
     'user_id',
     'specialty_id',

@@ -1,47 +1,47 @@
 .tooltip-container {
-  position: relative;
-  cursor: pointer;
-  display: inline-block;
+    position: relative;
+    cursor: pointer;
+    display: inline-block;
 }
 
 /* 1. The Tooltip Box */
 .tooltip-container::after {
-  content: attr(data-title);
-  position: absolute;
-  bottom: 130%; /* Changed from top: 130% */
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #333;
-  color: #fff;
-  padding: 3px 8px;
-  border-radius: 6px;
-  font-size: 8px;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease-in-out;
-  z-index: 10;
+    content: attr(data-title);
+    position: absolute;
+    bottom: 130%; /* Changed from top: 130% */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 8px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease-in-out;
+    z-index: 10;
 }
 
 /* 2. The Tooltip Arrow (Pointing Down) */
 .tooltip-container::before {
-  content: "";
-  position: absolute;
-  bottom: 130%; /* Changed from top: 130% */
-  left: 50%;
-  transform: translateX(-50%) translateY(100%); /* Changed from translateY(-100%) */
-  border-width: 6px;
-  border-style: solid;
-  /* Creates a downward triangle matching the box background */
-  border-color: #333 transparent transparent transparent; /* Inverted borders */
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease-in-out;
-  z-index: 10;
+    content: '';
+    position: absolute;
+    bottom: 130%; /* Changed from top: 130% */
+    left: 50%;
+    transform: translateX(-50%) translateY(100%); /* Changed from translateY(-100%) */
+    border-width: 6px;
+    border-style: solid;
+    /* Creates a downward triangle matching the box background */
+    border-color: #333 transparent transparent transparent; /* Inverted borders */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease-in-out;
+    z-index: 10;
 }
 
 /* 3. Show both Box and Arrow on Hover */
 .tooltip-container:hover::after,
 .tooltip-container:hover::before {
-  opacity: 1;
+    opacity: 1;
 }

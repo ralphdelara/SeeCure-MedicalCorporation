@@ -13,7 +13,7 @@ class ProvinceSeeder extends Seeder
     public function run(): void
     {
         Province::fillAndInsert([
-            ['province' => 'Aklan'],
+            ['name' => 'Aklan'],
         ]);
     }
 }

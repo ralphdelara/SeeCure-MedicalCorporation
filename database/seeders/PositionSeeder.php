@@ -14,28 +14,28 @@ class PositionSeeder extends Seeder
     {
         Position::fillAndInsert([
             // Admin
-            ['position' => 'Head of Admin'],
-            ['position' => 'Admin Aide'],
+            ['name' => 'Head of Admin'],
+            ['name' => 'Admin Aide'],
 
             // Finance
-            ['position' => 'Head of Finance'],
-            ['position' => 'Accountant'],
-            ['position' => 'Finance Officer'],
+            ['name' => 'Head of Finance'],
+            ['name' => 'Accountant'],
+            ['name' => 'Finance Officer'],
 
             // Pharmacy
-            ['position' => 'General Practitioner'],
-            ['position' => 'Pharmacist'],
-            ['position' => 'Pharmacy Assistant'],
+            ['name' => 'General Practitioner'],
+            ['name' => 'Pharmacist'],
+            ['name' => 'Pharmacy Assistant'],
 
             // Laboratory
-            ['position' => 'Head of Laboratory'],
-            ['position' => 'Medical Technologist Supervisor'],
-            ['position' => 'Medical Technologist'],
-            ['position' => 'Laboratory Aide'],
+            ['name' => 'Head of Laboratory'],
+            ['name' => 'Medical Technologist Supervisor'],
+            ['name' => 'Medical Technologist'],
+            ['name' => 'Laboratory Aide'],
 
             // IT
-            ['position' => 'Full Stack Software Engineer'],
-            ['position' => 'Bot'],
+            ['name' => 'Full Stack Software Engineer'],
+            ['name' => 'Bot'],
         ]);
     }
 }

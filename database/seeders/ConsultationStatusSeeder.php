@@ -13,10 +13,10 @@ class ConsultationStatusSeeder extends Seeder
     public function run(): void
     {
         ConsultationStatus::fillAndInsert([
-            ['status' => 'Waiting'],
-            ['status' => 'Ongoing'],
-            ['status' => 'Completed'],
-            ['status' => 'Cancelled'],
+            ['name' => 'Pending'],
+            ['name' => 'Ongoing'],
+            ['name' => 'Completed'],
+            ['name' => 'Cancelled'],
         ]);
     }
 }

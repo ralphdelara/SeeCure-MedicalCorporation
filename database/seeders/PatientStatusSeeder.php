@@ -13,16 +13,16 @@ class PatientStatusSeeder extends Seeder
     public function run(): void
     {
         PatientStatus::fillAndInsert([
-            ['status' => 'Waiting'],
-            ['status' => 'In Consultation'],
-            ['status' => 'In Laboratory'],
-            ['status' => 'In Radiology'],
-            ['status' => 'In Cashier'],
-            ['status' => 'Admitted'],
-            ['status' => 'Referred'],
-            ['status' => 'For Discharge'],
-            ['status' => 'Discharged'],
-            ['status' => 'Inactive'],
+            ['name' => 'Waiting'],
+            ['name' => 'In Consultation'],
+            ['name' => 'In Laboratory'],
+            ['name' => 'In Radiology'],
+            ['name' => 'In Cashier'],
+            ['name' => 'Admitted'],
+            ['name' => 'Referred'],
+            ['name' => 'For Discharge'],
+            ['name' => 'Discharged'],
+            ['name' => 'Inactive'],
         ]);
     }
 }

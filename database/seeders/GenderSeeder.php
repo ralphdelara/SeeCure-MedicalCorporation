@@ -13,10 +13,10 @@ class GenderSeeder extends Seeder
     public function run(): void
     {
         Gender::fillAndInsert([
-            ['gender' => 'Female'],
-            ['gender' => 'Male'],
-            ['gender' => 'Others'],
-            ['gender' => 'Unknown'],
+            ['name' => 'Female'],
+            ['name' => 'Male'],
+            ['name' => 'Others'],
+            ['name' => 'Unknown'],
         ]);
     }
 }

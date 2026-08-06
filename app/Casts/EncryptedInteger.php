@@ -4,7 +4,6 @@ namespace App\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Crypt;
 
 class EncryptedInteger implements CastsAttributes
 {
@@ -13,14 +12,18 @@ class EncryptedInteger implements CastsAttributes
      */
     public function get(Model $model, string $key, mixed $value, array $attributes): ?int
     {
-        return Crypt::encryptString((string) $value);
+        return $value !== null ? (int) decrypt($value) : null;
     }
 
     /**
      * Prepare the given value for storage after encryption.
      */
-    public function set(Model $model, string $key, mixed $value, array $attributes): ?int
+    public function set(Model $model, string $key, mixed $value, array $attributes): ?string
     {
-        return (int) Crypt::decryptString($value);
+        if ($value === null) {
+            return null;
+        }
+
+        return encrypt($value);
     }
 }

@@ -13,10 +13,10 @@ class AuditTypeSeeder extends Seeder
     public function run(): void
     {
         AuditType::fillAndInsert([
-            ['audit_type' => 'Add'],
-            ['audit_type' => 'Edit'],
-            ['audit_type' => 'Delete'],
-            ['audit_type' => 'View'],
+            ['name' => 'Add'],
+            ['name' => 'Edit'],
+            ['name' => 'Delete'],
+            ['name' => 'View'],
         ]);
     }
 }

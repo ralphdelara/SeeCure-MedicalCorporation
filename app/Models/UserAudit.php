@@ -2,10 +2,34 @@
 
 namespace App\Models;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $id
+ * @property int $user_id
+ * @property int $audit_type_id
+ * @property array<array-key, mixed> $action
+ * @property int $created_by
+ * @property CarbonImmutable $created_at
+ * @property-read User|null $createdBy
+ * @property-read AuditType|null $type
+ * @property-read User $user
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserAudit newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserAudit newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserAudit query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserAudit whereAction($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserAudit whereAuditTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserAudit whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserAudit whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserAudit whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserAudit whereUserId($value)
+ *
+ * @mixin \Eloquent
+ */
 #[Fillable([
     'user_id',
     'audit_type_id',

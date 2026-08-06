@@ -40,6 +40,12 @@ class DatabaseSeeder extends Seeder
             CitySeeder::class,
             BarangaySeeder::class,
 
+            VitalSignSeeder::class,
+            VitalSignFieldSeeder::class,
+
+            SignsOrSymptomSeeder::class,
+            ConsultationTypeSeeder::class,
+
             UserSeeder::class,
         ]);
     }

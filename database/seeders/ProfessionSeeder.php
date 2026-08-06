@@ -13,12 +13,12 @@ class ProfessionSeeder extends Seeder
     public function run(): void
     {
         Profession::fillAndInsert([
-            ['profession' => 'Doctor', 'prefix' => 'Dr. ', 'suffix' => ', MD'],
-            ['profession' => 'Medical Technology', 'prefix' => null, 'suffix' => ', RMT'],
-            ['profession' => 'Nurse', 'prefix' => null, 'suffix' => ', RN'],
-            ['profession' => 'Staff', 'prefix' => null, 'suffix' => null],
-            ['profession' => 'Full Stack Developer', 'prefix' => null, 'suffix' => null],
-            ['profession' => 'Other', 'prefix' => null, 'suffix' => null],
+            ['name' => 'Doctor', 'prefix' => 'Dr. ', 'suffix' => 'MD'],
+            ['name' => 'Medical Technologist', 'prefix' => null, 'suffix' => 'RMT'],
+            ['name' => 'Nurse', 'prefix' => null, 'suffix' => 'RN'],
+            ['name' => 'Staff', 'prefix' => null, 'suffix' => null],
+            ['name' => 'Full Stack Developer', 'prefix' => null, 'suffix' => null],
+            ['name' => 'Other', 'prefix' => null, 'suffix' => null],
         ]);
     }
 }

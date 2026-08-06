@@ -13,7 +13,7 @@ class NationalitySeeder extends Seeder
     public function run(): void
     {
         Nationality::fillAndInsert([
-            ['nationality' => 'Filipino'],
+            ['name' => 'Filipino'],
         ]);
     }
 }

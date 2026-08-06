@@ -13,10 +13,10 @@ class PatientSuffixSeeder extends Seeder
     public function run(): void
     {
         PatientSuffix::fillAndInsert([
-            ['suffix' => 'Sr.'],
-            ['suffix' => 'Jr.'],
-            ['suffix' => 'II'],
-            ['suffix' => 'III'],
+            ['name' => 'Sr.'],
+            ['name' => 'Jr.'],
+            ['name' => 'II'],
+            ['name' => 'III'],
         ]);
     }
 }
