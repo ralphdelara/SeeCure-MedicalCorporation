@@ -1,18 +1,18 @@
-import { Head, Link, usePage } from '@inertiajs/react';
-import { Breadcrumbs } from '@/components/breadcrumbs';
-import AddProduct from './add-or-update-product';
-import { AddProductForm, ProductList } from './add-or-update-product/types';
-import { formatMoney } from '@/lib/utils';
-import TableList from '@/components/table';
-import { IconEdit, IconPackage, IconTrash } from '@tabler/icons-react';
-import { Button } from '@/components/ui/button';
-import NewOrEditModal from './add-or-update-product-modal';
+import { Head, usePage } from '@inertiajs/react';
+import { IconEdit, IconPackage } from '@tabler/icons-react';
 import { useState } from 'react';
-import { Pages } from '@/types/pagination';
-import SearchField from '@/components/search-field';
-import { Options } from '@/types/options';
-import DeleteButton from '@/components/delete-button';
 import { deleteProduct } from '@/actions/App/Http/Controllers/PharmacyController';
+import { Breadcrumbs } from '@/components/breadcrumbs';
+import DeleteButton from '@/components/delete-button';
+import SearchField from '@/components/search-field';
+import TableList from '@/components/table';
+import { Button } from '@/components/ui/button';
+import { formatMoney } from '@/lib/utils';
+import type { Options } from '@/types/options';
+import type { Pages } from '@/types/pagination';
+import AddProduct from './add-or-update-product';
+import type { AddProductForm, ProductList } from './add-or-update-product/types';
+import NewOrEditModal from './add-or-update-product-modal';
 
 interface InertiaProps {
     productList: {
@@ -137,8 +137,14 @@ export default function Pharmacy() {
                                         </i>
                                     </Button>
 
-                                    <DeleteButton url={deleteProduct(item.id).url}
-                                        msg={'<b>' + item.name + '</b> also the stock movement records'}/>
+                                    <DeleteButton
+                                        url={deleteProduct(item.id).url}
+                                        msg={
+                                            '<b>' +
+                                            item.name +
+                                            '</b> also the stock movement records'
+                                        }
+                                    />
                                 </td>
                             </tr>
                         ))}

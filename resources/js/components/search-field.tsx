@@ -1,10 +1,8 @@
-import { IconSearch, IconX } from '@tabler/icons-react';
-import { Input } from './ui/input';
 import { useForm } from '@inertiajs/react';
+import { IconSearch, IconX } from '@tabler/icons-react';
+import { useEffect } from 'react';
 import { Button } from './ui/button';
-import { Pages } from '@/types/pagination';
-import Pagination from './pagination';
-import { useEffect, useState } from 'react';
+import { Input } from './ui/input';
 import { Select } from './ui/select';
 
 interface SearchProps {
@@ -22,7 +20,7 @@ const SearchField = ({ url, selectOption }: SearchProps) => {
         const queryParams = new URLSearchParams(window.location.search);
         setData('keyword', queryParams.get('keyword') ?? '');
         setData('selectId', queryParams.get('selectId') ?? '');
-    }, []);
+    }, [setData]);
 
     const search = (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();

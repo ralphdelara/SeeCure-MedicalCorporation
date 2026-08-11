@@ -28,7 +28,6 @@ import {
     system,
     users,
 } from '@/routes';
-import ConsultationController from '@/actions/App/Http/Controllers/ConsultationController';
 
 type NavSidebarProps = {
     toggleSidebar: () => void;

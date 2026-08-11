@@ -1,14 +1,14 @@
+import { useForm, usePage } from '@inertiajs/react';
+import { useEffect } from 'react';
+import { Modal } from 'react-bootstrap';
+import { toast, Toaster } from 'react-hot-toast';
+import { addOrUpdateProduct } from '@/actions/App/Http/Controllers/PharmacyController';
 import InputError from '@/components/input-error';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
-import { Options } from '@/types/options';
-import { useForm, usePage } from '@inertiajs/react';
-import { Modal } from 'react-bootstrap';
-import { AddProductForm } from './add-or-update-product/types';
-import { addOrUpdateProduct } from '@/actions/App/Http/Controllers/PharmacyController';
-import { toast, Toaster } from 'react-hot-toast';
-import { Button } from '@/components/ui/button';
-import { useEffect } from 'react';
+import type { Options } from '@/types/options';
+import type { AddProductForm } from './add-or-update-product/types';
 
 interface InertiaProps {
     productUnitOptions: Options[];
@@ -44,7 +44,7 @@ const NewOrEditModal = ({ showModal, setShowModal, modalData }: ModalProps) => {
                 setData(key, val);
             });
         }
-    }, [modalData]);
+    }, [modalData, setData]);
     const { productCategoryOptions, productUnitOptions } = usePage()
         .props as unknown as InertiaProps;
 
@@ -85,7 +85,7 @@ const NewOrEditModal = ({ showModal, setShowModal, modalData }: ModalProps) => {
 
     const computeSellingPrice = (value: string | string, fieldType: string) => {
         let sellingPrice = 0;
-        let parsedValue = parseFloat(value.toString());
+        const parsedValue = parseFloat(value.toString());
 
         if (fieldType === 'markup_percent') {
             sellingPrice = data.cost_price * (1 + (isNaN(parsedValue) ? 0 : parsedValue) / 100);

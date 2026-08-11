@@ -11,7 +11,7 @@ const AddProduct = () => {
             <Button onClick={() => setShowModal(true)} hasIcon={true}>
                 <IconPlus className="me-1" size={18} /> Add Product
             </Button>
-            <NewOrEditModal showModal={showModal} setShowModal={setShowModal}/>
+            <NewOrEditModal showModal={showModal} setShowModal={setShowModal} />
         </>
     );
 };

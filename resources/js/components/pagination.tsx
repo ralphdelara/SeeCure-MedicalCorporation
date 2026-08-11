@@ -1,6 +1,6 @@
-import { PageLinks } from '@/types/pagination';
 import { Link } from '@inertiajs/react';
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
+import type { PageLinks } from '@/types/pagination';
 
 interface PageProps {
     pageData: {

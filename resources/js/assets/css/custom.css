@@ -94,7 +94,8 @@ svg {
 /* Sticky table header */
 
 /* Pagination */
-nav ul.pagination li.active > .page-link, .page-link.active {
+nav ul.pagination li.active > .page-link,
+.page-link.active {
     background-color: var(--bs-success);
     border-color: var(--bs-success);
 }

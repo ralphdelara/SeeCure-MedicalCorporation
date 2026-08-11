@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Casts\EncryptedDate;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -124,7 +123,7 @@ class Patient extends Model
 
     public function getFullNameAttribute(): string
     {
-        return $this->last_name . ', ' . $this->first_name . ($this->middle_name ? ' ' . $this->middle_name : '');
+        return $this->last_name.', '.$this->first_name.($this->middle_name ? ' '.$this->middle_name : '');
     }
 
     public function gender(): BelongsTo

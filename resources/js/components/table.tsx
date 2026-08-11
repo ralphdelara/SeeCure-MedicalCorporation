@@ -1,5 +1,5 @@
-import { Pages } from '@/types/pagination';
 import React from 'react';
+import type { Pages } from '@/types/pagination';
 import Pagination from './pagination';
 
 interface TableHeaderProps {
@@ -16,7 +16,7 @@ export function TableHeader({ header }: TableHeaderProps) {
             <tr>
                 {header.map((item, index) => (
                     <th style={{ width: item.width }} key={'header-' + index}>
-                        <h6 className={'fs-4 fw-semibold mb-0 text-' + item.align}>{item.name}</h6>
+                        <h6 className={'fs-4 fw-semibold text- mb-0' + item.align}>{item.name}</h6>
                     </th>
                 ))}
             </tr>

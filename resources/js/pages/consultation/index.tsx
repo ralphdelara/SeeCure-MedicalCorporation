@@ -1,17 +1,14 @@
-import { Head, Link, usePage } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
+import { IconUser } from '@tabler/icons-react';
 import { Breadcrumbs } from '@/components/breadcrumbs';
-import { formatMoney } from '@/lib/utils';
-import TableList from '@/components/table';
-import { IconEdit, IconPackage, IconTrash, IconUser } from '@tabler/icons-react';
-import { Button } from '@/components/ui/button';
-import { useState } from 'react';
-import { Pages } from '@/types/pagination';
 import SearchField from '@/components/search-field';
-import { Options } from '@/types/options';
+import TableList from '@/components/table';
+import type { Pages } from '@/types/pagination';
+import type { ConsultationList } from './types';
 
 interface InertiaProps {
     consultationList: {
-        tableData: any;
+        tableData: ConsultationList[];
         pageData: Pages;
     };
 }
@@ -20,7 +17,7 @@ export default function Consultation() {
     const breadcrumbs = {};
     const { consultationList } = usePage().props as unknown as InertiaProps;
     const { tableData, pageData } = consultationList;
-console.log(tableData);
+    console.log(tableData);
     const header = [
         { name: '#', width: '5%', align: 'right' },
         { name: 'Patient', width: '25%', align: 'left' },
@@ -62,7 +59,9 @@ console.log(tableData);
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <h6 className="ms-2">{item.patient.full_name}</h6>
+                                                    <h6 className="ms-2">
+                                                        {item.patient.full_name}
+                                                    </h6>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -70,23 +69,21 @@ console.log(tableData);
                                 </td>
                                 <td>
                                     {item.signs_or_symptoms.map((item2, index2) => (
-                                        <h6 key={'signs-or-symptoms-' + index + '-' + index2}>{item2.signs_or_symptom.name}</h6>
+                                        <h6 key={'signs-or-symptoms-' + index + '-' + index2}>
+                                            {item2.signs_or_symptom.name}
+                                        </h6>
                                     ))}
                                 </td>
                                 <td>
                                     {item.types.map((item2, index2) => (
-                                        <h6 key={'type-' + index + '-' + index2}>{item2.type.name}</h6>
+                                        <h6 key={'type-' + index + '-' + index2}>
+                                            {item2.type.name}
+                                        </h6>
                                     ))}
                                 </td>
-                                <td>
-                                    {item.doctor.full_name}
-                                </td>
-                                <td>
-                                    {item.status}
-                                </td>
-                                <td>
-                                    {item.created_by.full_name}
-                                </td>
+                                <td>{item.doctor.full_name}</td>
+                                <td>{item.status}</td>
+                                <td>{item.created_by.full_name}</td>
                                 <td></td>
                             </tr>
                         ))}

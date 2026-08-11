@@ -27,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //citext for case insensitive - only for postgresql
+        // citext for case insensitive - only for postgresql
         PostgresGrammar::macro('typeCitext', function (Fluent $column) {
             return 'citext';
         });

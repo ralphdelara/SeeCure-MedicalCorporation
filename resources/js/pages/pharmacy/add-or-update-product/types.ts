@@ -1,5 +1,4 @@
-import { Options } from '@/types/options';
-import { PageLinks, Pages } from '@/types/pagination';
+import type { Options } from '@/types/options';
 
 export interface ProductList {
     id: number;

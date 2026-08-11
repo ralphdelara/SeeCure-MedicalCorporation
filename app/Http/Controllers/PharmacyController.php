@@ -56,7 +56,7 @@ class PharmacyController extends Controller
         app(PharmacyService::class)->addOrUpdateProduct($request->all());
     }
 
-    public function deleteProduct(int $id):void
+    public function deleteProduct(int $id): void
     {
         Product::destroy($id);
     }

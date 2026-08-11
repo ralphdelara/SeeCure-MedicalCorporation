@@ -1,7 +1,7 @@
+import { router } from '@inertiajs/react';
 import { IconTrash } from '@tabler/icons-react';
 import Swal from 'sweetalert2';
 import { Button } from './ui/button';
-import { router } from '@inertiajs/react';
 
 interface DeleteProps {
     url: string;
@@ -30,6 +30,7 @@ export default function DeleteButton({ url, msg }: DeleteProps) {
                     if (!response.ok) {
                         throw new Error('Something went wrong');
                     }
+
                     return;
                 } catch (error: any) {
                     Swal.showValidationMessage(`Request failed: ${error.message}`);

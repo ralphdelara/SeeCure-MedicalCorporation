@@ -16,7 +16,7 @@ return new class extends Migration
             if (DB::getDriverName() === 'pgsql') {
                 $table->addColumn('citext', 'name')->unique();
             } else {
-
+                $table->text('name')->unique();
             }
             $table->foreignId('product_category_id')->constrained();
             $table->foreignId('product_unit_id')->constrained();
