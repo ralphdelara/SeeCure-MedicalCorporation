@@ -8,13 +8,10 @@ use App\Casts\EncryptedDate;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\DatabaseNotification;
-use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 
@@ -51,25 +48,24 @@ use Illuminate\Support\Carbon;
  * @property int $position_id
  * @property int $created_by
  * @property string|null $photo
- * @property-read Collection<int, UserAudit> $audits
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserAudit> $audits
  * @property-read int|null $audits_count
- * @property-read Barangay|null $barangay
- * @property-read City|null $city
+ * @property-read \App\Models\Barangay|null $barangay
+ * @property-read \App\Models\City|null $city
  * @property-read User|null $createdBy
- * @property-read Collection<int, UserDepartment> $departments
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserDepartment> $departments
  * @property-read int|null $departments_count
- * @property-read Gender|null $gender
- * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
+ * @property-read \App\Models\Gender|null $gender
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
- * @property-read Position $position
- * @property-read Collection<int, UserProfession> $professions
+ * @property-read \App\Models\Position $position
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserProfession> $professions
  * @property-read int|null $professions_count
- * @property-read Province|null $province
- * @property-read Collection<int, UserRole> $role
+ * @property-read \App\Models\Province|null $province
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserRole> $role
  * @property-read int|null $role_count
- * @property-read Collection<int, UserSpecialty> $specialties
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserSpecialty> $specialties
  * @property-read int|null $specialties_count
- *
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()
@@ -101,7 +97,6 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereStreet($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUsername($value)
- *
  * @mixin \Eloquent
  */
 #[Fillable([
@@ -129,6 +124,7 @@ use Illuminate\Support\Carbon;
     'status',
     'position_id',
     'created_by',
+    'last_modified_by',
     'photo',
 ])]
 #[Hidden([
@@ -141,6 +137,7 @@ class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
+    protected $appends = ['full_name'];
 
     /**
      * Get the attributes that should be cast.
@@ -173,6 +170,11 @@ class User extends Authenticatable
         ];
     }
 
+    public function getFullNameAttribute(): string
+    {
+        return $this->last_name . ', ' . $this->first_name . ($this->middle_name ? ' ' . $this->middle_name : '');
+    }
+
     public function gender(): BelongsTo
     {
         return $this->belongsTo(Gender::class);
@@ -200,7 +202,12 @@ class User extends Authenticatable
 
     public function createdBy(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'created_by', 'id');
+    }
+
+    public function lastModifiedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'last_modified_by', 'id');
     }
 
     public function departments(): HasMany

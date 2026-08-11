@@ -32,3 +32,11 @@ export function getExactAge(startDate: string, endDate: string) {
 
     return { years, months, days };
 }
+
+export function formatMoney(amount: string) {
+
+    return parseFloat(amount).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    });
+}

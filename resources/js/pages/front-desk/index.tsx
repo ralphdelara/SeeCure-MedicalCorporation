@@ -16,7 +16,7 @@ export default function FrontDesk() {
                 <QueuePatient />
             </Breadcrumbs>
 
-            <div className="row">
+            <div className="row w-100">
                 <div className="col-lg-8">
                     <Consultation />
                 </div>

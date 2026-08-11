@@ -39,8 +39,9 @@ return new class extends Migration
             $table->string('status');
             $table->rememberToken();
             $table->foreignId('position_id')->constrained();
-            $table->foreignId('created_by')->constrained('users', 'id');
             $table->text('photo')->nullable();
+            $table->foreignId('created_by')->constrained('users', 'id');
+            $table->foreignId('last_modified_by')->nullable()->constrained('users', 'id');
             $table->timestamps();
         });
 

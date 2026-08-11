@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId('vital_sign_field_id')->constrained();
             $table->decimal('value', 12);
             $table->foreignId('created_by')->constrained('users', 'id');
+            $table->foreignId('last_modified_by')->nullable()->constrained('users', 'id');
             $table->timestamps();
         });
     }

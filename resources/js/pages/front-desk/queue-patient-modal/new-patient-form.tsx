@@ -77,6 +77,7 @@ const NewPatientForm = ({ data, setData, errors = {} }: PassFormDataProps) => {
                             className="form-control"
                             placeholder="ex. Cruz"
                             maxLength={50}
+                            required={true}
                         />
                         <InputError message={errors.last_name} className="mt-2" />
                     </div>
@@ -93,6 +94,7 @@ const NewPatientForm = ({ data, setData, errors = {} }: PassFormDataProps) => {
                             className="form-control"
                             placeholder="ex. Juan"
                             maxLength={50}
+                            required={true}
                         />
                         <InputError message={errors.first_name} className="mt-2" />
                     </div>

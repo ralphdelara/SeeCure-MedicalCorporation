@@ -78,3 +78,27 @@ svg {
         transform: rotate(360deg);
     }
 }
+
+/* Sticky table header on desktop */
+@media (min-width: 992px) {
+    .table-responsive {
+        overflow-x: visible !important; /* Allows sticky header to track page scroll */
+    }
+
+    .table thead th {
+        position: sticky;
+        top: 70px; /*91px on mobile or tablet*/
+        z-index: 10;
+    }
+}
+/* Sticky table header */
+
+/* Pagination */
+nav ul.pagination li.active > .page-link, .page-link.active {
+    background-color: var(--bs-success);
+    border-color: var(--bs-success);
+}
+nav ul.pagination li:not(.active) > a.page-link:hover {
+    color: var(--bs-success);
+}
+/* Pagination */

@@ -24874,6 +24874,62 @@ namespace Illuminate\Validation {
             }
     }
 
+namespace Illuminate\Database\Schema\Grammars {
+    /**
+     */
+    class PostgresGrammar extends \Illuminate\Database\Schema\Grammars\Grammar {
+            }
+    /**
+     */
+    class Grammar extends \Illuminate\Database\Grammar {
+            }
+    }
+
+namespace Illuminate\Database {
+    /**
+     */
+    class Grammar {
+        /**
+         * @see \App\Providers\AppServiceProvider::boot()
+         * @param \Illuminate\Support\Fluent $column
+         * @static
+         */
+        public static function typeCitext($column)
+        {
+            return \Illuminate\Database\Grammar::typeCitext($column);
+        }
+
+            }
+    }
+
+namespace Illuminate\Database\Schema {
+    /**
+     */
+    class Blueprint {
+        /**
+         * @see \App\Providers\AppServiceProvider::boot()
+         * @param mixed $column
+         * @static
+         */
+        public static function citext($column)
+        {
+            return \Illuminate\Database\Schema\Blueprint::citext($column);
+        }
+
+            }
+    }
+
+namespace Illuminate\Database\Query\Grammars {
+    /**
+     */
+    class PostgresGrammar extends \Illuminate\Database\Query\Grammars\Grammar {
+            }
+    /**
+     */
+    class Grammar extends \Illuminate\Database\Grammar {
+            }
+    }
+
 
 namespace  {
     class App extends \Illuminate\Support\Facades\App {}

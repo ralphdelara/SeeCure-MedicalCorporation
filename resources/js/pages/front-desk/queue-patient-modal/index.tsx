@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import toast, { Toaster } from 'react-hot-toast';
 import { Button } from '@/components/ui/button';
-import { queuePatient } from '@/routes';
+import { queuePatient } from '@/actions/App/Http/Controllers/FrontDeskController';
 import ConsultationForm from './consultation-form';
 import ExistingPatientForm from './existing-patient-form';
 import NewPatientForm from './new-patient-form';
@@ -137,7 +137,7 @@ const QueuePatient = () => {
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="light" onClick={() => setShowModal(false)}>
+                        <Button variant="light" type="button" onClick={() => setShowModal(false)}>
                             Close
                         </Button>
                         <Button variant="default" type="submit" disabled={processing}>

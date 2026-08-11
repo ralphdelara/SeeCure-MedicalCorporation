@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('email')->nullable();
             $table->foreignId('relationship_id')->constrained();
             $table->foreignId('created_by')->constrained('users', 'id');
+            $table->foreignId('last_modified_by')->nullable()->constrained('users', 'id');
             $table->timestamps();
         });
     }

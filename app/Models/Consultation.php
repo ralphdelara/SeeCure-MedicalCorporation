@@ -52,10 +52,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
     'guardian_name',
     'guardian_contact_number',
     'guardian_email',
+    'guardian_relationship_id',
     'signs_or_symptom_id',
     'status_id',
     'doctor_id',
     'created_by',
+    'last_modified_by',
 ])]
 class Consultation extends Model
 {
@@ -95,11 +97,21 @@ class Consultation extends Model
 
     public function doctor(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'doctor_id', 'id');
+    }
+
+    public function guardianRelationship(): BelongsTo
+    {
+        return $this->belongsTo(Relationship::class, 'relationship_id', 'id');
     }
 
     public function createdBy(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'created_by', 'id');
+    }
+
+    public function lastModifiedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'last_modified_by', 'id');
     }
 }

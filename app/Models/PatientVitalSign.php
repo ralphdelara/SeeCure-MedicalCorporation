@@ -45,6 +45,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'vital_sign_field_id',
     'value',
     'created_by',
+    'last_modified_by',
 ])]
 class PatientVitalSign extends Model
 {
@@ -70,6 +71,11 @@ class PatientVitalSign extends Model
 
     public function createdBy(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'created_by', 'id');
+    }
+
+    public function lastModifiedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'last_modified_by', 'id');
     }
 }

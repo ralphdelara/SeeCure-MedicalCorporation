@@ -28,13 +28,6 @@ class Department extends Model
 {
     public $timestamps = false;
 
-    protected function casts(): array
-    {
-        return [
-            'name' => 'encrypted',
-        ];
-    }
-
     public function users(): HasMany
     {
         return $this->hasMany(UserDepartment::class);
