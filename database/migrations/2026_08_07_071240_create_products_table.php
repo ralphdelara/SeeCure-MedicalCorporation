@@ -13,7 +13,11 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->addColumn('citext', 'name')->unique(); 
+            if (DB::getDriverName() === 'pgsql') {
+                $table->addColumn('citext', 'name')->unique();
+            } else {
+
+            }
             $table->foreignId('product_category_id')->constrained();
             $table->foreignId('product_unit_id')->constrained();
             $table->decimal('stock', 12, 2);
