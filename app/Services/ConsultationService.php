@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Consultation;
+use Arr;
 use Illuminate\Support\Facades\Auth;
 
 class ConsultationService
@@ -34,5 +35,46 @@ class ConsultationService
         $consultation->signsOrSymptoms()->insert($data);
 
         return $consultation->id;
+    }
+
+    public function getConsultationList(
+        ?string $keyword,
+        ?string $selectId,
+        string $path,
+    ): array {
+        $consultationList = Consultation::with([
+            'patient' => function ($query) {
+                $query->select('id', 'first_name', 'last_name', 'age');
+            },
+            'patient.gender' => function ($query) {
+                $query->select('id', 'name');
+            },
+            'createdBy' => function ($query) {
+                $query->select('id', 'first_name', 'last_name');
+            },
+            'patientVitalSign' => function ($query) {
+                $query->select('id', 'vital_sign_id', 'vital_sign_field_id', 'value');
+            },
+            'signsOrSymptoms.signsOrSymptom' => function ($query) {
+                $query->select('id', 'name');
+            },
+            'types.type' => function ($query) {
+                $query->select('id', 'name');
+            },
+            'doctor' => function ($query) {
+                $query->select('id', 'first_name', 'last_name');
+            },
+        ])->orderBy('created_at')->paginate(50)
+            ->withPath('/'.$path)->withQueryString();
+
+        $tableData = $consultationList->collect()->toArray();
+        $pageData = Arr::except($consultationList->toArray(), ['data']);
+        $links = app(PageService::class)->limitLinks($consultationList, 5);
+        $pageData['links'] = $links;
+
+        return compact(
+            'tableData',
+            'pageData',
+        );
     }
 }

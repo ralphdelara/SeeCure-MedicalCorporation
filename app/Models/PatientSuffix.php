@@ -23,11 +23,4 @@ use Illuminate\Database\Eloquent\Model;
 class PatientSuffix extends Model
 {
     public $timestamps = false;
-
-    protected function casts(): array
-    {
-        return [
-            'name' => 'encrypted',
-        ];
-    }
 }

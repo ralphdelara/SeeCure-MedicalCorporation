@@ -57,6 +57,11 @@ class UserAudit extends Model
 
     public function createdBy(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'created_by', 'id');
+    }
+
+    public function lastModifiedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'last_modified_by', 'id');
     }
 }

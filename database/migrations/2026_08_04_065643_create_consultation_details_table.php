@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('plan')->nullable();
             $table->text('diagnosis')->nullable();
             $table->foreignId('created_by')->constrained('users', 'id');
+            $table->foreignId('last_modified_by')->nullable()->constrained('users', 'id');
             $table->timestamps();
         });
     }

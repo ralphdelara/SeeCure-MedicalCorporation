@@ -18,7 +18,7 @@ import logoText from '@/assets/images/logos/logo_text.png';
 import userImg from '@/assets/images/profile/user-1.jpg';
 import {
     cashier,
-    consultationList,
+    consultation,
     dashboard,
     frontDesk,
     laboratory,
@@ -51,42 +51,52 @@ export default function NavSidebar({ toggleSidebar }: NavSidebarProps) {
             url: dashboard(),
             name: 'Dashboard',
             icon: IconChartLine,
-            active: dashboard().url === url,
+            active: url.includes(dashboard().url),
         },
         {
             url: frontDesk(),
             name: 'Front Desk',
             icon: IconDeviceDesktop,
-            active: frontDesk().url === url,
+            active: url.includes(frontDesk().url),
         },
         {
             url: patientList(),
             name: 'Patient List',
             icon: IconUser,
-            active: patientList().url === url,
+            active: url.includes(patientList().url),
         },
         {
-            url: consultationList(),
+            url: consultation(),
             name: 'Consultation',
             icon: IconStethoscope,
-            active: consultationList().url === url,
+            active: url.includes(consultation().url),
         },
         {
             url: laboratory(),
             name: 'Laboratory',
             icon: IconFlask,
-            active: laboratory().url === url,
+            active: url.includes(laboratory().url),
         },
-        { url: radiology(), name: 'Radiology', icon: IconScan, active: radiology().url === url },
+        {
+            url: radiology(),
+            name: 'Radiology',
+            icon: IconScan,
+            active: url.includes(radiology().url),
+        },
         {
             url: pharmacy(),
             name: 'Pharmacy',
             icon: IconPrescription,
-            active: pharmacy().url === url,
+            active: url.includes(pharmacy().url),
         },
-        { url: cashier(), name: 'Cashier', icon: IconCashRegister, active: cashier().url === url },
-        { url: users(), name: 'Users', icon: IconUserCog, active: users().url === url },
-        { url: system(), name: 'System', icon: IconLockCog, active: system().url === url },
+        {
+            url: cashier(),
+            name: 'Cashier',
+            icon: IconCashRegister,
+            active: url.includes(cashier().url),
+        },
+        { url: users(), name: 'Users', icon: IconUserCog, active: url.includes(users().url) },
+        { url: system(), name: 'System', icon: IconLockCog, active: url.includes(system().url) },
     ];
 
     const clickLink = () => {

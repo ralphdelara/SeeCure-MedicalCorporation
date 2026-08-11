@@ -11,6 +11,8 @@ const buttonVariants = cva(
             variant: {
                 default:
                     "btn btn-success shadow-sm",
+                primary:
+                    "btn btn-primary shadow-sm",
                 danger:
                     "btn btn-danger shadow-sm",
                 light:

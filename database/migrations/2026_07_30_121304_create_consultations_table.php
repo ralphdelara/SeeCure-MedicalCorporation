@@ -18,10 +18,12 @@ return new class extends Migration
             $table->text('guardian_name')->nullable();
             $table->string('guardian_contact_number')->nullable();
             $table->text('guardian_email')->nullable();
+            $table->foreignId('guardian_relationship_id')->nullable()->constrained('relationships', 'id');
 
             $table->foreignId('status_id')->constrained('consultation_statuses', 'id');
             $table->foreignId('doctor_id')->constrained('users', 'id');
             $table->foreignId('created_by')->constrained('users', 'id');
+            $table->foreignId('last_modified_by')->nullable()->constrained('users', 'id');
             $table->timestamps();
         });
     }

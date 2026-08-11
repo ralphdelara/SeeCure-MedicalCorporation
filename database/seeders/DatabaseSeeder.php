@@ -21,32 +21,7 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
-        $this->call([
-            AuditTypeSeeder::class,
-            ConsultationStatusSeeder::class,
-            DepartmentSeeder::class,
-            GenderSeeder::class,
-            PatientStatusSeeder::class,
-            PatientSuffixSeeder::class,
-            PositionSeeder::class,
-            ProfessionSeeder::class,
-            RelationshipSeeder::class,
-            RoleSeeder::class,
-            SpecialtySeeder::class,
-            CivilStatusSeeder::class,
-            NationalitySeeder::class,
-
-            ProvinceSeeder::class,
-            CitySeeder::class,
-            BarangaySeeder::class,
-
-            VitalSignSeeder::class,
-            VitalSignFieldSeeder::class,
-
-            SignsOrSymptomSeeder::class,
-            ConsultationTypeSeeder::class,
-
-            UserSeeder::class,
-        ]);
+        // $this->call([
+        // ]);
     }
 }

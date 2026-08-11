@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Casts\EncryptedDate;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -110,31 +109,21 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
     'status_id',
     'patient_suffix_id',
     'created_by',
+    'last_modified_by',
 ])]
 class Patient extends Model
 {
+    protected $appends = ['full_name'];
+
     protected function casts(): array
     {
         return [
-            'first_name'      => 'encrypted',
-            'middle_name'     => 'encrypted',
-            'last_name'       => 'encrypted',
-            'date_of_birth'   => EncryptedDate::class,
-            'contact_number1' => 'encrypted',
-            'contact_number2' => 'encrypted',
-            'email'           => 'encrypted',
-            'occupation'      => 'encrypted',
-            'philhealth_id'   => 'encrypted',
-
-            'house_no' => 'encrypted',
-            'street'   => 'encrypted',
-
-            'guardian_name'           => 'encrypted',
-            'guardian_contact_number' => 'encrypted',
-            'guardian_email'          => 'encrypted',
-
-            'photo' => 'encrypted',
         ];
+    }
+
+    public function getFullNameAttribute(): string
+    {
+        return $this->last_name.', '.$this->first_name.($this->middle_name ? ' '.$this->middle_name : '');
     }
 
     public function gender(): BelongsTo
@@ -184,7 +173,12 @@ class Patient extends Model
 
     public function createdBy(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'created_by', 'id');
+    }
+
+    public function lastModifiedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'last_modified_by', 'id');
     }
 
     public function audits(): HasMany

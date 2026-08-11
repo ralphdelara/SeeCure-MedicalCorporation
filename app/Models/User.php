@@ -129,6 +129,7 @@ use Illuminate\Support\Carbon;
     'status',
     'position_id',
     'created_by',
+    'last_modified_by',
     'photo',
 ])]
 #[Hidden([
@@ -141,6 +142,8 @@ class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
+
+    protected $appends = ['full_name'];
 
     /**
      * Get the attributes that should be cast.
@@ -173,6 +176,11 @@ class User extends Authenticatable
         ];
     }
 
+    public function getFullNameAttribute(): string
+    {
+        return $this->last_name.', '.$this->first_name.($this->middle_name ? ' '.$this->middle_name : '');
+    }
+
     public function gender(): BelongsTo
     {
         return $this->belongsTo(Gender::class);
@@ -200,7 +208,12 @@ class User extends Authenticatable
 
     public function createdBy(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'created_by', 'id');
+    }
+
+    public function lastModifiedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'last_modified_by', 'id');
     }
 
     public function departments(): HasMany

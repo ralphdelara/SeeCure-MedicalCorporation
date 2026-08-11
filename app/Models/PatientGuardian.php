@@ -43,18 +43,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'email',
     'relationship_id',
     'created_by',
+    'last_modified_by',
 ])]
 class PatientGuardian extends Model
 {
-    protected function casts(): array
-    {
-        return [
-            'name'           => 'encrypted',
-            'contact_number' => 'encrypted',
-            'email'          => 'encrypted',
-        ];
-    }
-
     public function patient(): BelongsTo
     {
         return $this->belongsTo(Patient::class);
@@ -67,6 +59,11 @@ class PatientGuardian extends Model
 
     public function createdBy(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'created_by', 'id');
+    }
+
+    public function lastModifiedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'last_modified_by', 'id');
     }
 }

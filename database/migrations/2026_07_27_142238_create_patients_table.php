@@ -35,9 +35,10 @@ return new class extends Migration
             $table->foreignId('nationality_id')->nullable()->constrained();
             $table->foreignId('status_id')->constrained('patient_statuses', 'id');
             $table->foreignId('patient_suffix_id')->nullable()->constrained();
-            $table->foreignId('created_by')->constrained('users', 'id');
-
             $table->text('photo')->nullable();
+
+            $table->foreignId('created_by')->constrained('users', 'id');
+            $table->foreignId('last_modified_by')->nullable()->constrained('users', 'id');
             $table->timestamps();
         });
     }

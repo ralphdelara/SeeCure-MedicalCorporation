@@ -11,7 +11,7 @@ export function Breadcrumbs({
     children: React.ReactNode;
 }) {
     return (
-        <div className="card bg-success-subtle position-relative mb-4 overflow-hidden shadow-none">
+        <div className="card bg-success-subtle position-relative overflow-hidden shadow-none">
             <div className="card-body px-4 py-3">
                 <div className="row align-items-center">
                     <div className="col-6">
