@@ -48,7 +48,8 @@ const QueuePatient = () => {
         guardian_contact_number: '',
         guardian_email: '',
         doctor_id: '',
-        consultation_types_id: [],
+        has_consultation: 0,
+        has_laboratory: 0,
         signs_or_symptoms_id: [],
     });
 

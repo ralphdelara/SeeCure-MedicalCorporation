@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\CorrectTimezone;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -113,11 +114,26 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 ])]
 class Patient extends Model
 {
+    use CorrectTimezone;
+
     protected $appends = ['full_name'];
 
     protected function casts(): array
     {
         return [
+            'last_name'       => 'encrypted',
+            'first_name'      => 'encrypted',
+            'middle_name'     => 'encrypted',
+            'date_of_birth'   => 'encrypted',
+            'age'             => 'encrypted',
+            'contact_number1' => 'encrypted',
+            'contact_number2' => 'encrypted',
+            'email'           => 'encrypted',
+            'occupation'      => 'encrypted',
+            'philhealth_id'   => 'encrypted',
+            'house_no'        => 'encrypted',
+            'street'          => 'encrypted',
+            'photo'           => 'encrypted',
         ];
     }
 

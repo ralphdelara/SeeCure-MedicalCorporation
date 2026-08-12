@@ -7,9 +7,7 @@ export default function PatientList() {
     return (
         <>
             <Head title="Patient Details" />
-            <Breadcrumbs breadcrumbs={breadcrumbs} title="Patient Details">
-                &nbsp;
-            </Breadcrumbs>
+            <Breadcrumbs title="Patient Details">&nbsp;</Breadcrumbs>
         </>
     );
 }

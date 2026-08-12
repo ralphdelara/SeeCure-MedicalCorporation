@@ -8,7 +8,7 @@ export default function Users() {
     return (
         <>
             <Head title="Users" />
-            <Breadcrumbs breadcrumbs={breadcrumbs} title="Users">
+            <Breadcrumbs title="Users">
                 <Button variant="default">Add User</Button>
             </Breadcrumbs>
         </>

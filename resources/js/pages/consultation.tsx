@@ -7,9 +7,7 @@ export default function Consultation() {
     return (
         <>
             <Head title="Consultation" />
-            <Breadcrumbs breadcrumbs={breadcrumbs} title="Consultation">
-                &nbsp;
-            </Breadcrumbs>
+            <Breadcrumbs title="Consultation">&nbsp;</Breadcrumbs>
         </>
     );
 }

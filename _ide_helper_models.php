@@ -114,6 +114,12 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereStatusId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int|null $guardian_relationship_id
+ * @property int|null $last_modified_by
+ * @property-read \App\Models\Relationship|null $guardianRelationship
+ * @property-read \App\Models\User|null $lastModifiedBy
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereGuardianRelationshipId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereLastModifiedBy($value)
  */
 	class Consultation extends \Eloquent {}
 }
@@ -142,6 +148,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDetail whereSubjective($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDetail whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int|null $last_modified_by
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDetail whereLastModifiedBy($value)
  */
 	class ConsultationDetail extends \Eloquent {}
 }
@@ -360,6 +368,10 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereStreet($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int|null $last_modified_by
+ * @property-read string $full_name
+ * @property-read \App\Models\User|null $lastModifiedBy
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereLastModifiedBy($value)
  */
 	class Patient extends \Eloquent {}
 }
@@ -418,6 +430,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientGuardian whereRelationshipId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientGuardian whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int|null $last_modified_by
+ * @property-read \App\Models\User|null $lastModifiedBy
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientGuardian whereLastModifiedBy($value)
  */
 	class PatientGuardian extends \Eloquent {}
 }
@@ -479,6 +494,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientVitalSign whereVitalSignFieldId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientVitalSign whereVitalSignId($value)
  * @mixin \Eloquent
+ * @property int|null $last_modified_by
+ * @property-read \App\Models\User|null $lastModifiedBy
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientVitalSign whereLastModifiedBy($value)
  */
 	class PatientVitalSign extends \Eloquent {}
 }
@@ -493,6 +511,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Position whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Position whereName($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
+ * @property-read int|null $notifications_count
+ * @method static \Database\Factories\PositionFactory factory($count = null, $state = [])
  */
 	class Position extends \Eloquent {}
 }
@@ -505,13 +526,21 @@ namespace App\Models{
  * @property int $product_unit_id
  * @property numeric $stock
  * @property numeric $cost_price
- * @property numeric $selling_price
  * @property numeric $markup_amount
  * @property numeric $markup_percent
+ * @property numeric $vat_percent
+ * @property numeric $vat_amount
+ * @property numeric $selling_price_vat_exclusive
+ * @property numeric $selling_price_vat_inclusive
  * @property string|null $photo
  * @property int $created_by
+ * @property int|null $last_modified_by
  * @property \Carbon\CarbonImmutable|null $created_at
  * @property \Carbon\CarbonImmutable|null $updated_at
+ * @property-read \App\Models\ProductCategory $category
+ * @property-read \App\Models\User $createdBy
+ * @property-read \App\Models\User|null $lastModifiedBy
+ * @property-read \App\Models\ProductUnit $unit
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product query()
@@ -519,15 +548,19 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereCreatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereLastModifiedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereMarkupAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereMarkupPercent($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product wherePhoto($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereProductCategoryId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereProductUnitId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereSellingPrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereSellingPriceVatExclusive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereSellingPriceVatInclusive($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereStock($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereVatAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereVatPercent($value)
  */
 	class Product extends \Eloquent {}
 }
@@ -762,6 +795,10 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUsername($value)
  * @mixin \Eloquent
+ * @property int|null $last_modified_by
+ * @property-read string $full_name
+ * @property-read User|null $lastModifiedBy
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereLastModifiedBy($value)
  */
 	class User extends \Eloquent {}
 }
@@ -787,6 +824,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserAudit whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserAudit whereUserId($value)
  * @mixin \Eloquent
+ * @property-read \App\Models\User|null $lastModifiedBy
  */
 	class UserAudit extends \Eloquent {}
 }
@@ -861,6 +899,15 @@ namespace App\Models{
  * @mixin \Eloquent
  */
 	class UserSpecialty extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit query()
+ */
+	class Visit extends \Eloquent {}
 }
 
 namespace App\Models{

@@ -23,7 +23,8 @@ export interface AddPatientFormTypes {
     province_id?: number | string;
 
     photo?: string;
-    consultation_types_id: number[];
+    has_consultation: number;
+    has_laboratory: number;
     signs_or_symptoms_id: number[];
     vital_signs: Record<string, Record<string, string | number>>;
 

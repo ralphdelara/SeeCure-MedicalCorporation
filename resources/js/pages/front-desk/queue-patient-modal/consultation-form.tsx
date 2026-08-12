@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select } from '@/components/ui/select';
 import type { Options } from '@/types/options';
-import type { PassFormDataProps } from './types';
+import type { AddPatientFormTypes, PassFormDataProps } from './types';
 
 interface InertiaProps {
     consultationTypes: Options[];
@@ -12,20 +12,16 @@ interface InertiaProps {
 }
 
 const ConsultationForm = ({ data, setData, errors = {} }: PassFormDataProps) => {
-    const { consultationTypes, doctors } = usePage().props as unknown as InertiaProps;
-
-    const updateConsultationTypes = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.checked) {
-            setData('consultation_types_id', [
-                ...data.consultation_types_id,
-                parseInt(e.target.value),
-            ]);
-        } else {
-            setData(
-                'consultation_types_id',
-                data.consultation_types_id.filter((item) => item !== parseInt(e.target.value)),
-            );
-        }
+    const { doctors } = usePage().props as unknown as InertiaProps;
+    const medicalServices = [
+        {name: 'Consultation', id: 'has_consultation', value: 1},
+        {name: 'Laboratory', id: 'has_laboratory', value: 1},
+    ];
+    const updateMedicalServices = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const checkboxId = e.currentTarget.id as keyof AddPatientFormTypes;
+        const isChecked = (e.target as HTMLInputElement).checked;
+console.log(checkboxId, isChecked);
+        setData(checkboxId, isChecked ? 1 : 0);
     };
 
     return (
@@ -35,28 +31,28 @@ const ConsultationForm = ({ data, setData, errors = {} }: PassFormDataProps) => 
                     Medical Services *
                 </Label>
                 <div className="row">
-                    {consultationTypes.map((item, index) => (
-                        <div className="col-md-4" key={'signsOrSymptoms-' + index}>
+                    {medicalServices.map((item, index) => (
+                        <div className="col-md-4" key={'medicalService-' + index}>
                             <div className="form-check form-check-inline">
                                 <input
                                     className="form-check-input success"
                                     type="checkbox"
-                                    id={'consultation_types-' + index}
-                                    value={item.id}
-                                    onChange={(e) => updateConsultationTypes(e)}
-                                    name="consultation_types"
-                                    checked={data.consultation_types_id.includes(item.id)}
+                                    id={item.id}
+                                    value={item.value}
+                                    onChange={(e) => updateMedicalServices(e)}
+                                    name={item.id}
+                                    checked={data[item.id as keyof AddPatientFormTypes] === 1}
                                 />
                                 <label
                                     className="form-check-label"
-                                    htmlFor={'consultation_types-' + index}
+                                    htmlFor={item.id}
                                 >
                                     {item.name}
                                 </label>
                             </div>
                         </div>
                     ))}
-                    <InputError message={errors.consultation_types_id} className="mt-2" />
+                    <InputError message={errors.has_consultation} className="mt-2" />
                 </div>
             </div>
             <div className="form-group">

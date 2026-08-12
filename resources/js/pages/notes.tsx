@@ -8,9 +8,7 @@ export default function Notes() {
     return (
         <>
             <Head title="Notes" />
-            <Breadcrumbs breadcrumbs={breadcrumbs} title="Notes">
-                &nbsp;
-            </Breadcrumbs>
+            <Breadcrumbs title="Notes">&nbsp;</Breadcrumbs>
             <ul className="nav nav-pills align-items-center card mb-3 flex-row rounded p-3">
                 <li className="nav-item">
                     <a

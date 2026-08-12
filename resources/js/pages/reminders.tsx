@@ -7,9 +7,7 @@ export default function Reminders() {
     return (
         <>
             <Head title="Reminders" />
-            <Breadcrumbs breadcrumbs={breadcrumbs} title="Reminders">
-                &nbsp;
-            </Breadcrumbs>
+            <Breadcrumbs title="Reminders">&nbsp;</Breadcrumbs>
         </>
     );
 }

@@ -20,11 +20,6 @@
     color: var(--bs-white);
 }
 
-.nav-pills .nav-link.active,
-.nav-pills .show > .nav-link {
-    background-color: var(--bs-success);
-}
-
 .btn.rounded-circle {
     display: inline-flex;
     align-items: center;
@@ -103,3 +98,14 @@ nav ul.pagination li:not(.active) > a.page-link:hover {
     color: var(--bs-success);
 }
 /* Pagination */
+
+.breadcrumb-item a:hover {
+    color: var(--bs-success);
+}
+
+/* Tab */
+.user-profile-tab .nav-item .nav-link.active {
+    color: var(--bs-success);
+    border-bottom: 2px solid var(--bs-success);
+}
+/* Tab */

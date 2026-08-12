@@ -7,9 +7,7 @@ export default function Cashier() {
     return (
         <>
             <Head title="Cashier" />
-            <Breadcrumbs breadcrumbs={breadcrumbs} title="Cashier">
-                &nbsp;
-            </Breadcrumbs>
+            <Breadcrumbs title="Cashier">&nbsp;</Breadcrumbs>
         </>
     );
 }

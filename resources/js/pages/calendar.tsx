@@ -7,9 +7,7 @@ export default function Calendar() {
     return (
         <>
             <Head title="Calendar" />
-            <Breadcrumbs breadcrumbs={breadcrumbs} title="Calendar">
-                &nbsp;
-            </Breadcrumbs>
+            <Breadcrumbs title="Calendar">&nbsp;</Breadcrumbs>
         </>
     );
 }

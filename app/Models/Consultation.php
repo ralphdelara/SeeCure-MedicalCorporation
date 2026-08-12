@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\CorrectTimezone;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Collection;
@@ -48,6 +49,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @mixin \Eloquent
  */
 #[Fillable([
+    'visit_id',
     'patient_id',
     'guardian_name',
     'guardian_contact_number',
@@ -61,18 +63,27 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 ])]
 class Consultation extends Model
 {
+    use CorrectTimezone;
+
     protected function casts(): array
     {
         return [
             'guardian_name'           => 'encrypted',
             'guardian_contact_number' => 'encrypted',
             'guardian_email'          => 'encrypted',
+            'created_at'              => 'date:M d, Y h:i a',
+            'updated_at'              => 'date:M d, Y h:i a',
         ];
+    }
+
+    public function visit(): BelongsTo
+    {
+        return $this->belongsTo(Visit::class, 'visit_id', 'id');
     }
 
     public function patient(): BelongsTo
     {
-        return $this->belongsTo(Patient::class);
+        return $this->belongsTo(Patient::class, 'patient_id', 'id');
     }
 
     public function patientVitalSign(): HasMany

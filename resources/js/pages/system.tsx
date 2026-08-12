@@ -7,9 +7,7 @@ export default function System() {
     return (
         <>
             <Head title="System" />
-            <Breadcrumbs breadcrumbs={breadcrumbs} title="System">
-                &nbsp;
-            </Breadcrumbs>
+            <Breadcrumbs title="System">&nbsp;</Breadcrumbs>
         </>
     );
 }

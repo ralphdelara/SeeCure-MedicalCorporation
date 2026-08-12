@@ -51,22 +51,22 @@ class PatientVitalSign extends Model
 {
     public function patient(): BelongsTo
     {
-        return $this->belongsTo(Patient::class);
+        return $this->belongsTo(Patient::class, 'patient_id', 'id');
     }
 
     public function consultation(): BelongsTo
     {
-        return $this->belongsTo(Consultation::class);
+        return $this->belongsTo(Consultation::class, 'consultation_id', 'id');
     }
 
     public function vitalSign(): BelongsTo
     {
-        return $this->belongsTo(VitalSign::class);
+        return $this->belongsTo(VitalSign::class, 'vital_sign_id', 'id');
     }
 
     public function vitalSignField(): BelongsTo
     {
-        return $this->belongsTo(VitalSignField::class);
+        return $this->belongsTo(VitalSignField::class, 'vital_sign_field_id', 'id');
     }
 
     public function createdBy(): BelongsTo

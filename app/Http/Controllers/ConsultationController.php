@@ -21,4 +21,13 @@ class ConsultationController extends Controller
             'consultationList',
         ));
     }
+
+    public function getConsultationDetails(int $id): Response
+    {
+        $consultationDetails = app(ConsultationService::class)->getConsultationDetails($id);
+
+        return Inertia::render('consultation/details/index', compact(
+            'consultationDetails',
+        ));
+    }
 }

@@ -3,6 +3,7 @@
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\FrontDeskController;
+use App\Http\Controllers\PatientController;
 use App\Http\Controllers\PharmacyController;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Route;
@@ -15,11 +16,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/', [FrontDeskController::class, 'index'])->name('front-desk');
         Route::post('/', [FrontDeskController::class, 'queuePatient'])->name('front-desk.queue-patient');
     });
-    Route::inertia('patient/list', 'patient/list')->name('patient-list');
-    Route::inertia('patient/details', 'patient/details')->name('patient-details');
+    Route::prefix('patient')->group(function () {
+        Route::get('/', [PatientController::class, 'index'])->name('patient');
+        Route::get('/details/{id}', [PatientController::class, 'getPatientDetails'])->name('patient.details');
+    });
     Route::prefix('consultation')->group(function () {
-        Route::get('/list', [ConsultationController::class, 'index'])->name('consultation');
-
+        Route::get('/', [ConsultationController::class, 'index'])->name('consultation');
+        Route::get('/details/{id}', [ConsultationController::class, 'getConsultationDetails'])->name('consultation.details');
     });
     Route::inertia('laboratory', 'laboratory')->name('laboratory');
     Route::inertia('radiology', 'radiology')->name('radiology');
@@ -43,7 +46,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::get('test', function () {
-        dd(Crypt::encrypt('Item 1'));
+
+
+echo date_default_timezone_get(); 
     });
 });
 

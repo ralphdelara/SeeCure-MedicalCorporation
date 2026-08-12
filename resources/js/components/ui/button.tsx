@@ -55,7 +55,7 @@ function Button({
         title?: string;
         asChild?: boolean;
     }) {
-    const Comp = asChild ? Slot : "button"
+    const Comp = asChild ? Slot : "button";
 
     return (
         <Comp

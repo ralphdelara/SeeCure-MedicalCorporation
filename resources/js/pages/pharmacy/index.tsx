@@ -52,7 +52,7 @@ export default function Pharmacy() {
     return (
         <>
             <Head title="Pharmacy" />
-            <Breadcrumbs breadcrumbs={breadcrumbs} title="Pharmacy">
+            <Breadcrumbs title="Pharmacy">
                 <AddProduct />
             </Breadcrumbs>
             <div className="card">

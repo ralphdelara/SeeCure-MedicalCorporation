@@ -7,9 +7,7 @@ export default function PatientList() {
     return (
         <>
             <Head title="Patient List" />
-            <Breadcrumbs breadcrumbs={breadcrumbs} title="Patient List">
-                &nbsp;
-            </Breadcrumbs>
+            <Breadcrumbs title="Patient List">&nbsp;</Breadcrumbs>
             <div className="row">
                 <div className="col-md-12">
                     <div className="table-responsive rounded-1 mb-4 border">
