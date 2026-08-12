@@ -7,7 +7,6 @@ import type { Options } from '@/types/options';
 import type { AddPatientFormTypes, PassFormDataProps } from './types';
 
 interface InertiaProps {
-    consultationTypes: Options[];
     doctors: Options[];
 }
 

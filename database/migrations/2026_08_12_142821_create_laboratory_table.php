@@ -15,8 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('visit_id')->constrained();
             $table->foreignId('patient_id')->constrained();
-            $table->foreignId('laboratory_type_id')->constrained();
-            $table->text('data')->nullable();
+            $table->foreignId('consultation_id')->nullable()->constrained();
             $table->foreignId('status_id')->constrained('laboratory_statuses', 'id');
 
             $table->foreignId('created_by')->constrained('users', 'id');

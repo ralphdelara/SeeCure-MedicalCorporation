@@ -44,8 +44,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read CivilStatus|null $civilStatus
  * @property-read User|null $createdBy
  * @property-read Gender|null $gender
- * @property-read Collection<int, PatientGuardian> $guardian
- * @property-read int|null $guardian_count
  * @property-read Nationality|null $nationality
  * @property-read Collection<int, PatientVitalSign> $patientVitalSigns
  * @property-read int|null $patient_vital_signs_count
@@ -180,11 +178,6 @@ class Patient extends Model
     public function nationality(): BelongsTo
     {
         return $this->belongsTo(Nationality::class);
-    }
-
-    public function guardian(): HasMany
-    {
-        return $this->hasMany(PatientGuardian::class);
     }
 
     public function createdBy(): BelongsTo

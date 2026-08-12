@@ -30,10 +30,9 @@ export default function Consultation() {
 
     const header = [
         { name: '#', width: '5%', align: 'right' },
-        { name: 'Patient', width: '25%', align: 'left' },
+        { name: 'Patient', width: '30%', align: 'left' },
         { name: 'Symptoms', width: '10%', align: 'left' },
-        { name: 'Services', width: '10%', align: 'left' },
-        { name: 'Doctor', width: '20%', align: 'left' },
+        { name: 'Doctor', width: '25%', align: 'left' },
         { name: 'Status', width: '10%', align: 'left' },
         { name: 'Action', width: '15%', align: 'right' },
     ];
@@ -81,7 +80,11 @@ export default function Consultation() {
                                                     </td>
                                                     <td>
                                                         <h5 className="fw-bolder ms-2">
-                                                            <Link href={getPatientDetails(item.id).url}>
+                                                            <Link
+                                                                href={
+                                                                    getPatientDetails(item.id).url
+                                                                }
+                                                            >
                                                                 {item.patient.full_name}
                                                             </Link>
                                                         </h5>
@@ -104,15 +107,6 @@ export default function Consultation() {
                                         ))}
                                     </td>
                                     <td>
-                                        {item.types.map((item2, index2) => (
-                                            <h6 key={'type-' + index + '-' + index2}>
-                                                <span className="badge text-bg-secondary">
-                                                    {item2.type.name}
-                                                </span>
-                                            </h6>
-                                        ))}
-                                    </td>
-                                    <td>
                                         <h5 className="fw-bolder">{item.doctor.full_name}</h5>
                                         {item.doctor.professions.map((item2, index2) => (
                                             <span
@@ -122,7 +116,7 @@ export default function Consultation() {
                                                 {item2.profession.suffix}
                                             </span>
                                         ))}
-                                        <br/>
+                                        <br />
                                         {item.created_at}
                                     </td>
                                     <td>
@@ -169,34 +163,22 @@ export default function Consultation() {
                                     </td>
                                 </tr>
 
-                                {item.types.map((item2, index2) => (
-                                    <Fragment key={'details-main-' + index + '-' + index2}>
-                                        <tr
-                                            id={'details-' + index + '-' + index2}
-                                            onClick={(e) => showHideDetails(e.currentTarget.id)}
-                                        >
-                                            <td colSpan={8} className="cursor-pointer text-center">
-                                                <h5 className="fw-bolder">
-                                                    {item2.type.name} Details{' '}
-                                                    <IconChevronDown
-                                                        id={
-                                                            'details-' +
-                                                            index +
-                                                            '-' +
-                                                            index2 +
-                                                            '-icon'
-                                                        }
-                                                    />
-                                                </h5>
-                                            </td>
-                                        </tr>
-                                        <tr id={'details-' + index + '-' + index2 + '-record'}>
-                                            <td colSpan={8} className="text-center">
-                                                <h6>No {item2.type.name} Record</h6>
-                                            </td>
-                                        </tr>
-                                    </Fragment>
-                                ))}
+                                <tr
+                                    id={'details-' + index}
+                                    onClick={(e) => showHideDetails(e.currentTarget.id)}
+                                >
+                                    <td colSpan={8} className="cursor-pointer text-center">
+                                        <h5 className="fw-bolder">
+                                            Consultation Details{' '}
+                                            <IconChevronDown id={'details-' + index + '-icon'} />
+                                        </h5>
+                                    </td>
+                                </tr>
+                                <tr id={'details-' + index + '-record'}>
+                                    <td colSpan={8} className="text-center">
+                                        <h6>No Consultation Record</h6>
+                                    </td>
+                                </tr>
                             </Fragment>
                         ))}
                         {tableData.length === 0 && (

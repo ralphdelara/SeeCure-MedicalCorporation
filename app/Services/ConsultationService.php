@@ -35,9 +35,6 @@ class ConsultationService
             'signsOrSymptoms.signsOrSymptom' => function ($query) {
                 $query->select('id', 'name');
             },
-            'types.type' => function ($query) {
-                $query->select('id', 'name');
-            },
             'doctor' => function ($query) {
                 $query->select('id', 'first_name', 'last_name');
             },
@@ -47,7 +44,7 @@ class ConsultationService
             'status' => function ($query) {
                 $query->select('id', 'name');
             },
-        ])->orderBy('created_at')->paginate(50)
+        ])->whereStatusId(1)->orderBy('created_at')->paginate(50)
             ->withPath('/'.$path)->withQueryString();
 
         $tableData = $consultationList->collect()->toArray();

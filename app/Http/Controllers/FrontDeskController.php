@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\City;
 use App\Models\CivilStatus;
-use App\Models\ConsultationType;
 use App\Models\Gender;
 use App\Models\Nationality;
 use App\Models\PatientSuffix;
@@ -33,7 +32,6 @@ class FrontDeskController extends Controller
         $cityOptions = City::select('id', 'name')->where('province_id', '=', 1)->get(); // Aklan
         $signsOrSymptoms = SignsOrSymptom::all();
         $vitalSigns = VitalSign::with('fields')->get();
-        $consultationTypes = ConsultationType::all();
         $doctors = app(DoctorService::class)->getDoctorList();
 
         return Inertia::render('front-desk/index', compact(
@@ -45,7 +43,6 @@ class FrontDeskController extends Controller
             'cityOptions',
             'signsOrSymptoms',
             'vitalSigns',
-            'consultationTypes',
             'doctors',
         ));
     }
