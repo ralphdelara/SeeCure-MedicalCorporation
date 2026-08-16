@@ -27,7 +27,7 @@ return new class extends OneTimeOperation
      */
     public function process(): void
     {
-        User::create([
+        $user = User::create([
             'first_name' => 'SYSTEM',
             'last_name'  => 'USER',
             'username'   => 'system_user',
@@ -38,21 +38,21 @@ return new class extends OneTimeOperation
 
             'position_id' => 14, // Bot
 
-            'created_by' => 1, // SYSTEM USER
+            'created_by' => null,
 
         ]);
 
         UserDepartment::create([
-            'user_id'       => 1, // SYSTEM USER
+            'user_id'       => $user->id, // SYSTEM USER
             'department_id' => 1, // Administrator
         ]);
 
         UserProfession::create([
-            'user_id'       => 1, // SYSTEM USER
+            'user_id'       => $user->id, // SYSTEM USER
             'profession_id' => 6, // Other
         ]);
 
-        User::create([
+        $user2 = User::create([
             'first_name' => 'Lyka Loraine',
             'last_name'  => 'Zulueta',
             'username'   => 'lykaz',
@@ -63,21 +63,21 @@ return new class extends OneTimeOperation
 
             'position_id' => 6, // GP
 
-            'created_by' => 1, // SYSTEM USER
+            'created_by' => $user->id, // SYSTEM USER
 
         ]);
 
         UserDepartment::create([
-            'user_id'       => 2,
+            'user_id'       => $user2->id,
             'department_id' => 2, // Consultation
         ]);
 
         UserProfession::create([
-            'user_id'       => 2,
+            'user_id'       => $user2->id,
             'profession_id' => 1, // Doctor
         ]);
         UserProfession::create([
-            'user_id'       => 2,
+            'user_id'       => $user2->id,
             'profession_id' => 2, // Med tech
         ]);
     }

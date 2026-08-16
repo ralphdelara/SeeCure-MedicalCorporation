@@ -1,69 +1,29 @@
-import { router } from '@inertiajs/react';
 import { IconTrash } from '@tabler/icons-react';
-import Swal from 'sweetalert2';
-import { Button } from './ui/button';
+import ConfirmButton from './confirm-button';
 
 interface DeleteProps {
     url: string;
     msg: string;
+    className?: string;
 }
 
-export default function DeleteButton({ url, msg }: DeleteProps) {
-    const handleDelete = () => {
-        Swal.fire({
-            position: 'top',
-            title: 'Are you sure?',
-            html: 'All data linked to this ' + msg + ' will be deleted!',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, delete it!',
-            confirmButtonColor: '#d33',
-            showLoaderOnConfirm: true,
-
-            preConfirm: async () => {
-                try {
-                    // Replace this with your actual API call (e.g., axios.delete or fetch)
-                    const response = await fetch(url, {
-                        method: 'DELETE',
-                    });
-
-                    if (!response.ok) {
-                        throw new Error('Something went wrong');
-                    }
-
-                    return;
-                } catch (error: any) {
-                    Swal.showValidationMessage(`Request failed: ${error.message}`);
-                }
-            },
-            allowOutsideClick: () => !Swal.isLoading(),
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Swal.fire({
-                    title: 'Deleted!',
-                    text: 'The record has been deleted.',
-                    icon: 'success',
-                });
-
-                setTimeout(() => {
-                    Swal.close();
-                    router.get(window.location.pathname + window.location.search);
-                }, 1000);
-            }
-        });
-    };
-
+export default function DeleteButton({ url, msg, className = '' }: DeleteProps) {
     return (
-        <Button
+        <ConfirmButton
+            requestMethod="DELETE"
+            url={url}
+            msg={'All data linked to this ' + msg + ' will be deleted!'}
+            className={className}
             variant="danger"
-            rounded={true}
-            className="ms-2"
-            onClick={handleDelete}
             title="Delete"
+            successTitle="Deleted!"
+            successMsg="The record has been deleted."
+            successUrl={window.location.pathname + window.location.search}
+            rounded={true}
         >
             <i>
                 <IconTrash size={20} />
             </i>
-        </Button>
+        </ConfirmButton>
     );
 }

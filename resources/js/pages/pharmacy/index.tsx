@@ -23,7 +23,6 @@ interface InertiaProps {
 }
 
 export default function Pharmacy() {
-    const breadcrumbs = {};
     const { productList, productCategoryOptions } = usePage().props as unknown as InertiaProps;
     const { tableData, pageData } = productList;
     const [showModal, setShowModal] = useState(false);
@@ -52,7 +51,7 @@ export default function Pharmacy() {
     return (
         <>
             <Head title="Pharmacy" />
-            <Breadcrumbs breadcrumbs={breadcrumbs} title="Pharmacy">
+            <Breadcrumbs title="Pharmacy">
                 <AddProduct />
             </Breadcrumbs>
             <div className="card">
@@ -107,6 +106,7 @@ export default function Pharmacy() {
                                         variant="primary"
                                         rounded={true}
                                         title="Edit"
+                                        className="me-2"
                                         onClick={() =>
                                             toggleEditModal({
                                                 id: item.id,
@@ -131,7 +131,7 @@ export default function Pharmacy() {
                                             <IconEdit size={20} />
                                         </i>
                                     </Button>
-                                    <Button rounded={true} className="ms-2" title="View Product">
+                                    <Button rounded={true} className="me-2" title="View Product">
                                         <i>
                                             <IconPackage size={20} />
                                         </i>

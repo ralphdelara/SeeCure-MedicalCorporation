@@ -7,12 +7,10 @@ import Laboratory from './laboratory';
 import QueuePatient from './queue-patient-modal';
 
 export default function FrontDesk() {
-    const breadcrumbs = {};
-
     return (
         <>
             <Head title="Front Desk" />
-            <Breadcrumbs breadcrumbs={breadcrumbs} title="Front Desk">
+            <Breadcrumbs title="Front Desk">
                 <QueuePatient />
             </Breadcrumbs>
 

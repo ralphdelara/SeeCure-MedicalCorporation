@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -12,11 +13,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('patient_audits', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('patient_id')->constrained();
+            $table->uuid('id')->primary()->default(DB::raw('(gen_random_uuid())'));
+            $table->string('patient_id');
             $table->foreignId('audit_type_id')->constrained();
             $table->text('action');
-            $table->foreignId('created_by')->constrained('users', 'id');
+            $table->foreignUuid('created_by')->constrained('users', 'id');
             $table->timestamps();
         });
     }

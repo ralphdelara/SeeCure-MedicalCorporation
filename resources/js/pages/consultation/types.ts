@@ -4,7 +4,17 @@ export interface ConsultationList {
     id: number;
     patient: any;
     status: any;
-    doctor: any;
+    doctor: {
+        full_name: string;
+        professions: {
+            profession: {
+                id: number;
+                name: string;
+                prefix: string;
+                suffix: string;
+            };
+        }[];
+    };
     created_by: any;
     signs_or_symptoms: {
         signs_or_symptom: Options;
@@ -12,4 +22,6 @@ export interface ConsultationList {
     types: {
         type: Options;
     }[];
+    gender: Options;
+    created_at: string;
 }

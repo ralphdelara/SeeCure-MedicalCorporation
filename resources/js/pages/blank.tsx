@@ -7,9 +7,7 @@ export default function Blank() {
     return (
         <>
             <Head title="" />
-            <Breadcrumbs breadcrumbs={breadcrumbs} title="Blank">
-                &nbsp;
-            </Breadcrumbs>
+            <Breadcrumbs title="Blank">&nbsp;</Breadcrumbs>
         </>
     );
 }

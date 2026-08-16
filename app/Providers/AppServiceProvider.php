@@ -27,6 +27,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        date_default_timezone_set('Asia/Manila');
+
         // citext for case insensitive - only for postgresql
         PostgresGrammar::macro('typeCitext', function (Fluent $column) {
             return 'citext';

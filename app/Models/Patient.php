@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Traits\CorrectTimezone;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -43,8 +45,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read CivilStatus|null $civilStatus
  * @property-read User|null $createdBy
  * @property-read Gender|null $gender
- * @property-read Collection<int, PatientGuardian> $guardian
- * @property-read int|null $guardian_count
  * @property-read Nationality|null $nationality
  * @property-read Collection<int, PatientVitalSign> $patientVitalSigns
  * @property-read int|null $patient_vital_signs_count
@@ -113,11 +113,26 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 ])]
 class Patient extends Model
 {
+    use HasUuids, CorrectTimezone;
+
     protected $appends = ['full_name'];
 
     protected function casts(): array
     {
         return [
+            'last_name'       => 'encrypted',
+            'first_name'      => 'encrypted',
+            'middle_name'     => 'encrypted',
+            'date_of_birth'   => 'encrypted',
+            'age'             => 'encrypted',
+            'contact_number1' => 'encrypted',
+            'contact_number2' => 'encrypted',
+            'email'           => 'encrypted',
+            'occupation'      => 'encrypted',
+            'philhealth_id'   => 'encrypted',
+            'house_no'        => 'encrypted',
+            'street'          => 'encrypted',
+            'photo'           => 'encrypted',
         ];
     }
 
@@ -164,11 +179,6 @@ class Patient extends Model
     public function nationality(): BelongsTo
     {
         return $this->belongsTo(Nationality::class);
-    }
-
-    public function guardian(): HasMany
-    {
-        return $this->hasMany(PatientGuardian::class);
     }
 
     public function createdBy(): BelongsTo

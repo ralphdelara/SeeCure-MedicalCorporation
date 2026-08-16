@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\City;
 use App\Models\CivilStatus;
-use App\Models\ConsultationType;
 use App\Models\Gender;
+use App\Models\LaboratoryTestType;
 use App\Models\Nationality;
 use App\Models\PatientSuffix;
 use App\Models\Province;
@@ -13,9 +13,12 @@ use App\Models\SignsOrSymptom;
 use App\Models\VitalSign;
 use App\Services\ConsultationService;
 use App\Services\DoctorService;
+use App\Services\LaboratoryService;
 use App\Services\PatientService;
 use App\Services\PatientVitalSignService;
+use App\Services\VisitService;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -31,8 +34,8 @@ class FrontDeskController extends Controller
         $cityOptions = City::select('id', 'name')->where('province_id', '=', 1)->get(); // Aklan
         $signsOrSymptoms = SignsOrSymptom::all();
         $vitalSigns = VitalSign::with('fields')->get();
-        $consultationTypes = ConsultationType::all();
         $doctors = app(DoctorService::class)->getDoctorList();
+        $laboratoryTestOptions = LaboratoryTestType::all();
 
         return Inertia::render('front-desk/index', compact(
             'genderOptions',
@@ -43,20 +46,24 @@ class FrontDeskController extends Controller
             'cityOptions',
             'signsOrSymptoms',
             'vitalSigns',
-            'consultationTypes',
             'doctors',
+            'laboratoryTestOptions',
         ));
     }
 
     public function queuePatient(Request $request): void
     {
         $request->validate([
-            'patient_id'            => 'required_if:form_type,existing',
-            'last_name'             => 'required_if:form_type,new|min:3|max:50',
-            'first_name'            => 'required_if:form_type,new|min:3|max:50',
-            'doctor_id'             => 'required',
-            'signs_or_symptoms_id'  => 'required',
-            'consultation_types_id' => 'required',
+            'patient_id'           => 'required_if:form_type,existing',
+            'last_name'            => 'required_if:form_type,new|min:3|max:50',
+            'first_name'           => 'required_if:form_type,new|min:3|max:50',
+            'doctor_id'            => 'required_if:has_consultation,1',
+            'signs_or_symptoms_id' => 'required',
+            'has_consultation'     => [
+                Rule::prohibitedIf(
+                    fn () => (int) request('has_consultation') === 0 && (int) request('has_laboratory') === 0,
+                ),
+            ],
         ], [
             'patient_id.required_if' => 'Please select a patient.',
 
@@ -68,9 +75,10 @@ class FrontDeskController extends Controller
             'first_name.min'         => 'The first name must be at least 3 characters.',
             'first_name.max'         => 'The first name may not be greater than 50 characters.',
 
-            'doctor_id.required'             => 'Please select a doctor.',
-            'signs_or_symptoms_id.required'  => 'Please select the signs or symptoms.',
-            'consultation_types_id.required' => 'Please select a medical service.',
+            'doctor_id.required_if'         => 'Please select a doctor.',
+            'signs_or_symptoms_id.required' => 'Please select the signs or symptoms.',
+
+            'has_consultation.prohibited' => 'Please select a medical service.',
 
             'form_type.required' => 'The form type selection is required.',
         ]);
@@ -115,8 +123,19 @@ class FrontDeskController extends Controller
             $patientId = app(PatientService::class)->storePatient($patientDetails);
         }
 
-        $consultationId = app(ConsultationService::class)->queuePatient($patientId, $consultDetails);
+        $visitId = app(VisitService::class)->queuePatient($patientId, $consultDetails);
+
+        $consultationId = null;
+
+        if ($request->has_consultation === 1) {
+            $consultationId = app(ConsultationService::class)->storeConsultation($visitId, $patientId, $consultDetails);
+        }
+
+        if ($request->has_laboratory === 1) {
+            $laboratoryId = app(LaboratoryService::class)->storeLaboratory($visitId, $patientId, $consultDetails);
+        }
 
         app(PatientVitalSignService::class)->storeVitalSigns($patientId, $consultationId, $vitalSigns);
+
     }
 }

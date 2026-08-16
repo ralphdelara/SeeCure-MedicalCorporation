@@ -12,10 +12,10 @@ class DoctorService
         return User::with(['departments.department', 'professions.profession', 'position'])
             ->select('id', 'first_name', 'last_name')
             ->whereHas('departments', function ($query) {
-                $query->where('id', 2); // Consultation
+                $query->where('user_departments.department_id', 2); // Consultation
             })
             ->whereHas('position', function ($query) {
-                $query->where('id', 6); // General Practitioner
+                $query->where('positions.id', 6); // General Practitioner
             })->orderBy('last_name')->get()
             ->map(function ($user) {
                 $name = $user->last_name.' '.$user->first_name;

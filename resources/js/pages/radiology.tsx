@@ -7,9 +7,7 @@ export default function Radiology() {
     return (
         <>
             <Head title="Radiology" />
-            <Breadcrumbs breadcrumbs={breadcrumbs} title="Radiology">
-                &nbsp;
-            </Breadcrumbs>
+            <Breadcrumbs title="Radiology">&nbsp;</Breadcrumbs>
         </>
     );
 }

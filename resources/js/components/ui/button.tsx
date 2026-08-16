@@ -24,7 +24,7 @@ const buttonVariants = cva(
                 lg: "btn-lg",
             },
             rounded: {
-                true: "rounded-circle round-32",
+                true: "rounded-circle round-40",
                 false: "",
             },
             hasIcon: {
@@ -55,7 +55,7 @@ function Button({
         title?: string;
         asChild?: boolean;
     }) {
-    const Comp = asChild ? Slot : "button"
+    const Comp = asChild ? Slot : "button";
 
     return (
         <Comp

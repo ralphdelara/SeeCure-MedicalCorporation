@@ -7,9 +7,7 @@ export default function Laboratory() {
     return (
         <>
             <Head title="Laboratory" />
-            <Breadcrumbs breadcrumbs={breadcrumbs} title="Laboratory">
-                &nbsp;
-            </Breadcrumbs>
+            <Breadcrumbs title="Laboratory">&nbsp;</Breadcrumbs>
         </>
     );
 }

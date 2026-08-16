@@ -4,6 +4,7 @@ namespace App\Casts;
 
 use Carbon\Carbon;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 
 class EncryptedDate implements CastsAttributes

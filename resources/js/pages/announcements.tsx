@@ -7,9 +7,7 @@ export default function Announcements() {
     return (
         <>
             <Head title="Announcements" />
-            <Breadcrumbs breadcrumbs={breadcrumbs} title="Announcements">
-                &nbsp;
-            </Breadcrumbs>
+            <Breadcrumbs title="Announcements">&nbsp;</Breadcrumbs>
         </>
     );
 }
