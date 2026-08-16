@@ -4,7 +4,7 @@ import Pagination from './pagination';
 
 interface TableHeaderProps {
     header: {
-        name: string;
+        name: string|React.ReactNode;
         width: string;
         align: string;
     }[];
@@ -16,7 +16,9 @@ export function TableHeader({ header }: TableHeaderProps) {
             <tr>
                 {header.map((item, index) => (
                     <th style={{ width: item.width }} key={'header-' + index}>
-                        <h6 className={'fs-4 fw-semibold text- mb-0' + item.align}>{item.name}</h6>
+                        <h6 className={'fs-4 fw-semibold text-' + item.align + ' mb-0'}>
+                            {item.name}
+                        </h6>
                     </th>
                 ))}
             </tr>
@@ -25,22 +27,22 @@ export function TableHeader({ header }: TableHeaderProps) {
 }
 
 interface TableListProps extends TableHeaderProps {
-    pageData: Pages;
+    pageData?: Pages;
     children: React.ReactNode;
+    hasPage?: boolean;
 }
 
-const TableList = ({ header, pageData, children }: TableListProps) => {
+const TableList = ({ header, pageData, children, hasPage = true }: TableListProps) => {
     return (
         <>
-            <Pagination pageData={pageData} />
+            {hasPage && pageData && <Pagination pageData={pageData} />}
             <div className="table-responsive rounded-4 border">
                 <table className="table-hover mb-0 table align-middle">
                     <TableHeader header={header} />
                     <tbody>{children}</tbody>
                 </table>
             </div>
-
-            <Pagination pageData={pageData} />
+            {hasPage && pageData && <Pagination pageData={pageData} />}
         </>
     );
 };

@@ -68,14 +68,13 @@ const ConsultationDetails = () => {
                     ))}
                 </ul>
             </PatientInfo>
-
-            {selectedTab === 'tab-details' && <Details />}
-            {selectedTab === 'tab-soap' && <SOAP />}
-            {selectedTab === 'tab-diagnosis' && <Diagnosis />}
-            {selectedTab === 'tab-prescription' && <Prescription />}
-            {selectedTab === 'tab-laboratory' && <Laboratory />}
-            {selectedTab === 'tab-radiology' && <Radiology />}
-            {selectedTab === 'tab-vital-signs' && <VitalSigns />}
+            <Details showTab={selectedTab === 'tab-details'} />
+            <SOAP showTab={selectedTab === 'tab-soap'}/>
+            <Diagnosis showTab={selectedTab === 'tab-diagnosis'}/>
+            <Prescription showTab={selectedTab === 'tab-prescription'}/>
+            <Laboratory showTab={selectedTab === 'tab-laboratory'}/>
+            <Radiology showTab={selectedTab === 'tab-radiology'}/>
+            <VitalSigns showTab={selectedTab === 'tab-vital-signs'}/>
             {selectedTab === 'tab-documents' && <Documents />}
             {selectedTab === 'tab-audit-log' && <AuditLog />}
         </>

@@ -1,4 +1,11 @@
-export interface AddPatientFormTypes {
+import { ConsultationDetailsFormProps } from '@/components/consultation/consultation';
+import { SignsOrSymptomsDetailsFormProps } from '@/components/consultation/signs-or-symptoms';
+import { VitalSignsDetailsFormProps } from '@/components/vital-signs/vital-signs';
+
+export interface AddPatientFormTypes
+    extends
+        ConsultationDetailsFormProps,
+        VitalSignsDetailsFormProps {
     form_type: string;
     patient_id: number | string;
     last_name: string;
@@ -23,15 +30,6 @@ export interface AddPatientFormTypes {
     province_id?: number | string;
 
     photo?: string;
-    has_consultation: number;
-    has_laboratory: number;
-    signs_or_symptoms_id: number[];
-    vital_signs: Record<string, Record<string, string | number>>;
-
-    guardian_name: string;
-    guardian_contact_number: string;
-    guardian_email: string;
-    doctor_id: number | string;
 
     philhealth_id: number | string;
 }

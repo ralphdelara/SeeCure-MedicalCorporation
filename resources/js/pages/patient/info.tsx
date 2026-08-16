@@ -4,32 +4,11 @@ import { Link } from '@inertiajs/react';
 
 const PatientInfo = ({ children }: {children: React.ReactNode}) => {
     return (
-        <div className="card mt-5">
+        <div className="card mt-2">
             <div className="card-body mb-0 p-0">
-                <div className="row align-items-center w-100">
-                    <div className="col-lg-4 order-lg-1 order-2">
-                        <div className="d-flex align-items-center justify-content-around m-4">
-                            <div className="text-center p-2">
-                                <i className="ti ti-user-check fs-6 d-block mb-2"></i>
-                                <h4 className="lh-1 mb-0">Discharged</h4>
-                                <p className="mb-0">Status</p>
-                            </div>
-                            <div className="border-end border-success">&nbsp;</div>
-                            <div className="text-center p-2">
-                                <i className="ti ti-file-description fs-6 d-block mb-2"></i>
-                                <h4 className="lh-1 mb-0">20y 10m</h4>
-                                <p className="mb-0">Age</p>
-                            </div>
-                            <div className="border-end border-success">&nbsp;</div>
-                            <div className="text-center p-2">
-                                <i className="ti ti-user-circle fs-6 d-block mb-2"></i>
-                                <h4 className="lh-1 mb-0">Male</h4>
-                                <p className="mb-0">Gender</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-lg-4 mt-n3 order-lg-2 order-1">
-                        <div className="mt-n5">
+                <div className="row align-items-center w-100 g-3">
+                    <div className="col-lg-3 order-lg-1 order-1">
+                        <div>
                             <div className="d-flex align-items-center justify-content-center mb-2">
                                 <div className="d-flex align-items-center justify-content-center round-110">
                                     <div className="d-flex align-items-center justify-content-center rounded-circle round-100 overflow-hidden border border-4 border-white">
@@ -41,9 +20,30 @@ const PatientInfo = ({ children }: {children: React.ReactNode}) => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="text-center">
-                                <h5 className="mb-0">Mathew Anderson</h5>
-                                <p className="mb-0">Job Here</p>
+                        </div>
+                    </div>
+                    <div className="col-lg-5 order-lg-2 order-2">
+
+                            <div className="text-center text-dark fs-7 mb-0 fw-bolder">
+                                Ralph Randahl Feliciano De Lara
+                            </div>
+                        <div className="d-flex align-items-center justify-content-around">
+                            <div className="text-center p-2">
+                                <i className="ti ti-file-description fs-6 d-block mb-2"></i>
+                                <h4 className="lh-1 mb-0">20y 10m</h4>
+                                <p className="mb-0">Age</p>
+                            </div>
+                            <div className="border-end border-success">&nbsp;</div>
+                            <div className="text-center p-2">
+                                <i className="ti ti-user-circle fs-6 d-block mb-2"></i>
+                                <h4 className="lh-1 mb-0">Male</h4>
+                                <p className="mb-0">Gender</p>
+                            </div>
+                            <div className="border-end border-success">&nbsp;</div>
+                            <div className="text-center p-2">
+                                <i className="ti ti-user-check fs-6 d-block mb-2"></i>
+                                <h4 className="lh-1 mb-0">Discharged</h4>
+                                <p className="mb-0">Status</p>
                             </div>
                         </div>
                     </div>

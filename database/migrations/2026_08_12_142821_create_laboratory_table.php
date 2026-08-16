@@ -12,14 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('laboratory', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('visit_id')->constrained();
-            $table->foreignId('patient_id')->constrained();
-            $table->foreignId('consultation_id')->nullable()->constrained();
+            $table->uuid('id')->primary()->default(DB::raw('(gen_random_uuid())'));
+            $table->foreignUuid('visit_id')->constrained();
+            $table->string('patient_id');
+            $table->foreignUuid('consultation_id')->nullable()->constrained();
             $table->foreignId('status_id')->constrained('laboratory_statuses', 'id');
 
-            $table->foreignId('created_by')->constrained('users', 'id');
-            $table->foreignId('last_modified_by')->nullable()->constrained('users', 'id');
+            $table->foreignUuid('created_by')->constrained('users', 'id');
+            $table->foreignUuid('last_modified_by')->nullable()->constrained('users', 'id');
             $table->timestamps();
         });
     }

@@ -49,7 +49,8 @@ svg {
     padding: 5px;
 }
 
-.form-check.form-check-inline {
+.form-check.form-check-inline,
+.table.table-select tbody tr {
     -webkit-user-select: none; /* Safari */
     -moz-user-select: none; /* Firefox */
     -ms-user-select: none; /* Older IE/Edge */
@@ -74,6 +75,10 @@ svg {
     }
 }
 
+.table tbody td {
+    vertical-align: top;
+}
+
 /* Sticky table header on desktop */
 @media (min-width: 992px) {
     .table-responsive {
@@ -85,6 +90,16 @@ svg {
         top: 70px; /*91px on mobile or tablet*/
         z-index: 10;
     }
+
+    .table.table-select thead th {
+        position: sticky;
+        top: 0px; /*91px on mobile or tablet*/
+        z-index: 10;
+    }
+}
+
+.table.table-select tbody tr {
+    cursor: pointer;
 }
 /* Sticky table header */
 

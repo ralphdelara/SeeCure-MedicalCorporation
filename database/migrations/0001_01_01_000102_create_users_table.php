@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -12,7 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary()->default(DB::raw('(gen_random_uuid())'));
             $table->string('username')->unique();
             $table->string('password');
             $table->string('first_name');
@@ -40,14 +41,25 @@ return new class extends Migration
             $table->rememberToken();
             $table->foreignId('position_id')->constrained();
             $table->text('photo')->nullable();
-            $table->foreignId('created_by')->constrained('users', 'id');
-            $table->foreignId('last_modified_by')->nullable()->constrained('users', 'id');
+            $table->uuid('created_by')->nullable();
+            $table->uuid('last_modified_by')->nullable();
             $table->timestamps();
+        });
+
+        Schema::table('users', function (Blueprint $table) {
+            $table->foreign('created_by')
+                ->references('id')
+                ->on('users')
+                ->onDelete('set null');
+            $table->foreign('last_modified_by')
+                ->references('id')
+                ->on('users')
+                ->onDelete('set null');
         });
 
         Schema::create('sessions', function (Blueprint $table) {
             $table->string('id')->primary();
-            $table->foreignId('user_id')->nullable()->index();
+            $table->foreignUuid('user_id')->nullable()->index();
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
             $table->longText('payload');

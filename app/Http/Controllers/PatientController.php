@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\PatientService;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -9,7 +10,7 @@ class PatientController extends Controller
 {
     public function index(): Response
     {
-        $patientList = [];
+        $patientList = app(PatientService::class);
 
         return Inertia::render('patient/index', compact(
             'patientList',

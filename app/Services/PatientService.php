@@ -7,13 +7,18 @@ use Illuminate\Support\Facades\Auth;
 
 class PatientService
 {
-    public function storePatient(array $patientDetails): int
+    public function getPatientList(): array
+    {
+        return [];
+    }
+
+    public function storePatient(array $patientDetails): string
     {
         $patientDetails['status_id'] = 1; // Waiting
         $patientDetails['created_by'] = Auth::id();
 
         $patient = Patient::create($patientDetails);
 
-        return $patient->id;
+        return (string)$patient->id;
     }
 }

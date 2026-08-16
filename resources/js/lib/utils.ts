@@ -39,3 +39,38 @@ export function formatMoney(amount: string) {
         maximumFractionDigits: 2,
     });
 }
+
+export async function fetchUrl(url: string, method: string, data: object) {
+    const upperMethod = method.toUpperCase();
+
+    const options: RequestInit = {
+        method: upperMethod,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    };
+
+    let finalUrl = url;
+
+    if (upperMethod === 'GET' && data) {
+        const searchParams = new URLSearchParams(data as Record<string, string>);
+        finalUrl = `${url}?${searchParams.toString()}`;
+    }
+
+    else if (data) {
+        options.body = JSON.stringify(data);
+    }
+
+    try {
+        const response = await fetch(finalUrl, options);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error(`Fetch failed for ${upperMethod} request:`, error);
+        throw error;
+    }
+}

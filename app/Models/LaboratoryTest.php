@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\CorrectTimezone;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -16,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 ])]
 class LaboratoryTest extends Model
 {
-    use CorrectTimezone;
+    use HasUuids, CorrectTimezone;
 
     protected function casts(): array
     {

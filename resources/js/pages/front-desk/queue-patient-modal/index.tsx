@@ -8,9 +8,9 @@ import { Button } from '@/components/ui/button';
 import ConsultationForm from './consultation-form';
 import ExistingPatientForm from './existing-patient-form';
 import NewPatientForm from './new-patient-form';
-import SignsOrSymptomsForm from './signs-or-symptoms-form';
+import SignsOrSymptomsForm from '../../../components/consultation/signs-or-symptoms-form';
 import type { AddPatientFormTypes } from './types';
-import VitalSignsForm from './vital-signs-form';
+import VitalSignsForm from '../../../components/vital-signs/vital-signs-form';
 
 const QueuePatient = () => {
     const [showModal, setShowModal] = useState(false);
@@ -128,11 +128,13 @@ const QueuePatient = () => {
                                 )}
 
                                 <ConsultationForm data={data} setData={setData} errors={errors} />
-                                <SignsOrSymptomsForm
-                                    data={data}
-                                    setData={setData}
-                                    errors={errors}
-                                />
+                                {data.has_consultation === 1 && (
+                                    <SignsOrSymptomsForm
+                                        data={data}
+                                        setData={setData}
+                                        errors={errors}
+                                    />
+                                )}
                                 <VitalSignsForm data={data} setData={setData} />
                             </div>
                         </div>

@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Auth;
 class PatientVitalSignService
 {
     public function storeVitalSigns(
-        int $patientId,
-        ?int $consultationId,
+        string $patientId,
+        ?string $consultationId,
         array $vitalSignsDetails,
     ): void {
         if (empty($vitalSignsDetails)) {

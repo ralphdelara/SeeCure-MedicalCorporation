@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 class VisitService
 {
-    public function queuePatient(int $patientId, array $consultDetails): int
+    public function queuePatient(string $patientId, array $consultDetails): string
     {
         $visit = Visit::create([
             'patient_id'              => $patientId,

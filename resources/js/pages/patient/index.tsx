@@ -1,16 +1,32 @@
 import { Head } from '@inertiajs/react';
 import { Breadcrumbs } from '@/components/breadcrumbs';
+import SearchField from '@/components/search-field';
+import TableList from '@/components/table';
 
 export default function PatientList() {
-    const breadcrumbs = {};
+    const header = [
+        { name: '#', width: '5%', align: 'right' },
+        { name: 'Patient', width: '30%', align: 'left' },
+        { name: 'Symptoms', width: '10%', align: 'left' },
+        { name: 'Doctor', width: '25%', align: 'left' },
+        { name: 'Status', width: '10%', align: 'left' },
+        { name: 'Action', width: '15%', align: 'right' },
+    ];
+
+    const selectOption = {
+        options: [],
+        type: 'All Status',
+    };
 
     return (
         <>
             <Head title="Patient List" />
             <Breadcrumbs title="Patient List">&nbsp;</Breadcrumbs>
-            <div className="row">
+            <div className="row w-100">
                 <div className="col-md-12">
                     <div className="table-responsive rounded-1 mb-4 border">
+                        <TableList header={header} pageData={pageData}>
+                        </TableList>
                         <table className="mb-0 table align-middle text-nowrap">
                             <thead className="text-dark fs-4">
                                 <tr>

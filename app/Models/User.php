@@ -10,6 +10,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -141,6 +142,8 @@ use Illuminate\Support\Carbon;
 ])]
 class User extends Authenticatable
 {
+    use HasUuids;
+
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, CorrectTimezone;
 

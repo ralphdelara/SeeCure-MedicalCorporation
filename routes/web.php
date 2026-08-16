@@ -3,6 +3,7 @@
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\FrontDeskController;
+use App\Http\Controllers\Icd10CodeController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\PharmacyController;
 use Illuminate\Support\Facades\Crypt;
@@ -43,6 +44,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('address')->group(function () {
         Route::get('/city/{cityId}/barangay', [AddressController::class, 'barangay'])->name('barangay-list');
+    });
+
+    Route::prefix('settings')->group(function () {
+        Route::get('/icd10-codes', [Icd10CodeController::class, 'getIcd10Codes']);
     });
 
     Route::get('test', function () {

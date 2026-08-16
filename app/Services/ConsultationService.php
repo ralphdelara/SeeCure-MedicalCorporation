@@ -58,7 +58,7 @@ class ConsultationService
         );
     }
 
-    public function getConsultationDetails(int $id): ?array
+    public function getConsultationDetails(string $id): ?array
     {
         $consultation = Consultation::with([
             'patient' => function ($query) {
@@ -82,9 +82,6 @@ class ConsultationService
             'signsOrSymptoms.signsOrSymptom' => function ($query) {
                 $query->select('id', 'name');
             },
-            'types.type' => function ($query) {
-                $query->select('id', 'name');
-            },
             'doctor' => function ($query) {
                 $query->select('id', 'first_name', 'last_name');
             },
@@ -106,11 +103,11 @@ class ConsultationService
         }
     }
 
-    public function createConsultation(
-        int $visitId,
-        int $patientId,
+    public function storeConsultation(
+        string $visitId,
+        string $patientId,
         array $consultDetails,
-    ): int {
+    ): string {
 
         $consultation = Consultation::create([
             'visit_id'                => $visitId,

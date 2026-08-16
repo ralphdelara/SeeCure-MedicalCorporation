@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\City;
 use App\Models\CivilStatus;
 use App\Models\Gender;
+use App\Models\LaboratoryTestType;
 use App\Models\Nationality;
 use App\Models\PatientSuffix;
 use App\Models\Province;
@@ -12,6 +13,7 @@ use App\Models\SignsOrSymptom;
 use App\Models\VitalSign;
 use App\Services\ConsultationService;
 use App\Services\DoctorService;
+use App\Services\LaboratoryService;
 use App\Services\PatientService;
 use App\Services\PatientVitalSignService;
 use App\Services\VisitService;
@@ -33,6 +35,7 @@ class FrontDeskController extends Controller
         $signsOrSymptoms = SignsOrSymptom::all();
         $vitalSigns = VitalSign::with('fields')->get();
         $doctors = app(DoctorService::class)->getDoctorList();
+        $laboratoryTestOptions = LaboratoryTestType::all();
 
         return Inertia::render('front-desk/index', compact(
             'genderOptions',
@@ -44,6 +47,7 @@ class FrontDeskController extends Controller
             'signsOrSymptoms',
             'vitalSigns',
             'doctors',
+            'laboratoryTestOptions',
         ));
     }
 
@@ -53,11 +57,11 @@ class FrontDeskController extends Controller
             'patient_id'           => 'required_if:form_type,existing',
             'last_name'            => 'required_if:form_type,new|min:3|max:50',
             'first_name'           => 'required_if:form_type,new|min:3|max:50',
-            'doctor_id'            => 'required',
+            'doctor_id'            => 'required_if:has_consultation,1',
             'signs_or_symptoms_id' => 'required',
-            'has_consultation' => [
+            'has_consultation'     => [
                 Rule::prohibitedIf(
-                    fn () => (int) request('has_consultation') === 0 && (int) request('has_laboratory') === 0
+                    fn () => (int) request('has_consultation') === 0 && (int) request('has_laboratory') === 0,
                 ),
             ],
         ], [
@@ -71,7 +75,7 @@ class FrontDeskController extends Controller
             'first_name.min'         => 'The first name must be at least 3 characters.',
             'first_name.max'         => 'The first name may not be greater than 50 characters.',
 
-            'doctor_id.required'            => 'Please select a doctor.',
+            'doctor_id.required_if'         => 'Please select a doctor.',
             'signs_or_symptoms_id.required' => 'Please select the signs or symptoms.',
 
             'has_consultation.prohibited' => 'Please select a medical service.',
@@ -121,7 +125,15 @@ class FrontDeskController extends Controller
 
         $visitId = app(VisitService::class)->queuePatient($patientId, $consultDetails);
 
-        $consultationId = app(ConsultationService::class)->createConsultation($visitId, $patientId, $consultDetails);
+        $consultationId = null;
+
+        if ($request->has_consultation === 1) {
+            $consultationId = app(ConsultationService::class)->storeConsultation($visitId, $patientId, $consultDetails);
+        }
+
+        if ($request->has_laboratory === 1) {
+            $laboratoryId = app(LaboratoryService::class)->storeLaboratory($visitId, $patientId, $consultDetails);
+        }
 
         app(PatientVitalSignService::class)->storeVitalSigns($patientId, $consultationId, $vitalSigns);
 

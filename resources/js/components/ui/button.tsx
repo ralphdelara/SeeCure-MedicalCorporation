@@ -24,7 +24,7 @@ const buttonVariants = cva(
                 lg: "btn-lg",
             },
             rounded: {
-                true: "rounded-circle round-32",
+                true: "rounded-circle round-40",
                 false: "",
             },
             hasIcon: {

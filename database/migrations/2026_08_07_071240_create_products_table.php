@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('products', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary()->default(DB::raw('(gen_random_uuid())'));
             if (DB::getDriverName() === 'pgsql') {
                 $table->addColumn('citext', 'name')->unique();
             } else {
@@ -29,8 +29,8 @@ return new class extends Migration
             $table->decimal('selling_price_vat_exclusive', 12, 2);
             $table->decimal('selling_price_vat_inclusive', 12, 2);
             $table->text('photo')->nullable();
-            $table->foreignId('created_by')->constrained('users', 'id');
-            $table->foreignId('last_modified_by')->nullable()->constrained('users', 'id');
+            $table->foreignUuid('created_by')->constrained('users', 'id');
+            $table->foreignUuid('last_modified_by')->nullable()->constrained('users', 'id');
             $table->timestamps();
         });
     }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -49,6 +50,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 ])]
 class PatientVitalSign extends Model
 {
+    use HasUuids;
+
+    protected function casts(): array
+    {
+        return [
+            'patient_id' => 'encrypted',
+        ];
+    }
+
     public function patient(): BelongsTo
     {
         return $this->belongsTo(Patient::class, 'patient_id', 'id');
