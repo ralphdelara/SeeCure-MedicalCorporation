@@ -1,7 +1,8 @@
 import type { Options } from '@/types/options';
 
 export interface ConsultationList {
-    id: number;
+    id: string;
+    patient_id: string;
     patient: any;
     status: any;
     doctor: {

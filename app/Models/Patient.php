@@ -11,6 +11,12 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use ParagonIE\CipherSweet\BlindIndex;
+use ParagonIE\CipherSweet\Constants;
+use ParagonIE\CipherSweet\EncryptedRow;
+use ParagonIE\CipherSweet\Transformation\Lowercase;
+use Spatie\LaravelCipherSweet\Concerns\UsesCipherSweet;
+use Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted;
 
 /**
  * @property int $id
@@ -108,21 +114,27 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
     'nationality_id',
     'status_id',
     'patient_suffix_id',
+
+    'first_name_index',
+    'middle_name_index',
+    'last_name_index',
+
     'created_by',
     'last_modified_by',
 ])]
-class Patient extends Model
+class Patient extends Model implements CipherSweetEncrypted
 {
-    use HasUuids, CorrectTimezone;
+    use CorrectTimezone, HasUuids, UsesCipherSweet;
 
     protected $appends = ['full_name'];
 
     protected function casts(): array
     {
         return [
-            'last_name'       => 'encrypted',
+            'last_name'      => 'encrypted',
             'first_name'      => 'encrypted',
-            'middle_name'     => 'encrypted',
+            'middle_name'      => 'encrypted',
+
             'date_of_birth'   => 'encrypted',
             'age'             => 'encrypted',
             'contact_number1' => 'encrypted',
@@ -199,5 +211,34 @@ class Patient extends Model
     public function patientVitalSigns(): HasMany
     {
         return $this->hasMany(PatientVitalSign::class);
+    }
+
+    public function consultation(): HasMany
+    {
+        return $this->hasMany(Consultation::class);
+    }
+
+    public function laboratory(): HasMany
+    {
+        return $this->hasMany(Laboratory::class);
+    }
+
+    public function patientAudit(): HasMany
+    {
+        return $this->hasMany(PatientAudit::class);
+    }
+
+    /**
+     * Configure CipherSweet fields and blind indexes.
+     */
+    public static function configureCipherSweet(EncryptedRow $encryptedRow): void
+    {
+        $encryptedRow
+            ->addField('first_name_index', Constants::TYPE_TEXT)
+            ->addField('middle_name_index', Constants::TYPE_OPTIONAL_TEXT)
+            ->addField('last_name_index', Constants::TYPE_TEXT)
+            ->addBlindIndex('first_name_index', new BlindIndex('first_name_index', [new Lowercase()]))
+            ->addBlindIndex('middle_name_index', new BlindIndex('middle_name_index', [new Lowercase()]))
+            ->addBlindIndex('last_name_index', new BlindIndex('last_name_index', [new Lowercase()]));
     }
 }

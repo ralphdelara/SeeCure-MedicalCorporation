@@ -7,15 +7,15 @@ import { queuePatient } from '@/actions/App/Http/Controllers/FrontDeskController
 import { Button } from '@/components/ui/button';
 import ConsultationForm from './consultation-form';
 import ExistingPatientForm from './existing-patient-form';
-import NewPatientForm from './new-patient-form';
 import SignsOrSymptomsForm from '../../../components/consultation/signs-or-symptoms-form';
-import type { AddPatientFormTypes } from './types';
+import type { QueuePatientDetailsFormProps } from './types';
 import VitalSignsForm from '../../../components/vital-signs/vital-signs-form';
+import NewPatientForm from '@/components/patient/new-patient-form';
 
 const QueuePatient = () => {
     const [showModal, setShowModal] = useState(false);
 
-    const { data, setData, post, processing, errors, reset } = useForm<AddPatientFormTypes>({
+    const { data, setData, post, processing, errors, reset } = useForm<QueuePatientDetailsFormProps>({
         form_type: 'existing',
         patient_id: '',
         last_name: '',

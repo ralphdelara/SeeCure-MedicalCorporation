@@ -12,7 +12,7 @@ import type { Options } from '@/types/options';
 import type { Pages } from '@/types/pagination';
 import AddProduct from './add-or-update-product';
 import type { AddProductForm, ProductList } from './add-or-update-product/types';
-import NewOrEditModal from './add-or-update-product-modal';
+import AddOrUpdateModal from './add-or-update-product-modal';
 
 interface InertiaProps {
     productList: {
@@ -158,7 +158,7 @@ export default function Pharmacy() {
                     </TableList>
                 </div>
             </div>
-            <NewOrEditModal
+            <AddOrUpdateModal
                 showModal={showModal}
                 setShowModal={setShowModal}
                 modalData={modalData}

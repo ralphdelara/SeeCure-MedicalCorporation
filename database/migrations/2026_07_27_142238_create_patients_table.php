@@ -14,9 +14,9 @@ return new class extends Migration
     {
         Schema::create('patients', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('(gen_random_uuid())'));
-            $table->string('last_name');
-            $table->string('first_name');
-            $table->string('middle_name')->nullable();
+            $table->text('last_name');
+            $table->text('first_name');
+            $table->text('middle_name')->nullable();
             $table->string('date_of_birth')->nullable();
             $table->string('age')->nullable();
             $table->string('contact_number1')->nullable();
@@ -38,8 +38,11 @@ return new class extends Migration
             $table->foreignId('patient_suffix_id')->nullable()->constrained();
             $table->text('photo')->nullable();
 
-            $table->string('first_name_index')->nullable()->index();
-            $table->string('last_name_index')->nullable()->index();
+            $table->text('last_name_index')->nullable()->index();
+            $table->text('first_name_index')->nullable()->index();
+            $table->text('middle_name_index')->nullable()->index();
+
+            $table->unsignedBigInteger('batch')->nullable();
 
             $table->foreignUuid('created_by')->constrained('users', 'id');
             $table->foreignUuid('last_modified_by')->nullable()->constrained('users', 'id');

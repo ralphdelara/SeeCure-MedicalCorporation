@@ -16,11 +16,10 @@ return new class extends Migration
             $table->uuid('id')->primary()->default(DB::raw('(gen_random_uuid())'));
             $table->string('username')->unique();
             $table->string('password');
-            $table->string('first_name');
-            $table->string('middle_name')->nullable();
-            $table->string('last_name');
 
-            $table->string('full_name_index', 64)->nullable()->index();
+            $table->text('last_name');
+            $table->text('first_name');
+            $table->text('middle_name')->nullable();
 
             $table->foreignId('gender_id')->nullable()->constrained();
             $table->string('date_of_birth')->nullable();
@@ -37,10 +36,17 @@ return new class extends Migration
             $table->string('ptr_no')->nullable();
             $table->string('date_hired')->nullable();
             $table->string('date_resigned')->nullable();
-            $table->string('status');
+            $table->boolean('status');
             $table->rememberToken();
             $table->foreignId('position_id')->constrained();
             $table->text('photo')->nullable();
+
+            $table->text('last_name_index')->nullable()->index();
+            $table->text('first_name_index')->nullable()->index();
+            $table->text('middle_name_index')->nullable()->index();
+
+            $table->unsignedBigInteger('batch')->nullable();
+
             $table->uuid('created_by')->nullable();
             $table->uuid('last_modified_by')->nullable();
             $table->timestamps();

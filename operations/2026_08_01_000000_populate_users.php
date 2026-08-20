@@ -33,11 +33,10 @@ return new class extends OneTimeOperation
             'username'   => 'system_user',
             'password'   => Hash::make('system_pass'),
             'gender_id'  => 4, // Unknown
-
             'status' => true,
-
             'position_id' => 14, // Bot
-
+            'first_name_index' => 'SYSTEM',
+            'last_name_index'  => 'USER',
             'created_by' => null,
 
         ]);
@@ -62,6 +61,9 @@ return new class extends OneTimeOperation
             'status' => true,
 
             'position_id' => 6, // GP
+
+            'first_name_index' => 'Lyka Loraine',
+            'last_name_index'  => 'Zulueta',
 
             'created_by' => $user->id, // SYSTEM USER
 

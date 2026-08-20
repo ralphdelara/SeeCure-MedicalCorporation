@@ -1,12 +1,19 @@
-import { IconEdit } from "@tabler/icons-react";
-import React from "react";
+import { IconUserEdit } from '@tabler/icons-react';
+import React from 'react';
 import { Link } from '@inertiajs/react';
+import { getPatientDetails } from '@/actions/App/Http/Controllers/PatientController';
+import { PatientDetailsProps } from '@/components/patient/patient-details';
 
-const PatientInfo = ({ children }: {children: React.ReactNode}) => {
+interface InertiaProps {
+    patientDetails: PatientDetailsProps;
+    children: React.ReactNode;
+}
+
+const PatientInfo = ({ patientDetails, children }: InertiaProps) => {
     return (
         <div className="card mt-2">
             <div className="card-body mb-0 p-0">
-                <div className="row align-items-center w-100 g-3">
+                <div className="row align-items-center g-3 w-100">
                     <div className="col-lg-3 order-lg-1 order-1">
                         <div>
                             <div className="d-flex align-items-center justify-content-center mb-2">
@@ -23,26 +30,29 @@ const PatientInfo = ({ children }: {children: React.ReactNode}) => {
                         </div>
                     </div>
                     <div className="col-lg-5 order-lg-2 order-2">
-
-                            <div className="text-center text-dark fs-7 mb-0 fw-bolder">
-                                Ralph Randahl Feliciano De Lara
-                            </div>
+                        <div className="text-dark fs-7 fw-bolder mb-0 text-center">
+                            {patientDetails.full_name}
+                        </div>
                         <div className="d-flex align-items-center justify-content-around">
-                            <div className="text-center p-2">
+                            <div className="p-2 text-center">
                                 <i className="ti ti-file-description fs-6 d-block mb-2"></i>
-                                <h4 className="lh-1 mb-0">20y 10m</h4>
+                                <h4 className="lh-1 mb-0">{patientDetails.age ?? 'N/A'}</h4>
                                 <p className="mb-0">Age</p>
                             </div>
                             <div className="border-end border-success">&nbsp;</div>
-                            <div className="text-center p-2">
+                            <div className="p-2 text-center">
                                 <i className="ti ti-user-circle fs-6 d-block mb-2"></i>
-                                <h4 className="lh-1 mb-0">Male</h4>
+                                <h4 className="lh-1 mb-0">
+                                    {patientDetails.gender?.name ?? 'N/A'}
+                                </h4>
                                 <p className="mb-0">Gender</p>
                             </div>
                             <div className="border-end border-success">&nbsp;</div>
-                            <div className="text-center p-2">
+                            <div className="p-2 text-center">
                                 <i className="ti ti-user-check fs-6 d-block mb-2"></i>
-                                <h4 className="lh-1 mb-0">Discharged</h4>
+                                <h4 className="lh-1 mb-0">
+                                    {patientDetails.status?.name ?? 'N/A'}
+                                </h4>
                                 <p className="mb-0">Status</p>
                             </div>
                         </div>
@@ -50,9 +60,12 @@ const PatientInfo = ({ children }: {children: React.ReactNode}) => {
                     <div className="col-lg-4 order-last">
                         <ul className="list-unstyled d-flex align-items-center justify-content-center justify-content-lg-end pe-xxl-4 mx-4 my-3 gap-3">
                             <li>
-                                <Link className="btn btn-success text-nowrap">
-                                    <IconEdit className="me-1"/>
-                                    Update Profile
+                                <Link
+                                    href={getPatientDetails(patientDetails.id).url}
+                                    className="btn btn-success text-nowrap"
+                                >
+                                    <IconUserEdit className="me-1" />
+                                    View Details
                                 </Link>
                             </li>
                         </ul>

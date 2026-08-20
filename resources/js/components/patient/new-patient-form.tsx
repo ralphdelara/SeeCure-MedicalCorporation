@@ -7,18 +7,21 @@ import { Select } from '@/components/ui/select';
 import { getExactAge } from '@/lib/utils';
 import { barangayList } from '@/routes';
 import type { Options } from '@/types/options';
-import type { PassFormDataProps } from './types';
+import { AddOrUpdatePatientFormProps } from './new-patient';
 
 interface InertiaProps {
-    genderOptions: Options[];
-    civilStatusOptions: Options[];
-    nationalityOptions: Options[];
-    suffixOptions: Options[];
-    provinceOptions: Options[];
-    cityOptions: Options[];
+    patientFormOptions: {
+        genderOptions: Options[];
+        civilStatusOptions: Options[];
+        nationalityOptions: Options[];
+        suffixOptions: Options[];
+        provinceOptions: Options[];
+        cityOptions: Options[];
+    };
 }
 
-const NewPatientForm = ({ data, setData, errors = {} }: PassFormDataProps) => {
+const NewPatientForm = ({ data, setData, errors = {} }: AddOrUpdatePatientFormProps) => {
+    const { patientFormOptions } = usePage().props as unknown as InertiaProps;
     const {
         genderOptions,
         civilStatusOptions,
@@ -26,7 +29,7 @@ const NewPatientForm = ({ data, setData, errors = {} }: PassFormDataProps) => {
         suffixOptions,
         provinceOptions,
         cityOptions,
-    } = usePage().props as unknown as InertiaProps;
+    } = patientFormOptions;
 
     const [barangayOptions, setBarangayOptions] = useState([]);
 

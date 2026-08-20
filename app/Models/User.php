@@ -19,6 +19,11 @@ use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
+use ParagonIE\CipherSweet\BlindIndex;
+use ParagonIE\CipherSweet\Constants;
+use ParagonIE\CipherSweet\EncryptedRow;
+use Spatie\LaravelCipherSweet\Concerns\UsesCipherSweet;
+use Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted;
 
 /**
  * @property int $id
@@ -130,6 +135,11 @@ use Illuminate\Support\Carbon;
     'date_resigned',
     'status',
     'position_id',
+
+    'first_name_index',
+    'middle_name_index',
+    'last_name_index',
+
     'created_by',
     'last_modified_by',
     'photo',
@@ -140,12 +150,10 @@ use Illuminate\Support\Carbon;
     'two_factor_recovery_codes',
     'remember_token',
 ])]
-class User extends Authenticatable
+class User extends Authenticatable implements CipherSweetEncrypted
 {
-    use HasUuids;
-
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, CorrectTimezone;
+    use CorrectTimezone, HasFactory, HasUuids, Notifiable, UsesCipherSweet;
 
     protected $appends = ['full_name'];
 
@@ -157,10 +165,11 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
+            'last_name'      => 'encrypted',
+            'first_name'      => 'encrypted',
+            'middle_name'      => 'encrypted',
+
             'password'      => 'hashed',
-            'first_name'    => 'encrypted',
-            'middle_name'   => 'encrypted',
-            'last_name'     => 'encrypted',
             'date_of_birth' => EncryptedDate::class,
 
             'contact_number' => 'encrypted',
@@ -174,7 +183,6 @@ class User extends Authenticatable
 
             'date_hired'    => EncryptedDate::class,
             'date_resigned' => EncryptedDate::class,
-            'status'        => 'encrypted:boolean',
 
             'photo' => 'encrypted',
         ];
@@ -243,5 +251,19 @@ class User extends Authenticatable
     public function role(): HasMany
     {
         return $this->hasMany(UserRole::class);
+    }
+
+    /**
+     * Configure CipherSweet fields and blind indexes.
+     */
+    public static function configureCipherSweet(EncryptedRow $encryptedRow): void
+    {
+        $encryptedRow
+            ->addField('first_name_index', Constants::TYPE_TEXT)
+            ->addField('middle_name_index', Constants::TYPE_OPTIONAL_TEXT)
+            ->addField('last_name_index', Constants::TYPE_TEXT)
+            ->addBlindIndex('first_name_index', new BlindIndex('first_name_index'))
+            ->addBlindIndex('middle_name_index', new BlindIndex('middle_name_index'))
+            ->addBlindIndex('last_name_index', new BlindIndex('last_name_index'));
     }
 }

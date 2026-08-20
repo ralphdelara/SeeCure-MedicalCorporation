@@ -21,7 +21,7 @@ interface ModalProps {
     modalData?: AddProductForm;
 }
 
-const NewOrEditModal = ({ showModal, setShowModal, modalData }: ModalProps) => {
+const AddOrUpdateModal = ({ showModal, setShowModal, modalData }: ModalProps) => {
     const { data, setData, post, processing, errors, reset } = useForm<AddProductForm>({
         id: 0,
         name: '',
@@ -322,4 +322,4 @@ const NewOrEditModal = ({ showModal, setShowModal, modalData }: ModalProps) => {
     );
 };
 
-export default NewOrEditModal;
+export default AddOrUpdateModal;
