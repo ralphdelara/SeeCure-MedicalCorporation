@@ -6,6 +6,7 @@ use App\Models\LaboratoryTestType;
 use App\Models\SignsOrSymptom;
 use App\Models\VitalSign;
 use App\Services\ConsultationService;
+use App\Services\PatientService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -31,12 +32,14 @@ class ConsultationController extends Controller
         $signsOrSymptoms = SignsOrSymptom::all();
         $laboratoryTestOptions = LaboratoryTestType::all();
         $vitalSigns = VitalSign::with('fields')->get();
+        $patientDetails = app(PatientService::class)->getPatientDetails($consultationDetails['patient_id']);
 
         return Inertia::render('consultation/details/index', compact(
             'consultationDetails',
             'signsOrSymptoms',
             'laboratoryTestOptions',
             'vitalSigns',
+            'patientDetails',
         ));
     }
 }

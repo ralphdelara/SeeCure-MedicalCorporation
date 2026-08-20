@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button';
 import { Fragment } from 'react';
 import { getConsultationDetails } from '@/actions/App/Http/Controllers/ConsultationController';
 import { getPatientDetails } from '@/actions/App/Http/Controllers/PatientController';
+import TableAccordion from '@/components/table-accordion';
 
 interface InertiaProps {
     consultationList: {
@@ -40,19 +41,6 @@ export default function Consultation() {
     const selectOption = {
         options: [],
         type: 'All Status',
-    };
-
-    const showHideDetails = (id: string) => {
-        let recordDetails = document.getElementById(id + '-record');
-        let iconDetails = document.getElementById(id + '-icon');
-
-        if (recordDetails?.classList.contains('d-none')) {
-            recordDetails.classList.remove('d-none');
-            iconDetails?.classList.remove('rotate-180');
-        } else {
-            recordDetails?.classList.add('d-none');
-            iconDetails?.classList.add('rotate-180');
-        }
     };
 
     return (
@@ -82,16 +70,16 @@ export default function Consultation() {
                                                         <h5 className="fw-bolder ms-2">
                                                             <Link
                                                                 href={
-                                                                    getPatientDetails(item.id).url
+                                                                    getPatientDetails(item.patient_id).url
                                                                 }
                                                             >
-                                                                {item.patient.full_name}
+                                                                {item.patient?.full_name}
                                                             </Link>
                                                         </h5>
                                                         <h6 className="ms-2">
-                                                            {item.patient.gender?.name}
+                                                            {item.patient?.gender?.name}
                                                         </h6>
-                                                        <h6 className="ms-2">{item.patient.age}</h6>
+                                                        <h6 className="ms-2">{item.patient?.age}</h6>
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -163,22 +151,7 @@ export default function Consultation() {
                                     </td>
                                 </tr>
 
-                                <tr
-                                    id={'details-' + index}
-                                    onClick={(e) => showHideDetails(e.currentTarget.id)}
-                                >
-                                    <td colSpan={8} className="cursor-pointer text-center">
-                                        <h5 className="fw-bolder">
-                                            Consultation Details{' '}
-                                            <IconChevronDown id={'details-' + index + '-icon'} />
-                                        </h5>
-                                    </td>
-                                </tr>
-                                <tr id={'details-' + index + '-record'}>
-                                    <td colSpan={8} className="text-center">
-                                        <h6>No Consultation Record</h6>
-                                    </td>
-                                </tr>
+                                <TableAccordion uuid={item.id} label="Consultation" cols={8}></TableAccordion>
                             </Fragment>
                         ))}
                         {tableData.length === 0 && (

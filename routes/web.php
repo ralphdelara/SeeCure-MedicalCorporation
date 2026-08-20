@@ -6,6 +6,7 @@ use App\Http\Controllers\FrontDeskController;
 use App\Http\Controllers\Icd10CodeController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\PharmacyController;
+use App\Services\PatientService;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Route;
 
@@ -19,7 +20,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
     Route::prefix('patient')->group(function () {
         Route::get('/', [PatientController::class, 'index'])->name('patient');
-        Route::get('/details/{id}', [PatientController::class, 'getPatientDetails'])->name('patient.details');
+        Route::match(['post', 'put'], '/', [PatientController::class, 'addOrUpdatePatient'])->name('patient.add-or-update');
+        Route::delete('/{patientId}', [PatientController::class, 'deletePatient'])->name('patient.delete');
+        Route::get('/{id}', [PatientController::class, 'getPatientDetails'])->name('patient.details');
     });
     Route::prefix('consultation')->group(function () {
         Route::get('/', [ConsultationController::class, 'index'])->name('consultation');
@@ -34,7 +37,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/{id}', [PharmacyController::class, 'deleteProduct'])->name('pharmacy.delete');
     });
     Route::inertia('cashier', 'cashier')->name('cashier');
-    Route::inertia('users', 'users')->name('users');
+
+    Route::prefix('user')->group(function () {
+        Route::get('/', [PatientController::class, 'index'])->name('patient');
+        Route::match(['post', 'put'], '/', [PatientController::class, 'addOrUpdatePatient'])->name('patient.add-or-update');
+        Route::delete('/{patientId}', [PatientController::class, 'deletePatient'])->name('patient.delete');
+        Route::get('/{id}', [PatientController::class, 'getPatientDetails'])->name('patient.details');
+    });
+
     Route::inertia('system', 'system')->name('system');
 
     Route::inertia('announcements', 'announcements')->name('announcements');
@@ -51,10 +61,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::get('test', function () {
-
-
-echo date_default_timezone_get(); 
+dd(formatName('test abcd efg-hijk'));
     });
 });
 
-require __DIR__.'/settings.php';

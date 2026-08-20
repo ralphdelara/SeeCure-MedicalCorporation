@@ -2,13 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\City;
-use App\Models\CivilStatus;
-use App\Models\Gender;
 use App\Models\LaboratoryTestType;
-use App\Models\Nationality;
-use App\Models\PatientSuffix;
-use App\Models\Province;
 use App\Models\SignsOrSymptom;
 use App\Models\VitalSign;
 use App\Services\ConsultationService;
@@ -26,24 +20,14 @@ class FrontDeskController extends Controller
 {
     public function index(): Response
     {
-        $genderOptions = Gender::all();
-        $nationalityOptions = Nationality::all();
-        $civilStatusOptions = CivilStatus::all();
-        $suffixOptions = PatientSuffix::all();
-        $provinceOptions = Province::all();
-        $cityOptions = City::select('id', 'name')->where('province_id', '=', 1)->get(); // Aklan
+        $patientFormOptions = app(PatientService::class)->getPatientFormOptions();
         $signsOrSymptoms = SignsOrSymptom::all();
         $vitalSigns = VitalSign::with('fields')->get();
         $doctors = app(DoctorService::class)->getDoctorList();
         $laboratoryTestOptions = LaboratoryTestType::all();
 
         return Inertia::render('front-desk/index', compact(
-            'genderOptions',
-            'civilStatusOptions',
-            'nationalityOptions',
-            'suffixOptions',
-            'provinceOptions',
-            'cityOptions',
+            'patientFormOptions',
             'signsOrSymptoms',
             'vitalSigns',
             'doctors',
@@ -84,6 +68,7 @@ class FrontDeskController extends Controller
         ]);
 
         $patientDetails = $request->only(
+            'patient_id',
             'last_name',
             'first_name',
             'middle_name',
@@ -120,7 +105,7 @@ class FrontDeskController extends Controller
         $patientId = $request->input('patient_id');
 
         if ($request->input('form_type') === 'new') {
-            $patientId = app(PatientService::class)->storePatient($patientDetails);
+            $patientId = app(PatientService::class)->addOrUpdatePatient($patientDetails);
         }
 
         $visitId = app(VisitService::class)->queuePatient($patientId, $consultDetails);

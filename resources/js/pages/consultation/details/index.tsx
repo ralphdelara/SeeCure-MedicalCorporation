@@ -21,6 +21,12 @@ import Documents from './documents';
 import VitalSigns from './vital-signs';
 import Radiology from './radiology';
 import Laboratory from './laboratory';
+import { usePage } from '@inertiajs/react';
+import { PatientDetailsProps } from '@/components/patient/patient-details';
+
+interface InertiaProps {
+    patientDetails: PatientDetailsProps;
+}
 
 const ConsultationDetails = () => {
     const [selectedTab, setSelectedTab] = useState('tab-details');
@@ -35,12 +41,14 @@ const ConsultationDetails = () => {
         { id: 'tab-documents', name: 'Documents', icon: <IconFiles /> },
         { id: 'tab-audit-log', name: 'Audit Log', icon: <IconUserCode /> },
     ];
+    const { patientDetails } = usePage().props as unknown as InertiaProps;
+
     return (
         <>
             <Breadcrumbs title="Consultation Details">&nbsp;</Breadcrumbs>
-            <PatientInfo>
+            <PatientInfo patientDetails={patientDetails}>
                 <ul
-                    className="nav nav-pills user-profile-tab justify-content-end bg-success-subtle rounded-2 rounded-top-0 mt-2"
+                    className="nav nav-pills user-profile-tab justify-content-center bg-success-subtle rounded-2 rounded-top-0 mt-2"
                     id="pills-tab"
                     role="tablist"
                 >

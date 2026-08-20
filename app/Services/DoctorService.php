@@ -10,7 +10,6 @@ class DoctorService
     public function getDoctorList(): Collection
     {
         return User::with(['departments.department', 'professions.profession', 'position'])
-            ->select('id', 'first_name', 'last_name')
             ->whereHas('departments', function ($query) {
                 $query->where('user_departments.department_id', 2); // Consultation
             })

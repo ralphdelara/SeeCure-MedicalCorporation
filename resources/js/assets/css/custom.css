@@ -79,6 +79,10 @@ svg {
     vertical-align: top;
 }
 
+.table tbody td a:hover {
+    color: var(--bs-success);
+}
+
 /* Sticky table header on desktop */
 @media (min-width: 992px) {
     .table-responsive {

@@ -1,8 +1,10 @@
 import { Link, usePage } from '@inertiajs/react';
-import { IconBellRinging, IconDots, IconMenu2, IconSearch } from '@tabler/icons-react';
+import { IconBellRinging, IconDots, IconLogout, IconMenu2, IconSearch } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import logoText from '@/assets/images/logos/logo_text.png';
-import { announcements, calendar, notes, reminders } from '@/routes';
+import { announcements, calendar, logout, notes, reminders } from '@/routes';
+import { Button } from '@/components/ui/button';
+import { fetchUrl } from '@/lib/utils';
 
 type NavHeaderProps = {
     toggleSidebar: () => void;
@@ -415,33 +417,10 @@ export default function NavHeader({ toggleSidebar }: NavHeaderProps) {
                                                 </a>
                                             </div>
                                             <div className="d-grid px-7 py-4 pt-8">
-                                                <div className="upgrade-plan bg-primary-subtle position-relative rounded-4 mb-9 overflow-hidden p-4">
-                                                    <div className="row">
-                                                        <div className="col-6">
-                                                            <h5 className="fs-4 fw-semibold mb-3">
-                                                                Unlimited Access
-                                                            </h5>
-                                                            <button className="btn btn-primary">
-                                                                Upgrade
-                                                            </button>
-                                                        </div>
-                                                        <div className="col-6">
-                                                            <div className="m-n4 unlimited-img">
-                                                                <img
-                                                                    src="/assets/images/backgrounds/unlimited-bg.png"
-                                                                    alt="modernize-img"
-                                                                    className="w-100"
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <a
-                                                    href="/main/authentication-login.html"
-                                                    className="btn btn-outline-primary"
-                                                >
+                                                <Link href={logout().url} method="post" as="button" className="btn btn-success">
+                                                    <IconLogout className="me-1" size={20} />
                                                     Log Out
-                                                </a>
+                                                </Link>
                                             </div>
                                         </div>
                                     </div>

@@ -127,6 +127,6 @@ class ConsultationService
         ], $consultDetails['signs_or_symptoms_id']);
         $consultation->signsOrSymptoms()->insert($data);
 
-        return $consultation->id;
+        return (string)$consultation->id;
     }
 }

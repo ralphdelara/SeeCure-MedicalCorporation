@@ -1,499 +1,202 @@
-import { Head } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import SearchField from '@/components/search-field';
 import TableList from '@/components/table';
+import type { Pages } from '@/types/pagination';
+import type { PatientTableList } from '@/components/patient/list';
+import { deletePatient, getPatientDetails } from '@/actions/App/Http/Controllers/PatientController';
+import {
+    IconCalendarDot,
+    IconGenderAgender,
+    IconMail,
+    IconPhone,
+    IconTrash,
+    IconUserEdit,
+} from '@tabler/icons-react';
+import { Button } from '@/components/ui/button';
+import NewPatient from './new-patient-modal';
+import DeleteButton from '@/components/delete-button';
+
+interface InertiaProps {
+    patientList: {
+        tableData: PatientTableList[];
+        pageData: Pages;
+    };
+}
 
 export default function PatientList() {
     const header = [
         { name: '#', width: '5%', align: 'right' },
-        { name: 'Patient', width: '30%', align: 'left' },
-        { name: 'Symptoms', width: '10%', align: 'left' },
-        { name: 'Doctor', width: '25%', align: 'left' },
-        { name: 'Status', width: '10%', align: 'left' },
-        { name: 'Action', width: '15%', align: 'right' },
+        { name: 'Patient • Gender', width: '30%', align: 'left' },
+        { name: 'Date of Birth • Age', width: '20%', align: 'left' },
+        { name: 'Address', width: '15%', align: 'left' },
+        { name: 'Contact', width: '15%', align: 'left' },
+        { name: 'Status', width: '5%', align: 'left' },
+        { name: '', width: '10%', align: 'right' },
     ];
 
     const selectOption = {
         options: [],
         type: 'All Status',
     };
+    const { patientList } = usePage().props as unknown as InertiaProps;
+    const { tableData, pageData } = patientList;
+
+    const parseAddress = (item: any) => {
+        let address = '';
+
+        address = addressSeparator(address, item.house_no);
+        address = addressSeparator(address, item.street);
+        address = addressSeparator(address, item.barangay?.name);
+        address = addressSeparator(address, item.city?.name);
+        address = addressSeparator(address, item.province?.name);
+
+        return address;
+    };
+
+    const addressSeparator = (address: string, value: string) => {
+        if (value === '' || value === null || value === undefined) {
+            return address;
+        }
+
+        if (address !== '') {
+            address += ', ';
+        }
+
+        address += value;
+
+        return address;
+    };
 
     return (
         <>
             <Head title="Patient List" />
-            <Breadcrumbs title="Patient List">&nbsp;</Breadcrumbs>
-            <div className="row w-100">
-                <div className="col-md-12">
-                    <div className="table-responsive rounded-1 mb-4 border">
-                        <TableList header={header} pageData={pageData}>
-                        </TableList>
-                        <table className="mb-0 table align-middle text-nowrap">
-                            <thead className="text-dark fs-4">
-                                <tr>
-                                    <th>
-                                        <h6 className="fs-4 fw-semibold mb-0">Customer</h6>
-                                    </th>
-                                    <th>
-                                        <h6 className="fs-4 fw-semibold mb-0">Status</h6>
-                                    </th>
-                                    <th>
-                                        <h6 className="fs-4 fw-semibold mb-0">Email Address</h6>
-                                    </th>
-                                    <th>
-                                        <h6 className="fs-4 fw-semibold mb-0">Teams</h6>
-                                    </th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <div className="d-flex align-items-center">
-                                            <img
-                                                src="../assets/images/profile/user-2.jpg"
-                                                className="rounded-circle"
-                                                width="40"
-                                                height="40"
-                                            />
-                                            <div className="ms-3">
-                                                <h6 className="fs-4 fw-semibold mb-0">
-                                                    Olivia Rhye
-                                                </h6>
-                                                <span className="fw-normal">@rhye</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span className="badge bg-success-subtle text-success fw-semibold fs-2 d-inline-flex align-items-center gap-1">
-                                            <i className="ti ti-circle fs-3"></i>active
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <p className="fw-normal mb-0">olivia@ui.com</p>
-                                    </td>
-                                    <td>
-                                        <div className="d-flex align-items-center gap-2">
-                                            <span className="badge text-bg-primary">Design</span>
-                                            <span className="badge text-bg-secondary">Product</span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div className="dropdown dropstart">
-                                            <a
-                                                href="javascript:void(0)"
-                                                className="text-muted"
-                                                id="dropdownMenuButton"
-                                                data-bs-toggle="dropdown"
-                                                aria-expanded="false"
+            <Breadcrumbs title="Patient List">
+                <NewPatient />
+            </Breadcrumbs>
+            <div className="card">
+                <div className="card-body">
+                    <div className="row w-100">
+                        <div className="col-md-12">
+                            <div className="table-responsive rounded-1 mb-4 border">
+                                <SearchField url={pageData.path} selectOption={selectOption} />
+                                <TableList header={header} pageData={pageData}>
+                                    {tableData.map((item, index) => (
+                                        <tr key={'patientList-' + item.id}>
+                                            <td className="text-right">
+                                                <h5>{pageData.from + index}</h5>
+                                            </td>
+                                            <td>
+                                                <div className="d-flex align-items-center">
+                                                    <img
+                                                        className="rounded-circle"
+                                                        width="40"
+                                                        height="40"
+                                                        src="../assets/images/profile/user-2.jpg"
+                                                    />
+                                                    <div className="ms-3">
+                                                        <h6 className="fs-4 fw-semibold mb-0">
+                                                            <Link
+                                                                href={getPatientDetails(item.id)}
+                                                                className="tooltip-container"
+                                                                data-title="Click to View Patient Details"
+                                                            >
+                                                                {item.full_name}
+                                                            </Link>
+                                                        </h6>
+                                                        <span className="fw-normal">
+                                                            {item.gender ? item.gender.name : 'N/A'}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div className="d-flex align-items-start">
+                                                    <div>
+                                                        <h6>
+                                                            <IconCalendarDot size={20} />
+                                                        </h6>
+                                                        <span className="fw-normal">
+                                                            <IconGenderAgender size={20} />
+                                                        </span>
+                                                    </div>
+                                                    <div className="ms-3">
+                                                        <h6 className="fs-4 fw-normal">
+                                                            {item.date_of_birth ?? 'N/A'}
+                                                        </h6>
+                                                        <h6 className="fs-4 fw-normal">
+                                                            {item.age ?? 'N/A'}
+                                                        </h6>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span className="fw-normal">
+                                                    {parseAddress(item)}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div className="d-flex align-items-start">
+                                                    <div>
+                                                        <h6>
+                                                            <IconPhone size={20} />
+                                                        </h6>
+                                                        <span className="fw-normal">
+                                                            <IconMail size={20} />
+                                                        </span>
+                                                    </div>
+                                                    <div className="ms-3">
+                                                        <h6 className="fs-4 fw-normal">
+                                                            {item.contact_number ?? 'N/A'}
+                                                        </h6>
+                                                        <h6 className="fs-4 fw-normal">
+                                                            {item.email ?? 'N/A'}
+                                                        </h6>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span className="badge text-bg-secondary">
+                                                    {item.status.name}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <Link href={getPatientDetails(item.id)}>
+                                                    <Button
+                                                        rounded={true}
+                                                        className="me-1"
+                                                        title="Patient Details"
+                                                    >
+                                                        <i>
+                                                            <IconUserEdit size={18} />
+                                                        </i>
+                                                    </Button>
+                                                </Link>
+
+                                                <DeleteButton
+                                                    url={deletePatient(item.id).url}
+                                                    msg={
+                                                        'patient <b>' +
+                                                        item.full_name +
+                                                        '</b>.'
+                                                    }
+                                                />
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    {tableData.length === 0 && (
+                                        <tr>
+                                            <td
+                                                colSpan={7}
+                                                className="text-danger fs-7 text-center"
                                             >
-                                                <i className="ti ti-dots fs-5"></i>
-                                            </a>
-                                            <ul
-                                                className="dropdown-menu"
-                                                aria-labelledby="dropdownMenuButton"
-                                            >
-                                                <li>
-                                                    <a
-                                                        className="dropdown-item d-flex align-items-center gap-3"
-                                                        href="javascript:void(0)"
-                                                    >
-                                                        <i className="fs-4 ti ti-plus"></i>Add
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a
-                                                        className="dropdown-item d-flex align-items-center gap-3"
-                                                        href="javascript:void(0)"
-                                                    >
-                                                        <i className="fs-4 ti ti-edit"></i>Edit
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a
-                                                        className="dropdown-item d-flex align-items-center gap-3"
-                                                        href="javascript:void(0)"
-                                                    >
-                                                        <i className="fs-4 ti ti-trash"></i>Delete
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div className="d-flex align-items-center">
-                                            <img
-                                                src="../assets/images/profile/user-2.jpg"
-                                                className="rounded-circle"
-                                                width="40"
-                                                height="40"
-                                            />
-                                            <div className="ms-3">
-                                                <h6 className="fs-4 fw-semibold mb-0">
-                                                    Barbara Steele
-                                                </h6>
-                                                <span className="fw-normal">@steele</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span className="badge text-bg-light text-dark fw-semibold fs-2 d-inline-flex align-items-center gap-1">
-                                            <i className="ti ti-clock-hour-4 fs-3"></i>offline
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <p className="fw-normal mb-0">steele@ui.com</p>
-                                    </td>
-                                    <td>
-                                        <div className="d-flex align-items-center gap-2">
-                                            <span className="badge text-bg-secondary">Product</span>
-                                            <span className="badge text-bg-danger">Operations</span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div className="dropdown dropstart">
-                                            <a
-                                                href="javascript:void(0)"
-                                                className="text-muted"
-                                                id="dropdownMenuButton"
-                                                data-bs-toggle="dropdown"
-                                                aria-expanded="false"
-                                            >
-                                                <i className="ti ti-dots fs-5"></i>
-                                            </a>
-                                            <ul
-                                                className="dropdown-menu"
-                                                aria-labelledby="dropdownMenuButton"
-                                            >
-                                                <li>
-                                                    <a
-                                                        className="dropdown-item d-flex align-items-center gap-3"
-                                                        href="javascript:void(0)"
-                                                    >
-                                                        <i className="fs-4 ti ti-plus"></i>Add
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a
-                                                        className="dropdown-item d-flex align-items-center gap-3"
-                                                        href="javascript:void(0)"
-                                                    >
-                                                        <i className="fs-4 ti ti-edit"></i>Edit
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a
-                                                        className="dropdown-item d-flex align-items-center gap-3"
-                                                        href="javascript:void(0)"
-                                                    >
-                                                        <i className="fs-4 ti ti-trash"></i>Delete
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div className="d-flex align-items-center">
-                                            <img
-                                                src="../assets/images/profile/user-3.jpg"
-                                                className="rounded-circle"
-                                                width="40"
-                                                height="40"
-                                            />
-                                            <div className="ms-3">
-                                                <h6 className="fs-4 fw-semibold mb-0">
-                                                    Leonard Gordon
-                                                </h6>
-                                                <span className="fw-normal">@gordon</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span className="badge bg-success-subtle text-success fw-semibold fs-2 d-inline-flex align-items-center gap-1">
-                                            <i className="ti ti-circle fs-3"></i>active
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <p className="fw-normal mb-0">olivia@ui.com</p>
-                                    </td>
-                                    <td>
-                                        <div className="d-flex align-items-center gap-2">
-                                            <span className="badge text-bg-primary">Finance</span>
-                                            <span className="badge text-bg-success">
-                                                Customer Success
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div className="dropdown dropstart">
-                                            <a
-                                                href="javascript:void(0)"
-                                                className="text-muted"
-                                                id="dropdownMenuButton"
-                                                data-bs-toggle="dropdown"
-                                                aria-expanded="false"
-                                            >
-                                                <i className="ti ti-dots fs-5"></i>
-                                            </a>
-                                            <ul
-                                                className="dropdown-menu"
-                                                aria-labelledby="dropdownMenuButton"
-                                            >
-                                                <li>
-                                                    <a
-                                                        className="dropdown-item d-flex align-items-center gap-3"
-                                                        href="javascript:void(0)"
-                                                    >
-                                                        <i className="fs-4 ti ti-plus"></i>Add
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a
-                                                        className="dropdown-item d-flex align-items-center gap-3"
-                                                        href="javascript:void(0)"
-                                                    >
-                                                        <i className="fs-4 ti ti-edit"></i>Edit
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a
-                                                        className="dropdown-item d-flex align-items-center gap-3"
-                                                        href="javascript:void(0)"
-                                                    >
-                                                        <i className="fs-4 ti ti-trash"></i>Delete
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div className="d-flex align-items-center">
-                                            <img
-                                                src="../assets/images/profile/user-4.jpg"
-                                                className="rounded-circle"
-                                                width="40"
-                                                height="40"
-                                            />
-                                            <div className="ms-3">
-                                                <h6 className="fs-4 fw-semibold mb-0">
-                                                    Evelyn Pope
-                                                </h6>
-                                                <span className="fw-normal">@pope</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span className="badge text-bg-light text-dark fw-semibold fs-2 d-inline-flex align-items-center gap-1">
-                                            <i className="ti ti-clock-hour-4 fs-3"></i>offline
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <p className="fw-normal mb-0">steele@ui.com</p>
-                                    </td>
-                                    <td>
-                                        <div className="d-flex align-items-center gap-2">
-                                            <span className="badge text-bg-danger">Operations</span>
-                                            <span className="badge text-bg-primary">Design</span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div className="dropdown dropstart">
-                                            <a
-                                                href="javascript:void(0)"
-                                                className="text-muted"
-                                                id="dropdownMenuButton"
-                                                data-bs-toggle="dropdown"
-                                                aria-expanded="false"
-                                            >
-                                                <i className="ti ti-dots fs-5"></i>
-                                            </a>
-                                            <ul
-                                                className="dropdown-menu"
-                                                aria-labelledby="dropdownMenuButton"
-                                            >
-                                                <li>
-                                                    <a
-                                                        className="dropdown-item d-flex align-items-center gap-3"
-                                                        href="javascript:void(0)"
-                                                    >
-                                                        <i className="fs-4 ti ti-plus"></i>Add
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a
-                                                        className="dropdown-item d-flex align-items-center gap-3"
-                                                        href="javascript:void(0)"
-                                                    >
-                                                        <i className="fs-4 ti ti-edit"></i>Edit
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a
-                                                        className="dropdown-item d-flex align-items-center gap-3"
-                                                        href="javascript:void(0)"
-                                                    >
-                                                        <i className="fs-4 ti ti-trash"></i>Delete
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div className="d-flex align-items-center">
-                                            <img
-                                                src="../assets/images/profile/user-5.jpg"
-                                                className="rounded-circle"
-                                                width="40"
-                                                height="40"
-                                            />
-                                            <div className="ms-3">
-                                                <h6 className="fs-4 fw-semibold mb-0">
-                                                    Tommy Garza
-                                                </h6>
-                                                <span className="fw-normal">@garza</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span className="badge bg-success-subtle text-success fw-semibold fs-2 d-inline-flex align-items-center gap-1">
-                                            <i className="ti ti-circle fs-3"></i>active
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <p className="fw-normal mb-0">olivia@ui.com</p>
-                                    </td>
-                                    <td>
-                                        <div className="d-flex align-items-center gap-2">
-                                            <span className="badge text-bg-secondary">Product</span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div className="dropdown dropstart">
-                                            <a
-                                                href="javascript:void(0)"
-                                                className="text-muted"
-                                                id="dropdownMenuButton"
-                                                data-bs-toggle="dropdown"
-                                                aria-expanded="false"
-                                            >
-                                                <i className="ti ti-dots fs-5"></i>
-                                            </a>
-                                            <ul
-                                                className="dropdown-menu"
-                                                aria-labelledby="dropdownMenuButton"
-                                            >
-                                                <li>
-                                                    <a
-                                                        className="dropdown-item d-flex align-items-center gap-3"
-                                                        href="javascript:void(0)"
-                                                    >
-                                                        <i className="fs-4 ti ti-plus"></i>Add
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a
-                                                        className="dropdown-item d-flex align-items-center gap-3"
-                                                        href="javascript:void(0)"
-                                                    >
-                                                        <i className="fs-4 ti ti-edit"></i>Edit
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a
-                                                        className="dropdown-item d-flex align-items-center gap-3"
-                                                        href="javascript:void(0)"
-                                                    >
-                                                        <i className="fs-4 ti ti-trash"></i>Delete
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div className="d-flex align-items-center">
-                                            <img
-                                                src="../assets/images/profile/user-6.jpg"
-                                                className="rounded-circle"
-                                                width="40"
-                                                height="40"
-                                            />
-                                            <div className="ms-3">
-                                                <h6 className="fs-4 fw-semibold mb-0">
-                                                    James Smith
-                                                </h6>
-                                                <span className="fw-normal">@vasquez</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span className="badge bg-success-subtle text-success fw-semibold fs-2 d-inline-flex align-items-center gap-1">
-                                            <i className="ti ti-circle fs-3"></i>active
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <p className="fw-normal mb-0">steele@ui.com</p>
-                                    </td>
-                                    <td>
-                                        <div className="d-flex align-items-center gap-2">
-                                            <span className="badge text-bg-success">
-                                                Customer Success
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div className="dropdown dropstart">
-                                            <a
-                                                href="javascript:void(0)"
-                                                className="text-muted"
-                                                id="dropdownMenuButton"
-                                                data-bs-toggle="dropdown"
-                                                aria-expanded="false"
-                                            >
-                                                <i className="ti ti-dots fs-5"></i>
-                                            </a>
-                                            <ul
-                                                className="dropdown-menu"
-                                                aria-labelledby="dropdownMenuButton"
-                                            >
-                                                <li>
-                                                    <a
-                                                        className="dropdown-item d-flex align-items-center gap-3"
-                                                        href="javascript:void(0)"
-                                                    >
-                                                        <i className="fs-4 ti ti-plus"></i>Add
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a
-                                                        className="dropdown-item d-flex align-items-center gap-3"
-                                                        href="javascript:void(0)"
-                                                    >
-                                                        <i className="fs-4 ti ti-edit"></i>Edit
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a
-                                                        className="dropdown-item d-flex align-items-center gap-3"
-                                                        href="javascript:void(0)"
-                                                    >
-                                                        <i className="fs-4 ti ti-trash"></i>Delete
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                                No records
+                                            </td>
+                                        </tr>
+                                    )}
+                                </TableList>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

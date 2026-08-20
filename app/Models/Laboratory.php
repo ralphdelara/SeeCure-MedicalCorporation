@@ -21,6 +21,8 @@ class Laboratory extends Model
 {
     use HasUuids, CorrectTimezone;
 
+    public $table = 'laboratory';
+
     protected function casts(): array
     {
         return [
