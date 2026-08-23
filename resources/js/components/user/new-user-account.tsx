@@ -7,7 +7,7 @@ import type { Options } from '@/types/options';
 import { AddOrUpdateUserFormProps } from './new-user';
 
 interface InertiaProps {
-    userFormOptions: {
+    formOptions: {
         departmentOptions: Options[];
         professionOptions: Options[];
         specialtyOptions: Options[];
@@ -16,9 +16,9 @@ interface InertiaProps {
 }
 
 const Account = ({ data, setData, errors = {} }: AddOrUpdateUserFormProps) => {
-    const { userFormOptions } = usePage().props as unknown as InertiaProps;
+    const { formOptions } = usePage().props as unknown as InertiaProps;
     const { departmentOptions, professionOptions, specialtyOptions, positionOptions } =
-        userFormOptions;
+        formOptions;
 
     const updateProfession = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.checked) {

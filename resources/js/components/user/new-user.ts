@@ -1,4 +1,6 @@
-export interface AddOrUpdateUserDetailsFormProps {
+import { AddressDetailsFormProps } from "../address/types";
+
+export interface AddOrUpdateUserDetailsFormProps extends AddressDetailsFormProps {
     user_id: number | string;
     username: string;
     password: string;
@@ -21,11 +23,6 @@ export interface AddOrUpdateUserDetailsFormProps {
 
     contact_number: string;
     email: string;
-    house_no: string;
-    street: string;
-    barangay_id: string;
-    city_id: number | string;
-    province_id: number | string;
 }
 
 export interface AddOrUpdateUserFormProps {

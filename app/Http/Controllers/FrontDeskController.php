@@ -20,14 +20,14 @@ class FrontDeskController extends Controller
 {
     public function index(): Response
     {
-        $patientFormOptions = app(PatientService::class)->getPatientFormOptions();
+        $formOptions = app(PatientService::class)->getPatientFormOptions();
         $signsOrSymptoms = SignsOrSymptom::all();
         $vitalSigns = VitalSign::with('fields')->get();
         $doctors = app(DoctorService::class)->getDoctorList();
         $laboratoryTestOptions = LaboratoryTestType::all();
 
         return Inertia::render('front-desk/index', compact(
-            'patientFormOptions',
+            'formOptions',
             'signsOrSymptoms',
             'vitalSigns',
             'doctors',

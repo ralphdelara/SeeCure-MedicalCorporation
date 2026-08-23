@@ -13,7 +13,7 @@ class PatientController extends Controller
 {
     public function index(Request $request): Response
     {
-        $patientFormOptions = app(PatientService::class)->getPatientFormOptions();
+        $formOptions = app(PatientService::class)->getPatientFormOptions();
         $patientList = app(PatientService::class)->getPatientList(
             $request->keyword,
             $request->selectId,
@@ -21,19 +21,19 @@ class PatientController extends Controller
         );
 
         return Inertia::render('patient/index', compact(
-            'patientFormOptions',
+            'formOptions',
             'patientList',
         ));
     }
 
     public function getPatientDetails(string $id): Response
     {
-        $patientFormOptions = app(PatientService::class)->getPatientFormOptions();
+        $formOptions = app(PatientService::class)->getPatientFormOptions();
         $patientDetails = app(PatientService::class)->getPatientDetails($id);
         $vitalSigns = VitalSign::with('fields')->get();
 
         return Inertia::render('patient/details/index', compact(
-            'patientFormOptions',
+            'formOptions',
             'patientDetails',
             'vitalSigns',
         ));

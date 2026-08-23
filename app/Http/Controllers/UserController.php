@@ -12,7 +12,7 @@ class UserController extends Controller
 {
     public function index(Request $request): Response
     {
-        $userFormOptions = app(UserService::class)->getUserFormOptions();
+        $formOptions = app(UserService::class)->getUserFormOptions();
         $userList = app(UserService::class)->getUserList(
             $request->keyword,
             $request->selectId,
@@ -20,18 +20,18 @@ class UserController extends Controller
         );
 
         return Inertia::render('user/index', compact(
-            'userFormOptions',
+            'formOptions',
             'userList',
         ));
     }
 
     public function getUserDetails(string $id): Response
     {
-        $userFormOptions = app(UserService::class)->getUserFormOptions();
         $userDetails = app(UserService::class)->getUserDetails($id);
+        $formOptions = app(UserService::class)->getUserFormOptions($userDetails);
 
         return Inertia::render('user/details/index', compact(
-            'userFormOptions',
+            'formOptions',
             'userDetails',
         ));
     }

@@ -15,12 +15,8 @@ export interface UserTableList {
     };
     department: Options;
     position: Options;
-    professions: {
-        profession: Options;
-    }[];
-    specialties: {
-        specialty: Options;
-    }[];
+    professions: Options[];
+    specialties: Options[];
     roles: Options[];
     created_by?: {
         id: string;

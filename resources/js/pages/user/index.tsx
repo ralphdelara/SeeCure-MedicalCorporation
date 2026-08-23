@@ -104,12 +104,12 @@ export default function UserList() {
                                                 <h6
                                                     key={
                                                         'profession-' +
-                                                        profession.profession.id +
+                                                        profession.id +
                                                         '-' +
                                                         item.id
                                                     }
                                                 >
-                                                    {profession.profession.name}
+                                                    {profession.name}
                                                 </h6>
                                             )) ?? <h6>N/A</h6>}
                                         </td>
@@ -117,10 +117,10 @@ export default function UserList() {
                                             {item.specialties?.map((specialty) => (
                                                 <h6
                                                     key={
-                                                        'specialty-' + specialty.specialty.id + '-' + item.id
+                                                        'specialty-' + specialty.id + '-' + item.id
                                                     }
                                                 >
-                                                    {specialty.specialty.name}
+                                                    {specialty.name}
                                                 </h6>
                                             )) ?? <h6>N/A</h6>}
                                         </td>

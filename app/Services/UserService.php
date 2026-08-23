@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Barangay;
 use App\Models\City;
 use App\Models\Department;
 use App\Models\Gender;
@@ -32,8 +33,8 @@ class UserService
             'barangay',
             'department',
             'position',
-            'professions.profession',
-            'specialties.specialty',
+            'professions',
+            'specialties',
             'audits',
             'createdBy',
             'lastModifiedBy',
@@ -94,7 +95,7 @@ class UserService
         // add or update profession data
         updateRelatedData(
             new UserProfession,
-            $user->professions->toArray(),
+            $user->professions->pluck('id')->toArray(),
             $userDetails['profession_ids'],
             $userId,
             'user_id',
@@ -104,7 +105,7 @@ class UserService
         // add or update specialty data
         updateRelatedData(
             new UserSpecialty,
-            $user->specialties->toArray(),
+            $user->specialties->pluck('id')->toArray(),
             $userDetails['specialty_ids'],
             $userId,
             'user_id',
@@ -154,8 +155,11 @@ class UserService
         });
     }
 
-    public function getUserFormOptions(): array
+    public function getUserFormOptions(?array $userDetails = null): array
     {
+        $provinceId = $userDetails['province_id'] ?? 1; // Aklan
+        $cityId = $userDetails['city_id'] ?? 16; // Numancia
+
         $departmentOptions = Department::all();
         $professionOptions = Profession::all();
         $specialtyOptions = Specialty::all();
@@ -163,7 +167,8 @@ class UserService
         $genderOptions = Gender::all();
         $nationalityOptions = Nationality::all();
         $provinceOptions = Province::all();
-        $cityOptions = City::select('id', 'name')->where('province_id', '=', 1)->get(); // Aklan
+        $cityOptions = City::select('id', 'name')->where('province_id', '=', $provinceId)->get(); // Aklan
+        $barangayOptions = Barangay::select('id', 'name')->where('city_id', '=', $cityId)->get();
 
         return compact(
             'departmentOptions',
@@ -174,6 +179,7 @@ class UserService
             'nationalityOptions',
             'provinceOptions',
             'cityOptions',
+            'barangayOptions',
         );
     }
 
@@ -201,8 +207,8 @@ class UserService
 
         $user = $user->toArray();
 
-        $user['professions'] = array_column($user['professions'], 'profession_id');
-        $user['specialties'] = array_column($user['specialties'], 'specialty_id');
+        $user['professions'] = array_column($user['professions'], 'id');
+        $user['specialties'] = array_column($user['specialties'], 'id');
 
         return $user;
     }

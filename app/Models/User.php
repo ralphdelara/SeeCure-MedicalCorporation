@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\DatabaseNotification;
@@ -200,6 +201,22 @@ class User extends Authenticatable implements CipherSweetEncrypted
         ];
     }
 
+    public function getFullNameAttribute(): string
+    {
+        //  Get the base name
+        $fullName = $this->last_name.', '.$this->first_name.($this->middle_name ? ' '.$this->middle_name : '');
+
+        // 2. Check if professions are eager-loaded, then extract the names
+        if ($this->relationLoaded('professions')) {
+            $prefix = $this->professions->pluck('prefix')->filter()->implode(', ');
+            $suffix = $this->professions->pluck('suffix')->filter()->implode(', ');
+
+            return $prefix.$fullName.($suffix ? ' '.$suffix : '');
+        }
+
+        return $fullName;
+    }
+
     public function position(): BelongsTo
     {
         return $this->belongsTo(Position::class);
@@ -220,14 +237,14 @@ class User extends Authenticatable implements CipherSweetEncrypted
         return $this->belongsTo(Department::class, 'department_id', 'id');
     }
 
-    public function professions(): HasMany
+    public function professions(): BelongsToMany
     {
-        return $this->hasMany(UserProfession::class);
+        return $this->belongsToMany(Profession::class, 'user_professions', 'user_id', 'profession_id');
     }
 
-    public function specialties(): HasMany
+    public function specialties(): BelongsToMany
     {
-        return $this->hasMany(UserSpecialty::class);
+        return $this->belongsToMany(Specialty::class, 'user_specialties', 'user_id', 'specialty_id');
     }
 
     public function audits(): HasMany

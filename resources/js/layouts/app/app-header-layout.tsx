@@ -11,22 +11,16 @@ type NavHeaderProps = {
 };
 
 interface User {
-    first_name: string;
-    last_name: string;
-}
-
-interface Profession {
-    ids: number[];
-    professions: string[];
+    full_name: string;
 }
 
 export default function NavHeader({ toggleSidebar }: NavHeaderProps) {
     const [showTopNav, setShowTopNav] = useState(false);
     const { auth } = usePage().props as unknown as {
-        auth: { user: User; professions: Profession };
+        auth: { user: User; professions: string[]; specialties: string[]; };
     };
-    const { user, professions } = auth;
-    const { first_name, last_name } = user;
+    const { user, professions, specialties } = auth;
+    const { full_name } = user;
     const routes = [
         { url: announcements(), name: 'Announcements' },
         { url: notes(), name: 'Notes' },
@@ -327,17 +321,14 @@ export default function NavHeader({ toggleSidebar }: NavHeaderProps) {
                                                     alt="modernize-img"
                                                 />
                                                 <div className="ms-3">
-                                                    <h5 className="fs-3 mb-1">
-                                                        {first_name} {last_name}
-                                                    </h5>
+                                                    <h4 className="fs-3 mb-1">
+                                                        {full_name}
+                                                    </h4>
                                                     <span className="d-block mb-1">
-                                                        {professions.professions.map(
-                                                            (item, index) => (
-                                                                <span key={'profession-' + index}>
-                                                                    {item}
-                                                                </span>
-                                                            ),
-                                                        )}
+                                                        {professions}
+                                                    </span>
+                                                    <span className="d-block mb-1">
+                                                        {specialties}
                                                     </span>
                                                     <p className="d-flex align-items-center mb-0 gap-2">
                                                         <i className="ti ti-mail fs-4"></i>{' '}

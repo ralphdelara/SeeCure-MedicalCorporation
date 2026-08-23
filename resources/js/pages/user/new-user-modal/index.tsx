@@ -36,8 +36,8 @@ const NewUser = () => {
             house_no: '',
             street: '',
             barangay_id: '',
-            city_id: '',
-            province_id: '',
+            city_id: '16', // Numancia
+            province_id: '1', // Aklan
         });
 
     const [showModal, setShowModal] = useState(false);

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Barangay;
 use App\Models\City;
 use App\Models\CivilStatus;
 use App\Models\Gender;
@@ -21,7 +22,7 @@ class PatientService
         ?string $selectId,
         string $path,
     ): array {
-        $patientList = Patient::with(['gender', 'suffix', 'status', 'province', 'city', 'barangay']);
+        $patientList = Patient::with(['gender', 'suffix', 'status', 'province', 'city', 'barangay', 'civilStatus', 'nationality']);
 
         if (! empty($keyword)) {
             $patientList = $patientList->whereBlind('last_name_index', 'last_name_index', strtolower($keyword))
@@ -121,6 +122,7 @@ class PatientService
         $suffixOptions = PatientSuffix::all();
         $provinceOptions = Province::all();
         $cityOptions = City::select('id', 'name')->where('province_id', '=', 1)->get(); // Aklan
+        $barangayOptions = Barangay::select('id', 'name')->where('province_id', '=', 16)->get(); // Numancia
 
         return compact(
             'genderOptions',
@@ -129,6 +131,7 @@ class PatientService
             'suffixOptions',
             'provinceOptions',
             'cityOptions',
+            'barangayOptions',
         );
     }
 
@@ -148,6 +151,8 @@ class PatientService
             'barangay',
             'consultation',
             'laboratory',
+            'civilStatus',
+            'nationality',
             'patientAudit',
         ])->find($id);
 

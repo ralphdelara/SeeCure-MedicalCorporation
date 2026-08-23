@@ -6,14 +6,14 @@ import type { Options } from '@/types/options';
 import { AddOrUpdateUserFormProps } from './new-user';
 
 interface InertiaProps {
-    userFormOptions: {
+    formOptions: {
         genderOptions: Options[];
     };
 }
 
 const Personal = ({ data, setData, errors = {} }: AddOrUpdateUserFormProps) => {
-    const { userFormOptions } = usePage().props as unknown as InertiaProps;
-    const { genderOptions } = userFormOptions;
+    const { formOptions } = usePage().props as unknown as InertiaProps;
+    const { genderOptions } = formOptions;
 
     return (
         <div className="border-bottom">

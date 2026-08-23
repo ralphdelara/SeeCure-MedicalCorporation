@@ -38,7 +38,7 @@
     .sticky-right {
         position: sticky;
         right: 0;
-        z-index: 2;
+        z-index: 5;
         box-shadow: inset 1px 0px 0px 0px var(--bs-table-border-color) !important;
     }
 }

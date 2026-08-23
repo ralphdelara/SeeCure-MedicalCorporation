@@ -62,20 +62,14 @@ class HandleInertiaRequests extends Middleware
         }
 
         $user = $request->user();
+        $professions = '';
+        $specialties = '';
 
         if ($user) {
             // Eager load to prevent N+1
             $user = $user->loadMissing(['professions', 'specialties', 'department']);
-
-            $professions = $user->professions->map(fn ($item) => [
-                'id'   => $item->profession->id,
-                'name' => $item->profession->name,
-            ])->values()->all();
-
-            $specialties = $user->specialties->map(fn ($item) => [
-                'id'   => $item->specialty->id,
-                'name' => $item->specialty->name,
-            ])->values()->all();
+            $professions = $user->professions->pluck('name')->implode(', ');
+            $specialties = $user->specialties->pluck('name')->implode(', ');
         }
 
         $user = $user?->toArray();
@@ -86,14 +80,8 @@ class HandleInertiaRequests extends Middleware
             'name' => config('app.name'),
             'auth' => [
                 'user'        => $user,
-                'professions' => [
-                    'ids'         => array_column($professions ?? [], 'id'),
-                    'professions' => array_column($professions ?? [], 'name'),
-                ],
-                'specialties' => [
-                    'ids'         => array_column($specialties ?? [], 'id'),
-                    'specialties' => array_column($specialties ?? [], 'name'),
-                ],
+                'professions' => $professions,
+                'specialties' => $specialties,
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'breadcrumbs' => $breadcrumbs,
