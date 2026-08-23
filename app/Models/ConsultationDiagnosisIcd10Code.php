@@ -3,11 +3,36 @@
 namespace App\Models;
 
 use App\Traits\CorrectTimezone;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property string $id
+ * @property string $consultation_id
+ * @property string $consultation_diagnosis_id
+ * @property string|null $icd_code_id
+ * @property string $created_by
+ * @property CarbonImmutable $created_at
+ * @property-read Consultation $consultation
+ * @property-read ConsultationDiagnosis $consultationDiagnosis
+ * @property-read User $createdBy
+ * @property-read Icd10Code|null $icd10
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosisIcd10Code newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosisIcd10Code newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosisIcd10Code query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosisIcd10Code whereConsultationDiagnosisId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosisIcd10Code whereConsultationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosisIcd10Code whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosisIcd10Code whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosisIcd10Code whereIcdCodeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosisIcd10Code whereId($value)
+ *
+ * @mixin \Eloquent
+ */
 #[Fillable([
     'consultation_id',
     'consultation_diagnosis_id',

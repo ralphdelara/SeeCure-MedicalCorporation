@@ -12,6 +12,7 @@ use App\Models\Province;
 use Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class PatientService
 {
@@ -58,14 +59,14 @@ class PatientService
         $patientDetails['last_name_index'] = $patientDetails['last_name'];
         $patientDetails['first_name_index'] = $patientDetails['first_name'];
 
-        if (!empty($patientDetails['middle_name'])) {
+        if (! empty($patientDetails['middle_name'])) {
             $patientDetails['middle_name'] = formatName($patientDetails['middle_name']);
             $patientDetails['middle_name_index'] = $patientDetails['middle_name'];
         }
 
         $patient = Patient::updateOrCreate(
             ['id' => $patientId],
-            $patientDetails
+            $patientDetails,
         );
 
         $this->updatePatientOrder();
@@ -94,7 +95,8 @@ class PatientService
                 $params = [];
 
                 foreach ($chunk as $index => $patient) {
-                    $cases[] = "WHEN id = :id{$index} THEN :batch{$index}";
+                    // ::bigint casting to explicitly satisfy PostgreSQL's strict type system
+                    $cases[] = "WHEN id = :id{$index} THEN :batch{$index}::bigint";
                     $ids[] = ":id{$index}";
 
                     $params["id{$index}"] = $patient['id'];
@@ -132,6 +134,11 @@ class PatientService
 
     public function getPatientDetails(string $id): array
     {
+        // for postgresql, mysql doesnt need this
+        if (! Str::isUuid($id)) {
+            abort(404);
+        }
+
         $patient = Patient::with([
             'gender',
             'suffix',

@@ -1,46 +1,32 @@
 import { Head, usePage } from '@inertiajs/react';
 import { Breadcrumbs } from '@/components/breadcrumbs';
-import PatientInfo from '@/pages/patient/info';
+import UserInfo from '@/pages/user/info';
 import { useState } from 'react';
 import {
-    IconActivity,
-    IconCalendarUser,
-    IconFiles,
-    IconFlask,
     IconListDetails,
-    IconScan,
-    IconStethoscope,
     IconUserCode,
 } from '@tabler/icons-react';
-import { PatientDetailsProps } from '@/components/patient/patient-details';
+import { UserDetailsProps } from '@/components/user/user-details';
 import Details from './details';
-import Consultation from './consultation';
-import Laboratory from './laboratory';
-import Radiology from './radiology';
-import VitalSigns from './vital-signs';
-import Documents from './documents';
 import AuditLog from './audit-log';
-import Visits from './visits';
 
 interface InertiaProps {
-    patientDetails: PatientDetailsProps;
+    userDetails: UserDetailsProps;
 }
 
-export default function PatientDetails() {
+export default function UserDetails() {
     const [selectedTab, setSelectedTab] = useState('tab-details');
     const tabs = [
         { id: 'tab-details', name: 'Details', icon: <IconListDetails /> },
-        { id: 'tab-visits', name: 'Visits', icon: <IconCalendarUser /> },
-        { id: 'tab-documents', name: 'Documents', icon: <IconFiles /> },
         { id: 'tab-audit-log', name: 'Audit Log', icon: <IconUserCode /> },
     ];
-    const { patientDetails } = usePage().props as unknown as InertiaProps;
+    const { userDetails } = usePage().props as unknown as InertiaProps;
 
     return (
         <>
-            <Head title="Patient Details" />
-            <Breadcrumbs title="Patient Details">&nbsp;</Breadcrumbs>
-            <PatientInfo patientDetails={patientDetails}>
+            <Head title="User Details" />
+            <Breadcrumbs title="User Details">&nbsp;</Breadcrumbs>
+            <UserInfo userDetails={userDetails}>
                 <ul
                     className="nav nav-pills user-profile-tab justify-content-center bg-success-subtle rounded-2 rounded-top-0 mt-2"
                     id="pills-tab"
@@ -69,10 +55,8 @@ export default function PatientDetails() {
                         </li>
                     ))}
                 </ul>
-            </PatientInfo>
+            </UserInfo>
             {selectedTab === 'tab-details' && <Details />}
-            {selectedTab === 'tab-visits' && <Visits />}
-            {selectedTab === 'tab-documents' && <Documents />}
             {selectedTab === 'tab-audit-log' && <AuditLog />}
         </>
     );

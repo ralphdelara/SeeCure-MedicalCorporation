@@ -2,59 +2,62 @@ import { Head, useForm, usePage } from '@inertiajs/react';
 import { IconDeviceFloppy } from '@tabler/icons-react';
 import { toast, Toaster } from 'react-hot-toast';
 import { Button } from '@/components/ui/button';
-import NewPatientForm from '@/components/patient/new-patient-form';
-import { AddOrUpdatePatientDetailsFormProps } from '@/components/patient/new-patient';
-import { addOrUpdatePatient } from '@/actions/App/Http/Controllers/PatientController';
-import { PatientDetailsTabProps } from '@/components/patient/patient-details';
+import NewUserForm from '@/components/user/new-user-form';
+import { AddOrUpdateUserDetailsFormProps } from '@/components/user/new-user';
+import { addOrUpdateUser } from '@/actions/App/Http/Controllers/UserController';
+import { UserDetailsTabProps } from '@/components/user/user-details';
 
 const Details = () => {
-    const { patientDetails } = usePage().props as unknown as PatientDetailsTabProps;
+    const { userDetails } = usePage().props as unknown as UserDetailsTabProps;
 
     const { data, setData, put, processing, errors, reset } =
-        useForm<AddOrUpdatePatientDetailsFormProps>({
-            patient_id: patientDetails.id,
-            last_name: patientDetails.last_name,
-            first_name: patientDetails.first_name,
-            middle_name: patientDetails.middle_name ?? '',
-            patient_suffix_id: patientDetails.patient_suffix_id ?? '',
-            date_of_birth: patientDetails.date_of_birth ?? '',
-            age: patientDetails.age ?? '',
-            contact_number1: patientDetails.contact_number1 ?? '',
-            contact_number2: patientDetails.contact_number2 ?? '',
-            email: patientDetails.email ?? '',
-            occupation: patientDetails.occupation ?? '',
+        useForm<AddOrUpdateUserDetailsFormProps>({
+            user_id: userDetails.id,
+            username: userDetails.username,
+            password: '',
+            last_name: userDetails.last_name,
+            first_name: userDetails.first_name,
+            middle_name: userDetails.middle_name ?? '',
+            date_of_birth: userDetails.date_of_birth ? (new Date(userDetails.date_of_birth)).toLocaleDateString('sv-SE') : '',
+            contact_number: userDetails.contact_number ?? '',
+            email: userDetails.email ?? '',
 
-            gender_id: patientDetails.gender_id ?? '',
-            civil_status_id: patientDetails.civil_status_id ?? '',
-            nationality_id: patientDetails.nationality_id ?? '',
+            gender_id: userDetails.gender_id ?? '',
 
-            house_no: patientDetails.house_no ?? '',
-            street: patientDetails.street ?? '',
-            barangay_id: patientDetails.barangay_id ?? '',
-            city_id: patientDetails.city_id ?? '',
-            province_id: patientDetails.province_id ?? 1,
+            house_no: userDetails.house_no ?? '',
+            street: userDetails.street ?? '',
+            barangay_id: userDetails.barangay_id ?? '',
+            city_id: userDetails.city_id ?? '',
+            province_id: userDetails.province_id ?? 1,
 
-            photo: patientDetails.photo ?? '',
-
-            philhealth_id: patientDetails.philhealth_id ?? '',
+            photo: userDetails.photo ?? '',
+            department_id: userDetails.department_id ?? '',
+            profession_ids: userDetails.professions ?? [],
+            specialty_ids: userDetails.specialties ?? [],
+            position_id: userDetails.position_id ?? '',
+            license_no: userDetails.license_no ?? '',
+            ptr_no: userDetails.ptr_no ?? '',
+            date_hired: userDetails.date_hired ? (new Date(userDetails.date_hired)).toLocaleDateString('sv-SE') : '',
+            date_resigned: userDetails.date_resigned ? (new Date(userDetails.date_resigned)).toLocaleDateString('sv-SE') : '',
+            status: userDetails.status,
         });
 
     const saveDetails = (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        put(addOrUpdatePatient().url, {
+        put(addOrUpdateUser().url, {
             onSuccess: () => {
-                toast.success('Patient has been updated.');
+                toast.success('User has been updated.');
             },
             onError: () => {
-                toast.error('Failed to update patient.');
+                toast.error('Failed to update user.');
             },
         });
     }
 
     return (
         <>
-            <Head title="Patient Details" />
+            <Head title="User Details" />
             <Toaster position="top-center" reverseOrder={false} />
             <div className="tab-content mt-3">
                 <div className="tab-pane fade show active" role="tabpanel" tabIndex={1}>
@@ -71,11 +74,11 @@ const Details = () => {
                                         </Button>
                                     </div>
                                     <div className="col-lg-12">
-                                        <h4 className="fw-bolder">Patient Details</h4>
+                                        <h4 className="fw-bolder">User Details</h4>
                                     </div>
                                 </div>
                                 <div className="row mt-3 w-100">
-                                    <NewPatientForm data={data} setData={setData} errors={errors} />
+                                    <NewUserForm data={data} setData={setData} errors={errors} />
                                 </div>
                                 <div className="mt-2 text-right">
                                     <Button size="lg">

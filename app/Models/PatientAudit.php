@@ -9,15 +9,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * @property int $id
- * @property int $patient_id
+ * @property string $id
+ * @property string $patient_id
  * @property int $audit_type_id
  * @property array<array-key, mixed> $action
- * @property int $created_by
+ * @property string $created_by
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
- * @property-read User|null $createdBy
- * @property-read Patient $patient
+ * @property-read User $createdBy
+ * @property-read Patient|null $patient
  * @property-read AuditType|null $type
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit newModelQuery()
@@ -47,7 +47,7 @@ class PatientAudit extends Model
     {
         return [
             'patient_id' => 'encrypted',
-            'action' => 'encrypted:array',
+            'action'     => 'encrypted:array',
         ];
     }
 

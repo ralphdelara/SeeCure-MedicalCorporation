@@ -9,13 +9,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * @property int $id
- * @property int $user_id
+ * @property string $id
+ * @property string $user_id
  * @property int $audit_type_id
  * @property array<array-key, mixed> $action
- * @property int $created_by
+ * @property string $created_by
  * @property CarbonImmutable $created_at
- * @property-read User|null $createdBy
+ * @property-read User $createdBy
+ * @property-read User|null $lastModifiedBy
  * @property-read AuditType|null $type
  * @property-read User $user
  *

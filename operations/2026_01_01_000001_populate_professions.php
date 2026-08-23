@@ -30,7 +30,7 @@ return new class extends OneTimeOperation
             ['name' => 'Medical Technologist', 'prefix' => null, 'suffix' => 'RMT'],
             ['name' => 'Nurse', 'prefix' => null, 'suffix' => 'RN'],
             ['name' => 'Staff', 'prefix' => null, 'suffix' => null],
-            ['name' => 'Full Stack Developer', 'prefix' => null, 'suffix' => null],
+            ['name' => 'Software Engineer', 'prefix' => null, 'suffix' => null],
             ['name' => 'Other', 'prefix' => null, 'suffix' => null],
         ]);
     }

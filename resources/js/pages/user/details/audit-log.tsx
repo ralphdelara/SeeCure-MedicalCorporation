@@ -18,7 +18,7 @@ const AuditLog = () => {
                                 <div className="col-lg-3 fs-5 text-dark">
                                     <b>Check Out</b>
                                 </div>
-                                <div className="col-lg-6 fs-5 text-dark">Patient Checked Out</div>
+                                <div className="col-lg-6 fs-5 text-dark">User Checked Out</div>
                                 <div className="col-lg-3">
                                     <div className="timeline-desc fs-5 text-dark mt-n1">
                                         <b>Dr. Sarah Jenkins, M.D.</b>
@@ -31,7 +31,7 @@ const AuditLog = () => {
                                 <div className="col-lg-3 fs-5 text-dark">
                                     <b>Check Out</b>
                                 </div>
-                                <div className="col-lg-6 fs-5 text-dark">Patient Checked Out</div>
+                                <div className="col-lg-6 fs-5 text-dark">User Checked Out</div>
                                 <div className="col-lg-3">
                                     <div className="timeline-desc fs-5 text-dark mt-n1">
                                         <b>Dr. Sarah Jenkins, M.D.</b>
@@ -44,7 +44,7 @@ const AuditLog = () => {
                                 <div className="col-lg-3 fs-5 text-dark">
                                     <b>Check Out</b>
                                 </div>
-                                <div className="col-lg-6 fs-5 text-dark">Patient Checked Out</div>
+                                <div className="col-lg-6 fs-5 text-dark">User Checked Out</div>
                                 <div className="col-lg-3">
                                     <div className="timeline-desc fs-5 text-dark mt-n1">
                                         <b>Dr. Sarah Jenkins, M.D.</b>
@@ -55,9 +55,9 @@ const AuditLog = () => {
                             </div>
                             <div className="row border-bottom border-success p-3">
                                 <div className="col-lg-3 fs-5 text-dark">
-                                    <b>Check Out</b>
+                                    <b>Add</b>
                                 </div>
-                                <div className="col-lg-6 fs-5 text-dark">Patient Checked Out</div>
+                                <div className="col-lg-6 fs-5 text-dark">Added this user</div>
                                 <div className="col-lg-3">
                                     <div className="timeline-desc fs-5 text-dark mt-n1">
                                         <b>Dr. Sarah Jenkins, M.D.</b>

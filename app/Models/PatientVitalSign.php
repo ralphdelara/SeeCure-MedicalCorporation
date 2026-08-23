@@ -9,18 +9,20 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * @property int $id
- * @property int $patient_id
- * @property int|null $consultation_id
+ * @property string $id
+ * @property string $patient_id
+ * @property string|null $consultation_id
  * @property int $vital_sign_id
  * @property int $vital_sign_field_id
  * @property numeric $value
- * @property int $created_by
+ * @property string $created_by
+ * @property string|null $last_modified_by
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
  * @property-read Consultation|null $consultation
- * @property-read User|null $createdBy
- * @property-read Patient $patient
+ * @property-read User $createdBy
+ * @property-read User|null $lastModifiedBy
+ * @property-read Patient|null $patient
  * @property-read VitalSign $vitalSign
  * @property-read VitalSignField $vitalSignField
  *
@@ -31,6 +33,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientVitalSign whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientVitalSign whereCreatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientVitalSign whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientVitalSign whereLastModifiedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientVitalSign wherePatientId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientVitalSign whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientVitalSign whereValue($value)

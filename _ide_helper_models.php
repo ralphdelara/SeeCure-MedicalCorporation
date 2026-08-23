@@ -80,49 +80,49 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * @property int $id
- * @property int $patient_id
+ * @property string $id
+ * @property string $visit_id
+ * @property string $patient_id
  * @property string|null $guardian_name
  * @property string|null $guardian_contact_number
  * @property string|null $guardian_email
+ * @property int|null $guardian_relationship_id
+ * @property string|null $diagnosis
  * @property int $status_id
- * @property int $doctor_id
- * @property int $created_by
+ * @property string $doctor_id
+ * @property string $created_by
+ * @property string|null $last_modified_by
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
- * @property-read User|null $createdBy
+ * @property-read User $createdBy
  * @property-read User $doctor
- * @property-read Patient $patient
+ * @property-read Relationship|null $guardianRelationship
+ * @property-read User|null $lastModifiedBy
+ * @property-read Patient|null $patient
  * @property-read Collection<int, PatientVitalSign> $patientVitalSign
  * @property-read int|null $patient_vital_sign_count
  * @property-read Collection<int, ConsultationSignsOrSymptom> $signsOrSymptoms
  * @property-read int|null $signs_or_symptoms_count
  * @property-read ConsultationStatus $status
+ * @property-read Visit $visit
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereDiagnosis($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereDoctorId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereGuardianContactNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereGuardianEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereGuardianName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereGuardianRelationshipId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereLastModifiedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation wherePatientId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereStatusId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereUpdatedAt($value)
- * @mixin \Eloquent
- * @property string $visit_id
- * @property int|null $guardian_relationship_id
- * @property string|null $diagnosis
- * @property string|null $last_modified_by
- * @property-read \App\Models\Relationship|null $guardianRelationship
- * @property-read \App\Models\User|null $lastModifiedBy
- * @property-read \App\Models\Visit $visit
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereDiagnosis($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereGuardianRelationshipId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereLastModifiedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereVisitId($value)
+ * @mixin \Eloquent
  */
 	class Consultation extends \Eloquent {}
 }
@@ -133,12 +133,12 @@ namespace App\Models{
  * @property string $diagnosis
  * @property string $created_by
  * @property string|null $last_modified_by
- * @property \Carbon\CarbonImmutable|null $created_at
- * @property \Carbon\CarbonImmutable|null $updated_at
- * @property-read \App\Models\Consultation|null $consultation
- * @property-read \App\Models\User $createdBy
- * @property-read \App\Models\ConsultationDiagnosisIcd10Code|null $icd10Codes
- * @property-read \App\Models\User|null $lastModifiedBy
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
+ * @property-read Consultation|null $consultation
+ * @property-read User $createdBy
+ * @property-read ConsultationDiagnosisIcd10Code|null $icd10Codes
+ * @property-read User|null $lastModifiedBy
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosis newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosis newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosis query()
@@ -148,27 +148,41 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosis whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosis whereLastModifiedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosis whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 	class ConsultationDiagnosis extends \Eloquent {}
 }
 
 namespace App\Models{
 /**
- * @property-read \App\Models\Consultation|null $consultation
- * @property-read \App\Models\ConsultationDiagnosis|null $consultationDiagnosis
- * @property-read \App\Models\User|null $createdBy
- * @property-read \App\Models\Icd10Code|null $icd10
+ * @property string $id
+ * @property string $consultation_id
+ * @property string $consultation_diagnosis_id
+ * @property string|null $icd_code_id
+ * @property string $created_by
+ * @property CarbonImmutable $created_at
+ * @property-read Consultation $consultation
+ * @property-read ConsultationDiagnosis $consultationDiagnosis
+ * @property-read User $createdBy
+ * @property-read Icd10Code|null $icd10
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosisIcd10Code newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosisIcd10Code newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosisIcd10Code query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosisIcd10Code whereConsultationDiagnosisId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosisIcd10Code whereConsultationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosisIcd10Code whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosisIcd10Code whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosisIcd10Code whereIcdCodeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosisIcd10Code whereId($value)
+ * @mixin \Eloquent
  */
 	class ConsultationDiagnosisIcd10Code extends \Eloquent {}
 }
 
 namespace App\Models{
 /**
- * @property int $id
- * @property int $consultation_id
+ * @property string $id
+ * @property string $consultation_id
  * @property int $signs_or_symptom_id
  * @property-read Consultation $consultation
  * @property-read SignsOrSymptom $signsOrSymptom
@@ -192,8 +206,8 @@ namespace App\Models{
  * @property string|null $plan
  * @property string $created_by
  * @property string|null $last_modified_by
- * @property \Carbon\CarbonImmutable|null $created_at
- * @property \Carbon\CarbonImmutable|null $updated_at
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationSoap newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationSoap newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationSoap query()
@@ -206,6 +220,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationSoap wherePlan($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationSoap whereSubjective($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationSoap whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 	class ConsultationSoap extends \Eloquent {}
 }
@@ -228,8 +243,6 @@ namespace App\Models{
 /**
  * @property int $id
  * @property string $name
- * @property-read Collection<int, UserDepartment> $users
- * @property-read int|null $users_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Department newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Department newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Department query()
@@ -249,6 +262,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DiscountType query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DiscountType whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DiscountType whereName($value)
+ * @mixin \Eloquent
  */
 	class DiscountType extends \Eloquent {}
 }
@@ -278,23 +292,43 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Icd10Code whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Icd10Code whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Icd10Code whereId($value)
+ * @mixin \Eloquent
  */
 	class Icd10Code extends \Eloquent {}
 }
 
 namespace App\Models{
 /**
- * @property-read \App\Models\Consultation|null $consultation
- * @property-read \App\Models\User|null $createdBy
- * @property-read \App\Models\User|null $lastModifiedBy
- * @property-read \App\Models\Patient|null $patient
- * @property-read \App\Models\LaboratoryStatus|null $status
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LaboratoryTest> $tests
+ * @property string $id
+ * @property string $visit_id
+ * @property string $patient_id
+ * @property string|null $consultation_id
+ * @property int $status_id
+ * @property string $created_by
+ * @property string|null $last_modified_by
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
+ * @property-read Consultation|null $consultation
+ * @property-read User $createdBy
+ * @property-read User|null $lastModifiedBy
+ * @property-read Patient|null $patient
+ * @property-read LaboratoryStatus $status
+ * @property-read Collection<int, LaboratoryTest> $tests
  * @property-read int|null $tests_count
- * @property-read \App\Models\Visit|null $visit
+ * @property-read Visit $visit
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereConsultationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereLastModifiedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory wherePatientId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereStatusId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereVisitId($value)
+ * @mixin \Eloquent
  */
 	class Laboratory extends \Eloquent {}
 }
@@ -308,6 +342,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryStatus query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryStatus whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryStatus whereName($value)
+ * @mixin \Eloquent
  */
 	class LaboratoryStatus extends \Eloquent {}
 }
@@ -320,10 +355,10 @@ namespace App\Models{
  * @property string $data
  * @property string $created_by
  * @property string|null $last_modified_by
- * @property \Carbon\CarbonImmutable|null $created_at
- * @property \Carbon\CarbonImmutable|null $updated_at
- * @property-read \App\Models\User $createdBy
- * @property-read \App\Models\User|null $lastModifiedBy
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
+ * @property-read User $createdBy
+ * @property-read User|null $lastModifiedBy
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest query()
@@ -335,6 +370,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest whereLaboratoryTestTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest whereLastModifiedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 	class LaboratoryTest extends \Eloquent {}
 }
@@ -348,6 +384,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestType query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestType whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestType whereName($value)
+ * @mixin \Eloquent
  */
 	class LaboratoryTestType extends \Eloquent {}
 }
@@ -368,11 +405,11 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * @property int $id
+ * @property string $id
  * @property string $last_name
  * @property string $first_name
  * @property string|null $middle_name
- * @property Carbon|null $date_of_birth
+ * @property string|null $date_of_birth
  * @property string|null $age
  * @property string|null $contact_number1
  * @property string|null $contact_number2
@@ -389,8 +426,13 @@ namespace App\Models{
  * @property int|null $nationality_id
  * @property int $status_id
  * @property int|null $patient_suffix_id
- * @property int $created_by
  * @property string|null $photo
+ * @property string|null $last_name_index
+ * @property string|null $first_name_index
+ * @property string|null $middle_name_index
+ * @property int|null $batch
+ * @property string $created_by
+ * @property string|null $last_modified_by
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
  * @property-read Collection<int, PatientAudit> $audits
@@ -398,9 +440,17 @@ namespace App\Models{
  * @property-read Barangay|null $barangay
  * @property-read City|null $city
  * @property-read CivilStatus|null $civilStatus
- * @property-read User|null $createdBy
+ * @property-read Collection<int, Consultation> $consultation
+ * @property-read int|null $consultation_count
+ * @property-read User $createdBy
  * @property-read Gender|null $gender
+ * @property-read string $full_name
+ * @property-read Collection<int, Laboratory> $laboratory
+ * @property-read int|null $laboratory_count
+ * @property-read User|null $lastModifiedBy
  * @property-read Nationality|null $nationality
+ * @property-read Collection<int, PatientAudit> $patientAudit
+ * @property-read int|null $patient_audit_count
  * @property-read Collection<int, PatientVitalSign> $patientVitalSigns
  * @property-read int|null $patient_vital_signs_count
  * @property-read Province|null $province
@@ -408,9 +458,12 @@ namespace App\Models{
  * @property-read PatientSuffix|null $suffix
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient orWhereBlind(string $column, string $indexName, array|string $value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereAge($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereBarangayId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereBatch($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereBlind(string $column, string $indexName, array|string $value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereCityId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereCivilStatusId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereContactNumber1($value)
@@ -420,11 +473,15 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereDateOfBirth($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereFirstName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereFirstNameIndex($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereGenderId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereHouseNo($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereLastModifiedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereLastName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereLastNameIndex($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereMiddleName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereMiddleNameIndex($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereNationalityId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereOccupation($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient wherePatientSuffixId($value)
@@ -435,25 +492,21 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereStreet($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property string|null $last_modified_by
- * @property-read string $full_name
- * @property-read \App\Models\User|null $lastModifiedBy
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereLastModifiedBy($value)
  */
-	class Patient extends \Eloquent {}
+	class Patient extends \Eloquent implements \Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted {}
 }
 
 namespace App\Models{
 /**
- * @property int $id
- * @property int $patient_id
+ * @property string $id
+ * @property string $patient_id
  * @property int $audit_type_id
  * @property array<array-key, mixed> $action
- * @property int $created_by
+ * @property string $created_by
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
- * @property-read User|null $createdBy
- * @property-read Patient $patient
+ * @property-read User $createdBy
+ * @property-read Patient|null $patient
  * @property-read AuditType|null $type
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit newQuery()
@@ -500,18 +553,20 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * @property int $id
- * @property int $patient_id
- * @property int|null $consultation_id
+ * @property string $id
+ * @property string $patient_id
+ * @property string|null $consultation_id
  * @property int $vital_sign_id
  * @property int $vital_sign_field_id
  * @property numeric $value
- * @property int $created_by
+ * @property string $created_by
+ * @property string|null $last_modified_by
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
  * @property-read Consultation|null $consultation
- * @property-read User|null $createdBy
- * @property-read Patient $patient
+ * @property-read User $createdBy
+ * @property-read User|null $lastModifiedBy
+ * @property-read Patient|null $patient
  * @property-read VitalSign $vitalSign
  * @property-read VitalSignField $vitalSignField
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientVitalSign newModelQuery()
@@ -521,15 +576,13 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientVitalSign whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientVitalSign whereCreatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientVitalSign whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientVitalSign whereLastModifiedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientVitalSign wherePatientId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientVitalSign whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientVitalSign whereValue($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientVitalSign whereVitalSignFieldId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientVitalSign whereVitalSignId($value)
  * @mixin \Eloquent
- * @property string|null $last_modified_by
- * @property-read \App\Models\User|null $lastModifiedBy
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientVitalSign whereLastModifiedBy($value)
  */
 	class PatientVitalSign extends \Eloquent {}
 }
@@ -538,15 +591,15 @@ namespace App\Models{
 /**
  * @property int $id
  * @property string $name
+ * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
+ * @property-read int|null $notifications_count
+ * @method static \Database\Factories\PositionFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Position newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Position newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Position query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Position whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Position whereName($value)
  * @mixin \Eloquent
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
- * @property-read int|null $notifications_count
- * @method static \Database\Factories\PositionFactory factory($count = null, $state = [])
  */
 	class Position extends \Eloquent {}
 }
@@ -561,11 +614,11 @@ namespace App\Models{
  * @property string $dosage
  * @property string $created_by
  * @property string|null $last_modified_by
- * @property \Carbon\CarbonImmutable|null $created_at
- * @property \Carbon\CarbonImmutable|null $updated_at
- * @property-read \App\Models\Consultation $consultation
- * @property-read \App\Models\User $createdBy
- * @property-read \App\Models\User|null $lastModifiedBy
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
+ * @property-read Consultation $consultation
+ * @property-read User $createdBy
+ * @property-read User|null $lastModifiedBy
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Prescription newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Prescription newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Prescription query()
@@ -579,6 +632,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Prescription whereProductName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Prescription whereQuantity($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Prescription whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 	class Prescription extends \Eloquent {}
 }
@@ -600,12 +654,12 @@ namespace App\Models{
  * @property string|null $photo
  * @property string $created_by
  * @property string|null $last_modified_by
- * @property \Carbon\CarbonImmutable|null $created_at
- * @property \Carbon\CarbonImmutable|null $updated_at
- * @property-read \App\Models\ProductCategory $category
- * @property-read \App\Models\User $createdBy
- * @property-read \App\Models\User|null $lastModifiedBy
- * @property-read \App\Models\ProductUnit $unit
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
+ * @property-read ProductCategory $category
+ * @property-read User $createdBy
+ * @property-read User|null $lastModifiedBy
+ * @property-read ProductUnit $unit
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product query()
@@ -626,6 +680,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereVatAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereVatPercent($value)
+ * @mixin \Eloquent
  */
 	class Product extends \Eloquent {}
 }
@@ -639,6 +694,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductCategory query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductCategory whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductCategory whereName($value)
+ * @mixin \Eloquent
  */
 	class ProductCategory extends \Eloquent {}
 }
@@ -652,6 +708,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductUnit query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductUnit whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductUnit whereName($value)
+ * @mixin \Eloquent
  */
 	class ProductUnit extends \Eloquent {}
 }
@@ -708,20 +765,6 @@ namespace App\Models{
 /**
  * @property int $id
  * @property string $name
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Role newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Role newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Role query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Role whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Role whereName($value)
- * @mixin \Eloquent
- */
-	class Role extends \Eloquent {}
-}
-
-namespace App\Models{
-/**
- * @property int $id
- * @property string $name
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SignsOrSymptom newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SignsOrSymptom newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SignsOrSymptom query()
@@ -759,6 +802,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockMovementType query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockMovementType whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockMovementType whereName($value)
+ * @mixin \Eloquent
  */
 	class StockMovementType extends \Eloquent {}
 }
@@ -772,31 +816,23 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TransactionType query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TransactionType whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TransactionType whereName($value)
+ * @mixin \Eloquent
  */
 	class TransactionType extends \Eloquent {}
 }
 
 namespace App\Models{
 /**
- * @property int $id
- * @property string $name
- * @property string $email
- * @property Carbon|null $email_verified_at
- * @property string $password
- * @property string|null $two_factor_secret
- * @property string|null $two_factor_recovery_codes
- * @property Carbon|null $two_factor_confirmed_at
- * @property string|null $remember_token
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
+ * @property string $id
  * @property string $username
+ * @property string $password
+ * @property string $last_name
  * @property string $first_name
  * @property string|null $middle_name
- * @property string $last_name
- * @property string|null $full_name_index
  * @property int|null $gender_id
- * @property \Carbon\Carbon|null $date_of_birth
+ * @property string|null $date_of_birth
  * @property string|null $contact_number
+ * @property string|null $email
  * @property string|null $house_no
  * @property string|null $street
  * @property int|null $barangay_id
@@ -804,35 +840,46 @@ namespace App\Models{
  * @property int|null $province_id
  * @property string|null $license_no
  * @property string|null $ptr_no
- * @property \Carbon\Carbon|null $date_hired
- * @property \Carbon\Carbon|null $date_resigned
+ * @property string|null $date_hired
+ * @property string|null $date_resigned
  * @property bool $status
+ * @property string|null $remember_token
+ * @property int $department_id
  * @property int $position_id
- * @property int $created_by
  * @property string|null $photo
+ * @property string|null $last_name_index
+ * @property string|null $first_name_index
+ * @property string|null $middle_name_index
+ * @property int|null $batch
+ * @property string|null $created_by
+ * @property string|null $last_modified_by
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
  * @property-read Collection<int, UserAudit> $audits
  * @property-read int|null $audits_count
  * @property-read Barangay|null $barangay
  * @property-read City|null $city
  * @property-read User|null $createdBy
- * @property-read Collection<int, UserDepartment> $departments
- * @property-read int|null $departments_count
+ * @property-read Department $department
  * @property-read Gender|null $gender
+ * @property-read string $full_name
+ * @property-read User|null $lastModifiedBy
  * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
  * @property-read Position $position
  * @property-read Collection<int, UserProfession> $professions
  * @property-read int|null $professions_count
  * @property-read Province|null $province
- * @property-read Collection<int, UserRole> $role
- * @property-read int|null $role_count
  * @property-read Collection<int, UserSpecialty> $specialties
  * @property-read int|null $specialties_count
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User orWhereBlind(string $column, string $indexName, array|string $value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereBarangayId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereBatch($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereBlind(string $column, string $indexName, array|string $value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereCityId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereContactNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereCreatedAt($value)
@@ -840,15 +887,19 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereDateHired($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereDateOfBirth($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereDateResigned($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereDepartmentId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereFirstName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereFullNameIndex($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereFirstNameIndex($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereGenderId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereHouseNo($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereLastModifiedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereLastName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereLastNameIndex($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereLicenseNo($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereMiddleName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereMiddleNameIndex($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePhoto($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePositionId($value)
@@ -860,23 +911,20 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUsername($value)
  * @mixin \Eloquent
- * @property string|null $last_modified_by
- * @property-read string $full_name
- * @property-read User|null $lastModifiedBy
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereLastModifiedBy($value)
  */
-	class User extends \Eloquent {}
+	class User extends \Eloquent implements \Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted {}
 }
 
 namespace App\Models{
 /**
- * @property int $id
- * @property int $user_id
+ * @property string $id
+ * @property string $user_id
  * @property int $audit_type_id
  * @property array<array-key, mixed> $action
- * @property int $created_by
+ * @property string $created_by
  * @property CarbonImmutable $created_at
- * @property-read User|null $createdBy
+ * @property-read User $createdBy
+ * @property-read User|null $lastModifiedBy
  * @property-read AuditType|null $type
  * @property-read User $user
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserAudit newModelQuery()
@@ -889,33 +937,14 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserAudit whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserAudit whereUserId($value)
  * @mixin \Eloquent
- * @property-read \App\Models\User|null $lastModifiedBy
  */
 	class UserAudit extends \Eloquent {}
 }
 
 namespace App\Models{
 /**
- * @property int $id
- * @property int $user_id
- * @property int $department_id
- * @property-read Department $department
- * @property-read User $user
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserDepartment newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserDepartment newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserDepartment query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserDepartment whereDepartmentId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserDepartment whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserDepartment whereUserId($value)
- * @mixin \Eloquent
- */
-	class UserDepartment extends \Eloquent {}
-}
-
-namespace App\Models{
-/**
- * @property int $id
- * @property int $user_id
+ * @property string $id
+ * @property string $user_id
  * @property int $profession_id
  * @property-read Profession $profession
  * @property-read User $user
@@ -932,26 +961,8 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * @property int $id
- * @property int $user_id
- * @property int $role_id
- * @property-read Role $role
- * @property-read User $user
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserRole newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserRole newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserRole query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserRole whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserRole whereRoleId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserRole whereUserId($value)
- * @mixin \Eloquent
- */
-	class UserRole extends \Eloquent {}
-}
-
-namespace App\Models{
-/**
- * @property int $id
- * @property int $user_id
+ * @property string $id
+ * @property string $user_id
  * @property int $specialty_id
  * @property-read Specialty $specialty
  * @property-read User $user
@@ -975,12 +986,12 @@ namespace App\Models{
  * @property bool $has_radiology
  * @property string $created_by
  * @property string|null $last_modified_by
- * @property \Carbon\CarbonImmutable|null $created_at
- * @property \Carbon\CarbonImmutable|null $updated_at
- * @property-read \App\Models\Consultation|null $consultation
- * @property-read \App\Models\User|null $createdBy
- * @property-read \App\Models\User|null $lastModifiedBy
- * @property-read \App\Models\Patient|null $patient
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
+ * @property-read Consultation|null $consultation
+ * @property-read User|null $createdBy
+ * @property-read User|null $lastModifiedBy
+ * @property-read Patient|null $patient
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit query()
@@ -993,6 +1004,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereLastModifiedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit wherePatientId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 	class Visit extends \Eloquent {}
 }

@@ -1,0 +1,94 @@
+.table.table-select tbody tr {
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Older IE/Edge */
+    user-select: none; /* Standard syntax */
+}
+
+.table tbody td {
+    vertical-align: top;
+}
+
+.table tbody td a:hover {
+    color: var(--bs-success);
+}
+
+/* Sticky table header on desktop */
+@media (min-width: 992px) {
+    .table thead tr th {
+        position: sticky;
+        top: 0; /*91px on mobile or tablet*/
+        z-index: 3;
+    }
+
+    .table.table-select thead th {
+        position: sticky;
+        top: 0px; /*91px on mobile or tablet*/
+        z-index: 3;
+    }
+
+    .sticky-left {
+        background: #fff;
+        position: sticky;
+        left: 0;
+        z-index: 5 !important;
+        box-shadow: inset -1px 0px 0px 0px var(--bs-table-border-color) !important;
+    }
+
+    .sticky-right {
+        position: sticky;
+        right: 0;
+        z-index: 2;
+        box-shadow: inset 1px 0px 0px 0px var(--bs-table-border-color) !important;
+    }
+}
+
+.table.table-select tbody tr {
+    cursor: pointer;
+}
+/* Sticky table header */
+
+/* Horizontal scrollbar behavior */
+/* Hides the default scrollbar for WebKit browsers (Chrome, Safari, Edge) */
+.table-responsive-hidden-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hides the default scrollbar for Firefox and IE/Legacy Edge */
+.table-responsive-hidden-scroll {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+/* Custom utility for our floating dummy container */
+.floating-scrollbar-track {
+    height: 30px !important; /* Total height of the bar container */
+    opacity: 0.7;
+    cursor: all-scroll;
+}
+.floating-scrollbar-track:hover {
+    opacity: 1;
+}
+
+/* Widen the actual draggable scrollbar track footprint */
+.floating-scrollbar-track::-webkit-scrollbar {
+    height: 25px !important; /* Thickens the actual sliding bar */
+}
+
+/* Style the draggable thumb graphic */
+.floating-scrollbar-track::-webkit-scrollbar-thumb {
+    background-color: #868e96 !important; /* Darker charcoal grey for visibility */
+    border-radius: 8px !important; /* Smooth rounded capsule pill look */
+    border: 3px solid #f1f3f5 !important; /* Inner border spacing padding */
+}
+
+/* Hover effects for UX feedback */
+.floating-scrollbar-track::-webkit-scrollbar-thumb:hover {
+    background-color: #495057 !important; /* Deep dark grey on hover */
+}
+
+/* Keeps the background track styling clean */
+.floating-scrollbar-track::-webkit-scrollbar-track {
+    background-color: #f1f3f5 !important;
+}
+/* Horizontal scrollbar behavior */

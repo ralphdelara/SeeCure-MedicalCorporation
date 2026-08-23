@@ -27,7 +27,7 @@ class AuditType extends Model
     protected function casts(): array
     {
         return [
-            'name'   => 'encrypted',
+            'name' => 'encrypted',
         ];
     }
 }

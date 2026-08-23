@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * @property int $id
- * @property int $consultation_id
+ * @property string $id
+ * @property string $consultation_id
  * @property int $signs_or_symptom_id
  * @property-read Consultation $consultation
  * @property-read SignsOrSymptom $signsOrSymptom
