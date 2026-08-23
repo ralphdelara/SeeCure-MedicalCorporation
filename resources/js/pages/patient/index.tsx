@@ -30,9 +30,13 @@ export default function PatientList() {
         { name: '#', width: '5%', align: 'right' },
         { name: 'Patient • Gender', className: 'sticky-left', align: 'left' },
         { name: 'Date of Birth • Age', align: 'left' },
-        { name: 'Address', align: 'left' },
         { name: 'Contact', align: 'left' },
         { name: 'Status', align: 'left' },
+        { name: 'Civil Status', align: 'left' },
+        { name: 'Nationality', align: 'left' },
+        { name: 'Occupation', align: 'left' },
+        { name: 'Address', align: 'left' },
+        { name: 'Philhealth ID', align: 'left' },
         { name: '', className: 'sticky-right', align: 'right' },
     ];
 
@@ -80,7 +84,7 @@ export default function PatientList() {
                                                                         item.id,
                                                                     )}
                                                                     className="tooltip-container"
-                                                                    data-title="Click to View User Details"
+                                                                    data-title="Click to View Patient Details"
                                                                 >
                                                                     {item.full_name}
                                                                 </Link>
@@ -109,19 +113,17 @@ export default function PatientList() {
                                                             {item.date_of_birth ?? 'N/A'}
                                                         </h6>
                                                         <h6 className="fs-4 fw-normal">
-                                                            {item.age ?? 'N/A'}
+                                                            {item.age_computed ?? (item.age ?? 'N/A')}
                                                         </h6>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td>
-                                                <span className="fw-normal">
-                                                    {parseAddress(item)}
-                                                </span>
-                                            </td>
-                                            <td>
                                                 <div className="d-flex align-items-start">
                                                     <div>
+                                                        <h6>
+                                                            <IconPhone size={20} />
+                                                        </h6>
                                                         <h6>
                                                             <IconPhone size={20} />
                                                         </h6>
@@ -131,7 +133,10 @@ export default function PatientList() {
                                                     </div>
                                                     <div className="ms-3">
                                                         <h6 className="fs-4 fw-normal">
-                                                            {item.contact_number ?? 'N/A'}
+                                                            {item.contact_number1 ?? 'N/A'}
+                                                        </h6>
+                                                        <h6 className="fs-4 fw-normal">
+                                                            {item.contact_number2 ?? 'N/A'}
                                                         </h6>
                                                         <h6 className="fs-4 fw-normal">
                                                             {item.email ?? 'N/A'}
@@ -142,6 +147,25 @@ export default function PatientList() {
                                             <td>
                                                 <span className="badge text-bg-secondary">
                                                     {item.status.name}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                {item.civil_status.name}
+                                            </td>
+                                            <td>
+                                                {item.nationality.name}
+                                            </td>
+                                            <td>
+                                                {item.occupation}
+                                            </td>
+                                            <td>
+                                                <span className="fw-normal">
+                                                    {parseAddress(item)}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span className="fw-normal">
+                                                    {item.philhealth_id}
                                                 </span>
                                             </td>
                                             <td className="sticky-right">

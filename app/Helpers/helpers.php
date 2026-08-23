@@ -29,11 +29,12 @@ if (! function_exists('updateRelatedData')) {
         string $parentCol,
         string $childCol,
     ) {
-        $existingIds = array_column($existingIds, $childCol);
-
         if (! empty($existingIds)) {
             // ignore update request if theres no changes to prevent deleting existing data
-            if (empty(array_diff($newIds, $existingIds))) {
+            if (
+                empty(array_diff($newIds, $existingIds))
+                && empty(array_diff($existingIds, $newIds))
+            ) {
                 return;
             }
 
@@ -45,16 +46,16 @@ if (! function_exists('updateRelatedData')) {
             $newIds = array_diff($newIds, $existingIds);
         }
 
+        if (empty($newIds)) {
+            return;
+        }
+
         $newIds = array_map(fn ($value) => [
             $parentCol => $parentId,
             $childCol  => $value,
         ], $newIds);
 
-        if (! empty($newIds)) {
-            $model->fillAndInsert($newIds);
-        } else {
-            $model->where($parentCol, $parentId)->delete();
-        }
+        $model->fillAndInsert($newIds);
     }
 }
 

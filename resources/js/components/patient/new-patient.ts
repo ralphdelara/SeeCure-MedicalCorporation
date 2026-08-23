@@ -1,4 +1,6 @@
-export interface AddOrUpdatePatientDetailsFormProps {
+import { AddressDetailsFormProps } from "../address/types";
+
+export interface AddOrUpdatePatientDetailsFormProps extends AddressDetailsFormProps {
     patient_id: number | string;
     last_name: string;
     first_name: string;
@@ -14,12 +16,6 @@ export interface AddOrUpdatePatientDetailsFormProps {
     gender_id?: number | string;
     civil_status_id?: number | string;
     nationality_id?: number | string;
-
-    house_no?: string;
-    street?: string;
-    barangay_id?: string;
-    city_id?: number | string;
-    province_id?: number | string;
 
     photo?: string;
 

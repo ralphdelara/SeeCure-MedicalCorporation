@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\EncryptedDate;
 use App\Traits\CorrectTimezone;
 use App\Traits\PersonDetails;
 use Carbon\CarbonImmutable;
@@ -144,7 +145,7 @@ use Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted;
 ])]
 class Patient extends Model implements CipherSweetEncrypted
 {
-    use CorrectTimezone, HasUuids, UsesCipherSweet, PersonDetails;
+    use CorrectTimezone, HasUuids, PersonDetails, UsesCipherSweet;
 
     protected $appends = ['full_name', 'age_computed'];
 
@@ -155,7 +156,7 @@ class Patient extends Model implements CipherSweetEncrypted
             'first_name'  => 'encrypted',
             'middle_name' => 'encrypted',
 
-            'date_of_birth'   => 'encrypted',
+            'date_of_birth'   => EncryptedDate::class,
             'age'             => 'encrypted',
             'contact_number1' => 'encrypted',
             'contact_number2' => 'encrypted',
@@ -168,24 +169,35 @@ class Patient extends Model implements CipherSweetEncrypted
         ];
     }
 
+    public function getFullNameAttribute(): string
+    {
+        $fullName = $this->last_name.', '.$this->first_name.($this->middle_name ? ' '.$this->middle_name : '');
+
+        if (empty($this->suffix)) {
+            return $fullName;
+        }
+
+        return $fullName.' '.$this->suffix->name;
+    }
+
     public function suffix(): BelongsTo
     {
-        return $this->belongsTo(PatientSuffix::class);
+        return $this->belongsTo(PatientSuffix::class, 'patient_suffix_id', 'id');
     }
 
     public function status(): BelongsTo
     {
-        return $this->belongsTo(PatientStatus::class);
+        return $this->belongsTo(PatientStatus::class, 'status_id', 'id');
     }
 
     public function civilStatus(): BelongsTo
     {
-        return $this->belongsTo(CivilStatus::class);
+        return $this->belongsTo(CivilStatus::class, 'civil_status_id', 'id');
     }
 
     public function nationality(): BelongsTo
     {
-        return $this->belongsTo(Nationality::class);
+        return $this->belongsTo(Nationality::class, 'nationality_id', 'id');
     }
 
     public function createdBy(): BelongsTo

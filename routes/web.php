@@ -54,7 +54,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('calendar', 'calendar')->name('calendar');
 
     Route::prefix('address')->group(function () {
-        Route::get('/city/{cityId}/barangay', [AddressController::class, 'barangay'])->name('barangay-list');
+        Route::get('/province/{provinceId}/city', [AddressController::class, 'getCityList'])->name('address.cities');
+        Route::get('/city/{cityId}/barangay', [AddressController::class, 'getBarangayList'])->name('address.barangays');
     });
 
     Route::prefix('settings')->group(function () {
