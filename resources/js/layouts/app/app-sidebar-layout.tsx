@@ -22,7 +22,7 @@ import {
     dashboard,
     frontDesk,
     laboratory,
-    patient,
+    patients,
     pharmacy,
     radiology,
     system,
@@ -45,7 +45,6 @@ export default function NavSidebar({ toggleSidebar }: NavSidebarProps) {
     const [initSidebarType] = useState<string | null>(
         document.body.getAttribute('data-sidebartype'),
     );
-    console.log(consultation().url, url);
 
     const routes = [
         {
@@ -61,10 +60,10 @@ export default function NavSidebar({ toggleSidebar }: NavSidebarProps) {
             active: url.includes(frontDesk().url),
         },
         {
-            url: patient(),
+            url: patients(),
             name: 'Patient List',
             icon: IconUser,
-            active: url.includes(patient().url),
+            active: url.includes(patients().url.slice(0, -1)),
         },
         {
             url: consultation(),
@@ -96,7 +95,7 @@ export default function NavSidebar({ toggleSidebar }: NavSidebarProps) {
             icon: IconCashRegister,
             active: url.includes(cashier().url),
         },
-        { url: users(), name: 'Users', icon: IconUserCog, active: url.includes(users().url) },
+        { url: users(), name: 'Users', icon: IconUserCog, active: url.includes(users().url.slice(0, -1)) },
         { url: system(), name: 'System', icon: IconLockCog, active: url.includes(system().url) },
     ];
 

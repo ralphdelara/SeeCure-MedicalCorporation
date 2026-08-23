@@ -9,10 +9,8 @@ class DoctorService
 {
     public function getDoctorList(): Collection
     {
-        return User::with(['departments.department', 'professions.profession', 'position'])
-            ->whereHas('departments', function ($query) {
-                $query->where('user_departments.department_id', 2); // Consultation
-            })
+        return User::with(['department', 'professions.profession', 'position'])
+            ->where('department_id', 2) // Consultation
             ->whereHas('position', function ($query) {
                 $query->where('positions.id', 6); // General Practitioner
             })->orderBy('last_name')->get()

@@ -3,11 +3,36 @@
 namespace App\Models;
 
 use App\Traits\CorrectTimezone;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property string $id
+ * @property string $diagnosis
+ * @property string $created_by
+ * @property string|null $last_modified_by
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
+ * @property-read Consultation|null $consultation
+ * @property-read User $createdBy
+ * @property-read ConsultationDiagnosisIcd10Code|null $icd10Codes
+ * @property-read User|null $lastModifiedBy
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosis newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosis newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosis query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosis whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosis whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosis whereDiagnosis($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosis whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosis whereLastModifiedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosis whereUpdatedAt($value)
+ *
+ * @mixin \Eloquent
+ */
 #[Fillable([
     'consultation_id',
     'icd10_code_id',
@@ -16,7 +41,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 ])]
 class ConsultationDiagnosis extends Model
 {
-    use HasUuids, CorrectTimezone;
+    use CorrectTimezone, HasUuids;
 
     public $table = 'consultation_diagnosis';
 

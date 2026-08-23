@@ -14,12 +14,11 @@ Breadcrumbs::for('consultation.details', function (BreadcrumbTrail $trail, strin
     $trail->push('Consultation Details', route('consultation.details', ['id' => $id]));
 });
 
-
 // Patient
-Breadcrumbs::for('patient', function (BreadcrumbTrail $trail) {
-    $trail->push('Patient', route('patient'));
+Breadcrumbs::for('patients', function (BreadcrumbTrail $trail) {
+    $trail->push('Patient List', route('patients'));
 });
 Breadcrumbs::for('patient.details', function (BreadcrumbTrail $trail, string $id) {
-    $trail->parent('patient');
+    $trail->parent('patients');
     $trail->push('Patient Details', route('patient.details', ['id' => $id]));
 });

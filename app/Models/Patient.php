@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Traits\CorrectTimezone;
-use Carbon\Carbon;
+use App\Traits\PersonDetails;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Collection;
@@ -19,11 +19,11 @@ use Spatie\LaravelCipherSweet\Concerns\UsesCipherSweet;
 use Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted;
 
 /**
- * @property int $id
+ * @property string $id
  * @property string $last_name
  * @property string $first_name
  * @property string|null $middle_name
- * @property Carbon|null $date_of_birth
+ * @property string|null $date_of_birth
  * @property string|null $age
  * @property string|null $contact_number1
  * @property string|null $contact_number2
@@ -40,8 +40,13 @@ use Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted;
  * @property int|null $nationality_id
  * @property int $status_id
  * @property int|null $patient_suffix_id
- * @property int $created_by
  * @property string|null $photo
+ * @property string|null $last_name_index
+ * @property string|null $first_name_index
+ * @property string|null $middle_name_index
+ * @property int|null $batch
+ * @property string $created_by
+ * @property string|null $last_modified_by
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
  * @property-read Collection<int, PatientAudit> $audits
@@ -49,9 +54,17 @@ use Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted;
  * @property-read Barangay|null $barangay
  * @property-read City|null $city
  * @property-read CivilStatus|null $civilStatus
- * @property-read User|null $createdBy
+ * @property-read Collection<int, Consultation> $consultation
+ * @property-read int|null $consultation_count
+ * @property-read User $createdBy
  * @property-read Gender|null $gender
+ * @property-read string $full_name
+ * @property-read Collection<int, Laboratory> $laboratory
+ * @property-read int|null $laboratory_count
+ * @property-read User|null $lastModifiedBy
  * @property-read Nationality|null $nationality
+ * @property-read Collection<int, PatientAudit> $patientAudit
+ * @property-read int|null $patient_audit_count
  * @property-read Collection<int, PatientVitalSign> $patientVitalSigns
  * @property-read int|null $patient_vital_signs_count
  * @property-read Province|null $province
@@ -60,9 +73,12 @@ use Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted;
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient orWhereBlind(string $column, string $indexName, array|string $value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereAge($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereBarangayId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereBatch($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereBlind(string $column, string $indexName, array|string $value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereCityId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereCivilStatusId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereContactNumber1($value)
@@ -72,11 +88,15 @@ use Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereDateOfBirth($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereFirstName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereFirstNameIndex($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereGenderId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereHouseNo($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereLastModifiedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereLastName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereLastNameIndex($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereMiddleName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereMiddleNameIndex($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereNationalityId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereOccupation($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient wherePatientSuffixId($value)
@@ -124,16 +144,16 @@ use Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted;
 ])]
 class Patient extends Model implements CipherSweetEncrypted
 {
-    use CorrectTimezone, HasUuids, UsesCipherSweet;
+    use CorrectTimezone, HasUuids, UsesCipherSweet, PersonDetails;
 
-    protected $appends = ['full_name'];
+    protected $appends = ['full_name', 'age_computed'];
 
     protected function casts(): array
     {
         return [
-            'last_name'      => 'encrypted',
-            'first_name'      => 'encrypted',
-            'middle_name'      => 'encrypted',
+            'last_name'   => 'encrypted',
+            'first_name'  => 'encrypted',
+            'middle_name' => 'encrypted',
 
             'date_of_birth'   => 'encrypted',
             'age'             => 'encrypted',
@@ -146,31 +166,6 @@ class Patient extends Model implements CipherSweetEncrypted
             'street'          => 'encrypted',
             'photo'           => 'encrypted',
         ];
-    }
-
-    public function getFullNameAttribute(): string
-    {
-        return $this->last_name.', '.$this->first_name.($this->middle_name ? ' '.$this->middle_name : '');
-    }
-
-    public function gender(): BelongsTo
-    {
-        return $this->belongsTo(Gender::class);
-    }
-
-    public function barangay(): BelongsTo
-    {
-        return $this->belongsTo(Barangay::class);
-    }
-
-    public function city(): BelongsTo
-    {
-        return $this->belongsTo(City::class);
-    }
-
-    public function province(): BelongsTo
-    {
-        return $this->belongsTo(Province::class);
     }
 
     public function suffix(): BelongsTo
@@ -237,8 +232,8 @@ class Patient extends Model implements CipherSweetEncrypted
             ->addField('first_name_index', Constants::TYPE_TEXT)
             ->addField('middle_name_index', Constants::TYPE_OPTIONAL_TEXT)
             ->addField('last_name_index', Constants::TYPE_TEXT)
-            ->addBlindIndex('first_name_index', new BlindIndex('first_name_index', [new Lowercase()]))
-            ->addBlindIndex('middle_name_index', new BlindIndex('middle_name_index', [new Lowercase()]))
-            ->addBlindIndex('last_name_index', new BlindIndex('last_name_index', [new Lowercase()]));
+            ->addBlindIndex('first_name_index', new BlindIndex('first_name_index', [new Lowercase]))
+            ->addBlindIndex('middle_name_index', new BlindIndex('middle_name_index', [new Lowercase]))
+            ->addBlindIndex('last_name_index', new BlindIndex('last_name_index', [new Lowercase]));
     }
 }

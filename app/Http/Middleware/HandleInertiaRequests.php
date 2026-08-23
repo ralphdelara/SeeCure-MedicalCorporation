@@ -65,7 +65,7 @@ class HandleInertiaRequests extends Middleware
 
         if ($user) {
             // Eager load to prevent N+1
-            $user = $user->loadMissing(['professions', 'specialties', 'departments']);
+            $user = $user->loadMissing(['professions', 'specialties', 'department']);
 
             $professions = $user->professions->map(fn ($item) => [
                 'id'   => $item->profession->id,
@@ -75,11 +75,6 @@ class HandleInertiaRequests extends Middleware
             $specialties = $user->specialties->map(fn ($item) => [
                 'id'   => $item->specialty->id,
                 'name' => $item->specialty->name,
-            ])->values()->all();
-
-            $departments = $user->departments->map(fn ($item) => [
-                'id'   => $item->department->id,
-                'name' => $item->department->name,
             ])->values()->all();
         }
 
@@ -98,10 +93,6 @@ class HandleInertiaRequests extends Middleware
                 'specialties' => [
                     'ids'         => array_column($specialties ?? [], 'id'),
                     'specialties' => array_column($specialties ?? [], 'name'),
-                ],
-                'departments' => [
-                    'ids'         => array_column($departments ?? [], 'id'),
-                    'departments' => array_column($departments ?? [], 'name'),
                 ],
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',

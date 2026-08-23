@@ -49,8 +49,7 @@ svg {
     padding: 5px;
 }
 
-.form-check.form-check-inline,
-.table.table-select tbody tr {
+.form-check.form-check-inline {
     -webkit-user-select: none; /* Safari */
     -moz-user-select: none; /* Firefox */
     -ms-user-select: none; /* Older IE/Edge */
@@ -74,38 +73,6 @@ svg {
         transform: rotate(360deg);
     }
 }
-
-.table tbody td {
-    vertical-align: top;
-}
-
-.table tbody td a:hover {
-    color: var(--bs-success);
-}
-
-/* Sticky table header on desktop */
-@media (min-width: 992px) {
-    .table-responsive {
-        overflow-x: visible !important; /* Allows sticky header to track page scroll */
-    }
-
-    .table thead th {
-        position: sticky;
-        top: 70px; /*91px on mobile or tablet*/
-        z-index: 10;
-    }
-
-    .table.table-select thead th {
-        position: sticky;
-        top: 0px; /*91px on mobile or tablet*/
-        z-index: 10;
-    }
-}
-
-.table.table-select tbody tr {
-    cursor: pointer;
-}
-/* Sticky table header */
 
 /* Pagination */
 nav ul.pagination li.active > .page-link,

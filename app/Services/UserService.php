@@ -1,0 +1,209 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\City;
+use App\Models\Department;
+use App\Models\Gender;
+use App\Models\Nationality;
+use App\Models\Position;
+use App\Models\Profession;
+use App\Models\Province;
+use App\Models\Specialty;
+use App\Models\User;
+use App\Models\UserProfession;
+use App\Models\UserSpecialty;
+use Arr;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+
+class UserService
+{
+    public function getUserList(
+        ?string $keyword,
+        ?string $selectId,
+        string $path,
+    ): array {
+        $userList = User::with([
+            'gender',
+            'province',
+            'city',
+            'barangay',
+            'department',
+            'position',
+            'professions.profession',
+            'specialties.specialty',
+            'audits',
+            'createdBy',
+            'lastModifiedBy',
+        ]);
+
+        if (! empty($keyword)) {
+            $userList = $userList->whereBlind('last_name_index', 'last_name_index', strtolower($keyword))
+                ->orWhereBlind('first_name_index', 'first_name_index', strtolower($keyword))
+                ->orWhereBlind('middle_name_index', 'middle_name_index', strtolower($keyword));
+        }
+
+        $userList = $userList->orderBy('batch')
+            ->paginate(50)
+            ->withPath('/'.$path)->withQueryString();
+
+        $tableData = $userList->collect()->toArray();
+        $pageData = Arr::except($userList->toArray(), ['data']);
+        $links = app(PageService::class)->limitLinks($userList, 5);
+        $pageData['links'] = $links;
+
+        return compact(
+            'tableData',
+            'pageData',
+        );
+    }
+
+    public function addOrUpdateUser(array $userDetails): string
+    {
+        $userId = $userDetails['user_id'];
+
+        unset($userDetails['user_id']);
+
+        if (empty($userId)) {
+            $userDetails['status'] = true;
+            $userDetails['created_by'] = Auth::id();
+        } else {
+            $userDetails['last_modified_by'] = Auth::id();
+        }
+
+        $userDetails['username_index'] = $userDetails['username'];
+
+        $userDetails['last_name'] = formatName($userDetails['last_name']);
+        $userDetails['first_name'] = formatName($userDetails['first_name']);
+
+        $userDetails['last_name_index'] = $userDetails['last_name'];
+        $userDetails['first_name_index'] = $userDetails['first_name'];
+
+        if (! empty($userDetails['middle_name'])) {
+            $userDetails['middle_name'] = formatName($userDetails['middle_name']);
+            $userDetails['middle_name_index'] = $userDetails['middle_name'];
+        }
+
+        $user = User::updateOrCreate(
+            ['id' => $userId],
+            $userDetails,
+        );
+
+        // add or update profession data
+        updateRelatedData(
+            new UserProfession,
+            $user->professions->toArray(),
+            $userDetails['profession_ids'],
+            $userId,
+            'user_id',
+            'profession_id',
+        );
+
+        // add or update specialty data
+        updateRelatedData(
+            new UserSpecialty,
+            $user->specialties->toArray(),
+            $userDetails['specialty_ids'],
+            $userId,
+            'user_id',
+            'specialty_id',
+        );
+
+        $this->updateUserOrder();
+
+        return (string) $user->id;
+    }
+
+    public function updateUserOrder(): void
+    {
+        $users = User::select('id', 'last_name', 'first_name', 'middle_name')->get()->toArray();
+
+        usort($users, function ($a, $b) {
+            return strcasecmp($a['last_name'], $b['last_name'])
+                ?: strcasecmp($a['first_name'], $b['first_name'])
+                ?: strcasecmp($a['middle_name'], $b['middle_name']);
+        });
+
+        $sequenceNo = 1;
+
+        DB::transaction(function () use ($users, &$sequenceNo) {
+            $chunks = array_chunk($users, 2000);
+
+            foreach ($chunks as $chunk) {
+                $cases = [];
+                $ids = [];
+                $params = [];
+
+                foreach ($chunk as $index => $user) {
+                    $cases[] = "WHEN id = :id{$index} THEN :batch{$index}::bigint";
+                    $ids[] = ":id{$index}";
+
+                    $params["id{$index}"] = $user['id'];
+                    $params["batch{$index}"] = $sequenceNo;
+                    $sequenceNo++;
+                }
+
+                $caseSql = implode(' ', $cases);
+                $idSql = implode(',', $ids);
+
+                $sql = "UPDATE users SET batch = CASE {$caseSql} END WHERE id IN ({$idSql})";
+                DB::update($sql, $params);
+            }
+        });
+    }
+
+    public function getUserFormOptions(): array
+    {
+        $departmentOptions = Department::all();
+        $professionOptions = Profession::all();
+        $specialtyOptions = Specialty::all();
+        $positionOptions = Position::all();
+        $genderOptions = Gender::all();
+        $nationalityOptions = Nationality::all();
+        $provinceOptions = Province::all();
+        $cityOptions = City::select('id', 'name')->where('province_id', '=', 1)->get(); // Aklan
+
+        return compact(
+            'departmentOptions',
+            'professionOptions',
+            'specialtyOptions',
+            'positionOptions',
+            'genderOptions',
+            'nationalityOptions',
+            'provinceOptions',
+            'cityOptions',
+        );
+    }
+
+    public function getUserDetails(string $id): array
+    {
+        if (! Str::isUuid($id)) {
+            abort(404);
+        }
+
+        $user = User::with([
+            'gender',
+            'province',
+            'city',
+            'barangay',
+            'department',
+            'position',
+            'professions',
+            'specialties',
+            'audits',
+        ])->find($id);
+
+        if (empty($user)) {
+            abort(404);
+        }
+
+        $user = $user->toArray();
+
+        $user['professions'] = array_column($user['professions'], 'profession_id');
+        $user['specialties'] = array_column($user['specialties'], 'specialty_id');
+
+        return $user;
+    }
+}

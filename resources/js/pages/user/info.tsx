@@ -1,15 +1,15 @@
 import { IconUserEdit } from '@tabler/icons-react';
 import React from 'react';
 import { Link } from '@inertiajs/react';
-import { getPatientDetails } from '@/actions/App/Http/Controllers/PatientController';
-import { PatientDetailsProps } from '@/components/patient/patient-details';
+import { getUserDetails } from '@/actions/App/Http/Controllers/UserController';
+import { UserDetailsProps } from '@/components/user/user-details';
 
 interface InertiaProps {
-    patientDetails: PatientDetailsProps;
+    userDetails: UserDetailsProps;
     children: React.ReactNode;
 }
 
-const PatientInfo = ({ patientDetails, children }: InertiaProps) => {
+const UserInfo = ({ userDetails, children }: InertiaProps) => {
     return (
         <div className="card mt-2">
             <div className="card-body mb-0 p-0">
@@ -31,19 +31,19 @@ const PatientInfo = ({ patientDetails, children }: InertiaProps) => {
                     </div>
                     <div className="col-lg-5 order-lg-2 order-2">
                         <div className="text-dark fs-7 fw-bolder mb-0 text-center">
-                            {patientDetails.full_name}
+                            {userDetails.full_name}
                         </div>
                         <div className="d-flex align-items-center justify-content-around">
                             <div className="p-2 text-center">
                                 <i className="ti ti-file-description fs-6 d-block mb-2"></i>
-                                <h4 className="lh-1 mb-0">{patientDetails.age ?? 'N/A'}</h4>
+                                <h4 className="lh-1 mb-0">{userDetails.age ?? 'N/A'}</h4>
                                 <p className="mb-0">Age</p>
                             </div>
                             <div className="border-end border-success">&nbsp;</div>
                             <div className="p-2 text-center">
                                 <i className="ti ti-user-circle fs-6 d-block mb-2"></i>
                                 <h4 className="lh-1 mb-0">
-                                    {patientDetails.gender?.name ?? 'N/A'}
+                                    {userDetails.gender?.name ?? 'N/A'}
                                 </h4>
                                 <p className="mb-0">Gender</p>
                             </div>
@@ -51,7 +51,7 @@ const PatientInfo = ({ patientDetails, children }: InertiaProps) => {
                             <div className="p-2 text-center">
                                 <i className="ti ti-user-check fs-6 d-block mb-2"></i>
                                 <h4 className="lh-1 mb-0">
-                                    {patientDetails.status?.name ?? 'N/A'}
+                                    {userDetails.status?.name ?? 'N/A'}
                                 </h4>
                                 <p className="mb-0">Status</p>
                             </div>
@@ -61,7 +61,7 @@ const PatientInfo = ({ patientDetails, children }: InertiaProps) => {
                         <ul className="list-unstyled d-flex align-items-center justify-content-center justify-content-lg-end pe-xxl-4 mx-4 my-3 gap-3">
                             <li>
                                 <Link
-                                    href={getPatientDetails(patientDetails.id).url}
+                                    href={getUserDetails(userDetails.id).url}
                                     className="btn btn-success text-nowrap"
                                 >
                                     <IconUserEdit className="me-1" />
@@ -77,4 +77,4 @@ const PatientInfo = ({ patientDetails, children }: InertiaProps) => {
     );
 };
 
-export default PatientInfo;
+export default UserInfo;

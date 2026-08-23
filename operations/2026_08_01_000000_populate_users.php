@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\User;
-use App\Models\UserDepartment;
 use App\Models\UserProfession;
 use TimoKoerber\LaravelOneTimeOperations\OneTimeOperation;
 
@@ -28,22 +27,19 @@ return new class extends OneTimeOperation
     public function process(): void
     {
         $user = User::create([
-            'first_name' => 'SYSTEM',
-            'last_name'  => 'USER',
-            'username'   => 'system_user',
-            'password'   => Hash::make('system_pass'),
-            'gender_id'  => 4, // Unknown
-            'status' => true,
-            'position_id' => 14, // Bot
+            'first_name'       => 'SYSTEM',
+            'last_name'        => 'USER',
+            'username'         => 'system_user',
+            'password'         => Hash::make('system_pass'),
+            'gender_id'        => 4, // Unknown
+            'status'           => true,
+            'department_id'    => 4, // IT
+            'position_id'      => 14, // Bot
             'first_name_index' => 'SYSTEM',
             'last_name_index'  => 'USER',
-            'created_by' => null,
+            'username_index'   => 'system_user',
+            'created_by'       => null,
 
-        ]);
-
-        UserDepartment::create([
-            'user_id'       => $user->id, // SYSTEM USER
-            'department_id' => 1, // Administrator
         ]);
 
         UserProfession::create([
@@ -60,18 +56,15 @@ return new class extends OneTimeOperation
 
             'status' => true,
 
-            'position_id' => 6, // GP
+            'department_id' => 2, // Consultation
+            'position_id'   => 6, // GP
 
             'first_name_index' => 'Lyka Loraine',
             'last_name_index'  => 'Zulueta',
 
-            'created_by' => $user->id, // SYSTEM USER
+            'username_index' => 'lykaz',
+            'created_by'     => $user->id, // SYSTEM USER
 
-        ]);
-
-        UserDepartment::create([
-            'user_id'       => $user2->id,
-            'department_id' => 2, // Consultation
         ]);
 
         UserProfession::create([

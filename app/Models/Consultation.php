@@ -12,38 +12,49 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * @property int $id
- * @property int $patient_id
+ * @property string $id
+ * @property string $visit_id
+ * @property string $patient_id
  * @property string|null $guardian_name
  * @property string|null $guardian_contact_number
  * @property string|null $guardian_email
+ * @property int|null $guardian_relationship_id
+ * @property string|null $diagnosis
  * @property int $status_id
- * @property int $doctor_id
- * @property int $created_by
+ * @property string $doctor_id
+ * @property string $created_by
+ * @property string|null $last_modified_by
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
- * @property-read User|null $createdBy
+ * @property-read User $createdBy
  * @property-read User $doctor
- * @property-read Patient $patient
+ * @property-read Relationship|null $guardianRelationship
+ * @property-read User|null $lastModifiedBy
+ * @property-read Patient|null $patient
  * @property-read Collection<int, PatientVitalSign> $patientVitalSign
  * @property-read int|null $patient_vital_sign_count
  * @property-read Collection<int, ConsultationSignsOrSymptom> $signsOrSymptoms
  * @property-read int|null $signs_or_symptoms_count
  * @property-read ConsultationStatus $status
+ * @property-read Visit $visit
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereDiagnosis($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereDoctorId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereGuardianContactNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereGuardianEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereGuardianName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereGuardianRelationshipId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereLastModifiedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation wherePatientId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereStatusId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereVisitId($value)
  *
  * @mixin \Eloquent
  */
@@ -62,7 +73,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 ])]
 class Consultation extends Model
 {
-    use HasUuids, CorrectTimezone;
+    use CorrectTimezone, HasUuids;
 
     protected function casts(): array
     {

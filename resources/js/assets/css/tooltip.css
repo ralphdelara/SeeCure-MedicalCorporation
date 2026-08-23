@@ -20,7 +20,7 @@
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.2s ease-in-out;
-    z-index: 10;
+    z-index: 100;
 }
 
 /* 2. The Tooltip Arrow (Pointing Down) */
@@ -37,7 +37,7 @@
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.2s ease-in-out;
-    z-index: 10;
+    z-index: 100;
 }
 
 /* 3. Show both Box and Arrow on Hover */

@@ -29,13 +29,13 @@ export default function Pharmacy() {
     const [modalData, setModalData] = useState<AddProductForm>();
 
     const header = [
-        { name: '#', width: '5%', align: 'right' },
-        { name: 'Product', width: '25%', align: 'left' },
-        { name: 'Category', width: '20%', align: 'left' },
-        { name: 'Stock', width: '10%', align: 'right' },
-        { name: 'Cost Price', width: '10%', align: 'right' },
-        { name: 'Selling Price', width: '15%', align: 'right' },
-        { name: '', width: '15%', align: 'right' },
+        { name: '#', align: 'right' },
+        { name: 'Product', width: '25px', align: 'left' },
+        { name: 'Category', align: 'left' },
+        { name: 'Stock', align: 'right' },
+        { name: 'Cost Price', align: 'right' },
+        { name: 'Selling Price', align: 'right' },
+        { name: '', className: 'sticky-right', align: 'right' },
     ];
 
     const toggleEditModal = (data: AddProductForm) => {
@@ -63,7 +63,7 @@ export default function Pharmacy() {
                                 <td className="text-right">
                                     <h5>{pageData.from + index}</h5>
                                 </td>
-                                <td>
+                                <td style={{width: '100px'}}>
                                     <table>
                                         <tbody>
                                             <tr>
@@ -101,7 +101,7 @@ export default function Pharmacy() {
                                 <td className="text-right">
                                     <h6>{formatMoney(item.selling_price_vat_inclusive)}</h6>
                                 </td>
-                                <td className="text-nowrap">
+                                <td className="text-nowrap sticky-right">
                                     <Button
                                         variant="primary"
                                         rounded={true}

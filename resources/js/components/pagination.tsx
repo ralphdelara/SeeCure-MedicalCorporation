@@ -13,14 +13,14 @@ interface PageProps {
         current_page: number;
     };
     showTotal?: boolean;
+    bottom?: boolean;
 }
-const Pagination = ({ pageData, showTotal = true }: PageProps) => {
-    console.log(pageData);
+const Pagination = ({ pageData, showTotal = true, bottom = false }: PageProps) => {
     const prevBtnName = '&laquo; Previous';
     const nextBtnName = 'Next &raquo;';
 
     return (
-        <div className="d-lg-flex justify-content-between mt-3">
+        <div className={'d-lg-flex justify-content-between mt-3' + (bottom ? ' mb-4' : '')}>
             {showTotal && (
                 <div style={{ letterSpacing: '0.05em', position: 'relative' }} className="mt-3">
                     <h5>

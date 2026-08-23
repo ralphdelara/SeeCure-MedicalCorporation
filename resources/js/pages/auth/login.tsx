@@ -35,7 +35,7 @@ export default function Login({ status }: Props) {
                                         </Label>
                                         <Input
                                             id="username"
-                                            type="username"
+                                            type="text"
                                             name="username"
                                             className="form-control"
                                             required
