@@ -371,8 +371,18 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest whereLastModifiedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \App\Models\Laboratory $laboratory
  */
 	class LaboratoryTest extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestSubType newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestSubType newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestSubType query()
+ */
+	class LaboratoryTestSubType extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -492,6 +502,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereStreet($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read string|null $age_computed
+ * @property-read string|null $full_address
  */
 	class Patient extends \Eloquent implements \Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted {}
 }
@@ -749,6 +761,33 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Radiology newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Radiology newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Radiology query()
+ */
+	class Radiology extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RadiologyTest newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RadiologyTest newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RadiologyTest query()
+ */
+	class RadiologyTest extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RadiologyTestType newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RadiologyTestType newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RadiologyTestType query()
+ */
+	class RadiologyTestType extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
  * @property int $id
  * @property string $name
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Relationship newModelQuery()
@@ -911,6 +950,10 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUsername($value)
  * @mixin \Eloquent
+ * @property string|null $username_index
+ * @property-read string|null $age_computed
+ * @property-read string|null $full_address
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUsernameIndex($value)
  */
 	class User extends \Eloquent implements \Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted {}
 }

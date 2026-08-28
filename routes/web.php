@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\NotifyDoctor;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\FrontDeskController;
@@ -20,6 +21,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/patients', [PatientController::class, 'index'])->name('patients');
     Route::prefix('patient')->group(function () {
+        Route::get('/search', [PatientController::class, 'getSmallPatientList'])->name('patient.search');
         Route::match(['post', 'put'], '/', [PatientController::class, 'addOrUpdatePatient'])->name('patient.add-or-update');
         Route::delete('/{id}', [PatientController::class, 'deletePatient'])->name('patient.delete');
         Route::get('/{id}', [PatientController::class, 'getPatientDetails'])->name('patient.details');
@@ -61,9 +63,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('settings')->group(function () {
         Route::get('/icd10-codes', [Icd10CodeController::class, 'getIcd10Codes']);
     });
-    Route::inertia('test1', 'test')->name('test');
+    // Route::inertia('test1', 'test')->name('test');
 
-    Route::get('test', function () {
-        dd(formatName('test abcd efg-hijk'));
-    });
+    Route::inertia('/test-socket', 'test-reverb')->name('test');
+    Route::get('/test-socket-send', function () {
+        broadcast(new NotifyDoctor(
+            'Notification',
+            'A new patient has been queued',
+            10,
+            'doctorUuidHere',
+        ));
+    })->name('test-notify');
+    Route::inertia('/test-speech', 'calendar')->name('test-speech');
 });

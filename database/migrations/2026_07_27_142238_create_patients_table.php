@@ -27,15 +27,15 @@ return new class extends Migration
 
             $table->string('house_no')->nullable();
             $table->text('street')->nullable();
-            $table->foreignId('barangay_id')->nullable()->constrained();
-            $table->foreignId('city_id')->nullable()->constrained();
-            $table->foreignId('province_id')->nullable()->constrained();
+            $table->foreignId('barangay_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('city_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('province_id')->nullable()->constrained()->nullOnDelete();
 
-            $table->foreignId('gender_id')->nullable()->constrained();
-            $table->foreignId('civil_status_id')->nullable()->constrained();
-            $table->foreignId('nationality_id')->nullable()->constrained();
+            $table->foreignId('gender_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('civil_status_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('nationality_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('status_id')->constrained('patient_statuses', 'id');
-            $table->foreignId('patient_suffix_id')->nullable()->constrained();
+            $table->foreignId('patient_suffix_id')->nullable()->constrained()->nullOnDelete();
             $table->text('photo')->nullable();
 
             $table->text('last_name_index')->nullable()->index();
@@ -45,7 +45,7 @@ return new class extends Migration
             $table->unsignedBigInteger('batch')->nullable();
 
             $table->foreignUuid('created_by')->constrained('users', 'id');
-            $table->foreignUuid('last_modified_by')->nullable()->constrained('users', 'id');
+            $table->foreignUuid('last_modified_by')->constrained('users', 'id');
             $table->timestamps();
         });
     }

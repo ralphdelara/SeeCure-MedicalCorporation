@@ -166,7 +166,7 @@ class User extends Authenticatable implements CipherSweetEncrypted
     /** @use HasFactory<UserFactory> */
     use CorrectTimezone, HasFactory, HasUuids, Notifiable, PersonDetails, UsesCipherSweet;
 
-    protected $appends = ['full_name', 'age_computed'];
+    protected $appends = ['full_name', 'full_address', 'age_computed'];
 
     /**
      * Get the attributes that should be cast.

@@ -27,4 +27,5 @@ export interface UserTableList {
     ptr_no: string;
     date_hired: string;
     date_resigned: string;
+    full_address: string;
 }

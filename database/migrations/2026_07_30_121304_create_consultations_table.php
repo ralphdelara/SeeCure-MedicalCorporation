@@ -14,8 +14,8 @@ return new class extends Migration
     {
         Schema::create('consultations', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('(gen_random_uuid())'));
-            $table->foreignUuid('visit_id')->constrained();
-            $table->string('patient_id');
+            $table->foreignUuid('visit_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('patient_id')->constrained()->cascadeOnDelete();
 
             $table->text('guardian_name')->nullable();
             $table->string('guardian_contact_number')->nullable();
@@ -24,9 +24,10 @@ return new class extends Migration
             $table->text('diagnosis')->nullable();
 
             $table->foreignId('status_id')->constrained('consultation_statuses', 'id');
+            $table->date('follow_up_date')->nullable();
             $table->foreignUuid('doctor_id')->constrained('users', 'id');
             $table->foreignUuid('created_by')->constrained('users', 'id');
-            $table->foreignUuid('last_modified_by')->nullable()->constrained('users', 'id');
+            $table->foreignUuid('last_modified_by')->constrained('users', 'id');
             $table->timestamps();
         });
     }

@@ -11,14 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('laboratory_tests', function (Blueprint $table) {
+        Schema::create('radiology', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('(gen_random_uuid())'));
-            $table->foreignUuid('laboratory_id')->constrained('laboratory', 'id');
-            $table->foreignId('laboratory_test_type_id')->constrained();
-            $table->text('data');
+            $table->foreignUuid('visit_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('patient_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('consultation_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('status_id')->constrained('laboratory_statuses', 'id');
 
             $table->foreignUuid('created_by')->constrained('users', 'id');
-            $table->foreignUuid('last_modified_by')->nullable()->constrained('users', 'id');
+            $table->foreignUuid('last_modified_by')->constrained('users', 'id');
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('laboratory_tests');
+        Schema::dropIfExists('radiology');
     }
 };

@@ -23,6 +23,7 @@ import Radiology from './radiology';
 import Laboratory from './laboratory';
 import { usePage } from '@inertiajs/react';
 import { PatientDetailsProps } from '@/components/patient/patient-details';
+import Notification from '../notification';
 
 interface InertiaProps {
     patientDetails: PatientDetailsProps;
@@ -46,6 +47,7 @@ const ConsultationDetails = () => {
     return (
         <>
             <Breadcrumbs title="Consultation Details">&nbsp;</Breadcrumbs>
+            <Notification/>
             <PatientInfo patientDetails={patientDetails}>
                 <ul
                     className="nav nav-pills user-profile-tab justify-content-center bg-success-subtle rounded-2 rounded-top-0 mt-2"

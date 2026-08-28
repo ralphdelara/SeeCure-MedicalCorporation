@@ -21,7 +21,7 @@ return new class extends Migration
             $table->text('first_name');
             $table->text('middle_name')->nullable();
 
-            $table->foreignId('gender_id')->nullable()->constrained();
+            $table->foreignId('gender_id')->nullable()->constrained()->nullOnDelete();
             $table->string('date_of_birth')->nullable();
 
             $table->string('contact_number')->nullable();

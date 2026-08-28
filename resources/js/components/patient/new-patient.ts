@@ -1,7 +1,7 @@
 import { AddressDetailsFormProps } from "../address/types";
 
 export interface AddOrUpdatePatientDetailsFormProps extends AddressDetailsFormProps {
-    patient_id: number | string;
+    patient_id: string;
     last_name: string;
     first_name: string;
     middle_name?: string;

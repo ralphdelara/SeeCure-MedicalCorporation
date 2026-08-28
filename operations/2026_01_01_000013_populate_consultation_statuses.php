@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\ConsultationStatusEnum;
 use App\Models\ConsultationStatus;
 use TimoKoerber\LaravelOneTimeOperations\OneTimeOperation;
 
@@ -25,11 +26,6 @@ return new class extends OneTimeOperation
      */
     public function process(): void
     {
-        ConsultationStatus::fillAndInsert([
-            ['name' => 'Pending'],
-            ['name' => 'Ongoing'],
-            ['name' => 'Completed'],
-            ['name' => 'Cancelled'],
-        ]);
+        ConsultationStatus::fillAndInsert(ConsultationStatusEnum::getArrayList());
     }
 };

@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('consultation_signs_or_symptoms', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('(gen_random_uuid())'));
-            $table->foreignUuid('consultation_id')->constrained();
+            $table->foreignUuid('consultation_id')->constrained()->cascadeOnDelete();
             $table->foreignId('signs_or_symptom_id')->constrained();
         });
     }

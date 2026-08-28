@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('(gen_random_uuid())'));
             $table->foreignId('transaction_type_id')->constrained();
-            $table->string('patient_id');
-            $table->foreignUuid('consultation_id')->nullable()->constrained();
+            $table->foreignUuid('patient_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('consultation_id')->constrained()->cascadeOnDelete();
             $table->text('customer_name')->nullable();
             $table->decimal('consultation_service_amount', 12, 2);
             $table->decimal('laboratory_service_amount', 12, 2);

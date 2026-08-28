@@ -37,13 +37,14 @@ interface TableListProps extends TableHeaderProps {
     pageData?: Pages;
     children: React.ReactNode;
     hasPage?: boolean;
+    floatScrollbar?: boolean;
 }
 
-const TableList = ({ header, pageData, children, hasPage = true }: TableListProps) => {
+const TableList = ({ header, pageData, children, hasPage = true, floatScrollbar = true }: TableListProps) => {
     return (
         <>
             {hasPage && pageData && <Pagination pageData={pageData} />}
-            <FloatingScrollTable>
+            <FloatingScrollTable float={floatScrollbar}>
                 <table className="table-hover mb-0 table align-middle text-nowrap">
                     <TableHeader header={header} />
                     <tbody>{children}</tbody>

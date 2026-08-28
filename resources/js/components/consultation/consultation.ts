@@ -5,7 +5,6 @@ export interface ConsultationDetailsFormProps extends SignsOrSymptomsDetailsForm
     guardian_contact_number: string;
     guardian_email: string;
     has_consultation: number;
-    has_laboratory: number;
     doctor_id: string | number;
 }
 

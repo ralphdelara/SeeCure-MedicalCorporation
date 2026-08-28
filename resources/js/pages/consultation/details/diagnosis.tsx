@@ -31,6 +31,34 @@ const Diagnosis = ({ showTab }: { showTab: boolean }) => {
         searchIcd10();
     }, [keyword]);
 
+    const updateSelected = (id: number) => {
+        const selectedIdsTemp = data.ids;
+        const selectedTextTemp = data.text;
+        const text = document
+            .getElementById('row-' + id)
+            ?.innerHTML.replace(/<\/?[^>]+(>|$)/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+
+        const selectIdIndex = selectedIdsTemp.indexOf(id);
+        const selectTextIndex = selectedTextTemp.indexOf(text ?? '');
+
+        if (selectIdIndex !== -1) {
+            selectedIdsTemp.splice(selectIdIndex, 1);
+        } else {
+            selectedIdsTemp.push(id);
+        }
+
+        if (selectTextIndex !== -1) {
+            selectedTextTemp.splice(selectTextIndex, 1);
+        } else {
+            selectedTextTemp.push(text ?? '');
+        }
+
+        setData('ids', selectedIdsTemp);
+
+        setData('text', selectedTextTemp);
+    };
     return (
         <>
             <Head title="Diagnosis" />
@@ -103,10 +131,39 @@ const Diagnosis = ({ showTab }: { showTab: boolean }) => {
                                                         align: 'left',
                                                     },
                                                 ]}
-                                                data={data}
-                                                setData={setData}
-                                                options={icd10CodeList}
-                                            />
+                                            >
+                                                {icd10CodeList.map((item, index) => (
+                                                    <tr
+                                                        key={'tr-' + item.id}
+                                                        id={'row-' + item.id}
+                                                        onClick={() => updateSelected(item.id)}
+                                                        className={
+                                                            data.ids.includes(item.id)
+                                                                ? 'border-start border-success border-3'
+                                                                : ''
+                                                        }
+                                                    >
+                                                        {Object.entries(item).map(
+                                                            ([key, value]) => {
+                                                                if (key !== 'id') {
+                                                                    return (
+                                                                        <td
+                                                                            key={
+                                                                                'td-' +
+                                                                                key +
+                                                                                '-' +
+                                                                                index
+                                                                            }
+                                                                        >
+                                                                            {value}
+                                                                        </td>
+                                                                    );
+                                                                }
+                                                            },
+                                                        )}
+                                                    </tr>
+                                                ))}
+                                            </TableSelect>
                                         </div>
                                         <div className="mt-2 text-right">
                                             <Button size="lg">

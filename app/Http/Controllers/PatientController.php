@@ -72,4 +72,9 @@ class PatientController extends Controller
     {
         Patient::destroy($patientId);
     }
+
+    public function getSmallPatientList(Request $request): array
+    {
+        return app(PatientService::class)->getSmallPatientList($request->keyword);
+    }
 }

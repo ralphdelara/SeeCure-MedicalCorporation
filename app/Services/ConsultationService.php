@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Enums\ConsultationStatusEnum;
 use App\Models\Consultation;
+use App\Models\ConsultationSignsOrSymptom;
 use Arr;
 use Illuminate\Support\Facades\Auth;
 
@@ -32,18 +34,12 @@ class ConsultationService
             'patientVitalSign.vitalSignField' => function ($query) {
                 $query->select('id', 'name');
             },
-            'signsOrSymptoms.signsOrSymptom' => function ($query) {
-                $query->select('id', 'name');
-            },
             'doctor' => function ($query) {
-                $query->select('id', 'first_name', 'last_name');
+                $query->select('id', 'first_name', 'middle_name', 'last_name');
             },
-            'doctor.professions.profession' => function ($query) {
-                $query->select('id', 'name', 'prefix', 'suffix');
-            },
-            'status' => function ($query) {
-                $query->select('id', 'name');
-            },
+            'status',
+            'signsOrSymptoms',
+            'doctor.professions',
         ])->whereStatusId(1)->orderBy('created_at')->paginate(50)
             ->withPath('/'.$path)->withQueryString();
 
@@ -79,14 +75,14 @@ class ConsultationService
             'patientVitalSign.vitalSignField' => function ($query) {
                 $query->select('id', 'name');
             },
-            'signsOrSymptoms.signsOrSymptom' => function ($query) {
-                $query->select('id', 'name');
+            'signsOrSymptoms' => function ($query) {
+                $query->select('name');
             },
             'doctor' => function ($query) {
                 $query->select('id', 'first_name', 'last_name');
             },
-            'doctor.professions.profession' => function ($query) {
-                $query->select('id', 'name', 'prefix', 'suffix');
+            'doctor.professions' => function ($query) {
+                $query->select('name', 'prefix', 'suffix');
             },
             'status' => function ($query) {
                 $query->select('id', 'name');
@@ -121,12 +117,31 @@ class ConsultationService
         ]);
 
         // insert signs or symptoms
-        $data = array_map(fn ($id) => [
+        $signsOrSymptomsData = array_map(fn ($id) => [
             'consultation_id'     => $consultation->id,
             'signs_or_symptom_id' => $id,
         ], $consultDetails['signs_or_symptoms_id']);
-        $consultation->signsOrSymptoms()->insert($data);
+
+        ConsultationSignsOrSymptom::fillAndInsert($signsOrSymptomsData);
 
         return (string) $consultation->id;
+    }
+
+    public function getIncompleteConsultation(): array
+    {
+        return Consultation::with([
+            'patient' => function ($query) {
+                $query->select('id', 'first_name', 'middle_name', 'last_name', 'patient_suffix_id', 'age', 'gender_id');
+            },
+            'patient.gender' => function ($query) {
+                $query->select('id', 'name');
+            },
+            'doctor' => function ($query) {
+                $query->select('id', 'first_name', 'middle_name', 'last_name');
+            },
+            'status',
+            'signsOrSymptoms',
+            'doctor.professions',
+        ])->whereIn('status_id', ConsultationStatusEnum::incompleteStatuses())->get()->toArray();
     }
 }

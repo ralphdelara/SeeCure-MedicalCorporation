@@ -1,7 +1,7 @@
 import { Options } from "@/types/options";
 
 export interface PatientTableList {
-    id: number;
+    id: string;
     full_name: string;
     gender: {
         name: string;
@@ -19,4 +19,5 @@ export interface PatientTableList {
     nationality: Options;
     occupation: string;
     philhealth_id: string;
+    full_address: string;
 }

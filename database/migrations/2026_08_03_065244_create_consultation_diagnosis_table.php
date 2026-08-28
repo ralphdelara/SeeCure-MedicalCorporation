@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary()->default(DB::raw('(gen_random_uuid())'));
             $table->text('diagnosis');
             $table->foreignUuid('created_by')->constrained('users', 'id');
-            $table->foreignUuid('last_modified_by')->nullable()->constrained('users', 'id');
+            $table->foreignUuid('last_modified_by')->constrained('users', 'id');
             $table->timestamps();
         });
     }

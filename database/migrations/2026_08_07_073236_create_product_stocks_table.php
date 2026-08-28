@@ -20,12 +20,12 @@ return new class extends Migration
             $table->decimal('quantity', 12, 2);
             $table->decimal('stock_onhand', 12, 2);
             $table->foreignId('stock_movement_type_id')->constrained();
-            $table->foreignUuid('supplier_id')->nullable()->constrained();
+            $table->foreignUuid('supplier_id')->nullable()->constrained()->nullOnDelete();
             $table->string('reference_no')->nullable();
             $table->date('manufacture_date')->nullable();
             $table->date('expiry_date')->nullable();
             $table->foreignUuid('created_by')->constrained('users', 'id');
-            $table->foreignUuid('last_modified_by')->nullable()->constrained('users', 'id');
+            $table->foreignUuid('last_modified_by')->constrained('users', 'id');
             $table->timestamps();
         });
     }
