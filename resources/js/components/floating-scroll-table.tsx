@@ -2,9 +2,13 @@ import React, { useRef, useEffect, useState } from 'react';
 
 interface FloatingScrollTableProps {
     children: React.ReactNode;
+    float?: boolean;
 }
 
-export const FloatingScrollTable: React.FC<FloatingScrollTableProps> = ({ children }) => {
+export const FloatingScrollTable: React.FC<FloatingScrollTableProps> = ({
+    children,
+    float = true,
+}) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const tableResponsiveRef = useRef<HTMLDivElement>(null);
     const dummyScrollRef = useRef<HTMLDivElement>(null);
@@ -80,43 +84,48 @@ export const FloatingScrollTable: React.FC<FloatingScrollTableProps> = ({ childr
     const isScrollable = widths.scrollWidth > widths.clientWidth;
 
     return (
-        <div ref={containerRef} style={{ position: 'relative', width: '100%' }}>
-            {/* Floating Dummy Scrollbar with wide custom track classes */}
-            <div
-                ref={dummyScrollRef}
-                className="floating-scrollbar-track"
-                style={{
-                    position: 'fixed',
-                    bottom: 40,
-                    left: tableResponsiveRef.current?.getBoundingClientRect().left || 0,
-                    width: `${widths.clientWidth}px`,
-                    overflowX: 'auto',
-                    overflowY: 'hidden',
-                    zIndex: 99,
-                    display: isVisible && isScrollable ? 'block' : 'none',
+        <>
+            {!float && <div className="table-responsive">{children}</div>}
+            {float && (
+                <div ref={containerRef} style={{ position: 'relative', width: '100%' }}>
+                    {/* Floating Dummy Scrollbar with wide custom track classes */}
+                    <div
+                        ref={dummyScrollRef}
+                        className="floating-scrollbar-track"
+                        style={{
+                            position: 'fixed',
+                            bottom: 40,
+                            left: tableResponsiveRef.current?.getBoundingClientRect().left || 0,
+                            width: `${widths.clientWidth}px`,
+                            overflowX: 'auto',
+                            overflowY: 'hidden',
+                            zIndex: 99,
+                            display: isVisible && isScrollable ? 'block' : 'none',
 
-                    backgroundColor: '#fff', // Light gray solid bar fill
-                    borderTop: '1px solid #dee2e6', // Crisp separation line from the table
-                    boxShadow: '0 -4px 10px rgba(0,0,0,0.05)', // Subtle lift shadow off the background
-                }}
-            >
-                <div
-                    ref={dummyContentRef}
-                    style={{
-                        width: `${widths.scrollWidth}px`,
-                        height: '100%',
-                    }}
-                />
-            </div>
+                            backgroundColor: '#fff', // Light gray solid bar fill
+                            borderTop: '1px solid #dee2e6', // Crisp separation line from the table
+                            boxShadow: '0 -4px 10px rgba(0,0,0,0.05)', // Subtle lift shadow off the background
+                        }}
+                    >
+                        <div
+                            ref={dummyContentRef}
+                            style={{
+                                width: `${widths.scrollWidth}px`,
+                                height: '100%',
+                            }}
+                        />
+                    </div>
 
-            {/* Standard Bootstrap Native Wrapper */}
-            <div
-                ref={tableResponsiveRef}
-                className="table-responsive table-responsive-hidden-scroll"
-                style={{ overflowX: 'auto', width: '100%' }}
-            >
-                {children}
-            </div>
-        </div>
+                    {/* Standard Bootstrap Native Wrapper */}
+                    <div
+                        ref={tableResponsiveRef}
+                        className="table-responsive table-responsive-hidden-scroll"
+                        style={{ overflowX: 'auto', width: '100%' }}
+                    >
+                        {children}
+                    </div>
+                </div>
+            )}
+        </>
     );
 };

@@ -14,15 +14,20 @@ return new class extends Migration
     {
         Schema::create('visits', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('(gen_random_uuid())'));
-            $table->string('patient_id');
+            $table->foreignUuid('patient_id')->constrained()->cascadeOnDelete();
             $table->boolean('has_consultation')->default(false);
             $table->boolean('has_laboratory')->default(false);
             $table->boolean('has_radiology')->default(false);
+            $table->boolean('consultation_completed')->default(false);
+            $table->boolean('lab_completed')->default(false);
+            $table->boolean('radiology_completed')->default(false);
             $table->foreignUuid('created_by')->constrained('users', 'id');
-            $table->foreignUuid('last_modified_by')->nullable()->constrained('users', 'id');
+            $table->foreignUuid('last_modified_by')->constrained('users', 'id');
             $table->timestamps();
 
-            $table->index(['has_consultation', 'has_laboratory', 'has_radiology']);
+            $table->index(['has_consultation', 'consultation_completed']);
+            $table->index(['has_laboratory', 'lab_completed']);
+            $table->index(['has_radiology', 'radiology_completed']);
         });
     }
 

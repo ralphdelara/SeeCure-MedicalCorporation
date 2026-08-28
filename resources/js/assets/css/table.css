@@ -63,7 +63,7 @@
 /* Custom utility for our floating dummy container */
 .floating-scrollbar-track {
     height: 30px !important; /* Total height of the bar container */
-    opacity: 0.7;
+    opacity: 0.4;
     cursor: all-scroll;
 }
 .floating-scrollbar-track:hover {

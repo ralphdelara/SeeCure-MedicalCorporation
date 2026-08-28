@@ -147,7 +147,7 @@ class Patient extends Model implements CipherSweetEncrypted
 {
     use CorrectTimezone, HasUuids, PersonDetails, UsesCipherSweet;
 
-    protected $appends = ['full_name', 'age_computed'];
+    protected $appends = ['full_name', 'full_address', 'age_computed'];
 
     protected function casts(): array
     {

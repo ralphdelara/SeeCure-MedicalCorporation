@@ -13,6 +13,15 @@ import '@/assets/images/logos/favicon.ico';
 import '@/assets/images/logos/android-chrome-192x192.png';
 import '@/assets/images/logos/apple-touch-icon.png';
 import '@/assets/images/logos/site.webmanifest';
+import { configureEcho } from '@laravel/echo-react';
+
+configureEcho({
+    broadcaster: 'reverb',
+});
+
+configureEcho({
+    broadcaster: 'reverb',
+});
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
@@ -102,9 +103,9 @@ class Consultation extends Model
         return $this->hasMany(PatientVitalSign::class);
     }
 
-    public function signsOrSymptoms(): HasMany
+    public function signsOrSymptoms(): BelongsToMany
     {
-        return $this->hasMany(ConsultationSignsOrSymptom::class);
+        return $this->belongsToMany(SignsOrSymptom::class, 'consultation_signs_or_symptoms', 'consultation_id', 'signs_or_symptom_id');
     }
 
     public function status(): BelongsTo

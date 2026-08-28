@@ -14,13 +14,13 @@ return new class extends Migration
     {
         Schema::create('patient_vital_signs', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('(gen_random_uuid())'));
-            $table->string('patient_id');
-            $table->foreignUuid('consultation_id')->nullable()->constrained();
+            $table->foreignUuid('patient_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('consultation_id')->constrained()->cascadeOnDelete();
             $table->foreignId('vital_sign_id')->constrained();
             $table->foreignId('vital_sign_field_id')->constrained();
             $table->decimal('value', 12);
             $table->foreignUuid('created_by')->constrained('users', 'id');
-            $table->foreignUuid('last_modified_by')->nullable()->constrained('users', 'id');
+            $table->foreignUuid('last_modified_by')->constrained('users', 'id');
             $table->timestamps();
         });
     }

@@ -30,7 +30,7 @@ return new class extends Migration
             $table->decimal('selling_price_vat_inclusive', 12, 2);
             $table->text('photo')->nullable();
             $table->foreignUuid('created_by')->constrained('users', 'id');
-            $table->foreignUuid('last_modified_by')->nullable()->constrained('users', 'id');
+            $table->foreignUuid('last_modified_by')->constrained('users', 'id');
             $table->timestamps();
         });
     }

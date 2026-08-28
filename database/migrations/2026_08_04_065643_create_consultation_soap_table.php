@@ -14,12 +14,12 @@ return new class extends Migration
     {
         Schema::create('consultation_soap', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('(gen_random_uuid())'));
-            $table->foreignUuid('consultation_id')->constrained();
+            $table->foreignUuid('consultation_id')->constrained()->cascadeOnDelete();
             $table->text('subjective')->nullable();
             $table->text('assessment')->nullable();
             $table->text('plan')->nullable();
             $table->foreignUuid('created_by')->constrained('users', 'id');
-            $table->foreignUuid('last_modified_by')->nullable()->constrained('users', 'id');
+            $table->foreignUuid('last_modified_by')->constrained('users', 'id');
             $table->timestamps();
         });
     }

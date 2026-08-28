@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('patient_audits', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('(gen_random_uuid())'));
-            $table->string('patient_id');
+            $table->foreignUuid('patient_id')->constrained()->cascadeOnDelete();
             $table->foreignId('audit_type_id')->constrained();
             $table->text('action');
             $table->foreignUuid('created_by')->constrained('users', 'id');

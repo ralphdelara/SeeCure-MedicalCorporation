@@ -162,4 +162,24 @@ class PatientService
 
         return $patient->toArray();
     }
+
+    public function getSmallPatientList(string $keyword): array
+    {
+        $patient = Patient::with([
+            'gender',
+            'suffix',
+            'province',
+            'city',
+            'barangay',
+            'civilStatus',
+        ])
+            ->select('id', 'first_name', 'middle_name', 'last_name', 'patient_suffix_id', 'gender_id', 'barangay_id', 'city_id', 'province_id')
+            ->whereBlind('last_name_index', 'last_name_index', strtolower($keyword))
+            ->orWhereBlind('first_name_index', 'first_name_index', strtolower($keyword))
+            ->orWhereBlind('middle_name_index', 'middle_name_index', strtolower($keyword))
+            ->limit(15)
+            ->get();
+
+        return $patient->toArray();
+    }
 }

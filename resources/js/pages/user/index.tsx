@@ -9,7 +9,6 @@ import { IconMail, IconPhone, IconUserEdit } from '@tabler/icons-react';
 import { Button } from '@/components/ui/button';
 import NewUser from './new-user-modal';
 import DeleteButton from '@/components/delete-button';
-import { parseAddress } from '@/lib/utils';
 
 interface InertiaProps {
     userList: {
@@ -160,7 +159,7 @@ export default function UserList() {
                                         <td>{item.date_hired}</td>
                                         <td>{item.date_resigned}</td>
                                         <td>{item.date_of_birth}</td>
-                                        <td>{parseAddress(item) ?? 'N/A'}</td>
+                                        <td>{item.full_address}</td>
                                         <td>
                                             <div className="d-flex align-items-center">
                                                 <div style={{ width: '40px' }}>

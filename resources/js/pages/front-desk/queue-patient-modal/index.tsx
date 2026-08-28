@@ -11,47 +11,52 @@ import SignsOrSymptomsForm from '../../../components/consultation/signs-or-sympt
 import type { QueuePatientDetailsFormProps } from './types';
 import VitalSignsForm from '../../../components/vital-signs/vital-signs-form';
 import NewPatientForm from '@/components/patient/new-patient-form';
+import MedicalServices from './medical-services';
 
 const QueuePatient = () => {
     const [showModal, setShowModal] = useState(false);
 
-    const { data, setData, post, processing, errors, reset } = useForm<QueuePatientDetailsFormProps>({
-        form_type: 'existing',
-        patient_id: '',
-        last_name: '',
-        first_name: '',
-        middle_name: '',
-        patient_suffix_id: '',
-        date_of_birth: '',
-        age: '',
-        contact_number1: '',
-        contact_number2: '',
-        email: '',
-        occupation: '',
+    const { data, setData, post, processing, errors, reset } =
+        useForm<QueuePatientDetailsFormProps>({
+            form_type: 'existing',
+            patient_id: '',
+            last_name: '',
+            first_name: '',
+            middle_name: '',
+            patient_suffix_id: '',
+            date_of_birth: '',
+            age: '',
+            contact_number1: '',
+            contact_number2: '',
+            email: '',
+            occupation: '',
 
-        gender_id: '',
-        civil_status_id: '',
-        nationality_id: '',
+            gender_id: '',
+            civil_status_id: '',
+            nationality_id: '',
 
-        house_no: '',
-        street: '',
-        barangay_id: '',
-        city_id: '',
-        province_id: 1,
+            house_no: '',
+            street: '',
+            barangay_id: '',
+            city_id: '16',
+            province_id: '1',
 
-        photo: '',
+            photo: '',
 
-        vital_signs: {},
-        philhealth_id: '',
+            vital_signs: {},
+            philhealth_id: '',
 
-        guardian_name: '',
-        guardian_contact_number: '',
-        guardian_email: '',
-        doctor_id: '',
-        has_consultation: 0,
-        has_laboratory: 0,
-        signs_or_symptoms_id: [],
-    });
+            guardian_name: '',
+            guardian_contact_number: '',
+            guardian_email: '',
+            doctor_id: '',
+            has_consultation: 0,
+            has_laboratory: 0,
+            has_radiology: 0,
+            signs_or_symptoms_id: [],
+            laboratory_test_ids: [],
+            radiology_test_ids: [],
+        });
 
     const submitQueue = (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -127,7 +132,7 @@ const QueuePatient = () => {
                                     <NewPatientForm data={data} setData={setData} errors={errors} />
                                 )}
 
-                                <ConsultationForm data={data} setData={setData} errors={errors} />
+                                <MedicalServices data={data} setData={setData} errors={errors} />
                                 {data.has_consultation === 1 && (
                                     <SignsOrSymptomsForm
                                         data={data}

@@ -72,29 +72,3 @@ export async function fetchUrl(url: string, method: string, data: object) {
         throw error;
     }
 }
-
-export function parseAddress(item: any) {
-    let address = '';
-
-    address = addressSeparator(address, item.house_no);
-    address = addressSeparator(address, item.street);
-    address = addressSeparator(address, item.barangay?.name);
-    address = addressSeparator(address, item.city?.name);
-    address = addressSeparator(address, item.province?.name);
-
-    return address;
-};
-
-const addressSeparator = (address: string, value: string) => {
-    if (value === '' || value === null || value === undefined) {
-        return address;
-    }
-
-    if (address !== '') {
-        address += ', ';
-    }
-
-    address += value;
-
-    return address;
-};

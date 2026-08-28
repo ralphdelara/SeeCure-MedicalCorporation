@@ -53,6 +53,11 @@ class LaboratoryTest extends Model
         ];
     }
 
+    public function laboratory(): BelongsTo
+    {
+        return $this->belongsTo(Laboratory::class, 'laboratory_id', 'id');
+    }
+
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by', 'id');

@@ -16,6 +16,21 @@ trait PersonDetails
         return computeExactAge($this->date_of_birth);
     }
 
+    public function getFullAddressAttribute(): ?string
+    {
+        $parts = [
+            $this->house_no,
+            $this->street,
+            $this->barangay->name ?? null,
+            $this->city->name ?? null,
+            $this->province->name ?? null,
+        ];
+
+        $fullAddress = implode(', ', array_filter($parts, fn (mixed $value) => is_string($value) && strlen($value) > 0));
+
+        return $fullAddress !== '' ? $fullAddress : null;
+    }
+
     // relationships
 
     public function gender(): BelongsTo

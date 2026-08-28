@@ -17,6 +17,7 @@ import { Fragment } from 'react';
 import { getConsultationDetails } from '@/actions/App/Http/Controllers/ConsultationController';
 import { getPatientDetails } from '@/actions/App/Http/Controllers/PatientController';
 import TableAccordion from '@/components/table-accordion';
+import Notification from './notification';
 
 interface InertiaProps {
     consultationList: {
@@ -46,6 +47,7 @@ export default function Consultation() {
     return (
         <>
             <Head title="Consultation" />
+            <Notification/>
             <Breadcrumbs title="Consultation">&nbsp;</Breadcrumbs>
             <div className="card">
                 <div className="card-body">
@@ -89,7 +91,7 @@ export default function Consultation() {
                                         {item.signs_or_symptoms.map((item2, index2) => (
                                             <h6 key={'signs-or-symptoms-' + index + '-' + index2}>
                                                 <span className="badge text-bg-danger">
-                                                    {item2.signs_or_symptom.name}
+                                                    {item2.name}
                                                 </span>
                                             </h6>
                                         ))}
@@ -101,7 +103,7 @@ export default function Consultation() {
                                                 key={'prof-' + index + '-' + index2}
                                                 className="me-2"
                                             >
-                                                {item2.profession.suffix}
+                                                {item2.suffix}
                                             </span>
                                         ))}
                                         <br />
@@ -122,16 +124,6 @@ export default function Consultation() {
                                                 <IconVolume size={18} />
                                             </i>
                                         </Button>
-                                        <Button
-                                            rounded={true}
-                                            className="me-1 mb-1"
-                                            title="Edit Queue Details"
-                                        >
-                                            <i>
-                                                <IconEdit size={18} />
-                                            </i>
-                                        </Button>
-                                        <br />
                                         <Link href={getConsultationDetails(item.id)}>
                                             <Button
                                                 rounded={true}

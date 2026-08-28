@@ -16,7 +16,6 @@ import {
 import { Button } from '@/components/ui/button';
 import NewPatient from './new-patient-modal';
 import DeleteButton from '@/components/delete-button';
-import { parseAddress } from '@/lib/utils';
 
 interface InertiaProps {
     patientList: {
@@ -150,17 +149,17 @@ export default function PatientList() {
                                                 </span>
                                             </td>
                                             <td>
-                                                {item.civil_status.name}
+                                                {item.civil_status?.name ?? ''}
                                             </td>
                                             <td>
-                                                {item.nationality.name}
+                                                {item.nationality?.name ?? ''}
                                             </td>
                                             <td>
                                                 {item.occupation}
                                             </td>
                                             <td>
                                                 <span className="fw-normal">
-                                                    {parseAddress(item)}
+                                                    {item.full_address}
                                                 </span>
                                             </td>
                                             <td>

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ConsultationStatusEnum;
+use App\Events\NotifyDoctor;
 use App\Models\LaboratoryTestType;
 use App\Models\SignsOrSymptom;
 use App\Models\VitalSign;
@@ -25,6 +27,8 @@ class FrontDeskController extends Controller
         $vitalSigns = VitalSign::with('fields')->get();
         $doctors = app(DoctorService::class)->getDoctorList();
         $laboratoryTestOptions = LaboratoryTestType::all();
+        $incompleteConsultationList = app(ConsultationService::class)->getIncompleteConsultation();
+        $incompleteConsultationStatuses = ConsultationStatusEnum::incompleteStatusesDropdown();
 
         return Inertia::render('front-desk/index', compact(
             'formOptions',
@@ -32,6 +36,8 @@ class FrontDeskController extends Controller
             'vitalSigns',
             'doctors',
             'laboratoryTestOptions',
+            'incompleteConsultationList',
+            'incompleteConsultationStatuses',
         ));
     }
 
@@ -39,8 +45,8 @@ class FrontDeskController extends Controller
     {
         $request->validate([
             'patient_id'           => 'required_if:form_type,existing',
-            'last_name'            => 'required_if:form_type,new|min:3|max:50',
-            'first_name'           => 'required_if:form_type,new|min:3|max:50',
+            'last_name'            => 'required_if:form_type,new|max:50',
+            'first_name'           => 'required_if:form_type,new|max:50',
             'doctor_id'            => 'required_if:has_consultation,1',
             'signs_or_symptoms_id' => 'required',
             'has_consultation'     => [
@@ -114,13 +120,19 @@ class FrontDeskController extends Controller
 
         if ($request->has_consultation === 1) {
             $consultationId = app(ConsultationService::class)->storeConsultation($visitId, $patientId, $consultDetails);
+
+            broadcast(new NotifyDoctor(
+                'Notification',
+                'A new patient has been queued',
+                0,
+                $consultDetails['doctor_id'],
+            ));
         }
 
         if ($request->has_laboratory === 1) {
-            $laboratoryId = app(LaboratoryService::class)->storeLaboratory($visitId, $patientId, $consultDetails);
+            app(LaboratoryService::class)->storeLaboratory($visitId, $patientId, $consultDetails);
         }
 
         app(PatientVitalSignService::class)->storeVitalSigns($patientId, $consultationId, $vitalSigns);
-
     }
 }
