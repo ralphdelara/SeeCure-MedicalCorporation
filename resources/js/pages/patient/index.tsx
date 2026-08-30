@@ -36,6 +36,8 @@ export default function PatientList() {
         { name: 'Occupation', align: 'left' },
         { name: 'Address', align: 'left' },
         { name: 'Philhealth ID', align: 'left' },
+        { name: 'Added By', align: 'left' },
+        { name: 'Last Modified By', align: 'left' },
         { name: '', className: 'sticky-right', align: 'right' },
     ];
 
@@ -167,6 +169,30 @@ export default function PatientList() {
                                                     {item.philhealth_id}
                                                 </span>
                                             </td>
+                                            <td>
+                                                <div className="d-flex align-items-start">
+                                                    <div>
+                                                        <h6 className="fs-4 fw-semibold">
+                                                            {item.created_by.full_name}
+                                                        </h6>
+                                                        <h6 className="fs-4 fw-normal">
+                                                            {item.created_at}
+                                                        </h6>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div className="d-flex align-items-start">
+                                                    <div className="ms-3">
+                                                        <h6 className="fs-4 fw-normal">
+                                                            {item.last_modified_by?.full_name ?? ''}
+                                                        </h6>
+                                                        <h6 className="fs-4 fw-normal">
+                                                            {item.updated_at ?? ''}
+                                                        </h6>
+                                                    </div>
+                                                </div>
+                                            </td>
                                             <td className="sticky-right">
                                                 <Link href={getPatientDetails(item.id)}>
                                                     <Button
@@ -190,7 +216,7 @@ export default function PatientList() {
                                     {tableData.length === 0 && (
                                         <tr>
                                             <td
-                                                colSpan={7}
+                                                colSpan={13}
                                                 className="text-danger fs-7 text-center"
                                             >
                                                 No records

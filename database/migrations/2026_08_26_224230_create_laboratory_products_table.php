@@ -16,7 +16,7 @@ return new class extends Migration
             $table->text('name');
             $table->decimal('price', 12, 2);
             $table->foreignUuid('created_by')->constrained('users', 'id');
-            $table->foreignUuid('last_modified_by')->constrained('users', 'id');
+            $table->foreignUuid('last_modified_by')->nullable()->constrained('users', 'id');
             $table->timestamps();
         });
     }
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('laboratory_inventory');
+        Schema::dropIfExists('laboratory_products');
     }
 };

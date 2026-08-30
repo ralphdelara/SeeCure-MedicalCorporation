@@ -40,7 +40,6 @@ export default () => {
         { name: '#', width: '5%', align: 'right' },
         { name: 'Patient • Gender', className: 'sticky-left', align: 'left' },
         { name: 'Attending Doctor', align: 'left' },
-        { name: 'Status', align: 'left' },
         { name: '', className: 'sticky-right', align: 'right' },
     ];
 
@@ -49,18 +48,6 @@ export default () => {
             <div className="card-body">
                 <div className="d-flex align-items-center">
                     <h4 className="card-title">Consultation</h4>
-                    <select
-                        className="form-select ms-auto w-auto"
-                        value={consultationDisplay}
-                        onChange={(e) => setConsultationDisplay(e.target.value)}
-                    >
-                        <option value="">All</option>
-                        {incompleteConsultationStatuses.map((item, index) => (
-                            <option key={'front-desk-cons-status-' + item.id} value={item.id}>
-                                {item.name}
-                            </option>
-                        ))}
-                    </select>
                 </div>
                 <TableList header={header}>
                     {incompleteConsultationList.map((item, index) => (
@@ -123,9 +110,6 @@ export default () => {
                                 </div>
                             </td>
                             <td>
-                                <span className="badge text-bg-success">{item.status.name}</span>
-                            </td>
-                            <td>
                                 <Button
                                     rounded={true}
                                     className="me-2"
@@ -143,6 +127,13 @@ export default () => {
                             </td>
                         </tr>
                     ))}
+                    {incompleteConsultationList.length === 0 && (
+                        <tr>
+                            <td colSpan={4} className="fs-7 text-danger text-center">
+                                No records
+                            </td>
+                        </tr>
+                    )}
                 </TableList>
             </div>
         </div>

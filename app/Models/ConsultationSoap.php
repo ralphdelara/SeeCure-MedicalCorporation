@@ -2,8 +2,12 @@
 
 namespace App\Models;
 
+use App\Traits\CorrectTimezone;
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property int $id
@@ -31,7 +35,36 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @mixin \Eloquent
  */
+#[Fillable([
+    'consultation_id',
+    'subjective',
+    'assessment',
+    'plan',
+    'created_by',
+    'last_modified_by',
+])]
 class ConsultationSoap extends Model
 {
-    //
+    use CorrectTimezone, HasUuids;
+
+    protected function casts(): array
+    {
+        return [
+            'subjective' => 'encrypted',
+            'assessment' => 'encrypted',
+            'plan'       => 'encrypted',
+            'created_at' => 'date:M d, Y h:i a',
+            'updated_at' => 'date:M d, Y h:i a',
+        ];
+    }
+
+    public function createdBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by', 'id');
+    }
+
+    public function lastModifiedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'last_modified_by', 'id');
+    }
 }

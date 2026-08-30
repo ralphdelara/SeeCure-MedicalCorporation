@@ -2,22 +2,67 @@ import { getIcd10Codes } from '@/actions/App/Http/Controllers/Icd10CodeControlle
 import TableSelect from '@/components/table-select';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { fetchUrl } from '@/lib/utils';
-import { Head, useForm } from '@inertiajs/react';
+import { fetchUrl, formSubmitResponse } from '@/lib/utils';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { Editor } from '@tinymce/tinymce-react';
 import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
 import 'tinymce/tinymce';
-import { IconDeviceFloppy } from '@tabler/icons-react';
+import { updateDiagnosis } from '@/actions/App/Http/Controllers/ConsultationController';
+import toast, { Toaster } from 'react-hot-toast';
+import SaveButton from './save-button';
+
+interface InertiaProps {
+    consultationDetails: {
+        id: string;
+        diagnosis: {
+            id: string;
+            diagnosis: string;
+            icd10_codes: {
+                icd10_code_id: string;
+                icd10_code: {
+                    code: string;
+                    description: string;
+                };
+            }[];
+        };
+    };
+}
+
+interface DiagnosisDetailsProps {
+    id: string;
+    icd10Ids: string[];
+    diagnosis: string;
+}
 
 const Diagnosis = ({ showTab }: { showTab: boolean }) => {
+    const { consultationDetails } = usePage().props as unknown as InertiaProps;
+    const { diagnosis } = consultationDetails;
     const [keyword, setKeyword] = useState('');
-    const [icd10CodeList, setIcd10CodeList] = useState([]);
-    const { data, setData, post } = useForm({
-        diagnosis: '',
-        ids: [],
-        text: [],
+    const [icd10CodeList, setIcd10CodeList] = useState<{ id: string }[]>([]);
+
+    const getIcd10Ids = () => {
+        const selectedIcd10Ids: string[] = [];
+        const selectedIcd10Text: string[] = [];
+
+        diagnosis.icd10_codes.forEach((item) => {
+            selectedIcd10Ids.push(item.icd10_code_id);
+            selectedIcd10Text.push(item.icd10_code.code + ' ' + item.icd10_code.description);
+        });
+
+        return {
+            icd10Ids: selectedIcd10Ids,
+            text: selectedIcd10Text,
+        };
+    };
+
+    const [selectedText, setSelectedText] = useState<string[]>([...getIcd10Ids().text]);
+
+    const { data, setData, patch, isDirty } = useForm<DiagnosisDetailsProps>({
+        id: diagnosis.id,
+        diagnosis: diagnosis.diagnosis,
+        icd10Ids: getIcd10Ids().icd10Ids,
     });
+    const showUnsavedWarning = isDirty;
 
     const searchIcd10 = async () => {
         const response = await fetchUrl(getIcd10Codes().url, 'GET', {
@@ -29,19 +74,20 @@ const Diagnosis = ({ showTab }: { showTab: boolean }) => {
 
     useEffect(() => {
         searchIcd10();
-    }, [keyword]);
+    }, []);
 
-    const updateSelected = (id: number) => {
-        const selectedIdsTemp = data.ids;
-        const selectedTextTemp = data.text;
-        const text = document
+    const updateSelected = (id: string) => {
+        // adding ... creates shallow copies to avoid direct state mutation
+        const selectedIdsTemp: string[] = [...data.icd10Ids];
+        const selectedTextTemp: string[] = [...selectedText];
+        const text: string | undefined = document
             .getElementById('row-' + id)
             ?.innerHTML.replace(/<\/?[^>]+(>|$)/g, ' ')
             .replace(/\s+/g, ' ')
             .trim();
 
-        const selectIdIndex = selectedIdsTemp.indexOf(id);
-        const selectTextIndex = selectedTextTemp.indexOf(text ?? '');
+        const selectIdIndex: number = selectedIdsTemp.indexOf(id);
+        const selectTextIndex: number = selectedTextTemp.indexOf(text ?? '');
 
         if (selectIdIndex !== -1) {
             selectedIdsTemp.splice(selectIdIndex, 1);
@@ -55,28 +101,27 @@ const Diagnosis = ({ showTab }: { showTab: boolean }) => {
             selectedTextTemp.push(text ?? '');
         }
 
-        setData('ids', selectedIdsTemp);
-
-        setData('text', selectedTextTemp);
+        setData('icd10Ids', selectedIdsTemp);
+        setSelectedText(selectedTextTemp);
     };
+
+    const submitDiagnosis = (e: React.SubmitEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        patch(updateDiagnosis().url, formSubmitResponse('Diagnosis'));
+    };
+
     return (
         <>
-            <Head title="Diagnosis" />
+            <Toaster position="top-center" reverseOrder={false} />
             <div className={'tab-content mt-3' + (!showTab ? ' hidden' : '')}>
                 <div className="tab-pane fade show active" role="tabpanel" tabIndex={1}>
                     <div className="row w-100">
                         <div className="col-lg-12">
                             <div className="card border shadow-sm">
                                 <div className="card-body">
-                                    <form>
-                                        <div className="mt-2 text-right">
-                                            <Button size="lg">
-                                                <i>
-                                                    <IconDeviceFloppy className="me-1" />
-                                                </i>
-                                                Save Diagnosis
-                                            </Button>
-                                        </div>
+                                    <form onSubmit={submitDiagnosis}>
+                                        <SaveButton type="Diagnosis" isDirty={isDirty}/>
                                         <div className="form-group">
                                             <Label htmlFor="diagnosis">
                                                 <h4 className="fw-bolder">Diagnosis</h4>
@@ -116,11 +161,23 @@ const Diagnosis = ({ showTab }: { showTab: boolean }) => {
                                                     </small>
                                                 </h5>
                                             </Label>
+                                            <h6>Selected:</h6>
+                                            {selectedText.map((item, index) => (
+                                                <p key={'icd10-selected-' + index} className="mb-0">
+                                                    {item}
+                                                </p>
+                                            ))}
                                             <Input
                                                 id="icd10code-search"
                                                 placeholder="Search ICD Code or Description"
                                                 value={keyword}
                                                 onChange={(e) => setKeyword(e.target.value)}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') {
+                                                        e.preventDefault(); // Prevents the PARENT form from submitting
+                                                        searchIcd10(); // Calls your fetch logic directly
+                                                    }
+                                                }}
                                             />
                                             <TableSelect
                                                 header={[
@@ -138,7 +195,7 @@ const Diagnosis = ({ showTab }: { showTab: boolean }) => {
                                                         id={'row-' + item.id}
                                                         onClick={() => updateSelected(item.id)}
                                                         className={
-                                                            data.ids.includes(item.id)
+                                                            data.icd10Ids.includes(item.id)
                                                                 ? 'border-start border-success border-3'
                                                                 : ''
                                                         }
@@ -165,14 +222,7 @@ const Diagnosis = ({ showTab }: { showTab: boolean }) => {
                                                 ))}
                                             </TableSelect>
                                         </div>
-                                        <div className="mt-2 text-right">
-                                            <Button size="lg">
-                                                <i>
-                                                    <IconDeviceFloppy className="me-1" />
-                                                </i>
-                                                Save Diagnosis
-                                            </Button>
-                                        </div>
+                                        <SaveButton type="Diagnosis" isDirty={isDirty}/>
                                     </form>
                                 </div>
                             </div>

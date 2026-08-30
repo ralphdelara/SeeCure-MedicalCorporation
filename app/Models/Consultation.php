@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @property string $id
@@ -79,7 +80,6 @@ class Consultation extends Model
     protected function casts(): array
     {
         return [
-            'patient_id'              => 'encrypted',
             'guardian_name'           => 'encrypted',
             'guardian_contact_number' => 'encrypted',
             'guardian_email'          => 'encrypted',
@@ -120,7 +120,7 @@ class Consultation extends Model
 
     public function guardianRelationship(): BelongsTo
     {
-        return $this->belongsTo(Relationship::class, 'relationship_id', 'id');
+        return $this->belongsTo(Relationship::class, 'guardian_relationship_id', 'id');
     }
 
     public function createdBy(): BelongsTo
@@ -131,5 +131,40 @@ class Consultation extends Model
     public function lastModifiedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'last_modified_by', 'id');
+    }
+
+    public function soap(): HasOne
+    {
+        return $this->hasOne(ConsultationSoap::class);
+    }
+
+    public function diagnosis(): HasOne
+    {
+        return $this->hasOne(ConsultationDiagnosis::class);
+    }
+
+    public function prescriptions(): HasMany
+    {
+        return $this->hasMany(Prescription::class);
+    }
+
+    public function laboratory(): HasOne
+    {
+        return $this->hasOne(Laboratory::class);
+    }
+
+    public function radiology(): HasOne
+    {
+        return $this->hasOne(Radiology::class);
+    }
+
+    public function documents(): HasMany
+    {
+        return $this->hasMany(Document::class);
+    }
+
+    public function audits(): HasMany
+    {
+        return $this->hasMany(ConsultationAudit::class);
     }
 }

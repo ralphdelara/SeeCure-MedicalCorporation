@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $id
  * @property string $consultation_id
  * @property string $consultation_diagnosis_id
- * @property string|null $icd_code_id
+ * @property string|null $icd10_code_id
  * @property string $created_by
  * @property CarbonImmutable $created_at
  * @property-read Consultation $consultation
@@ -34,14 +34,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @mixin \Eloquent
  */
 #[Fillable([
-    'consultation_id',
     'consultation_diagnosis_id',
     'icd10_code_id',
-    'created_by',
 ])]
 class ConsultationDiagnosisIcd10Code extends Model
 {
     use CorrectTimezone, HasUuids;
+
+    public $timestamps = false;
 
     protected function casts(): array
     {
@@ -60,13 +60,8 @@ class ConsultationDiagnosisIcd10Code extends Model
         return $this->belongsTo(ConsultationDiagnosis::class, 'consultation_diagnosis_id', 'id');
     }
 
-    public function icd10(): BelongsTo
+    public function icd10Code(): BelongsTo
     {
         return $this->belongsTo(Icd10Code::class, 'icd10_code_id', 'id');
-    }
-
-    public function createdBy(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'created_by', 'id');
     }
 }

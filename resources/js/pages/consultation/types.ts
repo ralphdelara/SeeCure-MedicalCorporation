@@ -7,22 +7,30 @@ export interface ConsultationList {
     status: any;
     doctor: {
         full_name: string;
-        professions: {
-            profession: {
-                id: number;
-                name: string;
-                prefix: string;
-                suffix: string;
-            };
-        }[];
+        specialties: Options[];
     };
     created_by: any;
-    signs_or_symptoms: {
-        signs_or_symptom: Options;
+    signs_or_symptoms: Options[];
+    patient_vital_sign: {
+        id: string;
+        vital_sign: Options;
+        vital_sign_field: {
+            name: string;
+            unit: string;
+        };
+        value: string;
     }[];
     types: {
         type: Options;
     }[];
     gender: Options;
+    guardian_name: string;
+    guardian_contact_number: string;
+    guardian_email: string;
+    guardian_relationship: Options;
     created_at: string;
+    last_modified_by: {
+        full_name: string;
+    };
+    updated_at: string;
 }

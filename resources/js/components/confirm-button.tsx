@@ -1,4 +1,4 @@
-import { router } from '@inertiajs/react';
+import { router, useForm } from '@inertiajs/react';
 import Swal from 'sweetalert2';
 import { Button } from './ui/button';
 import React from 'react';
@@ -61,6 +61,7 @@ export default function ConfirmButton({
         }).then((result) => {
             if (result.isConfirmed) {
                 Swal.fire({
+                    position: 'top',
                     title: successTitle,
                     text: successMsg,
                     icon: 'success',

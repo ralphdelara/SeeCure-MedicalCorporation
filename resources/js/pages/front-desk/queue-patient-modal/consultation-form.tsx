@@ -8,10 +8,11 @@ import type { QueuePatientFormProps } from './types';
 
 interface InertiaProps {
     doctors: Options[];
+    relationshipOptions: Options[];
 }
 
 const ConsultationForm = ({ data, setData, errors = {} }: QueuePatientFormProps) => {
-    const { doctors } = usePage().props as unknown as InertiaProps;
+    const { doctors, relationshipOptions } = usePage().props as unknown as InertiaProps;
 
     return (
         <>
@@ -20,7 +21,7 @@ const ConsultationForm = ({ data, setData, errors = {} }: QueuePatientFormProps)
                     Consultation Form
                 </Label>
                 <div className="row">
-                    <div className="col-md-4">
+                    <div className="col-md-6">
                         <Label htmlFor="guardian-name" className="form-label">
                             Guardian
                         </Label>
@@ -34,7 +35,7 @@ const ConsultationForm = ({ data, setData, errors = {} }: QueuePatientFormProps)
                             maxLength={50}
                         />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-6">
                         <Label htmlFor="guardian-contact-number" className="form-label">
                             Contact
                         </Label>
@@ -48,7 +49,7 @@ const ConsultationForm = ({ data, setData, errors = {} }: QueuePatientFormProps)
                             maxLength={50}
                         />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-6">
                         <Label htmlFor="guardian-email" className="form-label">
                             Email
                         </Label>
@@ -61,6 +62,19 @@ const ConsultationForm = ({ data, setData, errors = {} }: QueuePatientFormProps)
                             placeholder="ex. xxxxxxxxxxxx@gmail.com"
                             maxLength={100}
                         />
+                    </div>
+                    <div className="col-md-6">
+                        <Label htmlFor="guardian-relationship" className="form-label">
+                            Relationship
+                        </Label>
+                        <Select
+                            value={data.guardian_relationship_id}
+                            onChange={(e) => setData('guardian_relationship_id', e.target.value)}
+                            options={relationshipOptions}
+                            type="Relationship"
+                            id="guardian-relationship"
+                        />
+                        <InputError message={errors.doctor_id} className="mt-2" />
                     </div>
                 </div>
             </div>

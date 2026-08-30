@@ -21,7 +21,6 @@ const Laboratory = ({ showTab }: { showTab: boolean }) => {
 
     return (
         <>
-            <Head title="Laboratory" />
             <div className={'tab-content mt-3' + (!showTab ? ' hidden' : '')}>
                 <div className="tab-pane fade show active" role="tabpanel" tabIndex={4}>
                     <div className="card border shadow-none">

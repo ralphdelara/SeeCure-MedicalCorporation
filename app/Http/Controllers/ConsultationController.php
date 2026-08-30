@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\LaboratoryTestType;
+use App\Models\Prescription;
+use App\Models\ProductCategory;
+use App\Models\Relationship;
 use App\Models\SignsOrSymptom;
 use App\Models\VitalSign;
 use App\Services\ConsultationService;
+use App\Services\DoctorService;
 use App\Services\PatientService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -26,13 +30,16 @@ class ConsultationController extends Controller
         ));
     }
 
-    public function getConsultationDetails(string $id): Response
+    public function getConsultationDetails(Request $request, string $consultationId): Response
     {
-        $consultationDetails = app(ConsultationService::class)->getConsultationDetails($id);
+        $consultationDetails = app(ConsultationService::class)->getConsultationDetails($consultationId);
         $signsOrSymptoms = SignsOrSymptom::all();
         $laboratoryTestOptions = LaboratoryTestType::all();
         $vitalSigns = VitalSign::with('fields')->get();
         $patientDetails = app(PatientService::class)->getPatientDetails($consultationDetails['patient_id']);
+        $doctors = app(DoctorService::class)->getDoctorList();
+        $relationshipOptions = Relationship::all();
+        $productCategories = ProductCategory::all();
 
         return Inertia::render('consultation/details/index', compact(
             'consultationDetails',
@@ -40,6 +47,56 @@ class ConsultationController extends Controller
             'laboratoryTestOptions',
             'vitalSigns',
             'patientDetails',
+            'doctors',
+            'relationshipOptions',
+            'productCategories',
         ));
+    }
+
+    public function updateDetails(Request $request): void
+    {
+        $details = $request->only('id', 'guardian_name', 'guardian_contact_number', 'guardian_email', 'guardian_relationship_id', 'signs_or_symptoms_id', 'doctor_id');
+
+        app(ConsultationService::class)->updateDetails($details);
+    }
+
+    public function updateSoap(Request $request): void
+    {
+        $soapDetails = $request->only('id', 'subjective', 'assessment', 'plan');
+
+        app(ConsultationService::class)->updateSoap($soapDetails);
+    }
+
+    public function updateDiagnosis(Request $request): void
+    {
+        $diagnosisDetails = $request->only('id', 'diagnosis', 'icd10Ids');
+
+        app(ConsultationService::class)->updateDiagnosis($diagnosisDetails);
+    }
+
+    public function addOrUpdatePrescription(Request $request): void
+    {
+        $request->validate([
+            'consultation_id' => 'required',
+            'product_name'    => 'required',
+            'quantity'        => 'required',
+            'dosage'          => 'required',
+        ]);
+
+        $prescriptionDetails = $request->only(
+            'id',
+            'consultation_id',
+            'product_id',
+            'product_name',
+            'quantity',
+            'dosage',
+        );
+
+        app(ConsultationService::class)->addOrUpdatePrescription($prescriptionDetails);
+    }
+
+    public function deletePrescription(string $id): void
+    {
+        Prescription::destroy($id);
     }
 }

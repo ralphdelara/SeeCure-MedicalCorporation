@@ -5,9 +5,10 @@ interface DeleteProps {
     url: string;
     msg: string;
     className?: string;
+    successUrl?: string;
 }
 
-export default function DeleteButton({ url, msg, className = '' }: DeleteProps) {
+export default function DeleteButton({ url, msg, successUrl, className = '' }: DeleteProps) {
     return (
         <ConfirmButton
             requestMethod="DELETE"
@@ -18,7 +19,7 @@ export default function DeleteButton({ url, msg, className = '' }: DeleteProps) 
             title="Delete"
             successTitle="Deleted!"
             successMsg="The record has been deleted."
-            successUrl={window.location.pathname + window.location.search}
+            successUrl={successUrl ?? (window.location.pathname + window.location.search)}
             rounded={true}
         >
             <i>

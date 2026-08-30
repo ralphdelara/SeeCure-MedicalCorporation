@@ -1,6 +1,7 @@
 import type { InertiaLinkProps } from '@inertiajs/react';
 import { clsx } from 'clsx';
 import type { ClassValue } from 'clsx';
+import { toast } from 'react-hot-toast';
 import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
@@ -71,4 +72,35 @@ export async function fetchUrl(url: string, method: string, data: object) {
         console.error(`Fetch failed for ${upperMethod} request:`, error);
         throw error;
     }
+}
+
+export function getIdsFromArrayData(data: any[]) {
+    const arr: any[] = [];
+
+    data.map((item) => {
+        arr.push(item.id);
+    });
+
+    return arr;
+}
+
+export function formSubmitResponse(type: string) {
+    return {
+        onSuccess: () => {
+            toast.success(type + ' has been saved!');
+        },
+        onError: () => {
+            toast.error('Something went wrong!, Please try again.');
+        },
+        preserveScroll: true,
+    };
+}
+
+export function getUrlParams(param: string, defaultValue?: string) {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+
+    console.log(queryString);
+
+    return urlParams.get(param) ?? defaultValue ?? '';
 }

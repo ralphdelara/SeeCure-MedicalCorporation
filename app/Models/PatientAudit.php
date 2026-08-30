@@ -46,8 +46,7 @@ class PatientAudit extends Model
     protected function casts(): array
     {
         return [
-            'patient_id' => 'encrypted',
-            'action'     => 'encrypted:array',
+            'action' => 'encrypted:array',
         ];
     }
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\ConsultationStatusEnum;
 use App\Events\NotifyDoctor;
 use App\Models\LaboratoryTestType;
+use App\Models\Relationship;
 use App\Models\SignsOrSymptom;
 use App\Models\VitalSign;
 use App\Services\ConsultationService;
@@ -29,12 +30,14 @@ class FrontDeskController extends Controller
         $laboratoryTestOptions = LaboratoryTestType::all();
         $incompleteConsultationList = app(ConsultationService::class)->getIncompleteConsultation();
         $incompleteConsultationStatuses = ConsultationStatusEnum::incompleteStatusesDropdown();
+        $relationshipOptions = Relationship::all();
 
         return Inertia::render('front-desk/index', compact(
             'formOptions',
             'signsOrSymptoms',
             'vitalSigns',
             'doctors',
+            'relationshipOptions',
             'laboratoryTestOptions',
             'incompleteConsultationList',
             'incompleteConsultationStatuses',
@@ -101,6 +104,7 @@ class FrontDeskController extends Controller
             'guardian_name',
             'guardian_contact_number',
             'guardian_email',
+            'guardian_relationship_id',
             'doctor_id',
             'consultation_types_id',
             'signs_or_symptoms_id',

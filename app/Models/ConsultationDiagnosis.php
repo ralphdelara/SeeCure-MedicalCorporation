@@ -5,9 +5,11 @@ namespace App\Models;
 use App\Traits\CorrectTimezone;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property string $id
@@ -18,7 +20,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property CarbonImmutable|null $updated_at
  * @property-read Consultation|null $consultation
  * @property-read User $createdBy
- * @property-read ConsultationDiagnosisIcd10Code|null $icd10Codes
+ * @property-read Collection<string, ConsultationDiagnosisIcd10Code> $icd10Codes
  * @property-read User|null $lastModifiedBy
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosis newModelQuery()
@@ -35,7 +37,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 #[Fillable([
     'consultation_id',
-    'icd10_code_id',
+    'diagnosis',
     'created_by',
     'last_modified_by',
 ])]
@@ -57,9 +59,9 @@ class ConsultationDiagnosis extends Model
         return $this->belongsTo(Consultation::class, 'consultation_id', 'id');
     }
 
-    public function icd10Codes(): BelongsTo
+    public function icd10Codes(): HasMany
     {
-        return $this->belongsTo(ConsultationDiagnosisIcd10Code::class, 'consultation_id', 'id');
+        return $this->hasMany(ConsultationDiagnosisIcd10Code::class);
     }
 
     public function createdBy(): BelongsTo

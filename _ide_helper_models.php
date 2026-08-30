@@ -123,8 +123,30 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereVisitId($value)
  * @mixin \Eloquent
+ * @property string|null $follow_up_date
+ * @property-read int|null $diagnosis_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Document> $documents
+ * @property-read int|null $documents_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Laboratory> $laboratory
+ * @property-read int|null $laboratory_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Prescription> $prescription
+ * @property-read int|null $prescription_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Radiology> $radiology
+ * @property-read int|null $radiology_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ConsultationSoap> $soap
+ * @property-read int|null $soap_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereFollowUpDate($value)
  */
 	class Consultation extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationAudit newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationAudit newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationAudit query()
+ */
+	class ConsultationAudit extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -158,7 +180,7 @@ namespace App\Models{
  * @property string $id
  * @property string $consultation_id
  * @property string $consultation_diagnosis_id
- * @property string|null $icd_code_id
+ * @property string|null $icd10_code_id
  * @property string $created_by
  * @property CarbonImmutable $created_at
  * @property-read Consultation $consultation
@@ -269,6 +291,15 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Document newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Document newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Document query()
+ */
+	class Document extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
  * @property int $id
  * @property string $name
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Gender newModelQuery()
@@ -371,16 +402,32 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest whereLastModifiedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property-read \App\Models\Laboratory $laboratory
+ * @property-read \App\Models\Laboratory|null $laboratory
  */
 	class LaboratoryTest extends \Eloquent {}
 }
 
 namespace App\Models{
 /**
+ * @property int $id
+ * @property int $laboratory_test_type_id
+ * @property string $name
+ * @property numeric $price
+ * @property string $created_by
+ * @property string|null $last_modified_by
+ * @property \Carbon\CarbonImmutable|null $created_at
+ * @property \Carbon\CarbonImmutable|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestSubType newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestSubType newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestSubType query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestSubType whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestSubType whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestSubType whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestSubType whereLaboratoryTestTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestSubType whereLastModifiedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestSubType whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestSubType wherePrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestSubType whereUpdatedAt($value)
  */
 	class LaboratoryTestSubType extends \Eloquent {}
 }
@@ -770,18 +817,28 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * @property int $id
+ * @property \Carbon\CarbonImmutable|null $created_at
+ * @property \Carbon\CarbonImmutable|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RadiologyTest newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RadiologyTest newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RadiologyTest query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RadiologyTest whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RadiologyTest whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RadiologyTest whereUpdatedAt($value)
  */
 	class RadiologyTest extends \Eloquent {}
 }
 
 namespace App\Models{
 /**
+ * @property int $id
+ * @property string $name
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RadiologyTestType newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RadiologyTestType newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RadiologyTestType query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RadiologyTestType whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RadiologyTestType whereName($value)
  */
 	class RadiologyTestType extends \Eloquent {}
 }
@@ -1048,6 +1105,12 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit wherePatientId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property bool $consultation_completed
+ * @property bool $lab_completed
+ * @property bool $radiology_completed
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereConsultationCompleted($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereLabCompleted($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereRadiologyCompleted($value)
  */
 	class Visit extends \Eloquent {}
 }

@@ -60,4 +60,9 @@ class PharmacyController extends Controller
     {
         Product::destroy($id);
     }
+
+    public function getSmallProductList(Request $request): array
+    {
+        return app(PharmacyService::class)->getSmallProductList($request->only('keyword', 'category_id'));
+    }
 }
