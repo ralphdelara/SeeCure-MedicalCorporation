@@ -1,0 +1,24 @@
+import { Head, Link } from '@inertiajs/react';
+import { Breadcrumbs } from '@/components/breadcrumbs';
+import { Button } from '@/components/ui/button';
+import { callOut } from '@/routes/system';
+
+export default function System() {
+    const breadcrumbs = {};
+
+    return (
+        <>
+            <Head title="System" />
+            <Breadcrumbs title="System">&nbsp;</Breadcrumbs>
+            <div className="card">
+                <div className="card-body">
+                    <div className="row w-100">
+                <div className="col-md-6">
+                    <Link className="btn btn-success btn-lg" href={callOut().url}>Call Out Display</Link>
+                </div>
+            </div>
+            </div>
+            </div>
+        </>
+    );
+}

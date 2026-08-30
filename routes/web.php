@@ -7,6 +7,7 @@ use App\Http\Controllers\FrontDeskController;
 use App\Http\Controllers\Icd10CodeController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\PharmacyController;
+use App\Http\Controllers\SystemController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -27,14 +28,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/{id}', [PatientController::class, 'getPatientDetails'])->name('patient.details');
     });
 
+    Route::get('/consultations', [ConsultationController::class, 'index'])->name('consultations');
     Route::prefix('consultation')->group(function () {
-        Route::get('/', [ConsultationController::class, 'index'])->name('consultation');
-        Route::get('/details/{id}', [ConsultationController::class, 'getConsultationDetails'])->name('consultation.details');
+        Route::prefix('/details')->group(function () {
+            Route::get('/{consultationId}', [ConsultationController::class, 'getConsultationDetails'])->name('consultation.details');
+            Route::patch('/', [ConsultationController::class, 'updateDetails'])->name('consultation.details.update');
+            Route::patch('/soap', [ConsultationController::class, 'updateSoap'])->name('consultation.details.update.soap');
+            Route::patch('/diagnosis', [ConsultationController::class, 'updateDiagnosis'])->name('consultation.details.update.diagnosis');
+            Route::post('/prescription', [ConsultationController::class, 'addOrUpdatePrescription'])->name('consultation.details.add-or-update.prescription');
+            Route::delete('/prescription/{prescriptionId}', [ConsultationController::class, 'deletePrescription'])->name('consultation.details.delete.prescription');
+        });
     });
     Route::inertia('laboratory', 'laboratory')->name('laboratory');
     Route::inertia('radiology', 'radiology')->name('radiology');
     Route::prefix('pharmacy')->group(function () {
         Route::get('/', [PharmacyController::class, 'index'])->name('pharmacy');
+        Route::get('/search', [PharmacyController::class, 'getSmallProductList'])->name('pharmacy.search');
         Route::match(['POST', 'PUT'], '/', [PharmacyController::class, 'addOrUpdateProduct'])
             ->name('pharmacy.add-or-update-product');
         Route::delete('/{id}', [PharmacyController::class, 'deleteProduct'])->name('pharmacy.delete');
@@ -48,7 +57,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/{id}', [UserController::class, 'getUserDetails'])->name('user.details');
     });
 
-    Route::inertia('system', 'system')->name('system');
+    Route::prefix('system')->group(function () {
+        Route::get('/', [SystemController::class, 'index'])->name('system');
+        Route::get('/call-out', [SystemController::class, 'callOut'])->name('system.call-out');
+    });
 
     Route::inertia('announcements', 'announcements')->name('announcements');
     Route::inertia('notes', 'notes')->name('notes');

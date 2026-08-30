@@ -26,6 +26,6 @@ return new class extends OneTimeOperation
      */
     public function process(): void
     {
-        RadiologyTestType::fillAndInsert(RadiologyTestTypeEnum::getArrayList());
+        // RadiologyTestType::fillAndInsert(RadiologyTestTypeEnum::getArrayList());
     }
 };

@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('icd10_codes', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary()->default(DB::raw('(gen_random_uuid())'));
             $table->string('code', 8)->unique();
             $table->text('description');
         });

@@ -5,7 +5,6 @@ import Modal from 'react-bootstrap/Modal';
 import toast, { Toaster } from 'react-hot-toast';
 import { queuePatient } from '@/actions/App/Http/Controllers/FrontDeskController';
 import { Button } from '@/components/ui/button';
-import ConsultationForm from './consultation-form';
 import ExistingPatientForm from './existing-patient-form';
 import SignsOrSymptomsForm from '../../../components/consultation/signs-or-symptoms-form';
 import type { QueuePatientDetailsFormProps } from './types';
@@ -49,6 +48,7 @@ const QueuePatient = () => {
             guardian_name: '',
             guardian_contact_number: '',
             guardian_email: '',
+            guardian_relationship_id: '',
             doctor_id: '',
             has_consultation: 0,
             has_laboratory: 0,

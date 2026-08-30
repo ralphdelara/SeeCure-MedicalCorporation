@@ -59,13 +59,6 @@ class Laboratory extends Model
 
     public $table = 'laboratory';
 
-    protected function casts(): array
-    {
-        return [
-            'patient_id' => 'encrypted',
-        ];
-    }
-
     public function visit(): BelongsTo
     {
         return $this->belongsTo(Visit::class, 'visit_id', 'id');

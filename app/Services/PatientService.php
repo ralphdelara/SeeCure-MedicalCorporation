@@ -22,7 +22,7 @@ class PatientService
         ?string $selectId,
         string $path,
     ): array {
-        $patientList = Patient::with(['gender', 'suffix', 'status', 'province', 'city', 'barangay', 'civilStatus', 'nationality']);
+        $patientList = Patient::with(['gender', 'suffix', 'status', 'province', 'city', 'barangay', 'civilStatus', 'nationality', 'createdBy', 'lastModifiedBy']);
 
         if (! empty($keyword)) {
             $patientList = $patientList->whereBlind('last_name_index', 'last_name_index', strtolower($keyword))
@@ -52,7 +52,6 @@ class PatientService
         unset($patientDetails['patient_id']);
 
         $patientDetails['status_id'] = 1; // Waiting
-        $patientDetails['created_by'] = Auth::id();
 
         $patientDetails['last_name'] = formatName($patientDetails['last_name']);
         $patientDetails['first_name'] = formatName($patientDetails['first_name']);
@@ -64,6 +63,12 @@ class PatientService
             $patientDetails['middle_name'] = formatName($patientDetails['middle_name']);
             $patientDetails['middle_name_index'] = $patientDetails['middle_name'];
         }
+
+        if (empty($patientId)) {
+            $patientDetails['created_by'] = Auth::id();
+        }
+
+        $patientDetails['last_modified_by'] = Auth::id();
 
         $patient = Patient::updateOrCreate(
             ['id' => $patientId],
@@ -163,7 +168,7 @@ class PatientService
         return $patient->toArray();
     }
 
-    public function getSmallPatientList(string $keyword): array
+    public function getSmallPatientList(?string $keyword): array
     {
         $patient = Patient::with([
             'gender',
@@ -173,11 +178,17 @@ class PatientService
             'barangay',
             'civilStatus',
         ])
-            ->select('id', 'first_name', 'middle_name', 'last_name', 'patient_suffix_id', 'gender_id', 'barangay_id', 'city_id', 'province_id')
-            ->whereBlind('last_name_index', 'last_name_index', strtolower($keyword))
-            ->orWhereBlind('first_name_index', 'first_name_index', strtolower($keyword))
-            ->orWhereBlind('middle_name_index', 'middle_name_index', strtolower($keyword))
+            ->select('id', 'first_name', 'middle_name', 'last_name', 'patient_suffix_id', 'gender_id', 'barangay_id', 'city_id', 'province_id');
+
+        if (! empty($keyword)) {
+            $patient = $patient->whereBlind('last_name_index', 'last_name_index', strtolower($keyword))
+                ->orWhereBlind('first_name_index', 'first_name_index', strtolower($keyword))
+                ->orWhereBlind('middle_name_index', 'middle_name_index', strtolower($keyword));
+        }
+
+        $patient = $patient
             ->limit(15)
+            ->orderBy('batch')
             ->get();
 
         return $patient->toArray();

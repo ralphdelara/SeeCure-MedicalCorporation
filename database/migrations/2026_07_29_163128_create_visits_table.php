@@ -22,7 +22,7 @@ return new class extends Migration
             $table->boolean('lab_completed')->default(false);
             $table->boolean('radiology_completed')->default(false);
             $table->foreignUuid('created_by')->constrained('users', 'id');
-            $table->foreignUuid('last_modified_by')->constrained('users', 'id');
+            $table->foreignUuid('last_modified_by')->nullable()->constrained('users', 'id');
             $table->timestamps();
 
             $table->index(['has_consultation', 'consultation_completed']);

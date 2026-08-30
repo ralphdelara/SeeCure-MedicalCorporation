@@ -55,13 +55,6 @@ class PatientVitalSign extends Model
 {
     use HasUuids;
 
-    protected function casts(): array
-    {
-        return [
-            'patient_id' => 'encrypted',
-        ];
-    }
-
     public function patient(): BelongsTo
     {
         return $this->belongsTo(Patient::class, 'patient_id', 'id');

@@ -52,13 +52,6 @@ class Visit extends Model
 {
     use CorrectTimezone, HasUuids;
 
-    protected function casts(): array
-    {
-        return [
-            'patient_id' => 'encrypted',
-        ];
-    }
-
     public function patient(): BelongsTo
     {
         return $this->belongsTo(Patient::class, 'patient_id', 'id');

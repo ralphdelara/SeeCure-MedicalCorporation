@@ -10,7 +10,6 @@ const VitalSigns = ({ showTab }: { showTab: boolean }) => {
 
     return (
         <>
-            <Head title="Vital Signs" />
             <div className={'tab-content mt-3' + (!showTab ? ' hidden' : '')}>
                 <div className="row w-100">
                     <div className="mt-2 text-right">

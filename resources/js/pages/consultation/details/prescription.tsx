@@ -1,14 +1,58 @@
-import { Head } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import TableList from '@/components/table';
 import { IconEdit, IconFilePlus, IconPencilPlus, IconPlus, IconTrash } from '@tabler/icons-react';
 import { Button } from '@/components/ui/button';
+import PrescriptionModal, { ModalFormProps } from './prescription-modal';
+import { useState } from 'react';
+import DeleteButton from '@/components/delete-button';
+import { deletePrescription } from '@/actions/App/Http/Controllers/ConsultationController';
+import Pagination from '@/components/pagination';
+
+interface InertiaProps {
+    consultationDetails: {
+        id: string;
+        prescriptions: {
+            id: string;
+            product_id: string;
+            product_name: string;
+            quantity: string;
+            dosage: string;
+            created_by: {
+                full_name: string;
+            };
+            created_at: string;
+            last_modified_by: {
+                full_name: string;
+            };
+            updated_at: string;
+        }[];
+    };
+}
 
 const Prescription = ({ showTab }: { showTab: boolean }) => {
+    const { consultationDetails } = usePage().props as unknown as InertiaProps;
+    const { prescriptions } = consultationDetails;
+    const [formShow, setFormShow] = useState(false);
+    const defaultData = {
+        id: '',
+        consultation_id: consultationDetails.id,
+        product_id: '',
+        product_name: '',
+        quantity: '',
+        dosage: '',
+    };
+    const [modalDetails, setModalDetails] = useState({
+        formType: 'Add',
+        formData: { ...defaultData },
+    });
+
     const header = [
-        { name: '#', width: '5%', align: 'right' },
-        { name: 'Medicine', width: '30%', align: 'left' },
-        { name: 'Dosage', width: '40%', align: 'left' },
-        { name: 'Quantity', width: '10%', align: 'right' },
+        { name: '#', align: 'right' },
+        { name: 'Medicine', align: 'left' },
+        { name: 'Dosage', align: 'left' },
+        { name: 'Quantity', align: 'right' },
+        { name: 'Added By', align: 'left' },
+        { name: 'Last Modified By', align: 'left' },
         {
             name: '',
             width: '15%',
@@ -16,18 +60,29 @@ const Prescription = ({ showTab }: { showTab: boolean }) => {
         },
     ];
 
-    const tableData = [];
+    const toggleModal = (formType: string, formData: ModalFormProps | null) => {
+        setFormShow(true);
+        setModalDetails({
+            formType: formType,
+            formData: formData ?? modalDetails.formData,
+        });
+    };
 
     return (
         <>
-            <Head title="Prescription" />
             <div className={'tab-content mt-3' + (!showTab ? ' hidden' : '')}>
                 <div className="tab-pane fade show active" role="tabpanel" tabIndex={4}>
+                    <PrescriptionModal
+                        formShow={formShow}
+                        setFormShow={setFormShow}
+                        formType={modalDetails.formType}
+                        formData={modalDetails.formData}
+                    />
                     <div className="card border shadow-none">
                         <div className="card-body">
-                            <div className="row w-100">
+                            <div className="row w-100 mb-5">
                                 <div className="mt-2 text-right">
-                                    <Button size="lg">
+                                    <Button size="lg" onClick={() => toggleModal('Add', defaultData)}>
                                         <i>
                                             <IconPlus className="me-1" />
                                         </i>
@@ -38,27 +93,71 @@ const Prescription = ({ showTab }: { showTab: boolean }) => {
                                     <h4 className="fw-bolder">Prescription</h4>
                                 </div>
                                 <TableList header={header} hasPage={false}>
-                                    <tr className="fs-5">
-                                        <td className="text-right align-top">1</td>
-                                        <td className="align-top">Acithromycin</td>
-                                        <td className="align-top">Take 1 tablet every day</td>
-                                        <td className="text-right align-top">5</td>
-                                        <td className="text-right align-top">
-                                            <Button rounded={true} title="Edit" className="me-2">
-                                                <i>
-                                                    <IconEdit />
-                                                </i>
-                                            </Button>
-                                            <Button variant="danger" rounded={true} title="Delete">
-                                                <i>
-                                                    <IconTrash />
-                                                </i>
-                                            </Button>
-                                        </td>
-                                    </tr>
-                                    {tableData.length === 0 && (
+                                    {prescriptions.map((item, index) => (
+                                        <tr key={'prescription-' + item.id}>
+                                            <td className="text-right">{index + 1}</td>
+                                            <td>{item.product_name}</td>
+                                            <td>{item.dosage}</td>
+                                            <td className="text-right">{item.quantity}</td>
+                                            <td>
+                                                <div className="d-flex align-items-start">
+                                                    <div>
+                                                        <h6 className="fs-4 fw-semibold">
+                                                            {item.created_by.full_name}
+                                                        </h6>
+                                                        <h6 className="fs-4 fw-normal">
+                                                            {item.created_at}
+                                                        </h6>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div className="d-flex align-items-start">
+                                                    <div>
+                                                        <h6 className="fs-4 fw-semibold">
+                                                            {item.last_modified_by.full_name}
+                                                        </h6>
+                                                        <h6 className="fs-4 fw-normal">
+                                                            {item.updated_at}
+                                                        </h6>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <Button
+                                                    rounded={true}
+                                                    title="Edit"
+                                                    className="me-2"
+                                                    onClick={() =>
+                                                        toggleModal('Update', {
+                                                            id: item.id,
+                                                            consultation_id: consultationDetails.id,
+                                                            product_id: item.product_id,
+                                                            product_name: item.product_name,
+                                                            quantity: item.quantity,
+                                                            dosage: item.dosage,
+                                                        })
+                                                    }
+                                                >
+                                                    <i>
+                                                        <IconEdit size={18} />
+                                                    </i>
+                                                </Button>
+
+                                                <DeleteButton
+                                                    url={deletePrescription(item.id).url}
+                                                    msg={'<b>' + item.product_name + '</b>'}
+                                                    successUrl={window.location.pathname + window.location.search}
+                                                />
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    {prescriptions.length === 0 && (
                                         <tr>
-                                            <td colSpan={4} className="text-center">
+                                            <td
+                                                colSpan={4}
+                                                className="fs-7 text-danger text-center"
+                                            >
                                                 No record
                                             </td>
                                         </tr>

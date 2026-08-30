@@ -1,35 +1,51 @@
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
 import { Editor } from '@tinymce/tinymce-react';
-import { IconDeviceFloppy } from '@tabler/icons-react';
+import { updateSoap } from '@/actions/App/Http/Controllers/ConsultationController';
+import { Toaster } from 'react-hot-toast';
+import SaveButton from './save-button';
+import { formSubmitResponse } from '@/lib/utils';
+
+interface InertiaProps {
+    consultationDetails: {
+        id: string;
+        soap: {
+            id: string;
+            subjective: string;
+            assessment: string;
+            plan: string;
+        };
+    };
+}
 
 const SOAP = ({ showTab }: { showTab: boolean }) => {
-    const { data, setData } = useForm({
-        subjective: '',
-        assessment: '',
-        plan: '',
+    const { consultationDetails } = usePage().props as unknown as InertiaProps;
+    const { soap } = consultationDetails;
+
+    const { data, setData, patch, isDirty } = useForm({
+        id: soap?.id ?? '',
+        subjective: soap?.subjective ?? '',
+        assessment: soap?.assessment ?? '',
+        plan: soap?.plan ?? '',
     });
+
+    const submitSoap = (e: React.SubmitEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        patch(updateSoap().url, formSubmitResponse('S O A P'));
+    }
+
     return (
         <>
-            <Head title="Subjective Objective Assessment Plan" />
+            <Toaster position="top-center" reverseOrder={false} />
             <div className={'tab-content mt-3' + (!showTab ? ' hidden' : '')}>
                 <div className="tab-pane fade show active" role="tabpanel" tabIndex={2}>
                     <div className="row w-100">
                         <div className="col-lg-12">
                             <div className="card border shadow-sm">
                                 <div className="card-body">
-                                    <form>
-                                        <div className="mt-2 text-right">
-                                            <div className="mt-2 text-right">
-                                                <Button size="lg">
-                                                    <i>
-                                                        <IconDeviceFloppy className="me-1" />
-                                                    </i>
-                                                    Save S O A P
-                                                </Button>
-                                            </div>
-                                        </div>
+                                    <form onSubmit={submitSoap}>
+                                        <SaveButton type="S O A P" isDirty={isDirty}/>
                                         <div className="form-group">
                                             <Label htmlFor="subjective">
                                                 <h4 className="fw-bolder">
@@ -120,14 +136,7 @@ const SOAP = ({ showTab }: { showTab: boolean }) => {
                                                 }}
                                             />
                                         </div>
-                                        <div className="mt-2 text-right">
-                                            <Button size="lg">
-                                                <i>
-                                                    <IconDeviceFloppy className="me-1" />
-                                                </i>
-                                                Save S O A P
-                                            </Button>
-                                        </div>
+                                        <SaveButton type="S O A P" isDirty={isDirty}/>
                                     </form>
                                 </div>
                             </div>

@@ -70,9 +70,9 @@ class UserService
         if (empty($userId)) {
             $userDetails['status'] = true;
             $userDetails['created_by'] = Auth::id();
-        } else {
-            $userDetails['last_modified_by'] = Auth::id();
         }
+
+        $userDetails['last_modified_by'] = Auth::id();
 
         $userDetails['username_index'] = $userDetails['username'];
 

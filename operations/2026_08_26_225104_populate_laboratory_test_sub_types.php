@@ -26,6 +26,6 @@ return new class extends OneTimeOperation
      */
     public function process(): void
     {
-        LaboratoryTestSubType::fillAndInsert(LaboratoryTestSubTypeEnum::getArrayList());
+        // LaboratoryTestSubType::fillAndInsert(LaboratoryTestSubTypeEnum::getArrayList());
     }
 };

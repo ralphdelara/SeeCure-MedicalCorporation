@@ -14,11 +14,8 @@ return new class extends Migration
     {
         Schema::create('consultation_diagnosis_icd10_codes', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('(gen_random_uuid())'));
-            $table->foreignUuid('consultation_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('consultation_diagnosis_id')->constrained('consultation_diagnosis', 'id');
-            $table->text('icd_code_id')->nullable();
-            $table->foreignUuid('created_by')->constrained('users', 'id');
-            $table->timestamp('created_at')->useCurrent();
+            $table->foreignUuid('consultation_diagnosis_id')->constrained('consultation_diagnosis', 'id')->cascadeOnDelete();
+            $table->text('icd10_code_id')->nullable();
         });
     }
 

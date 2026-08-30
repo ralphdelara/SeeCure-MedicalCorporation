@@ -20,4 +20,13 @@ export interface PatientTableList {
     occupation: string;
     philhealth_id: string;
     full_address: string;
+
+    created_by: {
+        full_name: string;
+    };
+    created_at: string;
+    last_modified_by: {
+        full_name: string;
+    };
+    updated_at: string;
 }

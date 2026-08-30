@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class RadiologyTestType extends Model
 {
-    //
+    public $timestamps = false;
 }

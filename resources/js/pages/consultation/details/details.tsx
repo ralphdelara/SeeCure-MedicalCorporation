@@ -4,49 +4,66 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select } from '@/components/ui/select';
 import SignsOrSymptomsForm from '@/components/consultation/signs-or-symptoms-form';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { IconDeviceFloppy } from '@tabler/icons-react';
 import { ConsultationDetailsFormProps } from '../../../components/consultation/consultation';
+import { Options } from '@/types/options';
+import { formSubmitResponse, getIdsFromArrayData } from '@/lib/utils';
+import SaveButton from './save-button';
+import React from 'react';
+import { updateDetails } from '@/actions/App/Http/Controllers/ConsultationController';
+
+interface InertiaProps {
+    doctors: Options[];
+    relationshipOptions: Options[];
+    consultationDetails: {
+        id: string;
+        doctor: {
+            id: string;
+        };
+        guardian_name: string;
+        guardian_contact_number: string;
+        guardian_email: string;
+        guardian_relationship_id: string;
+        signs_or_symptoms: number[]
+        doctor_id: string;
+        created_by: {
+            full_name: string;
+        };
+        last_modified_by: {
+            full_name: string;
+        };
+        created_at: string;
+        updated_at: string;
+    };
+}
 
 const Details = ({ showTab }: { showTab: boolean }) => {
-    const medicalServices = [
-        { name: 'Consultation', id: 'has_consultation', value: 1 },
-        { name: 'Laboratory', id: 'has_laboratory', value: 1 },
-    ];
+    const { consultationDetails, doctors, relationshipOptions } = usePage().props as unknown as InertiaProps;
+    console.log(consultationDetails.doctor);
 
-    const { data, setData, errors } = useForm<ConsultationDetailsFormProps>({
-        guardian_name: '',
-        guardian_contact_number: '',
-        guardian_email: '',
-        has_consultation: 1,
-        has_laboratory: 0,
-        signs_or_symptoms_id: [],
-        doctor_id: '',
+    const { data, setData, patch, errors, isDirty } = useForm({
+        id: consultationDetails.id,
+        guardian_name: consultationDetails.guardian_name ?? '',
+        guardian_contact_number: consultationDetails.guardian_contact_number ?? '',
+        guardian_email: consultationDetails.guardian_email ?? '',
+        guardian_relationship_id: consultationDetails.guardian_relationship_id ?? '',
+        signs_or_symptoms_id: getIdsFromArrayData(consultationDetails.signs_or_symptoms ?? []),
+        doctor_id: consultationDetails.doctor.id,
     });
 
-    const updateMedicalServices = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const checkboxId = e.currentTarget.id as keyof ConsultationDetailsFormProps;
-        const isChecked = (e.target as HTMLInputElement).checked;
-        setData(checkboxId, isChecked ? 1 : 0);
-    };
+    const submitDetails = (e: React.SubmitEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        patch(updateDetails().url, formSubmitResponse('Details'));
+    }
 
     return (
         <>
-            <Head title="Consultation Details" />
             <div className={'tab-content mt-3' + (!showTab ? ' hidden' : '')}>
                 <div className="tab-pane fade show active" role="tabpanel" tabIndex={1}>
-                    <form>
-                        <div className="d-flex justify-content-between px-10">
-                            <h4>Consultation Details</h4>
-                            <div className="mt-2 text-right">
-                                <Button size="lg">
-                                    <i>
-                                        <IconDeviceFloppy className="me-1" />
-                                    </i>
-                                    Save Details
-                                </Button>
-                            </div>
-                        </div>
+                    <form onSubmit={submitDetails}>
+                        <div className="m-4"><SaveButton type="Details" isDirty={isDirty}/></div>
                         <div className="row mt-3 w-100">
                             <div className="col-lg-4">
                                 <div className="card border shadow-sm">
@@ -55,16 +72,23 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                             <Label htmlFor="doctor">
                                                 <h5 className="fw-bolder">Doctor</h5>
                                             </Label>
-                                            <Select type="Doctor" options={[]}></Select>
+                                            <Select
+                                                type="Doctor"
+                                                options={doctors}
+                                                value={data.doctor_id}
+                                                onChange={(e) =>
+                                                    setData('doctor_id', e.target.value)
+                                                }
+                                            ></Select>
                                         </div>
                                         <div className="form-group mt-3">
                                             <Label htmlFor="added-by">
                                                 <h5 className="fw-bolder">Added by</h5>
                                             </Label>
                                             <h5 id="added-by">
-                                                Ralph De Lara
+                                                <span className="fw-semibold">{consultationDetails.created_by.full_name}</span>
                                                 <p>
-                                                    <small>Jul 15, 2026 09:50am</small>
+                                                    <small>{consultationDetails.created_at}</small>
                                                 </p>
                                             </h5>
                                         </div>
@@ -73,9 +97,9 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                                 <h5 className="fw-bolder">Last modified by</h5>
                                             </Label>
                                             <h5 id="last-modified-by">
-                                                Ralph De Lara
+                                                {consultationDetails.last_modified_by?.full_name ?? ''}
                                                 <p>
-                                                    <small>Jul 15, 2026 09:50am</small>
+                                                    <small>{consultationDetails.updated_at}</small>
                                                 </p>
                                             </h5>
                                         </div>
@@ -145,16 +169,16 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                             >
                                                 Relationship
                                             </Label>
-                                            <Input
-                                                value={data.guardian_email}
+                                            <Select
+                                                type="Relationship"
+                                                options={relationshipOptions}
+                                                value={data.guardian_relationship_id}
                                                 onChange={(e) =>
-                                                    setData('guardian_email', e.target.value)
+                                                    setData(
+                                                        'guardian_relationship_id',
+                                                        e.target.value,
+                                                    )
                                                 }
-                                                id="guardian-email"
-                                                type="text"
-                                                className="form-control"
-                                                placeholder="ex. xxxxxxxxxxxx@gmail.com"
-                                                maxLength={100}
                                             />
                                         </div>
                                     </div>

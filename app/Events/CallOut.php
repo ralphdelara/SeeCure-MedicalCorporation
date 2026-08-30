@@ -8,7 +8,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class CallPatient implements ShouldBroadcastNow
+class CallOut implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -31,7 +31,7 @@ class CallPatient implements ShouldBroadcastNow
     public function broadcastOn(): array
     {
         return [
-            new Channel('call-patient'),
+            new Channel('call-out'),
         ];
     }
 }

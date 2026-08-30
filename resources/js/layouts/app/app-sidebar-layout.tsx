@@ -18,7 +18,7 @@ import logoText from '@/assets/images/logos/logo_text.png';
 import userImg from '@/assets/images/profile/user-1.jpg';
 import {
     cashier,
-    consultation,
+    consultations,
     dashboard,
     frontDesk,
     laboratory,
@@ -66,10 +66,10 @@ export default function NavSidebar({ toggleSidebar }: NavSidebarProps) {
             active: url.includes(patients().url.slice(0, -1)),
         },
         {
-            url: consultation(),
+            url: consultations(),
             name: 'Consultation',
             icon: IconStethoscope,
-            active: url.includes(consultation().url),
+            active: url.includes(consultations().url),
         },
         {
             url: laboratory(),

@@ -6,12 +6,12 @@ use Diglactic\Breadcrumbs\Breadcrumbs;
 use Diglactic\Breadcrumbs\Generator as BreadcrumbTrail;
 
 // Consultation
-Breadcrumbs::for('consultation', function (BreadcrumbTrail $trail) {
-    $trail->push('Consultation', route('consultation'));
+Breadcrumbs::for('consultations', function (BreadcrumbTrail $trail) {
+    $trail->push('Consultation', route('consultations'));
 });
-Breadcrumbs::for('consultation.details', function (BreadcrumbTrail $trail, string $id) {
-    $trail->parent('consultation');
-    $trail->push('Consultation Details', route('consultation.details', ['id' => $id]));
+Breadcrumbs::for('consultation.details', function (BreadcrumbTrail $trail, string $consultationId) {
+    $trail->parent('consultations');
+    $trail->push('Consultation Details', route('consultation.details', ['consultationId' => $consultationId]));
 });
 
 // Patient

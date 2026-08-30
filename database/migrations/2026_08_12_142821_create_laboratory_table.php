@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('status_id')->constrained('laboratory_statuses', 'id');
 
             $table->foreignUuid('created_by')->constrained('users', 'id');
-            $table->foreignUuid('last_modified_by')->constrained('users', 'id');
+            $table->foreignUuid('last_modified_by')->nullable()->constrained('users', 'id');
             $table->timestamps();
         });
     }

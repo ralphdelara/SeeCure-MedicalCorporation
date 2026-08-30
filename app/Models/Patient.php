@@ -166,6 +166,9 @@ class Patient extends Model implements CipherSweetEncrypted
             'house_no'        => 'encrypted',
             'street'          => 'encrypted',
             'photo'           => 'encrypted',
+
+            'created_at' => 'date:M d, Y h:i a',
+            'updated_at' => 'date:M d, Y h:i a',
         ];
     }
 

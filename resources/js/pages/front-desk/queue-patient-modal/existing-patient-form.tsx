@@ -26,6 +26,10 @@ const ExistingPatientForm = ({ data, setData, errors = {} }: QueuePatientFormPro
         setData('patient_id', data.patient_id === id ? '' : id);
     };
 
+    useEffect(() => {
+        searchPatient();
+    }, []);
+
     return (
         <section role="tabpanel" className="body current">
             <div className="form-group">

@@ -43,6 +43,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 #[Fillable([
     'consultation_id',
     'product_id',
+    'product_name',
     'quantity',
     'dosage',
     'created_by',
@@ -57,6 +58,8 @@ class Prescription extends Model
         return [
             'dosage'     => 'encrypted',
             'product_id' => 'encrypted',
+            'created_at' => 'date:M d, Y h:i a',
+            'updated_at' => 'date:M d, Y h:i a',
         ];
     }
 

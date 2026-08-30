@@ -21,13 +21,12 @@ return new class extends Migration
             $table->string('guardian_contact_number')->nullable();
             $table->text('guardian_email')->nullable();
             $table->foreignId('guardian_relationship_id')->nullable()->constrained('relationships', 'id');
-            $table->text('diagnosis')->nullable();
 
             $table->foreignId('status_id')->constrained('consultation_statuses', 'id');
             $table->date('follow_up_date')->nullable();
             $table->foreignUuid('doctor_id')->constrained('users', 'id');
             $table->foreignUuid('created_by')->constrained('users', 'id');
-            $table->foreignUuid('last_modified_by')->constrained('users', 'id');
+            $table->foreignUuid('last_modified_by')->nullable()->constrained('users', 'id');
             $table->timestamps();
         });
     }
