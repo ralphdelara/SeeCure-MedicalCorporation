@@ -6,6 +6,7 @@ import {
     IconTrash,
     IconUser,
     IconVolume,
+    IconVolumeOff,
 } from '@tabler/icons-react';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import SearchField from '@/components/search-field';
@@ -13,10 +14,14 @@ import TableList from '@/components/table';
 import type { Pages } from '@/types/pagination';
 import type { ConsultationList } from './types';
 import { Button } from '@/components/ui/button';
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import { getPatientDetails } from '@/actions/App/Http/Controllers/PatientController';
 import Notification from './notification';
-import { getConsultationDetails } from '@/actions/App/Http/Controllers/ConsultationController';
+import {
+    callOutPatient,
+    getConsultationDetails,
+} from '@/actions/App/Http/Controllers/ConsultationController';
+import { fetchUrl } from '@/lib/utils';
 
 interface InertiaProps {
     consultationList: {
@@ -28,6 +33,7 @@ interface InertiaProps {
 export default function Consultation() {
     const { consultationList } = usePage().props as unknown as InertiaProps;
     const { tableData, pageData } = consultationList;
+    const [allowCallPatient, setAllowCallPatient] = useState(true);
 
     const header = [
         { name: '#', align: 'right' },
@@ -47,7 +53,27 @@ export default function Consultation() {
         type: 'All Status',
     };
 
-    console.log(tableData);
+    const callPatient = async (patientName: string) => {
+        if (!allowCallPatient) return;
+
+        // Lock the button immediately BEFORE the network request starts
+        setAllowCallPatient(false);
+
+        try {
+            const response = await fetchUrl(callOutPatient().url, 'POST', {
+                patientName: patientName,
+            });
+
+            // Handle your response here if needed
+        } catch (error) {
+            console.error('Failed to call patient:', error);
+            setAllowCallPatient(true);
+        } finally {
+            const timer = setTimeout(() => {
+                setAllowCallPatient(true);
+            }, 10000);
+        }
+    };
 
     return (
         <>
@@ -222,11 +248,14 @@ export default function Consultation() {
                                     <Button
                                         rounded={true}
                                         className="me-1 mb-1"
-                                        title="Call Patient"
+                                        title={allowCallPatient ? 'Call Patient' : 'Please wait...'}
+                                        disabled={!allowCallPatient}
+                                        onClick={() => callPatient(item.patient.full_name)}
                                     >
-                                        <i>
-                                            <IconVolume size={18} />
-                                        </i>
+                                            <i>
+                                                {allowCallPatient && <IconVolume size={18} />}
+                                                {!allowCallPatient && <IconVolumeOff size={18}/>}
+                                            </i>
                                     </Button>
                                     <Link href={getConsultationDetails(item.id)}>
                                         <Button

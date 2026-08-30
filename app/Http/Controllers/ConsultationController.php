@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\CallOut;
 use App\Models\LaboratoryTestType;
 use App\Models\Prescription;
 use App\Models\ProductCategory;
@@ -98,5 +99,13 @@ class ConsultationController extends Controller
     public function deletePrescription(string $id): void
     {
         Prescription::destroy($id);
+    }
+
+    public function callOutPatient(Request $request): void
+    {
+        broadcast(new CallOut(
+            $request->patientName ?? '',
+            'Consultation',
+        ));
     }
 }

@@ -16,10 +16,10 @@ class CallOut implements ShouldBroadcastNow
      * Create a new event instance.
      */
     public function __construct(
-        public string $name,
+        public string $patientName,
         public string $department,
     ) {
-        $this->name = $name;
+        $this->patientName = $patientName;
         $this->department = $department;
     }
 
