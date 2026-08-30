@@ -1,6 +1,6 @@
 <?php
 
-use App\Events\NotifyDoctor;
+use App\Events\CallOut;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\FrontDeskController;
@@ -9,6 +9,7 @@ use App\Http\Controllers\PatientController;
 use App\Http\Controllers\PharmacyController;
 use App\Http\Controllers\SystemController;
 use App\Http\Controllers\UserController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::permanentRedirect('/', '/login');
@@ -37,6 +38,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::patch('/diagnosis', [ConsultationController::class, 'updateDiagnosis'])->name('consultation.details.update.diagnosis');
             Route::post('/prescription', [ConsultationController::class, 'addOrUpdatePrescription'])->name('consultation.details.add-or-update.prescription');
             Route::delete('/prescription/{prescriptionId}', [ConsultationController::class, 'deletePrescription'])->name('consultation.details.delete.prescription');
+            Route::post('/call-out', [ConsultationController::class, 'callOutPatient'])->name('consultation.call-out');
         });
     });
     Route::inertia('laboratory', 'laboratory')->name('laboratory');
@@ -78,12 +80,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Route::inertia('test1', 'test')->name('test');
 
     Route::inertia('/test-socket', 'test-reverb')->name('test');
-    Route::get('/test-socket-send', function () {
-        broadcast(new NotifyDoctor(
-            'Notification',
-            'A new patient has been queued',
-            10,
-            'doctorUuidHere',
+    Route::get('/test-socket-send', function (Request $request) {
+        broadcast(new CallOut(
+            $request->patientName ?? '',
+            $request->department ?? '',
         ));
     })->name('test-notify');
     Route::inertia('/test-speech', 'calendar')->name('test-speech');

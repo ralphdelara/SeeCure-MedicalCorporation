@@ -74,7 +74,7 @@ const ConsultationForm = ({ data, setData, errors = {} }: QueuePatientFormProps)
                             type="Relationship"
                             id="guardian-relationship"
                         />
-                        <InputError message={errors.doctor_id} className="mt-2" />
+                        <InputError message={errors.guardian_relationship_id} className="mt-2" />
                     </div>
                 </div>
             </div>
