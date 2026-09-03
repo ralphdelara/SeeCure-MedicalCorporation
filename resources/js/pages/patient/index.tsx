@@ -184,7 +184,7 @@ export default function PatientList() {
                                             <td>
                                                 <div className="d-flex align-items-start">
                                                     <div className="ms-3">
-                                                        <h6 className="fs-4 fw-normal">
+                                                        <h6 className="fs-4 fw-semibold">
                                                             {item.last_modified_by?.full_name ?? ''}
                                                         </h6>
                                                         <h6 className="fs-4 fw-normal">

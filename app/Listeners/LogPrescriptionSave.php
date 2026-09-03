@@ -28,13 +28,13 @@ class LogPrescriptionSave implements ShouldQueue
         $data = match ($type) {
             'created' => $this->created($prescription),
             'deleted' => $this->deleted($prescription),
-            default => $this->updated($prescription, $savedFields, $originalFields),
+            default   => $this->updated($prescription, $savedFields, $originalFields),
         };
 
         $auditType = match ($type) {
             'created' => AuditTypeEnum::ADD,
             'deleted' => AuditTypeEnum::DELETE,
-            default => AuditTypeEnum::UPDATE,
+            default   => AuditTypeEnum::UPDATE,
         };
 
         ConsultationAudit::create([

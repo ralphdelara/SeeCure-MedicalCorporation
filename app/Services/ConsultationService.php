@@ -32,8 +32,15 @@ class ConsultationService
                 $query->select('id', 'name');
             },
             'createdBy' => function ($query) {
-                $query->select('id', 'first_name', 'last_name');
+                $query->select('id', 'first_name', 'middle_name', 'last_name');
             },
+            'createdBy.professions',
+            'createdBy.specialties',
+            'lastModifiedBy' => function ($query) {
+                $query->select('id', 'first_name', 'middle_name', 'last_name');
+            },
+            'lastModifiedBy.professions',
+            'lastModifiedBy.specialties',
             'guardianRelationship' => function ($query) {
                 $query->select('id', 'name');
             },

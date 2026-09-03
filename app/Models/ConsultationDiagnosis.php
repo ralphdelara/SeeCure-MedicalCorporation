@@ -55,7 +55,7 @@ class ConsultationDiagnosis extends Model
     protected function casts(): array
     {
         return [
-            'diagnosis' => 'encrypted',
+            'diagnosis'  => 'encrypted',
             'created_at' => 'date:M d, Y h:i a',
             'updated_at' => 'date:M d, Y h:i a',
         ];
