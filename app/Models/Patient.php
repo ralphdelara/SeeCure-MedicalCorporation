@@ -108,6 +108,9 @@ use Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereStreet($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereUpdatedAt($value)
  *
+ * @property-read string|null $age_computed
+ * @property-read string|null $full_address
+ *
  * @mixin \Eloquent
  */
 #[Fillable([

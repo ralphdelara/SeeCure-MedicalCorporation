@@ -118,6 +118,12 @@ use Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUsername($value)
  *
+ * @property string|null $username_index
+ * @property-read string|null $age_computed
+ * @property-read string|null $full_address
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUsernameIndex($value)
+ *
  * @mixin \Eloquent
  */
 #[Fillable([

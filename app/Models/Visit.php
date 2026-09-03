@@ -38,6 +38,14 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit wherePatientId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereUpdatedAt($value)
  *
+ * @property bool $consultation_completed
+ * @property bool $lab_completed
+ * @property bool $radiology_completed
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereConsultationCompleted($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereLabCompleted($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereRadiologyCompleted($value)
+ *
  * @mixin \Eloquent
  */
 #[Fillable([

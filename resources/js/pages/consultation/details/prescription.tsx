@@ -155,7 +155,7 @@ const Prescription = ({ showTab }: { showTab: boolean }) => {
                                     {prescriptions.length === 0 && (
                                         <tr>
                                             <td
-                                                colSpan={4}
+                                                colSpan={7}
                                                 className="fs-7 text-danger text-center"
                                             >
                                                 No record

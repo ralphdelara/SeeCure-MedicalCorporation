@@ -58,6 +58,19 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereVisitId($value)
  *
+ * @property string|null $follow_up_date
+ * @property-read Collection<int, ConsultationAudit> $audits
+ * @property-read int|null $audits_count
+ * @property-read Collection<int, Document> $documents
+ * @property-read int|null $documents_count
+ * @property-read Laboratory|null $laboratory
+ * @property-read Collection<int, Prescription> $prescriptions
+ * @property-read int|null $prescriptions_count
+ * @property-read Radiology|null $radiology
+ * @property-read ConsultationSoap|null $soap
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereFollowUpDate($value)
+ *
  * @mixin \Eloquent
  */
 #[Fillable([

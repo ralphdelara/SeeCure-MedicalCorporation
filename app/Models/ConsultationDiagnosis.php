@@ -33,6 +33,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosis whereLastModifiedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosis whereUpdatedAt($value)
  *
+ * @property string $consultation_id
+ * @property-read int|null $icd10_codes_count
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosis whereConsultationId($value)
+ *
  * @mixin \Eloquent
  */
 #[Fillable([
@@ -51,6 +56,8 @@ class ConsultationDiagnosis extends Model
     {
         return [
             'diagnosis' => 'encrypted',
+            'created_at' => 'date:M d, Y h:i a',
+            'updated_at' => 'date:M d, Y h:i a',
         ];
     }
 

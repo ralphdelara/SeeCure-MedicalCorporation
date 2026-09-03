@@ -14,4 +14,15 @@ trait EnumTraits
             'name' => $case->description(),
         ], self::cases());
     }
+
+    public static function getDescriptionLists(): array
+    {
+        $list = [];
+
+        foreach (self::cases() as $case) {
+            $list[$case->value] = $case->description();
+        }
+
+        return $list;
+    }
 }

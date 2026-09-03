@@ -33,6 +33,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('consultation')->group(function () {
         Route::prefix('/details')->group(function () {
             Route::get('/{consultationId}', [ConsultationController::class, 'getConsultationDetails'])->name('consultation.details');
+            Route::get('/{consultationId}/audit-log', [ConsultationController::class, 'getAuditLog'])->name('consultation.audit-log');
             Route::patch('/', [ConsultationController::class, 'updateDetails'])->name('consultation.details.update');
             Route::patch('/soap', [ConsultationController::class, 'updateSoap'])->name('consultation.details.update.soap');
             Route::patch('/diagnosis', [ConsultationController::class, 'updateDiagnosis'])->name('consultation.details.update.diagnosis');

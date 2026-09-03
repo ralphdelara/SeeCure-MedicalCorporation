@@ -56,6 +56,7 @@ class Prescription extends Model
     protected function casts(): array
     {
         return [
+            'product_name' => 'encrypted',
             'dosage'     => 'encrypted',
             'product_id' => 'encrypted',
             'created_at' => 'date:M d, Y h:i a',

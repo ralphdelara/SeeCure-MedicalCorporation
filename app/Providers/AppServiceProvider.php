@@ -2,6 +2,14 @@
 
 namespace App\Providers;
 
+use App\Models\Consultation;
+use App\Models\ConsultationDiagnosis;
+use App\Models\ConsultationSoap;
+use App\Models\Prescription;
+use App\Observers\ConsultationDiagnosisObserver;
+use App\Observers\ConsultationObserver;
+use App\Observers\ConsultationSoapObserver;
+use App\Observers\PrescriptionObserver;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\Grammars\PostgresGrammar;
@@ -41,6 +49,11 @@ class AppServiceProvider extends ServiceProvider
         if (config('app.env') === 'production' || config('app.env') === 'staging') {
             URL::forceScheme('https');
         }
+
+        Consultation::observe(ConsultationObserver::class);
+        ConsultationSoap::observe(ConsultationSoapObserver::class);
+        ConsultationDiagnosis::observe(ConsultationDiagnosisObserver::class);
+        Prescription::observe(PrescriptionObserver::class);
     }
 
     /**

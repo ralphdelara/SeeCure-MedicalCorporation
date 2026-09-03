@@ -74,3 +74,22 @@ if (! function_exists('computeExactAge')) {
         return $diff->format('%yy %mm %dd');
     }
 }
+
+if (! function_exists('getRelatedAuditFields')) {
+    function getRelatedAuditFields(
+        array $enumArray = [],
+        array $fields = [],
+    ): array {
+        $newFields = [];
+
+        $newFields['added'] = array_map(function ($id) use ($enumArray) {
+            return $enumArray[$id] ?? 'Unknown';
+        }, $fields['attached'] ?? []);
+
+        $newFields['deleted'] = array_map(function ($id) use ($enumArray) {
+            return $enumArray[$id] ?? 'Unknown';
+        }, $fields['detached'] ?? []);
+
+        return $newFields;
+    }
+}

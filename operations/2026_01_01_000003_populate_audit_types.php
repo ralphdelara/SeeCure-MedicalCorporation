@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\AuditTypeEnum;
 use App\Models\AuditType;
 use TimoKoerber\LaravelOneTimeOperations\OneTimeOperation;
 
@@ -25,11 +26,6 @@ return new class extends OneTimeOperation
      */
     public function process(): void
     {
-        AuditType::fillAndInsert([
-            ['name' => 'Add'],
-            ['name' => 'Update'],
-            ['name' => 'Delete'],
-            ['name' => 'View'],
-        ]);
+        AuditType::fillAndInsert(AuditTypeEnum::getArrayList());
     }
 };
