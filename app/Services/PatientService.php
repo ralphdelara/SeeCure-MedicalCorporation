@@ -22,7 +22,27 @@ class PatientService
         ?string $selectId,
         string $path,
     ): array {
-        $patientList = Patient::with(['gender', 'suffix', 'status', 'province', 'city', 'barangay', 'civilStatus', 'nationality', 'createdBy', 'lastModifiedBy']);
+        $patientList = Patient::with([
+            'gender',
+            'suffix',
+            'status',
+            'province',
+            'city',
+            'barangay',
+            'civilStatus',
+            'nationality',
+            'createdBy' => function ($query) {
+                $query->select('id', 'first_name', 'middle_name', 'last_name');
+            },
+            'createdBy.professions',
+            'createdBy.specialties',
+            'lastModifiedBy' => function ($query) {
+                $query->select('id', 'first_name', 'middle_name', 'last_name');
+            },
+            'lastModifiedBy.professions',
+            'lastModifiedBy.specialties',
+            'lastModifiedBy',
+        ]);
 
         if (! empty($keyword)) {
             $patientList = $patientList->whereBlind('last_name_index', 'last_name_index', strtolower($keyword))

@@ -33,6 +33,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationSoap whereSubjective($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationSoap whereUpdatedAt($value)
  *
+ * @property-read User $createdBy
+ * @property-read User|null $lastModifiedBy
+ *
  * @mixin \Eloquent
  */
 #[Fillable([

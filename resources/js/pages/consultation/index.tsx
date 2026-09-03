@@ -34,7 +34,7 @@ export default function Consultation() {
     const { consultationList } = usePage().props as unknown as InertiaProps;
     const { tableData, pageData } = consultationList;
     const [allowCallPatient, setAllowCallPatient] = useState(true);
-
+console.log(consultationList);
     const header = [
         { name: '#', align: 'right' },
         { name: 'Patient', className: 'sticky-left', align: 'left' },
@@ -278,7 +278,7 @@ export default function Consultation() {
                         ))}
                         {tableData.length === 0 && (
                             <tr>
-                                <td colSpan={8} className="fs-7 text-danger text-center">
+                                <td colSpan={10} className="fs-7 text-danger text-center">
                                     No records
                                 </td>
                             </tr>

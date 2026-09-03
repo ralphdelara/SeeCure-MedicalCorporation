@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\SignsOrSymptomEnum;
 use App\Models\SignsOrSymptom;
 use TimoKoerber\LaravelOneTimeOperations\OneTimeOperation;
 
@@ -25,17 +26,6 @@ return new class extends OneTimeOperation
      */
     public function process(): void
     {
-        SignsOrSymptom::fillAndInsert([
-            ['name' => 'Cough'],
-            ['name' => 'Colds'],
-            ['name' => 'Fever'],
-            ['name' => 'Headache'],
-            ['name' => 'Stomach Pain'],
-            ['name' => 'Sorethroat'],
-            ['name' => 'Difficulty of Breathing'],
-            ['name' => 'Diarrhea'],
-            ['name' => 'Loss of Smell'],
-            ['name' => 'Loss of Taste'],
-        ]);
+        SignsOrSymptom::fillAndInsert(SignsOrSymptomEnum::getArrayList());
     }
 };

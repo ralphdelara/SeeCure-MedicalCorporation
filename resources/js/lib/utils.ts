@@ -104,3 +104,7 @@ export function getUrlParams(param: string, defaultValue?: string) {
 
     return urlParams.get(param) ?? defaultValue ?? '';
 }
+
+export function convertSnakeToTitleCase(word: string) {
+    return word.replace(/_/g, ' ').replace(/\b\w/g, match => match.toUpperCase());
+}

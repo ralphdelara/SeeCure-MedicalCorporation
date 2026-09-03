@@ -190,12 +190,11 @@ const PrescriptionModal = ({ formShow, setFormShow, formType, formData }: ModalP
                                         <div className="col-md-12">
                                             <TableList
                                                 header={[
-                                                    { name: 'Product', align: 'left' },
                                                     {
                                                         name: 'Stock',
-                                                        className: 'sticky-right',
                                                         align: 'left',
                                                     },
+                                                    { name: 'Product', align: 'left' },
                                                     { name: 'Category', align: 'left' },
                                                 ]}
                                                 floatScrollbar={false}
@@ -213,10 +212,10 @@ const PrescriptionModal = ({ formShow, setFormShow, formType, formData }: ModalP
                                                         }
                                                         key={'productList-' + index}
                                                     >
-                                                        <td>{item.name}</td>
-                                                        <td className="sticky-right">
+                                                        <td>
                                                             {item.stock}
                                                         </td>
+                                                        <td>{item.name}</td>
                                                         <td>{item.category.name}</td>
                                                     </tr>
                                                 ))}
