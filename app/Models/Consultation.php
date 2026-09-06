@@ -37,9 +37,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read int|null $patient_vital_sign_count
  * @property-read Collection<int, ConsultationSignsOrSymptom> $signsOrSymptoms
  * @property-read int|null $signs_or_symptoms_count
- * @property-read ConsultationStatus $status
  * @property-read Visit $visit
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation query()
@@ -54,10 +52,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereLastModifiedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation wherePatientId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereStatusId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereVisitId($value)
- *
  * @property string|null $follow_up_date
  * @property-read Collection<int, ConsultationAudit> $audits
  * @property-read int|null $audits_count
@@ -68,9 +64,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read int|null $prescriptions_count
  * @property-read Radiology|null $radiology
  * @property-read ConsultationSoap|null $soap
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereFollowUpDate($value)
- *
  * @mixin \Eloquent
  */
 #[Fillable([
@@ -119,11 +113,6 @@ class Consultation extends Model
     public function signsOrSymptoms(): BelongsToMany
     {
         return $this->belongsToMany(SignsOrSymptom::class, 'consultation_signs_or_symptoms', 'consultation_id', 'signs_or_symptom_id');
-    }
-
-    public function status(): BelongsTo
-    {
-        return $this->belongsTo(ConsultationStatus::class);
     }
 
     public function doctor(): BelongsTo

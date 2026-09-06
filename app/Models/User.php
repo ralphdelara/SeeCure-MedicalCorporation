@@ -78,7 +78,6 @@ use Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted;
  * @property-read Province|null $province
  * @property-read Collection<int, UserSpecialty> $specialties
  * @property-read int|null $specialties_count
- *
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()
@@ -117,13 +116,10 @@ use Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereStreet($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUsername($value)
- *
  * @property string|null $username_index
  * @property-read string|null $age_computed
  * @property-read string|null $full_address
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUsernameIndex($value)
- *
  * @mixin \Eloquent
  */
 #[Fillable([

@@ -13,8 +13,8 @@ interface InertiaProps {
         id: string;
         prescriptions: {
             id: string;
-            product_id: string;
-            product_name: string;
+            inventory_id: string;
+            inventory_name: string;
             quantity: string;
             dosage: string;
             created_by: {
@@ -36,8 +36,8 @@ const Prescription = ({ showTab }: { showTab: boolean }) => {
     const defaultData = {
         id: '',
         consultation_id: consultationDetails.id,
-        product_id: '',
-        product_name: '',
+        inventory_id: '',
+        inventory_name: '',
         quantity: '',
         dosage: '',
     };
@@ -96,7 +96,7 @@ const Prescription = ({ showTab }: { showTab: boolean }) => {
                                     {prescriptions.map((item, index) => (
                                         <tr key={'prescription-' + item.id}>
                                             <td className="text-right">{index + 1}</td>
-                                            <td>{item.product_name}</td>
+                                            <td>{item.inventory_name}</td>
                                             <td>{item.dosage}</td>
                                             <td className="text-right">{item.quantity}</td>
                                             <td>
@@ -132,8 +132,8 @@ const Prescription = ({ showTab }: { showTab: boolean }) => {
                                                         toggleModal('Update', {
                                                             id: item.id,
                                                             consultation_id: consultationDetails.id,
-                                                            product_id: item.product_id,
-                                                            product_name: item.product_name,
+                                                            inventory_id: item.inventory_id,
+                                                            inventory_name: item.inventory_name,
                                                             quantity: item.quantity,
                                                             dosage: item.dosage,
                                                         })
@@ -146,7 +146,7 @@ const Prescription = ({ showTab }: { showTab: boolean }) => {
 
                                                 <DeleteButton
                                                     url={deletePrescription(item.id).url}
-                                                    msg={'<b>' + item.product_name + '</b>'}
+                                                    msg={'<b>' + item.inventory_name + '</b>'}
                                                     successUrl={window.location.pathname + window.location.search}
                                                 />
                                             </td>

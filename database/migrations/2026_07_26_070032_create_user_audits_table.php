@@ -13,7 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('user_audits', function (Blueprint $table) {
-            $table->uuid('id')->primary()->default(DB::raw('(gen_random_uuid())'));
+            $table->uuid('id')->primary();
             $table->foreignUuid('user_id')->constrained(); // constrained auto creates index
             $table->foreignId('audit_type_id')->constrained();
             $table->text('action');

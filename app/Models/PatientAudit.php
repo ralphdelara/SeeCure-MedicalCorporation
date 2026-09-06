@@ -19,7 +19,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read User $createdBy
  * @property-read Patient|null $patient
  * @property-read AuditType|null $type
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit query()
@@ -30,7 +29,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit wherePatientId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 #[Fillable([

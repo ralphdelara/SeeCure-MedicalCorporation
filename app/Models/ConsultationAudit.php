@@ -17,7 +17,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read AuditType $auditType
  * @property-read Consultation $consultation
  * @property-read User $createdBy
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationAudit newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationAudit newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationAudit query()
@@ -27,7 +26,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationAudit whereCreatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationAudit whereData($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationAudit whereId($value)
- *
  * @mixin \Eloquent
  */
 #[Fillable([

@@ -7,7 +7,7 @@ import { getUserDetails } from '@/actions/App/Http/Controllers/UserController';
 import TableList from '@/components/table';
 
 interface InertiaProps {
-    incompleteConsultationList: {
+    consultationList: {
         id: string;
         patient: {
             id: string;
@@ -26,16 +26,11 @@ interface InertiaProps {
             name: string;
         };
     }[];
-    incompleteConsultationStatuses: {
-        id: string;
-        name: string;
-    }[];
 }
 
 export default () => {
     const [consultationDisplay, setConsultationDisplay] = useState('');
-    const { incompleteConsultationList, incompleteConsultationStatuses } = usePage()
-        .props as unknown as InertiaProps;
+    const { consultationList } = usePage().props as unknown as InertiaProps;
     const header = [
         { name: '#', width: '5%', align: 'right' },
         { name: 'Patient • Gender', className: 'sticky-left', align: 'left' },
@@ -50,7 +45,7 @@ export default () => {
                     <h4 className="card-title">Consultation</h4>
                 </div>
                 <TableList header={header}>
-                    {incompleteConsultationList.map((item, index) => (
+                    {consultationList.map((item, index) => (
                         <tr key={'front-desk-list-' + item.id}>
                             <td className="text-right">
                                 <h5>{index + 1}</h5>
@@ -110,11 +105,7 @@ export default () => {
                                 </div>
                             </td>
                             <td>
-                                <Button
-                                    rounded={true}
-                                    className="me-2"
-                                    title="Edit Queue Details"
-                                >
+                                <Button rounded={true} className="me-2" title="Edit Queue Details">
                                     <i>
                                         <IconEdit size={18} />
                                     </i>
@@ -127,7 +118,7 @@ export default () => {
                             </td>
                         </tr>
                     ))}
-                    {incompleteConsultationList.length === 0 && (
+                    {consultationList.length === 0 && (
                         <tr>
                             <td colSpan={4} className="fs-7 text-danger text-center">
                                 No records

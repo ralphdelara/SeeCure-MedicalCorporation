@@ -51,8 +51,8 @@ class LogPrescriptionSave implements ShouldQueue
             'title'  => 'Prescription has been added.',
             'fields' => [
                 [
-                    'field' => 'product_name',
-                    'to'    => $prescription->product_name,
+                    'field' => 'inventory_name',
+                    'to'    => $prescription->inventory_name,
                 ], [
                     'field' => 'quantity',
                     'to'    => $prescription->quantity,
@@ -121,8 +121,8 @@ class LogPrescriptionSave implements ShouldQueue
             'title'  => 'Prescription has been deleted.',
             'fields' => [
                 [
-                    'field' => 'product_name',
-                    'to'    => $prescription->product_name,
+                    'field' => 'inventory_name',
+                    'to'    => $prescription->inventory_name,
                 ], [
                     'field' => 'quantity',
                     'to'    => $prescription->quantity,
@@ -137,7 +137,7 @@ class LogPrescriptionSave implements ShouldQueue
     private function removeUnimportantFields(array &$savedFields): void
     {
         $fields = [
-            'id', 'consultation_id', 'product_id',
+            'id', 'consultation_id', 'inventory_id',
             'created_by', 'created_at',
             'last_modified_by', 'updated_at',
         ];

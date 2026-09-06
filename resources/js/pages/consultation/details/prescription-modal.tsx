@@ -2,7 +2,7 @@ import { useForm, usePage } from '@inertiajs/react';
 import React, { useEffect, useState } from 'react';
 import { Modal } from 'react-bootstrap';
 import { toast, Toaster } from 'react-hot-toast';
-import { getSmallProductList } from '@/actions/App/Http/Controllers/PharmacyController';
+import { getSmallInventoryList } from '@/actions/App/Http/Controllers/InventoryController';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,7 +17,7 @@ interface PageProps {
     consultationDetails: {
         id: string;
     };
-    productCategories: Options[];
+    inventoryCategories: Options[];
 }
 
 interface ModalProps {
@@ -30,13 +30,13 @@ interface ModalProps {
 export interface ModalFormProps {
     id: string;
     consultation_id: string;
-    product_id: string;
-    product_name: string;
+    inventory_id: string;
+    inventory_name: string;
     quantity: string;
     dosage: string;
 }
 
-interface ProductListProps {
+interface InventoryListProps {
     id: string;
     name: string;
     unit: Options;
@@ -45,26 +45,26 @@ interface ProductListProps {
 }
 
 const PrescriptionModal = ({ formShow, setFormShow, formType, formData }: ModalProps) => {
-    const { consultationDetails, productCategories } = usePage().props as unknown as PageProps;
+    const { consultationDetails, inventoryCategories } = usePage().props as unknown as PageProps;
     const [keyword, setKeyword] = useState('');
     const [existingOrOutside, setExistingOrOutside] = useState('existing');
     const [categoryId, setCategoryId] = useState('');
-    const [productList, setProductList] = useState<ProductListProps[]>([]);
+    const [inventoryList, setInventoryList] = useState<InventoryListProps[]>([]);
 
     const { data, setData, post, processing, errors } = useForm<ModalFormProps>(formData);
 
-    const searchProduct = async (categoryId?: string) => {
-        const response = await fetchUrl(getSmallProductList().url, 'GET', {
+    const searchInventory = async (categoryId?: string) => {
+        const response = await fetchUrl(getSmallInventoryList().url, 'GET', {
             keyword: keyword,
             category_id: categoryId ?? '',
         });
 
-        setProductList(response);
+        setInventoryList(response);
     };
 
-    const selectProduct = (id: string, name: string) => {
-        setData('product_id', data.product_id === id ? '' : id);
-        setData('product_name', data.product_name === name ? '' : name);
+    const selectInventory = (id: string, name: string) => {
+        setData('inventory_id', data.inventory_id === id ? '' : id);
+        setData('inventory_name', data.inventory_name === name ? '' : name);
     };
 
     const submitPrescription = (e: React.SubmitEvent<HTMLFormElement>) => {
@@ -78,29 +78,29 @@ const PrescriptionModal = ({ formShow, setFormShow, formType, formData }: ModalP
         });
     };
 
-    const updateProductCategory = (categoryId: string) => {
+    const updateInventoryCategory = (categoryId: string) => {
         setCategoryId(categoryId);
-        searchProduct(categoryId);
+        searchInventory(categoryId);
     };
 
     const updateForm = (formType: string) => {
         setExistingOrOutside(formType);
-        setData('product_id', '');
-        setData('product_name', '');
+        setData('inventory_id', '');
+        setData('inventory_name', '');
     };
 
     useEffect(() => {
-        searchProduct();
+        searchInventory();
     }, []);
 
     useEffect(() => {
         setData('id', formData.id);
-        setData('product_id', formData.product_id);
-        setData('product_name', formData.product_name);
+        setData('inventory_id', formData.inventory_id);
+        setData('inventory_name', formData.inventory_name);
         setData('quantity', formData.quantity);
         setData('dosage', formData.dosage);
 
-        if (formData.product_id === null) {
+        if (formData.inventory_id === null) {
             setExistingOrOutside('outside');
         } else {
             setExistingOrOutside('existing');
@@ -157,7 +157,9 @@ const PrescriptionModal = ({ formShow, setFormShow, formType, formData }: ModalP
                                             <label className="form-label" htmlFor="medicine">
                                                 Select Medicine *
                                             </label>
-                                            <h5 className='fw-semibold mt-2'>Selected Product: {data.product_name}</h5>
+                                            <h5 className="fw-semibold mt-2">
+                                                Selected Inventory: {data.inventory_name}
+                                            </h5>
                                         </div>
                                         <div className="col-md-6">
                                             <div className="form-group">
@@ -170,7 +172,7 @@ const PrescriptionModal = ({ formShow, setFormShow, formType, formData }: ModalP
                                                     onKeyDown={(e) => {
                                                         if (e.key === 'Enter') {
                                                             e.preventDefault(); // Prevents the PARENT form from submitting
-                                                            searchProduct(); // Calls your fetch logic directly
+                                                            searchInventory(); // Calls your fetch logic directly
                                                         }
                                                     }}
                                                 />
@@ -182,9 +184,9 @@ const PrescriptionModal = ({ formShow, setFormShow, formType, formData }: ModalP
                                                 type="Category"
                                                 value={categoryId}
                                                 onChange={(e) =>
-                                                    updateProductCategory(e.target.value)
+                                                    updateInventoryCategory(e.target.value)
                                                 }
-                                                options={productCategories}
+                                                options={inventoryCategories}
                                             />
                                         </div>
                                         <div className="col-md-12">
@@ -194,32 +196,30 @@ const PrescriptionModal = ({ formShow, setFormShow, formType, formData }: ModalP
                                                         name: 'Stock',
                                                         align: 'left',
                                                     },
-                                                    { name: 'Product', align: 'left' },
+                                                    { name: 'Inventory', align: 'left' },
                                                     { name: 'Category', align: 'left' },
                                                 ]}
                                                 floatScrollbar={false}
                                             >
-                                                {productList.map((item, index) => (
+                                                {inventoryList.map((item, index) => (
                                                     <tr
                                                         onClick={() =>
-                                                            selectProduct(item.id, item.name)
+                                                            selectInventory(item.id, item.name)
                                                         }
                                                         className={
                                                             'cursor-pointer' +
-                                                            (item.id === data.product_id
+                                                            (item.id === data.inventory_id
                                                                 ? ' border-success border-2'
                                                                 : '')
                                                         }
-                                                        key={'productList-' + index}
+                                                        key={'inventoryList-' + index}
                                                     >
-                                                        <td>
-                                                            {item.stock}
-                                                        </td>
+                                                        <td>{item.stock}</td>
                                                         <td>{item.name}</td>
                                                         <td>{item.category.name}</td>
                                                     </tr>
                                                 ))}
-                                                {productList.length === 0 && (
+                                                {inventoryList.length === 0 && (
                                                     <tr>
                                                         <td
                                                             colSpan={4}
@@ -236,16 +236,16 @@ const PrescriptionModal = ({ formShow, setFormShow, formType, formData }: ModalP
                                 {existingOrOutside === 'outside' && (
                                     <div className="col-md-12">
                                         <div className="form-group">
-                                            <label className="form-label" htmlFor="product_name">
+                                            <label className="form-label" htmlFor="inventory_name">
                                                 Medicine *
                                             </label>
 
                                             <Input
-                                                value={data.product_name}
+                                                value={data.inventory_name}
                                                 onChange={(e) =>
-                                                    setData('product_name', e.target.value)
+                                                    setData('inventory_name', e.target.value)
                                                 }
-                                                id="product_name"
+                                                id="inventory_name"
                                                 type="text"
                                                 className="form-control"
                                                 placeholder="ex. Biogesic 500mg"
@@ -253,7 +253,7 @@ const PrescriptionModal = ({ formShow, setFormShow, formType, formData }: ModalP
                                                 required={true}
                                             />
                                             <InputError
-                                                message={errors.product_name}
+                                                message={errors.inventory_name}
                                                 className="mt-2"
                                             />
                                         </div>

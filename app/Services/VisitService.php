@@ -11,6 +11,7 @@ class VisitService
     {
         $visit = Visit::create([
             'patient_id'              => $patientId,
+            'visit_status_id'           => 1,
             'guardian_name'           => $consultDetails['guardian_name'],
             'guardian_contact_number' => $consultDetails['guardian_contact_number'],
             'guardian_email'          => $consultDetails['guardian_email'],

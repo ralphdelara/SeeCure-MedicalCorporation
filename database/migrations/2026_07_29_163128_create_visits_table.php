@@ -13,21 +13,28 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('visits', function (Blueprint $table) {
-            $table->uuid('id')->primary()->default(DB::raw('(gen_random_uuid())'));
+            $table->uuid('id')->primary();
             $table->foreignUuid('patient_id')->constrained()->cascadeOnDelete();
+
+            $table->dateTime('admitted_at')->nullable();
+            $table->dateTime('discharged_at')->nullable();
+
             $table->boolean('has_consultation')->default(false);
             $table->boolean('has_laboratory')->default(false);
             $table->boolean('has_radiology')->default(false);
-            $table->boolean('consultation_completed')->default(false);
-            $table->boolean('lab_completed')->default(false);
-            $table->boolean('radiology_completed')->default(false);
+            $table->boolean('is_emergency')->default(false);
+
+            $table->foreignId('priority_type_id')->constrained();
+            $table->foreignId('visit_status_id')->constrained();
             $table->foreignUuid('created_by')->constrained('users', 'id');
             $table->foreignUuid('last_modified_by')->nullable()->constrained('users', 'id');
             $table->timestamps();
 
-            $table->index(['has_consultation', 'consultation_completed']);
-            $table->index(['has_laboratory', 'lab_completed']);
-            $table->index(['has_radiology', 'radiology_completed']);
+            $table->index('visit_status_id');
+            // Fast lookups for finding a patient's open or historical stays
+            $table->index(['patient_id', 'discharged_at']);
+            // Great for reporting analytics by date ranges
+            $table->index('admitted_at');
         });
     }
 

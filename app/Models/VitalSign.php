@@ -12,13 +12,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $name
  * @property-read Collection<int, VitalSignField> $fields
  * @property-read int|null $fields_count
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|VitalSign newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|VitalSign newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|VitalSign query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|VitalSign whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|VitalSign whereName($value)
- *
  * @mixin \Eloquent
  */
 #[Fillable([

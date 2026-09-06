@@ -20,7 +20,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read ConsultationDiagnosis $consultationDiagnosis
  * @property-read User $createdBy
  * @property-read Icd10Code|null $icd10
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosisIcd10Code newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosisIcd10Code newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosisIcd10Code query()
@@ -30,11 +29,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosisIcd10Code whereCreatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosisIcd10Code whereIcdCodeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosisIcd10Code whereId($value)
- *
  * @property-read Icd10Code|null $icd10Code
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosisIcd10Code whereIcd10CodeId($value)
- *
  * @mixin \Eloquent
  */
 #[Fillable([

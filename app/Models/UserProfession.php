@@ -13,14 +13,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $profession_id
  * @property-read Profession $profession
  * @property-read User $user
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserProfession newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserProfession newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserProfession query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserProfession whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserProfession whereProfessionId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserProfession whereUserId($value)
- *
  * @mixin \Eloquent
  */
 #[Fillable([

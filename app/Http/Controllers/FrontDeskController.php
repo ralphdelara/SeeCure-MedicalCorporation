@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\ConsultationStatusEnum;
+use App\Enums\VisitStatusEnum;
 use App\Events\NotifyDoctor;
-use App\Models\LaboratoryTestType;
 use App\Models\Relationship;
 use App\Models\SignsOrSymptom;
 use App\Models\VitalSign;
@@ -27,10 +26,9 @@ class FrontDeskController extends Controller
         $signsOrSymptoms = SignsOrSymptom::all();
         $vitalSigns = VitalSign::with('fields')->get();
         $doctors = app(DoctorService::class)->getDoctorList();
-        $laboratoryTestOptions = LaboratoryTestType::all();
-        $incompleteConsultationList = app(ConsultationService::class)->getIncompleteConsultation();
-        $incompleteConsultationStatuses = ConsultationStatusEnum::incompleteStatusesDropdown();
+        $laboratoryTestOptions = [];
         $relationshipOptions = Relationship::all();
+        $consultationList = app(ConsultationService::class)->getPendingConsultationList();
 
         return Inertia::render('front-desk/index', compact(
             'formOptions',
@@ -39,8 +37,7 @@ class FrontDeskController extends Controller
             'doctors',
             'relationshipOptions',
             'laboratoryTestOptions',
-            'incompleteConsultationList',
-            'incompleteConsultationStatuses',
+            'consultationList',
         ));
     }
 
@@ -110,6 +107,23 @@ class FrontDeskController extends Controller
             'signs_or_symptoms_id',
         );
 
+        $visitDetails = $request->only(
+            'patient_id',
+            'has_consultation',
+            'has_laboratory',
+            'has_radiology',
+            'is_emergency',
+        );
+
+        if (
+            $visitDetails['has_laboratory'] === 1
+            || $visitDetails['has_radiology'] === 1
+        ) {
+            $visitDetails['visit_status_id'] = VisitStatusEnum::IN_BILLING;
+        } else {
+            $visitDetails['visit_status_id'] = VisitStatusEnum::IN_CONSULTATION;
+        }
+
         $vitalSigns = $request->vital_signs;
 
         $patientId = $request->input('patient_id');
@@ -128,7 +142,7 @@ class FrontDeskController extends Controller
             broadcast(new NotifyDoctor(
                 'Notification',
                 'A new patient has been queued',
-                0,
+                1,
                 $consultDetails['doctor_id'],
             ));
         }

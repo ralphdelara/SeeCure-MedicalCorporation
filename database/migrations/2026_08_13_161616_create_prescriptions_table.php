@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('prescriptions', function (Blueprint $table) {
-            $table->uuid('id')->primary()->default(DB::raw('(gen_random_uuid())'));
+            $table->uuid('id')->primary();
             $table->foreignUuid('consultation_id')->constrained()->cascadeOnDelete();
-            $table->text('product_id')->nullable();
-            $table->text('product_name');
+            $table->text('inventory_id')->nullable();
+            $table->text('inventory_name');
             $table->string('quantity');
             $table->text('dosage');
             $table->foreignUuid('created_by')->constrained('users', 'id');
