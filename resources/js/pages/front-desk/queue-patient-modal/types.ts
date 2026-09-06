@@ -12,6 +12,7 @@ export interface QueuePatientDetailsFormProps
         RadiologyDetailsFormProps,
         VitalSignsDetailsFormProps {
     form_type: string;
+    is_emergency: number;
 }
 
 export interface QueuePatientFormProps {

@@ -19,7 +19,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read User|null $lastModifiedBy
  * @property-read AuditType|null $type
  * @property-read User $user
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserAudit newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserAudit newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserAudit query()
@@ -29,7 +28,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserAudit whereCreatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserAudit whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserAudit whereUserId($value)
- *
  * @mixin \Eloquent
  */
 #[Fillable([

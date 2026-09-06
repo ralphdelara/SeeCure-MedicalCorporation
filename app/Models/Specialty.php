@@ -13,14 +13,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string|null $suffix
  * @property-read Collection<int, UserSpecialty> $users
  * @property-read int|null $users_count
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Specialty newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Specialty newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Specialty query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Specialty whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Specialty whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Specialty whereSuffix($value)
- *
  * @mixin \Eloquent
  */
 #[Fillable([

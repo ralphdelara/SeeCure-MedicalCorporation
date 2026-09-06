@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Events\CallOut;
+use App\Models\InventoryCategory;
 use App\Models\LaboratoryTestType;
 use App\Models\Prescription;
-use App\Models\ProductCategory;
 use App\Models\Relationship;
 use App\Models\SignsOrSymptom;
 use App\Models\VitalSign;
@@ -35,12 +35,12 @@ class ConsultationController extends Controller
     {
         $consultationDetails = app(ConsultationService::class)->getConsultationDetails($consultationId);
         $signsOrSymptoms = SignsOrSymptom::all();
-        $laboratoryTestOptions = LaboratoryTestType::all();
+       $laboratoryTestOptions = [];
         $vitalSigns = VitalSign::with('fields')->get();
         $patientDetails = app(PatientService::class)->getPatientDetails($consultationDetails['patient_id']);
         $doctors = app(DoctorService::class)->getDoctorList();
         $relationshipOptions = Relationship::all();
-        $productCategories = ProductCategory::all();
+        $inventoryCategories = InventoryCategory::all();
 
         return Inertia::render('consultation/details/index', compact(
             'consultationDetails',
@@ -50,7 +50,7 @@ class ConsultationController extends Controller
             'patientDetails',
             'doctors',
             'relationshipOptions',
-            'productCategories',
+            'inventoryCategories',
         ));
     }
 
@@ -79,7 +79,7 @@ class ConsultationController extends Controller
     {
         $request->validate([
             'consultation_id' => 'required',
-            'product_name'    => 'required',
+            'inventory_name'  => 'required',
             'quantity'        => 'required',
             'dosage'          => 'required',
         ]);
@@ -87,8 +87,8 @@ class ConsultationController extends Controller
         $prescriptionDetails = $request->only(
             'id',
             'consultation_id',
-            'product_id',
-            'product_name',
+            'inventory_id',
+            'inventory_name',
             'quantity',
             'dosage',
         );

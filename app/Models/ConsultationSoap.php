@@ -19,7 +19,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $last_modified_by
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationSoap newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationSoap newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationSoap query()
@@ -32,10 +31,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationSoap wherePlan($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationSoap whereSubjective($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationSoap whereUpdatedAt($value)
- *
  * @property-read User $createdBy
  * @property-read User|null $lastModifiedBy
- *
  * @mixin \Eloquent
  */
 #[Fillable([

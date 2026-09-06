@@ -12,15 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('transactions', function (Blueprint $table) {
-            $table->uuid('id')->primary()->default(DB::raw('(gen_random_uuid())'));
+            $table->uuid('id')->primary();
             $table->foreignId('transaction_type_id')->constrained();
             $table->foreignUuid('patient_id')->constrained()->cascadeOnDelete();
             $table->foreignUuid('consultation_id')->constrained()->cascadeOnDelete();
             $table->text('customer_name')->nullable();
             $table->decimal('consultation_service_amount', 12, 2);
             $table->decimal('laboratory_service_amount', 12, 2);
-            $table->decimal('total_product_price', 12, 2);
-            $table->decimal('total_product_selling_price', 12, 2);
+            $table->decimal('total_inventory_price', 12, 2);
+            $table->decimal('total_inventory_selling_price', 12, 2);
             $table->decimal('total_discounts', 12, 2)->nullable();
             $table->decimal('net_price', 12, 2); // total selling price - total discounts
             $table->timestamps();

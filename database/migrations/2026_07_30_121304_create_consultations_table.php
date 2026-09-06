@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -13,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('consultations', function (Blueprint $table) {
-            $table->uuid('id')->primary()->default(DB::raw('(gen_random_uuid())'));
+            $table->uuid('id')->primary();
             $table->foreignUuid('visit_id')->constrained()->cascadeOnDelete();
             $table->foreignUuid('patient_id')->constrained()->cascadeOnDelete();
 
@@ -22,7 +21,6 @@ return new class extends Migration
             $table->text('guardian_email')->nullable();
             $table->foreignId('guardian_relationship_id')->nullable()->constrained('relationships', 'id');
 
-            $table->foreignId('status_id')->constrained('consultation_statuses', 'id');
             $table->date('follow_up_date')->nullable();
             $table->foreignUuid('doctor_id')->constrained('users', 'id');
             $table->foreignUuid('created_by')->constrained('users', 'id');

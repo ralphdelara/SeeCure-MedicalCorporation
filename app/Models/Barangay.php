@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $province_id
  * @property-read City $city
  * @property-read Province $province
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Barangay newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Barangay newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Barangay query()
@@ -21,7 +20,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Barangay whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Barangay whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Barangay whereProvinceId($value)
- *
  * @mixin \Eloquent
  */
 #[Fillable([

@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('consultation_diagnosis', function (Blueprint $table) {
-            $table->uuid('id')->primary()->default(DB::raw('(gen_random_uuid())'));
+            $table->uuid('id')->primary();
             $table->foreignUuid('consultation_id')->constrained()->cascadeOnDelete();
             $table->text('diagnosis')->nullable();
             $table->foreignUuid('created_by')->constrained('users', 'id');

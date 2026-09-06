@@ -13,14 +13,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $specialty_id
  * @property-read Specialty $specialty
  * @property-read User $user
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSpecialty newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSpecialty newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSpecialty query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSpecialty whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSpecialty whereSpecialtyId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSpecialty whereUserId($value)
- *
  * @mixin \Eloquent
  */
 #[Fillable([

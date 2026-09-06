@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Enums\ConsultationStatusEnum;
 use App\Enums\SignsOrSymptomEnum;
+use App\Enums\VisitStatusEnum;
 use App\Events\ConsultationViewed;
 use App\Events\SignsOrSymptomsSaved;
 use App\Models\Consultation;
@@ -13,6 +13,7 @@ use App\Models\ConsultationDiagnosisIcd10Code;
 use App\Models\ConsultationSoap;
 use App\Models\Patient;
 use App\Models\Prescription;
+use App\Models\Visit;
 use Arr;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -183,9 +184,9 @@ class ConsultationService
         return (string) $consultation->id;
     }
 
-    public function getIncompleteConsultation(): array
+    public function getPendingConsultationList(): array
     {
-        return Consultation::with([
+        return Visit::with([
             'patient' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name', 'patient_suffix_id', 'age', 'gender_id');
             },
@@ -195,10 +196,9 @@ class ConsultationService
             'doctor' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name');
             },
-            'status',
             'signsOrSymptoms',
             'doctor.professions',
-        ])->whereIn('status_id', ConsultationStatusEnum::incompleteStatuses())->get()->toArray();
+        ])->whereVisitStatusId(VisitStatusEnum::IN_CONSULTATION)->get()->toArray();
     }
 
     public function updateDetails(array $details): void

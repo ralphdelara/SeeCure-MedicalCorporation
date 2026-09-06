@@ -13,14 +13,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $signs_or_symptom_id
  * @property-read Consultation $consultation
  * @property-read SignsOrSymptom $signsOrSymptom
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationSignsOrSymptom newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationSignsOrSymptom newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationSignsOrSymptom query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationSignsOrSymptom whereConsultationId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationSignsOrSymptom whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationSignsOrSymptom whereSignsOrSymptomId($value)
- *
  * @mixin \Eloquent
  */
 #[Fillable([

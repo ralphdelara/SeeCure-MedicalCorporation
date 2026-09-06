@@ -1,11 +1,13 @@
 import { Link, usePage } from '@inertiajs/react';
 import {
+    IconBuildingBank,
     IconCashRegister,
     IconChartLine,
     IconDeviceDesktop,
     IconDots,
     IconFlask,
     IconLockCog,
+    IconPill,
     IconPrescription,
     IconScan,
     IconStethoscope,
@@ -23,10 +25,12 @@ import {
     frontDesk,
     laboratory,
     patients,
-    pharmacy,
+    inventory,
     radiology,
     system,
     users,
+    pharmacy,
+    billing,
 } from '@/routes';
 
 type NavSidebarProps = {
@@ -69,7 +73,7 @@ export default function NavSidebar({ toggleSidebar }: NavSidebarProps) {
             url: consultations(),
             name: 'Consultation',
             icon: IconStethoscope,
-            active: url.includes(consultations().url),
+            active: url.includes(consultations().url.slice(0, -1)),
         },
         {
             url: laboratory(),
@@ -84,10 +88,22 @@ export default function NavSidebar({ toggleSidebar }: NavSidebarProps) {
             active: url.includes(radiology().url),
         },
         {
+            url: inventory(),
+            name: 'Inventory',
+            icon: IconPill,
+            active: url.includes(inventory().url),
+        },
+        {
             url: pharmacy(),
             name: 'Pharmacy',
             icon: IconPrescription,
             active: url.includes(pharmacy().url),
+        },
+        {
+            url: billing(),
+            name: 'Billing',
+            icon: IconBuildingBank,
+            active: url.includes(billing().url),
         },
         {
             url: cashier(),
@@ -95,7 +111,12 @@ export default function NavSidebar({ toggleSidebar }: NavSidebarProps) {
             icon: IconCashRegister,
             active: url.includes(cashier().url),
         },
-        { url: users(), name: 'Users', icon: IconUserCog, active: url.includes(users().url.slice(0, -1)) },
+        {
+            url: users(),
+            name: 'Users',
+            icon: IconUserCog,
+            active: url.includes(users().url.slice(0, -1)),
+        },
         { url: system(), name: 'System', icon: IconLockCog, active: url.includes(system().url) },
     ];
 

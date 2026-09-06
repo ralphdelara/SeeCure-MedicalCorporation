@@ -20,7 +20,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property CarbonImmutable|null $updated_at
  * @property-read User $createdBy
  * @property-read User|null $lastModifiedBy
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest query()
@@ -32,9 +31,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest whereLaboratoryTestTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest whereLastModifiedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest whereUpdatedAt($value)
- *
  * @property-read Laboratory|null $laboratory
- *
+ * @property string $name
+ * @property numeric $price
+ * @property int|null $laboratory_type_id
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest whereLaboratoryTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest wherePrice($value)
  * @mixin \Eloquent
  */
 #[Fillable([

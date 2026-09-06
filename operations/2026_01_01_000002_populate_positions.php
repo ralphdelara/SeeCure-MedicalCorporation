@@ -35,10 +35,10 @@ return new class extends OneTimeOperation
             ['name' => 'Accountant'],
             ['name' => 'Finance Officer'],
 
-            // Pharmacy
+            // Inventory
             ['name' => 'General Practitioner'],
             ['name' => 'Pharmacist'],
-            ['name' => 'Pharmacy Assistant'],
+            ['name' => 'Inventory Assistant'],
 
             // Laboratory
             ['name' => 'Head of Laboratory'],

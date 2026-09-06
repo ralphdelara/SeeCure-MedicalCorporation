@@ -26,16 +26,11 @@ return new class extends OneTimeOperation
     public function process(): void
     {
         PatientStatus::fillAndInsert([
-            ['name' => 'Waiting'],
-            ['name' => 'In Consultation'],
-            ['name' => 'In Laboratory'],
-            ['name' => 'In Radiology'],
-            ['name' => 'In Cashier'],
+            ['name' => 'Inactive'],
             ['name' => 'Admitted'],
             ['name' => 'Referred'],
             ['name' => 'For Discharge'],
             ['name' => 'Discharged'],
-            ['name' => 'Inactive'],
         ]);
     }
 };

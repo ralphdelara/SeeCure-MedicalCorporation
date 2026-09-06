@@ -71,7 +71,6 @@ use Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted;
  * @property-read Province|null $province
  * @property-read PatientStatus $status
  * @property-read PatientSuffix|null $suffix
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient orWhereBlind(string $column, string $indexName, array|string $value)
@@ -107,10 +106,10 @@ use Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereStatusId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereStreet($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereUpdatedAt($value)
- *
  * @property-read string|null $age_computed
  * @property-read string|null $full_address
- *
+ * @property int|null $priority_type_id
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient wherePriorityTypeId($value)
  * @mixin \Eloquent
  */
 #[Fillable([

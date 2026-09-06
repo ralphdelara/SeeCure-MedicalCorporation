@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $last_modified_by
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestSubType newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestSubType newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestSubType query()
@@ -26,7 +25,6 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestSubType whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestSubType wherePrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestSubType whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class LaboratoryTestSubType extends Model

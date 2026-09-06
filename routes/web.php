@@ -2,9 +2,11 @@
 
 use App\Events\CallOut;
 use App\Http\Controllers\AddressController;
+use App\Http\Controllers\BillingController;
 use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\FrontDeskController;
 use App\Http\Controllers\Icd10CodeController;
+use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\PharmacyController;
 use App\Http\Controllers\SystemController;
@@ -44,12 +46,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
     Route::inertia('laboratory', 'laboratory')->name('laboratory');
     Route::inertia('radiology', 'radiology')->name('radiology');
-    Route::prefix('pharmacy')->group(function () {
-        Route::get('/', [PharmacyController::class, 'index'])->name('pharmacy');
-        Route::get('/search', [PharmacyController::class, 'getSmallProductList'])->name('pharmacy.search');
-        Route::match(['POST', 'PUT'], '/', [PharmacyController::class, 'addOrUpdateProduct'])
-            ->name('pharmacy.add-or-update-product');
-        Route::delete('/{id}', [PharmacyController::class, 'deleteProduct'])->name('pharmacy.delete');
+    Route::prefix('inventory')->group(function () {
+        Route::get('/', [InventoryController::class, 'index'])->name('inventory');
+        Route::get('/search', [InventoryController::class, 'getSmallInventoryList'])->name('inventory.search');
+        Route::match(['POST', 'PUT'], '/', [InventoryController::class, 'addOrUpdateInventory'])
+            ->name('inventory.add-or-update-inventory');
+        Route::delete('/{id}', [InventoryController::class, 'deleteInventory'])->name('inventory.delete');
     });
     Route::inertia('cashier', 'cashier')->name('cashier');
 
@@ -73,6 +75,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('address')->group(function () {
         Route::get('/province/{provinceId}/city', [AddressController::class, 'getCityList'])->name('address.cities');
         Route::get('/city/{cityId}/barangay', [AddressController::class, 'getBarangayList'])->name('address.barangays');
+    });
+
+    Route::prefix('billing')->group(function () {
+        Route::get('/', [BillingController::class, 'index'])->name('billing');
+    });
+
+    Route::prefix('pharmacy')->group(function () {
+        Route::get('/', [PharmacyController::class, 'index'])->name('pharmacy');
     });
 
     Route::prefix('settings')->group(function () {

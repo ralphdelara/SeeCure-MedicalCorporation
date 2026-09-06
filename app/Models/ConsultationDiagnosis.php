@@ -22,7 +22,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read User $createdBy
  * @property-read Collection<string, ConsultationDiagnosisIcd10Code> $icd10Codes
  * @property-read User|null $lastModifiedBy
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosis newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosis newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosis query()
@@ -32,12 +31,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosis whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosis whereLastModifiedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosis whereUpdatedAt($value)
- *
  * @property string $consultation_id
  * @property-read int|null $icd10_codes_count
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosis whereConsultationId($value)
- *
  * @mixin \Eloquent
  */
 #[Fillable([

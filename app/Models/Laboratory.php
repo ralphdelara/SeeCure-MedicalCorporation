@@ -25,11 +25,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read User $createdBy
  * @property-read User|null $lastModifiedBy
  * @property-read Patient|null $patient
- * @property-read LaboratoryStatus $status
  * @property-read Collection<int, LaboratoryTest> $tests
  * @property-read int|null $tests_count
  * @property-read Visit $visit
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory query()
@@ -39,17 +37,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereLastModifiedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory wherePatientId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereStatusId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereVisitId($value)
- *
  * @mixin \Eloquent
  */
 #[Fillable([
     'visit_id',
     'patient_id',
     'consultation_id',
-    'status_id',
     'created_by',
     'last_modified_by',
 ])]
@@ -72,11 +67,6 @@ class Laboratory extends Model
     public function consultation(): BelongsTo
     {
         return $this->belongsTo(Consultation::class, 'consultation_id', 'id');
-    }
-
-    public function status(): BelongsTo
-    {
-        return $this->belongsTo(LaboratoryStatus::class, 'status_id', 'id');
     }
 
     public function createdBy(): BelongsTo

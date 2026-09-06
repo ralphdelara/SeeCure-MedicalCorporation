@@ -13,7 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('patients', function (Blueprint $table) {
-            $table->uuid('id')->primary()->default(DB::raw('(gen_random_uuid())'));
+            $table->uuid('id')->primary();
             $table->text('last_name');
             $table->text('first_name');
             $table->text('middle_name')->nullable();
@@ -31,6 +31,8 @@ return new class extends Migration
             $table->foreignId('city_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('province_id')->nullable()->constrained()->nullOnDelete();
 
+            // priority_type_id in patients table is only for senior,
+            $table->foreignId('priority_type_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('gender_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('civil_status_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('nationality_id')->nullable()->constrained()->nullOnDelete();

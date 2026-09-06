@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $unit
  * @property int $vital_sign_id
  * @property-read VitalSign $vitalSign
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|VitalSignField newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|VitalSignField newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|VitalSignField query()
@@ -20,7 +19,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|VitalSignField whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|VitalSignField whereUnit($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|VitalSignField whereVitalSignId($value)
- *
  * @mixin \Eloquent
  */
 #[Fillable([

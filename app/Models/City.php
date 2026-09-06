@@ -15,14 +15,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read Collection<int, Barangay> $barangays
  * @property-read int|null $barangays_count
  * @property-read Province $province
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|City newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|City newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|City query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|City whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|City whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|City whereProvinceId($value)
- *
  * @mixin \Eloquent
  */
 #[Fillable([

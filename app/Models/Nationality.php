@@ -8,13 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @property int $id
  * @property string $name
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Nationality newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Nationality newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Nationality query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Nationality whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Nationality whereName($value)
- *
  * @mixin \Eloquent
  */
 #[Fillable([

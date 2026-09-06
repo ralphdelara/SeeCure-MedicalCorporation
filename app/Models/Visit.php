@@ -24,7 +24,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read User|null $createdBy
  * @property-read User|null $lastModifiedBy
  * @property-read Patient|null $patient
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit query()
@@ -37,15 +36,23 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereLastModifiedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit wherePatientId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereUpdatedAt($value)
- *
  * @property bool $consultation_completed
  * @property bool $lab_completed
  * @property bool $radiology_completed
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereConsultationCompleted($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereLabCompleted($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereRadiologyCompleted($value)
- *
+ * @property string|null $admitted_at
+ * @property string|null $discharged_at
+ * @property bool $is_emergency
+ * @property int $priority_type_id
+ * @property int $visit_status_id
+ * @property-read \App\Models\VisitStatus $visitStatus
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereAdmittedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereDischargedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereIsEmergency($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit wherePriorityTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereVisitStatusId($value)
  * @mixin \Eloquent
  */
 #[Fillable([
@@ -53,6 +60,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
     'has_consultation',
     'has_laboratory',
     'has_radiology',
+    'visit_status_id',
+    'is_emergency',
     'created_by',
     'last_modified_by',
 ])]
@@ -78,5 +87,10 @@ class Visit extends Model
     public function consultation(): HasOne
     {
         return $this->hasOne(Consultation::class);
+    }
+
+    public function visitStatus(): BelongsTo
+    {
+        return $this->belongsTo(VisitStatus::class, 'visit_status_id', 'id');
     }
 }

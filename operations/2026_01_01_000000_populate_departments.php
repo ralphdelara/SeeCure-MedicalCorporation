@@ -31,7 +31,7 @@ return new class extends OneTimeOperation
             ['name' => 'Finance'],
             ['name' => 'Information Technology'],
             ['name' => 'Laboratory'],
-            ['name' => 'Pharmacy'],
+            ['name' => 'Inventory'],
         ]);
     }
 };

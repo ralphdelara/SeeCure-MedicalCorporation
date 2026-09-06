@@ -1,10 +1,7 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import {
-    IconChevronDown,
-    IconEdit,
     IconStethoscope,
     IconTrash,
-    IconUser,
     IconVolume,
     IconVolumeOff,
 } from '@tabler/icons-react';
@@ -16,7 +13,6 @@ import type { ConsultationList } from './types';
 import { Button } from '@/components/ui/button';
 import { Fragment, useState } from 'react';
 import { getPatientDetails } from '@/actions/App/Http/Controllers/PatientController';
-import Notification from './notification';
 import {
     callOutPatient,
     getConsultationDetails,
@@ -78,7 +74,6 @@ console.log(consultationList);
     return (
         <>
             <Head title="Consultation" />
-            <Notification />
             <Breadcrumbs title="Consultation">&nbsp;</Breadcrumbs>
             <div className="card">
                 <div className="card-body">

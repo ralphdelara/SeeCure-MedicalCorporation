@@ -11,6 +11,7 @@ import type { QueuePatientDetailsFormProps } from './types';
 import VitalSignsForm from '../../../components/vital-signs/vital-signs-form';
 import NewPatientForm from '@/components/patient/new-patient-form';
 import MedicalServices from './medical-services';
+import InputError from '@/components/input-error';
 
 const QueuePatient = () => {
     const [showModal, setShowModal] = useState(false);
@@ -53,6 +54,7 @@ const QueuePatient = () => {
             has_consultation: 0,
             has_laboratory: 0,
             has_radiology: 0,
+            is_emergency: 0,
             signs_or_symptoms_id: [],
             laboratory_test_ids: [],
             radiology_test_ids: [],
@@ -131,6 +133,34 @@ const QueuePatient = () => {
                                 {data.form_type === 'new' && (
                                     <NewPatientForm data={data} setData={setData} errors={errors} />
                                 )}
+
+                                <div className="row px-4">
+                                    <div className="col-md-12">
+                                        <div className="form-check form-check-inline">
+                                            <input
+                                                className="form-check-input success"
+                                                type="checkbox"
+                                                id="is_emergency"
+                                                value="1"
+                                                onChange={(e) =>
+                                                    setData(
+                                                        'is_emergency',
+                                                        e.currentTarget.checked ? 1 : 0,
+                                                    )
+                                                }
+                                                name="is_emergency"
+                                                checked={data.is_emergency === 1}
+                                            />
+                                            <label
+                                                className="form-check-label"
+                                                htmlFor="is_emergency"
+                                            >
+                                                <h5 className="fw-semibold">Emergency?</h5>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <InputError message={errors.is_emergency} className="mt-2" />
+                                </div>
 
                                 <MedicalServices data={data} setData={setData} errors={errors} />
                                 {data.has_consultation === 1 && (
