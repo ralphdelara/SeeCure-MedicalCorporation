@@ -16,7 +16,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $visit_id
  * @property string $patient_id
  * @property string|null $consultation_id
- * @property int $status_id
  * @property string $created_by
  * @property string|null $last_modified_by
  * @property CarbonImmutable|null $created_at
@@ -39,12 +38,22 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory wherePatientId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereVisitId($value)
+ * @property string|null $patient_name
+ * @property bool $is_completed
+ * @property-read Collection<int, \App\Models\LaboratoryTestData> $testData
+ * @property-read int|null $test_data_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereIsCompleted($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory wherePatientName($value)
+ * @property-read Collection<int, \App\Models\LaboratoryTestFieldData> $testFieldData
+ * @property-read int|null $test_field_data_count
  * @mixin \Eloquent
  */
 #[Fillable([
     'visit_id',
     'patient_id',
     'consultation_id',
+    'is_completed',
+    'patient_name',
     'created_by',
     'last_modified_by',
 ])]
@@ -53,6 +62,14 @@ class Laboratory extends Model
     use CorrectTimezone, HasUuids;
 
     public $table = 'laboratory';
+
+    protected function casts(): array
+    {
+        return [
+            'created_at' => 'date:M d, Y h:i a',
+            'updated_at' => 'date:M d, Y h:i a',
+        ];
+    }
 
     public function visit(): BelongsTo
     {
@@ -79,8 +96,13 @@ class Laboratory extends Model
         return $this->belongsTo(User::class, 'last_modified_by', 'id');
     }
 
-    public function tests(): HasMany
+    public function testData(): HasMany
     {
-        return $this->hasMany(LaboratoryTest::class);
+        return $this->hasMany(LaboratoryTestData::class);
+    }
+
+    public function testFieldData(): HasMany
+    {
+        return $this->hasMany(LaboratoryTestFieldData::class);
     }
 }

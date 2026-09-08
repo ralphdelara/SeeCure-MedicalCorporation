@@ -7,113 +7,112 @@ use App\Traits\EnumTraits;
 enum LaboratoryTestFieldEnum: int
 {
     use EnumTraits;
-
-    // Clinical Chemistry
-    case FBS = 101;
-    case RBS = 102;
-    case BUN = 103;
-    case CREATININE = 104;
-    case URIC_ACID = 105;
-    case SGPT_ALT = 106;
-    case SGOT_AST = 107;
-    case LIPID_PROFILE = 108;
-    case TOTAL_CHOLESTEROL = 109;
-    case TRIGLYCERIDES = 110;
-    case HDL_CHOLESTEROL = 111;
-    case LDL_CHOLESTEROL = 112;
-    case SODIUM = 113;
-    case POTASSIUM = 114;
-    case CHLORIDE = 115;
-    case IONIZED_CALCIUM = 116;
-    case IONIZED_MAGNESIUM = 117;
-    case FIRST_HOUR = 118;
-    case SECOND_HOUR = 119;
+// Clinical Chemistry
+    case FBS = 1;
+    case RBS = 2;
+    case BUN = 3;
+    case CREATININE = 4;
+    case URIC_ACID = 5;
+    case SGPT_ALT = 6;
+    case SGOT_AST = 7;
+    case LIPID_PROFILE = 8;
+    case TOTAL_CHOLESTEROL = 9;
+    case TRIGLYCERIDES = 10;
+    case HDL_CHOLESTEROL = 11;
+    case LDL_CHOLESTEROL = 12;
+    case SODIUM = 13;
+    case POTASSIUM = 14;
+    case CHLORIDE = 15;
+    case IONIZED_CALCIUM = 16;
+    case IONIZED_MAGNESIUM = 17;
+    case FIRST_HOUR = 18;
+    case SECOND_HOUR = 19;
 
     // Hematology
-    case HEMA_BLOOD_STUDIES = 200;
-    case HEMA_HEMOGLOBIN = 201;
-    case HEMA_HEMATOCRIT = 202;
-    case HEMA_RBC_COUNT = 203;
-    case HEMA_WBC_COUNT = 204;
-    case HEMA_PLATELET_COUNT = 205;
-    case HEMA_NUCLEATED_RBCS = 206;
+    case HEMA_BLOOD_STUDIES = 20;
+    case HEMA_HEMOGLOBIN = 21;
+    case HEMA_HEMATOCRIT = 22;
+    case HEMA_RBC_COUNT = 23;
+    case HEMA_WBC_COUNT = 24;
+    case HEMA_PLATELET_COUNT = 25;
+    case HEMA_NUCLEATED_RBCS = 26;
 
-    case HEMA_BLOOD_TYPE = 207;
-    case HEMA_BLEEDING_TIME_MIN = 208;
-    case HEMA_BLEEDING_TIME_SEC = 209;
-    case HEMA_CLOTTING_TIME_MIN = 210;
-    case HEMA_CLOTTING_TIME_SEC = 211;
-    case HEMA_ESR_WESTERGREN = 212;
+    case HEMA_BLOOD_TYPE = 27;
+    case HEMA_BLEEDING_TIME_MIN = 28;
+    case HEMA_BLEEDING_TIME_SEC = 29;
+    case HEMA_CLOTTING_TIME_MIN = 30;
+    case HEMA_CLOTTING_TIME_SEC = 31;
+    case HEMA_ESR_WESTERGREN = 32;
 
-    case HEMA_DIFFERENTIAL_COUNT = 213;
-    case HEMA_NEUTROPHILS = 214;
-    case HEMA_SEGMENTERS = 215;
-    case HEMA_STAB = 216;
-    case HEMA_EOSINOPHILS = 217;
-    case HEMA_BASOPHILS = 218;
-    case HEMA_LYMPHOCYTES = 219;
-    case HEMA_MONOCYTES = 220;
+    case HEMA_DIFFERENTIAL_COUNT = 33;
+    case HEMA_NEUTROPHILS = 34;
+    case HEMA_SEGMENTERS = 35;
+    case HEMA_STAB = 36;
+    case HEMA_EOSINOPHILS = 37;
+    case HEMA_BASOPHILS = 38;
+    case HEMA_LYMPHOCYTES = 39;
+    case HEMA_MONOCYTES = 40;
 
     // Urinalysis
-    case URI_PHYSICAL_PROPERTIES = 300;
-    case URI_COLOR = 301;
-    case URI_TRANSPARENCY = 302;
-    case URI_REACTION = 303;
-    case URI_SPECIFIC_GRAVITY = 304;
-    case URI_CHEMICAL_PROPERTIES = 305;
-    case URI_SUGAR = 306;
-    case URI_PROTEIN = 307;
-    case URI_CHEMICAL_PROPERTIES_OTHERS = 308;
-    case URI_MICROSCOPIC_FINDINGS = 309;
-    case URI_PUS_CELL = 310;
-    case URI_RED_BLOOD_CELL = 311;
-    case URI_CRYSTAL = 312;
-    case URI_CAST = 313;
-    case URI_AMOURPHOUS_URATE_PHOSPATE = 314;
-    case URI_SQUAMOUS_EPITHELIAL_CELL = 315;
-    case URI_ROUND_EPITHELIAL_CELL = 316;
-    case URI_MUCUS_THREAD = 317;
-    case URI_BACTERIA = 318;
-    case URI_MICROSCOPIC_FINDINGS_OTHERS = 319;
+    case URI_PHYSICAL_PROPERTIES = 41;
+    case URI_COLOR = 42;
+    case URI_TRANSPARENCY = 43;
+    case URI_REACTION = 44;
+    case URI_SPECIFIC_GRAVITY = 45;
+    case URI_CHEMICAL_PROPERTIES = 46;
+    case URI_SUGAR = 47;
+    case URI_PROTEIN = 48;
+    case URI_CHEMICAL_PROPERTIES_OTHERS = 49;
+    case URI_MICROSCOPIC_FINDINGS = 50;
+    case URI_PUS_CELL = 51;
+    case URI_RED_BLOOD_CELL = 52;
+    case URI_CRYSTAL = 53;
+    case URI_CAST = 54;
+    case URI_AMOURPHOUS_URATE_PHOSPATE = 55;
+    case URI_SQUAMOUS_EPITHELIAL_CELL = 56;
+    case URI_ROUND_EPITHELIAL_CELL = 57;
+    case URI_MUCUS_THREAD = 58;
+    case URI_BACTERIA = 59;
+    case URI_MICROSCOPIC_FINDINGS_OTHERS = 60;
 
     // Fecalysis
-    case FECA_PHYSICAL = 400;
-    case FECA_COLOR = 401;
-    case FECA_CONSISTENCY = 402;
-    case FECA_BLOOD = 403;
-    case FECA_MUCUS = 404;
-    case FECA_CHEMICAL = 405;
-    case FECA_OCCULT_BLOOD = 406;
-    case FECA_CHEMICAL_OTHERS = 407;
-    case FECA_MICROSCOPIC = 408;
-    case FECA_ASCARIS = 409;
-    case FECA_HOOKWORM = 410;
-    case FECA_TRICHURIS = 411;
-    case FECA_STRONGYLOIDES = 412;
-    case FECA_ENTAMOEBA_HISTOLYTICA_DISPAR_CYST = 413;
-    case FECA_TROPHOZOITE = 414;
-    case FECA_ENTAMOEBA_COLI_CYST = 415;
-    case FECA_BLASTOCYSTIS_SPP = 416;
-    case FECA_MICROSCOPIC_OTHERS = 417;
-    case FECA_CELLULAR_ELEMENTS = 418;
-    case FECA_PUS_CELL = 419;
-    case FECA_RED_BLOOD_CELL = 420;
-    case FECA_YEAST_CELL = 421;
-    case FECA_FAT_GLOBULES = 422;
-    case FECA_BACTERIA = 423;
-    case FECA_CELLULAR_OTHERS = 424;
+    case FECA_PHYSICAL = 61;
+    case FECA_COLOR = 62;
+    case FECA_CONSISTENCY = 63;
+    case FECA_BLOOD = 64;
+    case FECA_MUCUS = 65;
+    case FECA_CHEMICAL = 66;
+    case FECA_OCCULT_BLOOD = 67;
+    case FECA_CHEMICAL_OTHERS = 68;
+    case FECA_MICROSCOPIC = 69;
+    case FECA_ASCARIS = 70;
+    case FECA_HOOKWORM = 71;
+    case FECA_TRICHURIS = 72;
+    case FECA_STRONGYLOIDES = 73;
+    case FECA_ENTAMOEBA_HISTOLYTICA_DISPAR_CYST = 74;
+    case FECA_TROPHOZOITE = 75;
+    case FECA_ENTAMOEBA_COLI_CYST = 76;
+    case FECA_BLASTOCYSTIS_SPP = 77;
+    case FECA_MICROSCOPIC_OTHERS = 78;
+    case FECA_CELLULAR_ELEMENTS = 79;
+    case FECA_PUS_CELL = 80;
+    case FECA_RED_BLOOD_CELL = 81;
+    case FECA_YEAST_CELL = 82;
+    case FECA_FAT_GLOBULES = 83;
+    case FECA_BACTERIA = 84;
+    case FECA_CELLULAR_OTHERS = 85;
 
     // Miscellaneous
-    case DENGUE_NS1_ANTIGEN = 501;
-    case DENGUE_IGM_ANTIBODY = 502;
-    case DENGUE_IGG_ANTIBODY = 503;
+    case DENGUE_NS1_ANTIGEN = 86;
+    case DENGUE_IGM_ANTIBODY = 87;
+    case DENGUE_IGG_ANTIBODY = 88;
 
-    case SALMONELLA_TYPHI_IGM_ANTIBODY = 504;
-    case SALMONELLA_TYPHI_IGG_ANTIBODY = 505;
+    case SALMONELLA_TYPHI_IGM_ANTIBODY = 89;
+    case SALMONELLA_TYPHI_IGG_ANTIBODY = 90;
 
-    case HBSAG = 506;
-    case RPR_ANTI_TP = 507;
-    case RESULT_TEXT = 508;
+    case HBSAG = 91;
+    case RPR_ANTI_TP = 92;
+    case RESULT_TEXT = 93;
 
     public function description(): string
     {

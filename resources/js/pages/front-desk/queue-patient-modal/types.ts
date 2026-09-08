@@ -1,5 +1,5 @@
 import { ConsultationDetailsFormProps } from '@/components/consultation/consultation';
-import { LaboratoryDetailsFormProps } from '@/components/laboratory/laboratory';
+import { AddOrUpdateLaboratoryDetailsFormProps } from '@/components/laboratory/new-laboratory';
 import { AddOrUpdatePatientDetailsFormProps } from '@/components/patient/new-patient';
 import { RadiologyDetailsFormProps } from '@/components/radiology/radiology';
 import { VitalSignsDetailsFormProps } from '@/components/vital-signs/vital-signs';
@@ -8,11 +8,13 @@ export interface QueuePatientDetailsFormProps
     extends
         AddOrUpdatePatientDetailsFormProps,
         ConsultationDetailsFormProps,
-        LaboratoryDetailsFormProps,
+        AddOrUpdateLaboratoryDetailsFormProps,
         RadiologyDetailsFormProps,
         VitalSignsDetailsFormProps {
     form_type: string;
     is_emergency: number;
+    has_laboratory: number;
+    priority_type_ids: number[];
 }
 
 export interface QueuePatientFormProps {

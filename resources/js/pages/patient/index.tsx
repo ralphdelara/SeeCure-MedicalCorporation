@@ -58,173 +58,154 @@ export default function PatientList() {
                 <div className="card-body">
                     <div className="row w-100">
                         <div className="col-md-12">
-                            <div className="table-responsive rounded-1 mb-4 border">
-                                <SearchField url={pageData.path} selectOption={selectOption} />
-                                <TableList header={header} pageData={pageData}>
-                                    {tableData.map((item, index) => (
-                                        <tr key={'patientList-' + item.id}>
-                                            <td className="text-right">
-                                                <h5>{pageData.from + index}</h5>
-                                            </td>
+                            <SearchField url={pageData.path} selectOption={selectOption} />
+                            <TableList header={header} pageData={pageData}>
+                                {tableData.map((item, index) => (
+                                    <tr key={'patientList-' + item.id}>
+                                        <td className="text-right">
+                                            <h5>{pageData.from + index}</h5>
+                                        </td>
 
-                                            <td className="sticky-left">
-                                                <div className="d-block">
-                                                    <div className="d-flex align-items-center">
-                                                        <div style={{ width: '40px' }}>
-                                                            <img
-                                                                className="rounded-circle"
-                                                                width="40"
-                                                                height="40"
-                                                                src="../assets/images/profile/user-2.jpg"
-                                                            />
-                                                        </div>
-                                                        <div className="ms-3">
-                                                            <h6 className="fs-4 fw-semibold mb-0">
-                                                                <Link
-                                                                    href={getPatientDetails(
-                                                                        item.id,
-                                                                    )}
-                                                                    className="tooltip-container"
-                                                                    data-title="Click to View Patient Details"
-                                                                >
-                                                                    {item.full_name}
-                                                                </Link>
-                                                            </h6>
-                                                            <span className="fw-normal">
-                                                                {item.gender
-                                                                    ? item.gender.name
-                                                                    : 'N/A'}
-                                                            </span>
-                                                        </div>
+                                        <td className="sticky-left">
+                                            <div className="d-block">
+                                                <div className="d-flex align-items-center">
+                                                    <div style={{ width: '40px' }}>
+                                                        <img
+                                                            className="rounded-circle"
+                                                            width="40"
+                                                            height="40"
+                                                            src="../assets/images/profile/user-2.jpg"
+                                                        />
                                                     </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-start">
-                                                    <div>
-                                                        <h6>
-                                                            <IconCalendarDot size={20} />
+                                                    <div className="ms-3">
+                                                        <h6 className="fs-4 fw-semibold mb-0">
+                                                            <Link
+                                                                href={getPatientDetails(item.id)}
+                                                                className="tooltip-container"
+                                                                data-title="Click to View Patient Details"
+                                                            >
+                                                                {item.full_name}
+                                                            </Link>
                                                         </h6>
                                                         <span className="fw-normal">
-                                                            <IconGenderAgender size={20} />
+                                                            {item.gender ? item.gender.name : 'N/A'}
                                                         </span>
                                                     </div>
-                                                    <div className="ms-3">
-                                                        <h6 className="fs-4 fw-normal">
-                                                            {item.date_of_birth ?? 'N/A'}
-                                                        </h6>
-                                                        <h6 className="fs-4 fw-normal">
-                                                            {item.age_computed ?? (item.age ?? 'N/A')}
-                                                        </h6>
-                                                    </div>
                                                 </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-start">
-                                                    <div>
-                                                        <h6>
-                                                            <IconPhone size={20} />
-                                                        </h6>
-                                                        <h6>
-                                                            <IconPhone size={20} />
-                                                        </h6>
-                                                        <span className="fw-normal">
-                                                            <IconMail size={20} />
-                                                        </span>
-                                                    </div>
-                                                    <div className="ms-3">
-                                                        <h6 className="fs-4 fw-normal">
-                                                            {item.contact_number1 ?? 'N/A'}
-                                                        </h6>
-                                                        <h6 className="fs-4 fw-normal">
-                                                            {item.contact_number2 ?? 'N/A'}
-                                                        </h6>
-                                                        <h6 className="fs-4 fw-normal">
-                                                            {item.email ?? 'N/A'}
-                                                        </h6>
-                                                    </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div className="d-flex align-items-start">
+                                                <div>
+                                                    <h6>
+                                                        <IconCalendarDot size={20} />
+                                                    </h6>
+                                                    <span className="fw-normal">
+                                                        <IconGenderAgender size={20} />
+                                                    </span>
                                                 </div>
-                                            </td>
-                                            <td>
-                                                <span className="badge text-bg-secondary">
-                                                    {item.status.name}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                {item.civil_status?.name ?? ''}
-                                            </td>
-                                            <td>
-                                                {item.nationality?.name ?? ''}
-                                            </td>
-                                            <td>
-                                                {item.occupation}
-                                            </td>
-                                            <td>
-                                                <span className="fw-normal">
-                                                    {item.full_address}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <span className="fw-normal">
-                                                    {item.philhealth_id}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-start">
-                                                    <div>
-                                                        <h6 className="fs-4 fw-semibold">
-                                                            {item.created_by.full_name}
-                                                        </h6>
-                                                        <h6 className="fs-4 fw-normal">
-                                                            {item.created_at}
-                                                        </h6>
-                                                    </div>
+                                                <div className="ms-3">
+                                                    <h6 className="fs-4 fw-normal">
+                                                        {item.date_of_birth ?? 'N/A'}
+                                                    </h6>
+                                                    <h6 className="fs-4 fw-normal">
+                                                        {item.age_computed ?? item.age ?? 'N/A'}
+                                                    </h6>
                                                 </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-start">
-                                                    <div className="ms-3">
-                                                        <h6 className="fs-4 fw-semibold">
-                                                            {item.last_modified_by?.full_name ?? ''}
-                                                        </h6>
-                                                        <h6 className="fs-4 fw-normal">
-                                                            {item.updated_at ?? ''}
-                                                        </h6>
-                                                    </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div className="d-flex align-items-start">
+                                                <div>
+                                                    <h6>
+                                                        <IconPhone size={20} />
+                                                    </h6>
+                                                    <h6>
+                                                        <IconPhone size={20} />
+                                                    </h6>
+                                                    <span className="fw-normal">
+                                                        <IconMail size={20} />
+                                                    </span>
                                                 </div>
-                                            </td>
-                                            <td className="sticky-right">
-                                                <Link href={getPatientDetails(item.id)}>
-                                                    <Button
-                                                        rounded={true}
-                                                        className="me-1"
-                                                        title="Patient Details"
-                                                    >
-                                                        <i>
-                                                            <IconUserEdit size={18} />
-                                                        </i>
-                                                    </Button>
-                                                </Link>
+                                                <div className="ms-3">
+                                                    <h6 className="fs-4 fw-normal">
+                                                        {item.contact_number1 ?? 'N/A'}
+                                                    </h6>
+                                                    <h6 className="fs-4 fw-normal">
+                                                        {item.contact_number2 ?? 'N/A'}
+                                                    </h6>
+                                                    <h6 className="fs-4 fw-normal">
+                                                        {item.email ?? 'N/A'}
+                                                    </h6>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span className="badge text-bg-secondary">
+                                                {item.status.name}
+                                            </span>
+                                        </td>
+                                        <td>{item.civil_status?.name ?? ''}</td>
+                                        <td>{item.nationality?.name ?? ''}</td>
+                                        <td>{item.occupation}</td>
+                                        <td>
+                                            <span className="fw-normal">{item.full_address}</span>
+                                        </td>
+                                        <td>
+                                            <span className="fw-normal">{item.philhealth_id}</span>
+                                        </td>
+                                        <td>
+                                            <div className="d-flex align-items-start">
+                                                <div>
+                                                    <h6 className="fs-4 fw-semibold">
+                                                        {item.created_by.full_name}
+                                                    </h6>
+                                                    <h6 className="fs-4 fw-normal">
+                                                        {item.created_at}
+                                                    </h6>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div className="d-flex align-items-start">
+                                                <div className="ms-3">
+                                                    <h6 className="fs-4 fw-semibold">
+                                                        {item.last_modified_by?.full_name ?? ''}
+                                                    </h6>
+                                                    <h6 className="fs-4 fw-normal">
+                                                        {item.updated_at ?? ''}
+                                                    </h6>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="sticky-right">
+                                            <Link href={getPatientDetails(item.id)}>
+                                                <Button
+                                                    rounded={true}
+                                                    className="me-1"
+                                                    title="Patient Details"
+                                                >
+                                                    <i>
+                                                        <IconUserEdit size={18} />
+                                                    </i>
+                                                </Button>
+                                            </Link>
 
-                                                <DeleteButton
-                                                    url={deletePatient(item.id).url}
-                                                    msg={'patient <b>' + item.full_name + '</b>.'}
-                                                />
-                                            </td>
-                                        </tr>
-                                    ))}
-                                    {tableData.length === 0 && (
-                                        <tr>
-                                            <td
-                                                colSpan={13}
-                                                className="text-danger fs-7 text-center"
-                                            >
-                                                No records
-                                            </td>
-                                        </tr>
-                                    )}
-                                </TableList>
-                            </div>
+                                            <DeleteButton
+                                                url={deletePatient(item.id).url}
+                                                msg={'patient <b>' + item.full_name + '</b>.'}
+                                            />
+                                        </td>
+                                    </tr>
+                                ))}
+                                {tableData.length === 0 && (
+                                    <tr>
+                                        <td colSpan={13} className="text-danger fs-7 text-center">
+                                            No records
+                                        </td>
+                                    </tr>
+                                )}
+                            </TableList>
                         </div>
                     </div>
                 </div>

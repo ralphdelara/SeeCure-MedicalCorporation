@@ -88,7 +88,6 @@ namespace App\Models{
  * @property string|null $guardian_email
  * @property int|null $guardian_relationship_id
  * @property string|null $diagnosis
- * @property int $status_id
  * @property string $doctor_id
  * @property string $created_by
  * @property string|null $last_modified_by
@@ -103,7 +102,6 @@ namespace App\Models{
  * @property-read int|null $patient_vital_sign_count
  * @property-read Collection<int, ConsultationSignsOrSymptom> $signsOrSymptoms
  * @property-read int|null $signs_or_symptoms_count
- * @property-read ConsultationStatus $status
  * @property-read Visit $visit
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation newQuery()
@@ -119,7 +117,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereLastModifiedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation wherePatientId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereStatusId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereVisitId($value)
  * @property string|null $follow_up_date
@@ -134,6 +131,8 @@ namespace App\Models{
  * @property-read ConsultationSoap|null $soap
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereFollowUpDate($value)
  * @mixin \Eloquent
+ * @property bool $is_completed
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereIsCompleted($value)
  */
 	class Consultation extends \Eloquent {}
 }
@@ -222,7 +221,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * @property string $id
  * @property string $consultation_id
  * @property int $signs_or_symptom_id
  * @property-read Consultation $consultation
@@ -266,20 +264,6 @@ namespace App\Models{
  * @mixin \Eloquent
  */
 	class ConsultationSoap extends \Eloquent {}
-}
-
-namespace App\Models{
-/**
- * @property int $id
- * @property string $name
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationStatus newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationStatus newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationStatus query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationStatus whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationStatus whereName($value)
- * @mixin \Eloquent
- */
-	class ConsultationStatus extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -432,7 +416,6 @@ namespace App\Models{
  * @property string $visit_id
  * @property string $patient_id
  * @property string|null $consultation_id
- * @property int $status_id
  * @property string $created_by
  * @property string|null $last_modified_by
  * @property CarbonImmutable|null $created_at
@@ -441,7 +424,6 @@ namespace App\Models{
  * @property-read User $createdBy
  * @property-read User|null $lastModifiedBy
  * @property-read Patient|null $patient
- * @property-read LaboratoryStatus $status
  * @property-read Collection<int, LaboratoryTest> $tests
  * @property-read int|null $tests_count
  * @property-read Visit $visit
@@ -454,10 +436,15 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereLastModifiedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory wherePatientId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereStatusId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereVisitId($value)
  * @mixin \Eloquent
+ * @property string|null $patient_name
+ * @property bool $is_completed
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LaboratoryTestData> $testData
+ * @property-read int|null $test_data_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereIsCompleted($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory wherePatientName($value)
  */
 	class Laboratory extends \Eloquent {}
 }
@@ -466,83 +453,169 @@ namespace App\Models{
 /**
  * @property int $id
  * @property string $name
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryStatus newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryStatus newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryStatus query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryStatus whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryStatus whereName($value)
- * @mixin \Eloquent
+ * @property numeric $price
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LaboratoryTest> $tests
+ * @property-read int|null $tests_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryPackage newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryPackage newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryPackage query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryPackage whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryPackage whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryPackage wherePrice($value)
  */
-	class LaboratoryStatus extends \Eloquent {}
+	class LaboratoryPackage extends \Eloquent {}
 }
 
 namespace App\Models{
 /**
- * @property string $id
- * @property string $laboratory_id
- * @property int $laboratory_test_type_id
- * @property string $data
- * @property string $created_by
- * @property string|null $last_modified_by
- * @property CarbonImmutable|null $created_at
- * @property CarbonImmutable|null $updated_at
- * @property-read User $createdBy
- * @property-read User|null $lastModifiedBy
+ * @property int $laboratory_package_id
+ * @property int $laboratory_test_id
+ * @property-read \App\Models\LaboratoryPackage $package
+ * @property-read \App\Models\LaboratoryTest $test
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryPackageTest newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryPackageTest newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryPackageTest query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryPackageTest whereLaboratoryPackageId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryPackageTest whereLaboratoryTestId($value)
+ */
+	class LaboratoryPackageTest extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property string $name
+ * @property numeric $price
+ * @property int|null $laboratory_type_id
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LaboratoryTestField> $fields
+ * @property-read int|null $fields_count
+ * @property-read \App\Models\LaboratoryPackage|null $package
+ * @property-read \App\Models\LaboratoryType|null $type
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest whereCreatedBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest whereData($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest whereLaboratoryId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest whereLaboratoryTestTypeId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest whereLastModifiedBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest whereUpdatedAt($value)
- * @property-read Laboratory|null $laboratory
- * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest whereLaboratoryTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest wherePrice($value)
  */
 	class LaboratoryTest extends \Eloquent {}
 }
 
 namespace App\Models{
 /**
- * @property int $id
- * @property int $laboratory_test_type_id
- * @property string $name
- * @property numeric $price
+ * @property string $id
+ * @property string $laboratory_id
+ * @property int|null $laboratory_package_id
+ * @property int $laboratory_type_id
+ * @property int $laboratory_test_id
+ * @property string|null $remarks
  * @property string $created_by
  * @property string|null $last_modified_by
- * @property CarbonImmutable|null $created_at
- * @property CarbonImmutable|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestSubType newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestSubType newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestSubType query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestSubType whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestSubType whereCreatedBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestSubType whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestSubType whereLaboratoryTestTypeId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestSubType whereLastModifiedBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestSubType whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestSubType wherePrice($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestSubType whereUpdatedAt($value)
- * @mixin \Eloquent
+ * @property \Carbon\CarbonImmutable|null $created_at
+ * @property \Carbon\CarbonImmutable|null $updated_at
+ * @property-read \App\Models\User $createdBy
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LaboratoryTestFieldData> $fields
+ * @property-read int|null $fields_count
+ * @property-read \App\Models\Laboratory $laboratory
+ * @property-read \App\Models\User|null $lastModifiedBy
+ * @property-read \App\Models\LaboratoryPackage|null $package
+ * @property-read \App\Models\LaboratoryTest $test
+ * @property-read \App\Models\LaboratoryType $type
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestData newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestData newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestData query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestData whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestData whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestData whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestData whereLaboratoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestData whereLaboratoryPackageId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestData whereLaboratoryTestId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestData whereLaboratoryTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestData whereLastModifiedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestData whereRemarks($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestData whereUpdatedAt($value)
  */
-	class LaboratoryTestSubType extends \Eloquent {}
+	class LaboratoryTestData extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $laboratory_test_id
+ * @property string $name
+ * @property string|null $unit
+ * @property string|null $field_type
+ * @property numeric|null $normal_range_both_min
+ * @property numeric|null $normal_range_both_max
+ * @property numeric|null $normal_range_male_min
+ * @property numeric|null $normal_range_male_max
+ * @property numeric|null $normal_range_female_min
+ * @property numeric|null $normal_range_female_max
+ * @property int $sort_order
+ * @property-read \App\Models\LaboratoryTest $laboratoryTest
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestField newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestField newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestField query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestField whereFieldType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestField whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestField whereLaboratoryTestId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestField whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestField whereNormalRangeBothMax($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestField whereNormalRangeBothMin($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestField whereNormalRangeFemaleMax($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestField whereNormalRangeFemaleMin($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestField whereNormalRangeMaleMax($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestField whereNormalRangeMaleMin($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestField whereSortOrder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestField whereUnit($value)
+ */
+	class LaboratoryTestField extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property string $id
+ * @property string $laboratory_id
+ * @property string $laboratory_test_data_id
+ * @property int $laboratory_test_field_id
+ * @property string|null $value
+ * @property string $created_by
+ * @property string|null $last_modified_by
+ * @property \Carbon\CarbonImmutable|null $created_at
+ * @property \Carbon\CarbonImmutable|null $updated_at
+ * @property-read \App\Models\User $createdBy
+ * @property-read \App\Models\LaboratoryTestField $field
+ * @property-read \App\Models\Laboratory $laboratory
+ * @property-read \App\Models\User|null $lastModifiedBy
+ * @property-read \App\Models\LaboratoryTestData $testData
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestFieldData newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestFieldData newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestFieldData query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestFieldData whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestFieldData whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestFieldData whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestFieldData whereLaboratoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestFieldData whereLaboratoryTestDataId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestFieldData whereLaboratoryTestFieldId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestFieldData whereLastModifiedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestFieldData whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestFieldData whereValue($value)
+ */
+	class LaboratoryTestFieldData extends \Eloquent {}
 }
 
 namespace App\Models{
 /**
  * @property int $id
  * @property string $name
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestType newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestType newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestType query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestType whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestType whereName($value)
- * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryType newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryType newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryType query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryType whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryType whereName($value)
  */
-	class LaboratoryTestType extends \Eloquent {}
+	class LaboratoryType extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -649,7 +722,10 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereUpdatedAt($value)
  * @property-read string|null $age_computed
  * @property-read string|null $full_address
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient wherePriorityTypeId($value)
  * @mixin \Eloquent
+ * @property string|null $senior_citizen_id
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereSeniorCitizenId($value)
  */
 	class Patient extends \Eloquent implements \Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted {}
 }
@@ -797,9 +873,14 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * @property int $id
+ * @property string $name
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PriorityType newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PriorityType newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PriorityType query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PriorityType whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PriorityType whereName($value)
+ * @mixin \Eloquent
  */
 	class PriorityType extends \Eloquent {}
 }
@@ -846,36 +927,6 @@ namespace App\Models{
  * @mixin \Eloquent
  */
 	class Radiology extends \Eloquent {}
-}
-
-namespace App\Models{
-/**
- * @property int $id
- * @property CarbonImmutable|null $created_at
- * @property CarbonImmutable|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder<static>|RadiologyTest newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|RadiologyTest newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|RadiologyTest query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|RadiologyTest whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|RadiologyTest whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|RadiologyTest whereUpdatedAt($value)
- * @mixin \Eloquent
- */
-	class RadiologyTest extends \Eloquent {}
-}
-
-namespace App\Models{
-/**
- * @property int $id
- * @property string $name
- * @method static \Illuminate\Database\Eloquent\Builder<static>|RadiologyTestType newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|RadiologyTestType newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|RadiologyTestType query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|RadiologyTestType whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|RadiologyTestType whereName($value)
- * @mixin \Eloquent
- */
-	class RadiologyTestType extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -1145,14 +1196,36 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereConsultationCompleted($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereLabCompleted($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereRadiologyCompleted($value)
- * @mixin \Eloquent
- * @property int $visit_status_id
+ * @property string|null $admitted_at
+ * @property string|null $discharged_at
  * @property bool $is_emergency
+ * @property int $visit_status_id
  * @property-read \App\Models\VisitStatus $visitStatus
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereAdmittedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereDischargedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereIsEmergency($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit wherePriorityTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereVisitStatusId($value)
+ * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PriorityType> $priorityTypes
+ * @property-read int|null $priority_types_count
  */
 	class Visit extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property string $visit_id
+ * @property int $priority_type_id
+ * @property-read \App\Models\PriorityType $priorityType
+ * @property-read \App\Models\Visit $visit
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VisitPriorityType newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VisitPriorityType newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VisitPriorityType query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VisitPriorityType wherePriorityTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VisitPriorityType whereVisitId($value)
+ */
+	class VisitPriorityType extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -1164,6 +1237,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|VisitStatus query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|VisitStatus whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|VisitStatus whereName($value)
+ * @mixin \Eloquent
  */
 	class VisitStatus extends \Eloquent {}
 }

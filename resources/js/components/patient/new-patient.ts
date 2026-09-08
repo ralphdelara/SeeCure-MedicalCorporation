@@ -16,6 +16,7 @@ export interface AddOrUpdatePatientDetailsFormProps extends AddressDetailsFormPr
     gender_id?: number | string;
     civil_status_id?: number | string;
     nationality_id?: number | string;
+    senior_citizen_id?: number | string;
 
     photo?: string;
 

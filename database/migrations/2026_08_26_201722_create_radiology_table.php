@@ -17,6 +17,8 @@ return new class extends Migration
             $table->foreignUuid('patient_id')->constrained()->cascadeOnDelete();
             $table->foreignUuid('consultation_id')->constrained()->cascadeOnDelete();
 
+            $table->boolean('is_completed')->default(false);
+
             $table->foreignUuid('created_by')->constrained('users', 'id');
             $table->foreignUuid('last_modified_by')->nullable()->constrained('users', 'id');
             $table->timestamps();

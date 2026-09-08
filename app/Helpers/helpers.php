@@ -60,7 +60,7 @@ if (! function_exists('updateRelatedData')) {
 }
 
 if (! function_exists('computeExactAge')) {
-    function computeExactAge(?string $dateOfBirth): ?string
+    function computeExactAge(?string $dateOfBirth, ?string $type = null): string|int|null
     {
         if (empty($dateOfBirth)) {
             return null;
@@ -70,6 +70,10 @@ if (! function_exists('computeExactAge')) {
         $currentDate = new DateTime;
 
         $diff = $dob->diff($currentDate);
+
+        if ($type === 'year') {
+            return $diff->y;
+        }
 
         return $diff->format('%yy %mm %dd');
     }

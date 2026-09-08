@@ -4,7 +4,7 @@ export interface ConsultationList {
     id: string;
     patient_id: string;
     patient: any;
-    status: any;
+    is_completed: number;
     doctor: {
         full_name: string;
         specialties: Options[];

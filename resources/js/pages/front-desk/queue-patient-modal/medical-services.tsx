@@ -38,7 +38,7 @@ const MedicalServices = ({ data, setData, errors = {} }: QueuePatientFormProps) 
                                         data[item.id as keyof QueuePatientDetailsFormProps] === 1
                                     }
                                 />
-                                <label className="form-check-label fs-5" htmlFor={item.id}>
+                                <label className="form-check-label" htmlFor={item.id}>
                                     {item.name}
                                 </label>
                             </div>

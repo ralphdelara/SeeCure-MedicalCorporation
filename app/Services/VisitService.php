@@ -7,18 +7,20 @@ use Illuminate\Support\Facades\Auth;
 
 class VisitService
 {
-    public function queuePatient(string $patientId, array $consultDetails): string
+    public function queuePatient(string $patientId, array $visitDetails): string
     {
         $visit = Visit::create([
-            'patient_id'              => $patientId,
-            'visit_status_id'           => 1,
-            'guardian_name'           => $consultDetails['guardian_name'],
-            'guardian_contact_number' => $consultDetails['guardian_contact_number'],
-            'guardian_email'          => $consultDetails['guardian_email'],
-            'status_id'               => 1, // Pending
-            'doctor_id'               => $consultDetails['doctor_id'],
-            'created_by'              => Auth::id(),
+            'patient_id'       => $patientId,
+            'has_consultation' => $visitDetails['has_consultation'],
+            'has_laboratory'   => $visitDetails['has_laboratory'],
+            'has_radiology'    => $visitDetails['has_radiology'],
+            'is_emergency'     => $visitDetails['is_emergency'],
+            'visit_status_id'  => $visitDetails['visit_status_id'],
+            'created_by'       => Auth::id(),
+            'last_modified_by' => Auth::id(),
         ]);
+
+        $visit->priorityTypes()->sync($visitDetails['priority_type_ids']);
 
         return $visit->id;
     }

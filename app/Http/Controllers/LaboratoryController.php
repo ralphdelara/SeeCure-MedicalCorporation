@@ -1,0 +1,71 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Laboratory;
+use App\Services\LaboratoryService;
+use App\Services\PatientService;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
+
+class LaboratoryController extends Controller
+{
+    public function getLaboratoryList(Request $request, ?string $status = null): Response
+    {
+        $formOptions = app(LaboratoryService::class)->getLaboratoryFormOptions();
+        $laboratoryList = app(LaboratoryService::class)->getLaboratoryList(
+            $request->keyword,
+            $status,
+            $request->path(),
+        );
+
+        return Inertia::render('laboratory/index', compact(
+            'formOptions',
+            'laboratoryList',
+        ));
+    }
+
+    public function getTests(string $id): array
+    {
+        return app(LaboratoryService::class)->getTests($id);
+    }
+
+    public function addOrUpdateLaboratory(Request $request): void
+    {
+
+    }
+
+    public function getLaboratoryDetails(string $id): Response
+    {
+        $laboratoryDetails = app(LaboratoryService::class)->getLaboratoryDetails($id);
+        $patientDetails = app(PatientService::class)->getPatientDetails($laboratoryDetails['patient_id']);
+
+        return Inertia::render('laboratory/details/index', compact(
+            'laboratoryDetails',
+            'patientDetails',
+        ));
+    }
+
+    public function deleteLaboratory(string $id): void
+    {
+        Laboratory::destroy($id);
+    }
+
+    public function updateDetails(Request $request): void
+    {
+        $details = $request->all();
+
+        app(LaboratoryService::class)->updateDetails($details);
+    }
+
+    public function getAuditLog(string $id): array
+    {
+        return app(LaboratoryService::class)->getAuditLog($id);
+    }
+
+    public function completeLaboratory(string $id): void
+    {
+        app(LaboratoryService::class)->completeLaboratory($id);
+    }
+}

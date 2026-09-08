@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\PriorityTypeEnum;
 use App\Enums\VisitStatusEnum;
 use App\Events\NotifyDoctor;
+use App\Models\Patient;
+use App\Models\PriorityType;
 use App\Models\Relationship;
 use App\Models\SignsOrSymptom;
+use App\Models\Visit;
 use App\Models\VitalSign;
 use App\Services\ConsultationService;
 use App\Services\DoctorService;
@@ -28,7 +32,10 @@ class FrontDeskController extends Controller
         $doctors = app(DoctorService::class)->getDoctorList();
         $laboratoryTestOptions = [];
         $relationshipOptions = Relationship::all();
-        $consultationList = app(ConsultationService::class)->getPendingConsultationList();
+        $consultationList = app(ConsultationService::class)->getSmallPendingConsultationList();
+        $laboratoryList = app(LaboratoryService::class)->getSmallPendingLaboratoryList();
+        $priorityTypeOptions = PriorityType::all();
+        $laboratoryFormOptions = app(LaboratoryService::class)->getLaboratoryFormOptions();
 
         return Inertia::render('front-desk/index', compact(
             'formOptions',
@@ -38,6 +45,9 @@ class FrontDeskController extends Controller
             'relationshipOptions',
             'laboratoryTestOptions',
             'consultationList',
+            'laboratoryList',
+            'priorityTypeOptions',
+            'laboratoryFormOptions',
         ));
     }
 
@@ -48,7 +58,7 @@ class FrontDeskController extends Controller
             'last_name'            => 'required_if:form_type,new|max:50',
             'first_name'           => 'required_if:form_type,new|max:50',
             'doctor_id'            => 'required_if:has_consultation,1',
-            'signs_or_symptoms_id' => 'required',
+            'signs_or_symptoms_id' => 'required_if:has_consultation,1',
             'has_consultation'     => [
                 Rule::prohibitedIf(
                     fn () => (int) request('has_consultation') === 0 && (int) request('has_laboratory') === 0,
@@ -95,6 +105,7 @@ class FrontDeskController extends Controller
             'civil_status_id',
             'nationality_id',
             'patient_suffix_id',
+            'senior_citizen_id',
         );
 
         $consultDetails = $request->only(
@@ -113,6 +124,13 @@ class FrontDeskController extends Controller
             'has_laboratory',
             'has_radiology',
             'is_emergency',
+            'priority_type_ids',
+        );
+
+        $laboratoryDetails = $request->only(
+            'laboratory_id',
+            'laboratory_package_id',
+            'other_test_ids',
         );
 
         if (
@@ -128,11 +146,30 @@ class FrontDeskController extends Controller
 
         $patientId = $request->input('patient_id');
 
-        if ($request->input('form_type') === 'new') {
-            $patientId = app(PatientService::class)->addOrUpdatePatient($patientDetails);
+        if (!empty($patientDetails['date_of_birth'])) {
+            if (computeExactAge($patientDetails['date_of_birth']) >= 60) {
+                $visitDetails['priority_type_ids'][] = PriorityTypeEnum::SENIOR_CITIZEN;
+            } else {
+                $patientDetails['senior_citizen_id'] = '';
+            }
         }
 
-        $visitId = app(VisitService::class)->queuePatient($patientId, $consultDetails);
+        if ($request->input('form_type') === 'new') {
+            $patient = app(PatientService::class)->addOrUpdatePatient($patientDetails);
+            $patientId = $patient->id;
+        }
+
+        if ($request->input('form_type') === 'existing') {
+            $patient = Patient::find($patientId);
+
+            $isSenior = $patient->is_senior;
+
+            if ($isSenior) {
+                $visitDetails['priority_type_ids'][] = PriorityTypeEnum::SENIOR_CITIZEN;
+            }
+        }
+
+        $visitId = app(VisitService::class)->queuePatient($patientId, $visitDetails);
 
         $consultationId = null;
 
@@ -148,9 +185,14 @@ class FrontDeskController extends Controller
         }
 
         if ($request->has_laboratory === 1) {
-            app(LaboratoryService::class)->storeLaboratory($visitId, $patientId, $consultDetails);
+            app(LaboratoryService::class)->storeLaboratory($visitId, $patientId,  $consultationId, $laboratoryDetails);
         }
 
         app(PatientVitalSignService::class)->storeVitalSigns($patientId, $consultationId, $vitalSigns);
+    }
+
+    public function deleteQueue(string $id): void
+    {
+        Visit::destroy($id);
     }
 }

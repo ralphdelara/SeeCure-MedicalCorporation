@@ -85,7 +85,7 @@ export const FloatingScrollTable: React.FC<FloatingScrollTableProps> = ({
 
     return (
         <>
-            {!float && <div className="table-responsive" style={{overflowY: 'auto', height: '350px'}}>{children}</div>}
+            {!float && <div className="table-responsive" style={{overflowY: 'auto', maxHeight: '350px'}}>{children}</div>}
             {float && (
                 <div ref={containerRef} style={{ position: 'relative', width: '100%' }}>
                     {/* Floating Dummy Scrollbar with wide custom track classes */}

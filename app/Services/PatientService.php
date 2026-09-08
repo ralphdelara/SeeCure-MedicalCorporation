@@ -65,7 +65,7 @@ class PatientService
         );
     }
 
-    public function addOrUpdatePatient(array $patientDetails): string
+    public function addOrUpdatePatient(array $patientDetails): Patient
     {
         $patientId = $patientDetails['patient_id'];
 
@@ -97,7 +97,7 @@ class PatientService
 
         $this->updatePatientOrder();
 
-        return (string) $patient->id;
+        return $patient;
     }
 
     public function updatePatientOrder(): void

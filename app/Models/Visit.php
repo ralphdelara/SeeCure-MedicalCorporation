@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
@@ -45,7 +47,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string|null $admitted_at
  * @property string|null $discharged_at
  * @property bool $is_emergency
- * @property int $priority_type_id
  * @property int $visit_status_id
  * @property-read \App\Models\VisitStatus $visitStatus
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereAdmittedAt($value)
@@ -53,15 +54,23 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereIsEmergency($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit wherePriorityTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereVisitStatusId($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PriorityType> $priorityTypes
+ * @property-read int|null $priority_types_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Laboratory> $laboratory
+ * @property-read int|null $laboratory_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Radiology> $radiology
+ * @property-read int|null $radiology_count
  * @mixin \Eloquent
  */
 #[Fillable([
     'patient_id',
+    'admitted_at',
+    'discharged_at',
     'has_consultation',
     'has_laboratory',
     'has_radiology',
-    'visit_status_id',
     'is_emergency',
+    'visit_status_id',
     'created_by',
     'last_modified_by',
 ])]
@@ -84,9 +93,24 @@ class Visit extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
+    public function priorityTypes(): BelongsToMany
+    {
+        return $this->belongsToMany(PriorityType::class, 'visit_priority_types', 'visit_id', 'priority_type_id');
+    }
+
     public function consultation(): HasOne
     {
         return $this->hasOne(Consultation::class);
+    }
+
+    public function radiology(): HasMany
+    {
+        return $this->hasMany(Radiology::class);
+    }
+
+    public function laboratory(): HasMany
+    {
+        return $this->hasMany(Laboratory::class);
     }
 
     public function visitStatus(): BelongsTo

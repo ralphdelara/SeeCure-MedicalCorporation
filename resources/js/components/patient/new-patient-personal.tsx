@@ -5,6 +5,7 @@ import { Select } from '@/components/ui/select';
 import type { Options } from '@/types/options';
 import { AddOrUpdatePatientFormProps } from './new-patient';
 import { getExactAge } from '@/lib/utils';
+import { useState } from 'react';
 
 interface InertiaProps {
     formOptions: {
@@ -18,6 +19,7 @@ interface InertiaProps {
 const Personal = ({ data, setData, errors = {} }: AddOrUpdatePatientFormProps) => {
     const { formOptions } = usePage().props as unknown as InertiaProps;
     const { genderOptions, civilStatusOptions, nationalityOptions, suffixOptions } = formOptions;
+    const [ showHideSenior, setShowHideSenior ] = useState(false);
 
     const inputAge = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (data.date_of_birth === '') {
@@ -29,6 +31,19 @@ const Personal = ({ data, setData, errors = {} }: AddOrUpdatePatientFormProps) =
         setData('date_of_birth', e.target.value);
         const currentDate = new Date().toISOString().split('T')[0];
         const { years, months, days } = getExactAge(e.target.value, currentDate);
+
+        if (isNaN(years) && isNaN(months) && isNaN(days)) {
+            setData('age', '');
+            setShowHideSenior(false);
+
+            return;
+        }
+
+        if (years >= 60) {
+            setShowHideSenior(true);
+        } else {
+            setShowHideSenior(false);
+        }
 
         if (years < 0) {
             setData('age', 0);
@@ -126,20 +141,23 @@ const Personal = ({ data, setData, errors = {} }: AddOrUpdatePatientFormProps) =
                         />
                     </div>
                 </div>
-                <div className="col-md-6">
+                {showHideSenior && <div className="col-md-6">
                     <div className="form-group">
-                        <label className="form-label" htmlFor="suffix">
-                            Suffix
+                        <label className="form-label" htmlFor="middle-name">
+                            Senior Citizen ID
                         </label>
 
-                        <Select
-                            value={data.patient_suffix_id}
-                            onChange={(e) => setData('patient_suffix_id', parseInt(e.target.value))}
-                            options={suffixOptions}
-                            type="Suffix"
+                        <Input
+                            value={data.senior_citizen_id}
+                            onChange={(e) => setData('senior_citizen_id', e.target.value)}
+                            id="senior_citizen_id"
+                            type="text"
+                            className="form-control"
+                            placeholder="ex. 1234567"
+                            maxLength={50}
                         />
                     </div>
-                </div>
+                </div>}
                 <div className="col-md-6">
                     <div className="form-group">
                         <label className="form-label" htmlFor="middle-name">
@@ -153,6 +171,20 @@ const Personal = ({ data, setData, errors = {} }: AddOrUpdatePatientFormProps) =
                             type="text"
                             className="form-control"
                             placeholder="ex. 18y 0m 0d"
+                        />
+                    </div>
+                </div>
+                <div className="col-md-6">
+                    <div className="form-group">
+                        <label className="form-label" htmlFor="suffix">
+                            Suffix
+                        </label>
+
+                        <Select
+                            value={data.patient_suffix_id}
+                            onChange={(e) => setData('patient_suffix_id', parseInt(e.target.value))}
+                            options={suffixOptions}
+                            type="Suffix"
                         />
                     </div>
                 </div>

@@ -11,17 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('laboratory_data', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+        Schema::create('laboratory_audits', function (Blueprint $table) {
+            $table->id();
             $table->foreignUuid('laboratory_id')->constrained('laboratory', 'id')->cascadeOnDelete();
-            $table->foreignId('laboratory_package_id');
-            $table->foreignId('laboratory_test_id');
-            $table->foreignId('laboratory_test_field_id');
-            $table->text('value');
-            $table->text('remarks')->nullable();
+            $table->foreignId('audit_type_id')->constrained();
+            $table->text('data');
             $table->foreignUuid('created_by')->constrained('users', 'id');
-            $table->foreignUuid('last_modified_by')->nullable()->constrained('users', 'id');
-            $table->timestamps();
+            $table->dateTime('created_at')->useCurrent();
         });
     }
 
@@ -30,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('laboratory_data');
+        Schema::dropIfExists('laboratory_audits');
     }
 };

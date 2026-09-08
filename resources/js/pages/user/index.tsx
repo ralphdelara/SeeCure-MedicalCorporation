@@ -24,7 +24,7 @@ export default function UserList() {
     };
     const { userList } = usePage().props as unknown as InertiaProps;
     const { tableData, pageData } = userList;
-    console.log(userList);
+
     const header =
         tableData.length !== 0
             ? [

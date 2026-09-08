@@ -5,6 +5,8 @@ import { usePage, Link } from '@inertiajs/react';
 import { getPatientDetails } from '@/actions/App/Http/Controllers/PatientController';
 import { getUserDetails } from '@/actions/App/Http/Controllers/UserController';
 import TableList from '@/components/table';
+import DeleteButton from '@/components/delete-button';
+import { deleteQueue } from '@/actions/App/Http/Controllers/FrontDeskController';
 
 interface InertiaProps {
     consultationList: {
@@ -16,10 +18,12 @@ interface InertiaProps {
                 name: string;
             };
         };
-        doctor: {
-            full_name: string;
-            gender: {
-                name: string;
+        consultation: {
+            doctor: {
+                full_name: string;
+                gender: {
+                    name: string;
+                };
             };
         };
         status: {
@@ -34,8 +38,7 @@ export default () => {
     const header = [
         { name: '#', width: '5%', align: 'right' },
         { name: 'Patient • Gender', className: 'sticky-left', align: 'left' },
-        { name: 'Attending Doctor', align: 'left' },
-        { name: '', className: 'sticky-right', align: 'right' },
+        { name: '', width: '5%', className: 'sticky-right', align: 'right' },
     ];
 
     return (
@@ -76,45 +79,19 @@ export default () => {
                                                     ? item.patient.gender.name
                                                     : 'N/A'}
                                             </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div className="d-block">
-                                    <div className="d-flex align-items-center">
-                                        <div style={{ width: '40px' }}>
-                                            <img
-                                                className="rounded-circle"
-                                                width="40"
-                                                height="40"
-                                                src="../assets/images/profile/user-2.jpg"
-                                            />
-                                        </div>
-                                        <div className="ms-3">
-                                            <h6 className="fs-4 fw-semibold mb-0">
-                                                {item.doctor.full_name}
+
+                                            <h6 className="fs-2 fw-semibold mb-0">
+                                                {item.consultation.doctor.full_name}
                                             </h6>
-                                            <span className="fw-normal">
-                                                {item.doctor.gender
-                                                    ? item.doctor.gender.name
-                                                    : 'N/A'}
-                                            </span>
                                         </div>
                                     </div>
                                 </div>
                             </td>
                             <td>
-                                <Button rounded={true} className="me-2" title="Edit Queue Details">
-                                    <i>
-                                        <IconEdit size={18} />
-                                    </i>
-                                </Button>
-                                <Button variant="danger" rounded={true} title="Delete">
-                                    <i>
-                                        <IconTrash size={18} />
-                                    </i>
-                                </Button>
+                                <DeleteButton
+                                    url={deleteQueue(item.id).url}
+                                    msg={'visit <b>' + item.patient.full_name + '</b>.'}
+                                />
                             </td>
                         </tr>
                     ))}

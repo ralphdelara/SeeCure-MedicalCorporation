@@ -47,7 +47,7 @@ enum LaboratoryPackageEnum: int
         };
     }
 
-    public function prices(): float
+    public function price(): float
     {
         return match ($this) {
             self::BLOOD_CHEMISTRY_PACKAGE => 1720,

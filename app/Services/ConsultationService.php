@@ -5,12 +5,14 @@ namespace App\Services;
 use App\Enums\SignsOrSymptomEnum;
 use App\Enums\VisitStatusEnum;
 use App\Events\ConsultationViewed;
+use App\Events\Icd10CodeSaved;
 use App\Events\SignsOrSymptomsSaved;
 use App\Models\Consultation;
 use App\Models\ConsultationAudit;
 use App\Models\ConsultationDiagnosis;
 use App\Models\ConsultationDiagnosisIcd10Code;
 use App\Models\ConsultationSoap;
+use App\Models\Icd10Code;
 use App\Models\Patient;
 use App\Models\Prescription;
 use App\Models\Visit;
@@ -22,7 +24,7 @@ class ConsultationService
 {
     public function getConsultationList(
         ?string $keyword,
-        ?string $selectId,
+        ?string $status,
         string $path,
     ): array {
         $consultationList = Consultation::with([
@@ -57,10 +59,10 @@ class ConsultationService
             'doctor' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name');
             },
-            'status',
             'signsOrSymptoms',
             'doctor.professions',
             'doctor.specialties',
+            'visit',
         ]);
 
         if (! empty($keyword)) {
@@ -70,6 +72,16 @@ class ConsultationService
                     ->orWhereBlind('first_name_index', 'first_name_index', strtolower($keyword))
                     ->orWhereBlind('middle_name_index', 'middle_name_index', strtolower($keyword));
             });
+        }
+
+        if ($status === 'pending') {
+            $consultationList = $consultationList->whereHas('visit', function ($query) {
+                $query->where('visit_status_id', VisitStatusEnum::IN_CONSULTATION);
+            });
+        }
+
+        if ($status === 'completed') {
+            $consultationList = $consultationList->where('is_completed', true);
         }
 
         $consultationList = $consultationList->orderBy('created_at')->paginate(50)
@@ -120,7 +132,6 @@ class ConsultationService
             'doctor' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name');
             },
-            'status',
             'signsOrSymptoms',
             'soap',
             'diagnosis',
@@ -156,18 +167,13 @@ class ConsultationService
             'guardian_contact_number'  => $consultDetails['guardian_contact_number'],
             'guardian_email'           => $consultDetails['guardian_email'],
             'guardian_relationship_id' => $consultDetails['guardian_relationship_id'],
-            'status_id'                => 1, // Pending
             'doctor_id'                => $consultDetails['doctor_id'],
             'created_by'               => Auth::id(),
             'last_modified_by'         => Auth::id(),
         ]);
 
         // insert signs or symptoms
-        $this->updateRelatedData(
-            $consultation,
-            $consultDetails['signs_or_symptoms_id'],
-            $consultation->id,
-        );
+        $consultation->signsOrSymptoms()->sync($consultDetails['signs_or_symptoms_id']);
 
         ConsultationSoap::create([
             'consultation_id'  => $consultation->id,
@@ -184,7 +190,7 @@ class ConsultationService
         return (string) $consultation->id;
     }
 
-    public function getPendingConsultationList(): array
+    public function getSmallPendingConsultationList(): array
     {
         return Visit::with([
             'patient' => function ($query) {
@@ -193,11 +199,15 @@ class ConsultationService
             'patient.gender' => function ($query) {
                 $query->select('id', 'name');
             },
-            'doctor' => function ($query) {
+            'patient.suffix' => function ($query) {
+                $query->select('id', 'name');
+            },
+            'consultation',
+            'consultation.doctor' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name');
             },
-            'signsOrSymptoms',
-            'doctor.professions',
+            'consultation.doctor.professions',
+            'consultation.signsOrSymptoms',
         ])->whereVisitStatusId(VisitStatusEnum::IN_CONSULTATION)->get()->toArray();
     }
 
@@ -212,7 +222,7 @@ class ConsultationService
         $consultation = Consultation::find($id);
         $consultation->update($details);
 
-        $this->updateRelatedData($consultation, $details['signs_or_symptoms_id'], $id);
+        $this->updateSignsOrSymptoms($consultation, $details['signs_or_symptoms_id']);
     }
 
     public function updateSoap(array $soapDetails): void
@@ -237,18 +247,10 @@ class ConsultationService
 
         $diagnosisDetails['last_modified_by'] = Auth::id();
 
-        $consultationDiagnosis = ConsultationDiagnosis::with('icd10Codes')->find($id);
+        $consultationDiagnosis = ConsultationDiagnosis::with('icd10Codes', 'consultation')->find($id);
         $consultationDiagnosis->update($diagnosisDetails);
 
-        // add or update profession data
-        updateRelatedData(
-            new ConsultationDiagnosisIcd10Code,
-            $consultationDiagnosis->icd10Codes->pluck('id')->toArray(),
-            $icd10Ids,
-            $id,
-            'consultation_diagnosis_id',
-            'icd10_code_id',
-        );
+        $this->updateIcd10Code($consultationDiagnosis, $icd10Ids);
     }
 
     public function addOrUpdatePrescription(array $prescriptionDetails): void
@@ -286,24 +288,86 @@ class ConsultationService
             ->get()->toArray();
     }
 
-    public function updateRelatedData(
+    public function updateSignsOrSymptoms(
         Consultation $consultation,
         array $signsOrSymptomIds,
-        string $consultationId,
     ): void {
-        $signsOrSymptomAudit = $consultation->signsOrSymptoms()->sync($signsOrSymptomIds);
+        $audit = $consultation->signsOrSymptoms()->sync($signsOrSymptomIds);
 
         if (
-            ! empty($signsOrSymptomAudit['attached'])
-            || ! empty($signsOrSymptomAudit['detached'])
+            empty($audit['attached'])
+            && empty($audit['detached'])
         ) {
-            SignsOrSymptomsSaved::dispatch(
-                getRelatedAuditFields(
-                    SignsOrSymptomEnum::getDescriptionLists(),
-                    $signsOrSymptomAudit,
-                ),
-                $consultationId,
-            );
+            return;
         }
+
+        SignsOrSymptomsSaved::dispatch(
+            getRelatedAuditFields(
+                SignsOrSymptomEnum::getDescriptionLists(),
+                $audit,
+            ),
+            $consultation->id,
+        );
+    }
+
+    public function updateIcd10Code(
+        ConsultationDiagnosis $diagnosis,
+        array $ids,
+    ): void {
+        $diagnosis->loadMissing('consultation');
+        $deletedRes = ConsultationDiagnosisIcd10Code::with('icd10Code')->where('consultation_diagnosis_id', $diagnosis->id)->get()->toArray();
+        $added = Icd10Code::whereIn('id', $ids);
+        $deleted = array_column($deletedRes, 'icd10_code');
+
+        $newDeleted = array_values(array_diff(array_column($deleted, 'code'), $added->pluck('code')->toArray()));
+        $newAdded = array_values(array_diff($added->pluck('code')->toArray(), array_column($deleted, 'code')));
+
+        $newDeletedIds = array_values(array_diff(array_column($deleted, 'id'), $added->pluck('id')->toArray()));
+        $newAddedIds = array_values(array_diff($added->pluck('id')->toArray(), array_column($deleted, 'id')));
+
+        if (
+            empty($newDeletedIds)
+            && empty($newAdded)
+        ) {
+            return;
+        }
+
+        $deleteIcd10 = [];
+        foreach ($newDeletedIds as $key => $id) {
+            $deleteIcd10[] = $deletedRes[$key]['id'];
+        }
+
+        ConsultationDiagnosisIcd10Code::destroy($deleteIcd10);
+
+        $insertIcd10 = [];
+        foreach ($newAddedIds as $id) {
+            $insertIcd10[] = [
+                'consultation_diagnosis_id' => $diagnosis->id,
+                'icd10_code_id'             => $id,
+            ];
+        }
+
+        ConsultationDiagnosisIcd10Code::fillAndInsert($insertIcd10);
+
+        Icd10CodeSaved::dispatch(
+            [
+                'added'   => $newAdded,
+                'deleted' => $newDeleted,
+            ],
+            $diagnosis->consultation->id,
+        );
+    }
+
+    public function completeConsultation(string $consultationId)
+    {
+        $consultation = Consultation::with('visit')->find($consultationId);
+
+        $consultation->update([
+            'is_completed' => true,
+        ]);
+
+        Visit::find($consultation->visit->id)->update([
+            'visit_status_id' => VisitStatusEnum::IN_BILLING,
+        ]);
     }
 }

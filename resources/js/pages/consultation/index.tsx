@@ -1,10 +1,5 @@
 import { Head, Link, usePage } from '@inertiajs/react';
-import {
-    IconStethoscope,
-    IconTrash,
-    IconVolume,
-    IconVolumeOff,
-} from '@tabler/icons-react';
+import { IconStethoscope, IconTrash, IconVolume, IconVolumeOff } from '@tabler/icons-react';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import SearchField from '@/components/search-field';
 import TableList from '@/components/table';
@@ -30,7 +25,7 @@ export default function Consultation() {
     const { consultationList } = usePage().props as unknown as InertiaProps;
     const { tableData, pageData } = consultationList;
     const [allowCallPatient, setAllowCallPatient] = useState(true);
-console.log(consultationList);
+
     const header = [
         { name: '#', align: 'right' },
         { name: 'Patient', className: 'sticky-left', align: 'left' },
@@ -212,9 +207,11 @@ console.log(consultationList);
                                     </div>
                                 </td>
                                 <td>
-                                    <span className="badge text-bg-secondary">
-                                        {item.status.name}
-                                    </span>
+                                    {item.is_completed ? (
+                                        <span className="badge text-bg-success">Completed</span>
+                                    ) : (
+                                        <span className="badge text-bg-danger">Pending</span>
+                                    )}
                                 </td>
 
                                 <td>
@@ -247,10 +244,10 @@ console.log(consultationList);
                                         disabled={!allowCallPatient}
                                         onClick={() => callPatient(item.patient.full_name)}
                                     >
-                                            <i>
-                                                {allowCallPatient && <IconVolume size={18} />}
-                                                {!allowCallPatient && <IconVolumeOff size={18}/>}
-                                            </i>
+                                        <i>
+                                            {allowCallPatient && <IconVolume size={18} />}
+                                            {!allowCallPatient && <IconVolumeOff size={18} />}
+                                        </i>
                                     </Button>
                                     <Link href={getConsultationDetails(item.id)}>
                                         <Button
