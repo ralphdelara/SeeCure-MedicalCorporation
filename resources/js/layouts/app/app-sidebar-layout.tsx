@@ -70,13 +70,13 @@ export default function NavSidebar({ toggleSidebar }: NavSidebarProps) {
             active: url.includes(patients().url.slice(0, -1)),
         },
         {
-            url: consultations(),
+            url: consultations('pending'),
             name: 'Consultation',
             icon: IconStethoscope,
             active: url.includes(consultations().url.slice(0, -1)),
         },
         {
-            url: laboratory(),
+            url: laboratory('pending'),
             name: 'Laboratory',
             icon: IconFlask,
             active: url.includes(laboratory().url),

@@ -22,7 +22,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string|null $guardian_email
  * @property int|null $guardian_relationship_id
  * @property string|null $diagnosis
- * @property int $status_id
  * @property string $doctor_id
  * @property string $created_by
  * @property string|null $last_modified_by
@@ -65,6 +64,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read Radiology|null $radiology
  * @property-read ConsultationSoap|null $soap
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereFollowUpDate($value)
+ * @property bool $is_completed
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereIsCompleted($value)
  * @mixin \Eloquent
  */
 #[Fillable([
@@ -74,8 +75,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
     'guardian_contact_number',
     'guardian_email',
     'guardian_relationship_id',
-    'signs_or_symptom_id',
-    'status_id',
+    'is_completed',
     'doctor_id',
     'created_by',
     'last_modified_by',

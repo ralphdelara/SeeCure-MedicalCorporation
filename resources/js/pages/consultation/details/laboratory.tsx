@@ -1,9 +1,23 @@
 import { Head } from '@inertiajs/react';
 import TableList from '@/components/table';
 import { IconDownload, IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
+import LaboratoryModal, { ModalFormProps } from './laboratory-modal';
 import { Button } from '@/components/ui/button';
+import { useState } from 'react';
 
 const Laboratory = ({ showTab }: { showTab: boolean }) => {
+    const [formShow, setFormShow] = useState(false);
+    const defaultData = {
+        laboratory_id: '',
+        laboratory_package_id: '',
+        other_test_ids: [] as string[],
+    };
+
+    const [modalDetails, setModalDetails] = useState({
+        formType: 'Add',
+        formData: { ...defaultData },
+    });
+
     const header = [
         { name: '#', width: '5%', align: 'right' },
         { name: 'Type', width: '20%', align: 'left' },
@@ -19,15 +33,32 @@ const Laboratory = ({ showTab }: { showTab: boolean }) => {
 
     const tableData = [];
 
+    const toggleModal = (formType: string, formData: ModalFormProps | null) => {
+        setFormShow(true);
+        setModalDetails({
+            formType: formType,
+            formData: formData ?? modalDetails.formData,
+        });
+    };
+
     return (
         <>
             <div className={'tab-content mt-3' + (!showTab ? ' hidden' : '')}>
                 <div className="tab-pane fade show active" role="tabpanel" tabIndex={4}>
+                    <LaboratoryModal
+                        formShow={formShow}
+                        setFormShow={setFormShow}
+                        formType={modalDetails.formType}
+                        formData={modalDetails.formData}
+                    />
                     <div className="card border shadow-none">
                         <div className="card-body">
                             <div className="row w-100">
                                 <div className="mt-2 text-right">
-                                    <Button size="lg">
+                                    <Button
+                                        size="lg"
+                                        onClick={() => toggleModal('Add', defaultData)}
+                                    >
                                         <i>
                                             <IconPlus className="me-1" />
                                         </i>

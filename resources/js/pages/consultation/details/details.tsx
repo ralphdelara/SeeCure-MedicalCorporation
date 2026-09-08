@@ -4,9 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select } from '@/components/ui/select';
 import SignsOrSymptomsForm from '@/components/consultation/signs-or-symptoms-form';
-import { Head, useForm, usePage } from '@inertiajs/react';
-import { IconDeviceFloppy } from '@tabler/icons-react';
-import { ConsultationDetailsFormProps } from '../../../components/consultation/consultation';
+import { useForm, usePage } from '@inertiajs/react';
 import { Options } from '@/types/options';
 import { formSubmitResponse, getIdsFromArrayData } from '@/lib/utils';
 import SaveButton from './save-button';
@@ -40,7 +38,6 @@ interface InertiaProps {
 
 const Details = ({ showTab }: { showTab: boolean }) => {
     const { consultationDetails, doctors, relationshipOptions } = usePage().props as unknown as InertiaProps;
-    console.log(consultationDetails.doctor);
 
     const { data, setData, patch, errors, isDirty } = useForm({
         id: consultationDetails.id,
@@ -63,7 +60,7 @@ const Details = ({ showTab }: { showTab: boolean }) => {
             <div className={'tab-content mt-3' + (!showTab ? ' hidden' : '')}>
                 <div className="tab-pane fade show active" role="tabpanel" tabIndex={1}>
                     <form onSubmit={submitDetails}>
-                        <div className="m-4"><SaveButton type="Details" isDirty={isDirty}/></div>
+                        <div className="me-4"><SaveButton type="Details" isDirty={isDirty}/></div>
                         <div className="row mt-3 w-100">
                             <div className="col-lg-4">
                                 <div className="card border shadow-sm">

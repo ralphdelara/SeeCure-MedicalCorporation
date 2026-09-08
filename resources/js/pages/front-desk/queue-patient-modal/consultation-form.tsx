@@ -15,7 +15,7 @@ const ConsultationForm = ({ data, setData, errors = {} }: QueuePatientFormProps)
     const { doctors, relationshipOptions } = usePage().props as unknown as InertiaProps;
 
     return (
-        <>
+        <div className="border-bottom border-success">
             <div className="form-group">
                 <Label htmlFor="medicalServices" className="form-label fs-5">
                     Consultation Form
@@ -78,7 +78,7 @@ const ConsultationForm = ({ data, setData, errors = {} }: QueuePatientFormProps)
                     </div>
                 </div>
             </div>
-            <div className="form-group">
+            <div className="form-group mb-3">
                 <Label htmlFor="doctor-id" className="form-label">
                     Doctor *
                 </Label>
@@ -91,7 +91,7 @@ const ConsultationForm = ({ data, setData, errors = {} }: QueuePatientFormProps)
                 />
                 <InputError message={errors.doctor_id} className="mt-2" />
             </div>
-        </>
+        </div>
     );
 };
 

@@ -8,47 +8,47 @@ enum LaboratoryTestEnum: int
 {
     use EnumTraits;
 
-    // CLINICAL CHEMISTRY (101 - 199)
-    case FBS = 101;
-    case RBS = 102;
-    case BUN = 103;
-    case CREATININE = 104;
-    case URIC_ACID = 105;
-    case TOTAL_CHOLESTEROL = 106;
-    case TRIGLYCERIDES = 107;
-    case HDL_CHOLESTEROL = 108;
-    case LDL_CHOLESTEROL = 109;
-    case SGPT_ALT = 110;
-    case SGOT_AST = 111;
-    case OGTT_75G = 112;
-    case SODIUM = 113;
-    case POTASSIUM = 114;
-    case CHLORIDE = 115;
-    case IONIZED_CALCIUM = 116;
-    case IONIZED_MAGNESIUM = 117;
+    // CLINICAL CHEMISTRY
+    case FBS = 1;
+    case RBS = 2;
+    case BUN = 3;
+    case CREATININE = 4;
+    case URIC_ACID = 5;
+    case TOTAL_CHOLESTEROL = 6;
+    case TRIGLYCERIDES = 7;
+    case HDL_CHOLESTEROL = 8;
+    case LDL_CHOLESTEROL = 9;
+    case SGPT_ALT = 10;
+    case SGOT_AST = 11;
+    case OGTT_75G = 12;
+    case SODIUM = 13;
+    case POTASSIUM = 14;
+    case CHLORIDE = 15;
+    case IONIZED_CALCIUM = 16;
+    case IONIZED_MAGNESIUM = 17;
 
-    // CLINICAL MICROSCOPY (201 - 299)
-    case URINALYSIS = 201;
-    case FECALYSIS = 202;
-    case FECAL_OCCULT_BLOOD = 203;
-    case PREGNANCY_URINE = 204;
+    // CLINICAL MICROSCOPY
+    case URINALYSIS = 18;
+    case FECALYSIS = 19;
+    case FECAL_OCCULT_BLOOD = 20;
+    case PREGNANCY_URINE = 21;
 
-    // IMMUNOLOGY SEROLOGY (301 - 399)
-    case PREGNANCY_SERUM = 301;
-    case RPR_ANTI_TP = 302;
-    case HBSAG = 303;
-    case DENGUE_DUO = 304;
-    case TYPHIDOT = 305;
-    case CRP_QUANTITATIVE = 306;
-    case H_PYLORI = 307;
+    // IMMUNOLOGY SEROLOGY
+    case PREGNANCY_SERUM = 22;
+    case RPR_ANTI_TP = 23;
+    case HBSAG = 24;
+    case DENGUE_DUO = 25;
+    case TYPHIDOT = 26;
+    case CRP_QUANTITATIVE = 27;
+    case H_PYLORI = 28;
 
-    // CLINICAL HEMATOLOGY (401 - 499)
-    case COMPLETE_BLOOD_COUNT = 401;
-    case CBC_W_PLATELET_COUNT = 402;
-    case PLATELET_COUNT = 403;
-    case ABO_TYPING = 404;
-    case RH_TYPING = 405;
-    case CLOTTING_TIME_BLEEDING_TIME = 406;
+    // CLINICAL HEMATOLOGY
+    case COMPLETE_BLOOD_COUNT = 29;
+    case CBC_W_PLATELET_COUNT = 30;
+    case PLATELET_COUNT = 31;
+    case ABO_TYPING = 32;
+    case RH_TYPING = 33;
+    case CLOTTING_TIME_BLEEDING_TIME = 34;
 
     /**
      * Get the clean display name for each laboratory test.
@@ -96,7 +96,7 @@ enum LaboratoryTestEnum: int
         };
     }
 
-    public function prices(): float
+    public function price(): float
     {
         return match ($this) {
             self::FBS               => 130,
@@ -324,6 +324,53 @@ enum LaboratoryTestEnum: int
                 LaboratoryTestFieldEnum::HEMA_CLOTTING_TIME_MIN,
                 LaboratoryTestFieldEnum::HEMA_CLOTTING_TIME_SEC,
             ],
+        };
+    }
+
+    public function type(): LaboratoryTypeEnum
+    {
+        return match($this) {
+            // CLINICAL CHEMISTRY
+            self::FBS => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
+            self::RBS => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
+            self::BUN => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
+            self::CREATININE => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
+            self::URIC_ACID => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
+            self::TOTAL_CHOLESTEROL => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
+            self::TRIGLYCERIDES => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
+            self::HDL_CHOLESTEROL => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
+            self::LDL_CHOLESTEROL => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
+            self::SGPT_ALT => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
+            self::SGOT_AST => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
+            self::OGTT_75G => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
+            self::SODIUM => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
+            self::POTASSIUM => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
+            self::CHLORIDE => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
+            self::IONIZED_CALCIUM => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
+            self::IONIZED_MAGNESIUM => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
+
+            // CLINICAL MICROSCOPY
+            self::URINALYSIS => LaboratoryTypeEnum::CLINICAL_MICROSCOPY,
+            self::FECALYSIS => LaboratoryTypeEnum::CLINICAL_MICROSCOPY,
+            self::FECAL_OCCULT_BLOOD => LaboratoryTypeEnum::CLINICAL_MICROSCOPY,
+            self::PREGNANCY_URINE => LaboratoryTypeEnum::CLINICAL_MICROSCOPY,
+
+            // IMMUNOLOGY SEROLOGY
+            self::PREGNANCY_SERUM => LaboratoryTypeEnum::IMMUNOLOGY_SEROLOGY,
+            self::RPR_ANTI_TP => LaboratoryTypeEnum::IMMUNOLOGY_SEROLOGY,
+            self::HBSAG => LaboratoryTypeEnum::IMMUNOLOGY_SEROLOGY,
+            self::DENGUE_DUO => LaboratoryTypeEnum::IMMUNOLOGY_SEROLOGY,
+            self::TYPHIDOT => LaboratoryTypeEnum::IMMUNOLOGY_SEROLOGY,
+            self::CRP_QUANTITATIVE => LaboratoryTypeEnum::IMMUNOLOGY_SEROLOGY,
+            self::H_PYLORI => LaboratoryTypeEnum::IMMUNOLOGY_SEROLOGY,
+
+            // CLINICAL HEMATOLOGY
+            self::COMPLETE_BLOOD_COUNT => LaboratoryTypeEnum::CLINICAL_HEMATOLOGY,
+            self::CBC_W_PLATELET_COUNT => LaboratoryTypeEnum::CLINICAL_HEMATOLOGY,
+            self::PLATELET_COUNT => LaboratoryTypeEnum::CLINICAL_HEMATOLOGY,
+            self::ABO_TYPING => LaboratoryTypeEnum::CLINICAL_HEMATOLOGY,
+            self::RH_TYPING => LaboratoryTypeEnum::CLINICAL_HEMATOLOGY,
+            self::CLOTTING_TIME_BLEEDING_TIME => LaboratoryTypeEnum::CLINICAL_HEMATOLOGY,
         };
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\CallOut;
+use App\Models\Consultation;
 use App\Models\InventoryCategory;
 use App\Models\LaboratoryTestType;
 use App\Models\Prescription;
@@ -11,6 +12,7 @@ use App\Models\SignsOrSymptom;
 use App\Models\VitalSign;
 use App\Services\ConsultationService;
 use App\Services\DoctorService;
+use App\Services\LaboratoryService;
 use App\Services\PatientService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -18,7 +20,20 @@ use Inertia\Response;
 
 class ConsultationController extends Controller
 {
-    public function index(Request $request): Response
+    public function getConsultationList(Request $request, ?string $status = null): Response
+    {
+        $consultationList = app(ConsultationService::class)->getConsultationList(
+            $request->keyword,
+            $status,
+            $request->path(),
+        );
+
+        return Inertia::render('consultation/index', compact(
+            'consultationList',
+        ));
+    }
+
+    public function getPendingConsultationList(Request $request): Response
     {
         $consultationList = app(ConsultationService::class)->getConsultationList(
             $request->keyword,
@@ -35,22 +50,22 @@ class ConsultationController extends Controller
     {
         $consultationDetails = app(ConsultationService::class)->getConsultationDetails($consultationId);
         $signsOrSymptoms = SignsOrSymptom::all();
-       $laboratoryTestOptions = [];
         $vitalSigns = VitalSign::with('fields')->get();
         $patientDetails = app(PatientService::class)->getPatientDetails($consultationDetails['patient_id']);
         $doctors = app(DoctorService::class)->getDoctorList();
         $relationshipOptions = Relationship::all();
         $inventoryCategories = InventoryCategory::all();
+        $laboratoryFormOptions = app(LaboratoryService::class)->getLaboratoryFormOptions();
 
         return Inertia::render('consultation/details/index', compact(
             'consultationDetails',
             'signsOrSymptoms',
-            'laboratoryTestOptions',
             'vitalSigns',
             'patientDetails',
             'doctors',
             'relationshipOptions',
             'inventoryCategories',
+            'laboratoryFormOptions',
         ));
     }
 
@@ -112,5 +127,10 @@ class ConsultationController extends Controller
     public function getAuditLog(string $consultationId): array
     {
         return app(ConsultationService::class)->getAuditLog($consultationId);
+    }
+
+    public function completeConsultation(string $consultationId): void
+    {
+        app(ConsultationService::class)->completeConsultation($consultationId);
     }
 }

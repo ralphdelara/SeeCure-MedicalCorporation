@@ -1,4 +1,4 @@
-import { useForm } from '@inertiajs/react';
+import { useForm, usePage } from '@inertiajs/react';
 import { IconPlus, IconUserDown, IconUserPlus } from '@tabler/icons-react';
 import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
@@ -12,9 +12,14 @@ import VitalSignsForm from '../../../components/vital-signs/vital-signs-form';
 import NewPatientForm from '@/components/patient/new-patient-form';
 import MedicalServices from './medical-services';
 import InputError from '@/components/input-error';
+import { Label } from '@/components/ui/label';
+import { Options } from '@/types/options';
 
 const QueuePatient = () => {
     const [showModal, setShowModal] = useState(false);
+    const { priorityTypeOptions } = usePage().props as unknown as {
+        priorityTypeOptions: Options[];
+    };
 
     const { data, setData, post, processing, errors, reset } =
         useForm<QueuePatientDetailsFormProps>({
@@ -34,6 +39,7 @@ const QueuePatient = () => {
             gender_id: '',
             civil_status_id: '',
             nationality_id: '',
+            senior_citizen_id: '',
 
             house_no: '',
             street: '',
@@ -56,7 +62,12 @@ const QueuePatient = () => {
             has_radiology: 0,
             is_emergency: 0,
             signs_or_symptoms_id: [],
-            laboratory_test_ids: [],
+            priority_type_ids: [],
+
+            laboratory_id: '',
+            laboratory_package_id: '',
+            other_test_ids: [],
+
             radiology_test_ids: [],
         });
 
@@ -77,6 +88,17 @@ const QueuePatient = () => {
                 toast.error('Failed to add patient.');
             },
         });
+    };
+
+    const updatePriorityTypes = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.checked) {
+            setData('priority_type_ids', [...data.priority_type_ids, parseInt(e.target.value)]);
+        } else {
+            setData(
+                'priority_type_ids',
+                data.priority_type_ids.filter((item) => item !== parseInt(e.target.value)),
+            );
+        }
     };
 
     return (
@@ -151,15 +173,55 @@ const QueuePatient = () => {
                                                 name="is_emergency"
                                                 checked={data.is_emergency === 1}
                                             />
-                                            <label
+                                            <Label
                                                 className="form-check-label"
                                                 htmlFor="is_emergency"
                                             >
                                                 <h5 className="fw-semibold">Emergency?</h5>
-                                            </label>
+                                            </Label>
                                         </div>
                                     </div>
                                     <InputError message={errors.is_emergency} className="mt-2" />
+                                </div>
+
+                                <div className="row mt-3 px-4">
+                                    <div className="col-md-12">
+                                        <Label htmlFor="priorityType" className="form-label fs-5">
+                                            Priority Type
+                                        </Label>
+                                    </div>
+                                    {priorityTypeOptions.map((item, index) => (
+                                        <div
+                                            className={'col-md-4'}
+                                            key={'signsOrSymptoms-' + index}
+                                        >
+                                            {item.id !== 3 && (
+                                                <div className="form-check form-check-inline">
+                                                    <input
+                                                        className="form-check-input success"
+                                                        type="checkbox"
+                                                        id={'priority_type_ids-' + index}
+                                                        value={item.id}
+                                                        onChange={(e) => updatePriorityTypes(e)}
+                                                        name="signs-or-symptoms"
+                                                        checked={data.priority_type_ids.includes(
+                                                            item.id,
+                                                        )}
+                                                    />
+                                                    <label
+                                                        className="form-check-label"
+                                                        htmlFor={'priority_type_ids-' + index}
+                                                    >
+                                                        {item.name}
+                                                    </label>
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                    <InputError
+                                        message={errors.priority_type_ids}
+                                        className="mt-2"
+                                    />
                                 </div>
 
                                 <MedicalServices data={data} setData={setData} errors={errors} />

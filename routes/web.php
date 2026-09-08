@@ -7,6 +7,7 @@ use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\FrontDeskController;
 use App\Http\Controllers\Icd10CodeController;
 use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\LaboratoryController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\PharmacyController;
 use App\Http\Controllers\SystemController;
@@ -21,6 +22,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('front-desk')->group(function () {
         Route::get('/', [FrontDeskController::class, 'index'])->name('front-desk');
         Route::post('/', [FrontDeskController::class, 'queuePatient'])->name('front-desk.queue-patient');
+        Route::delete('/{id}', [FrontDeskController::class, 'deleteQueue'])->name('front-desk.delete');
     });
 
     Route::get('/patients', [PatientController::class, 'index'])->name('patients');
@@ -31,7 +33,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/{id}', [PatientController::class, 'getPatientDetails'])->name('patient.details');
     });
 
-    Route::get('/consultations', [ConsultationController::class, 'index'])->name('consultations');
+    Route::prefix('/consultations')->group(function () {
+        Route::get('/{status?}', [ConsultationController::class, 'getConsultationList'])->name('consultations');
+    });
     Route::prefix('consultation')->group(function () {
         Route::prefix('/details')->group(function () {
             Route::get('/{consultationId}', [ConsultationController::class, 'getConsultationDetails'])->name('consultation.details');
@@ -42,9 +46,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/prescription', [ConsultationController::class, 'addOrUpdatePrescription'])->name('consultation.details.add-or-update.prescription');
             Route::delete('/prescription/{prescriptionId}', [ConsultationController::class, 'deletePrescription'])->name('consultation.details.delete.prescription');
             Route::post('/call-out', [ConsultationController::class, 'callOutPatient'])->name('consultation.call-out');
+            Route::patch('/complete/{consultationId}', [ConsultationController::class, 'completeConsultation'])->name('consultation.completed');
         });
     });
-    Route::inertia('laboratory', 'laboratory')->name('laboratory');
+    Route::prefix('laboratory')->group(function() {
+        Route::get('/{status?}', [LaboratoryController::class, 'getLaboratoryList'])->name('laboratory');
+        Route::get('/package/{id}/tests', [LaboratoryController::class, 'getTests'])->name('laboratory.package.tests');
+        Route::post('/', [LaboratoryController::class, 'addOrUpdateLaboratory'])->name('laboratory.add-or-update');
+        Route::prefix('/details')->group(function () {
+            Route::get('/{id}', [LaboratoryController::class, 'getLaboratoryDetails'])->name('laboratory.details');
+            Route::get('/{id}/audit-log', [LaboratoryController::class, 'getAuditLog'])->name('laboratory.details.audit-log');
+            Route::patch('/', [LaboratoryController::class, 'updateDetails'])->name('laboratory.details.update');
+            Route::patch('/complete/{id}', [LaboratoryController::class, 'completeLaboratory'])->name('laboratory.completed');
+        });
+        Route::delete('/{id}', [LaboratoryController::class, 'deleteLaboratory'])->name('laboratory.delete');
+    });
+
     Route::inertia('radiology', 'radiology')->name('radiology');
     Route::prefix('inventory')->group(function () {
         Route::get('/', [InventoryController::class, 'index'])->name('inventory');
@@ -90,6 +107,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
     // Route::inertia('test1', 'test')->name('test');
 
+    Route::get('/testt', function () {
+    });
     Route::inertia('/test-socket', 'test-reverb')->name('test');
     Route::get('/test-socket-send', function (Request $request) {
         broadcast(new CallOut(

@@ -108,8 +108,9 @@ use Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereUpdatedAt($value)
  * @property-read string|null $age_computed
  * @property-read string|null $full_address
- * @property int|null $priority_type_id
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient wherePriorityTypeId($value)
+ * @property string|null $senior_citizen_id
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereSeniorCitizenId($value)
  * @mixin \Eloquent
  */
 #[Fillable([
@@ -133,6 +134,7 @@ use Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted;
     'photo',
 
     'gender_id',
+    'senior_citizen_id',
     'civil_status_id',
     'nationality_id',
     'status_id',
@@ -149,7 +151,7 @@ class Patient extends Model implements CipherSweetEncrypted
 {
     use CorrectTimezone, HasUuids, PersonDetails, UsesCipherSweet;
 
-    protected $appends = ['full_name', 'full_address', 'age_computed'];
+    protected $appends = ['full_name', 'full_address', 'age_computed', 'is_senior'];
 
     protected function casts(): array
     {
@@ -158,16 +160,17 @@ class Patient extends Model implements CipherSweetEncrypted
             'first_name'  => 'encrypted',
             'middle_name' => 'encrypted',
 
-            'date_of_birth'   => EncryptedDate::class,
-            'age'             => 'encrypted',
-            'contact_number1' => 'encrypted',
-            'contact_number2' => 'encrypted',
-            'email'           => 'encrypted',
-            'occupation'      => 'encrypted',
-            'philhealth_id'   => 'encrypted',
-            'house_no'        => 'encrypted',
-            'street'          => 'encrypted',
-            'photo'           => 'encrypted',
+            'date_of_birth'     => EncryptedDate::class,
+            'age'               => 'encrypted',
+            'contact_number1'   => 'encrypted',
+            'contact_number2'   => 'encrypted',
+            'email'             => 'encrypted',
+            'occupation'        => 'encrypted',
+            'philhealth_id'     => 'encrypted',
+            'house_no'          => 'encrypted',
+            'street'            => 'encrypted',
+            'photo'             => 'encrypted',
+            'senior_citizen_id' => 'encrypted',
 
             'created_at' => 'date:M d, Y h:i a',
             'updated_at' => 'date:M d, Y h:i a',
@@ -183,6 +186,11 @@ class Patient extends Model implements CipherSweetEncrypted
         }
 
         return $fullName.' '.$this->suffix->name;
+    }
+
+    public function getIsSeniorAttribute(): bool
+    {
+        return computeExactAge($this->date_of_birth, 'year') >= 60;
     }
 
     public function suffix(): BelongsTo

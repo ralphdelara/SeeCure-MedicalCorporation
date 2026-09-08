@@ -3,8 +3,12 @@ import Swal from 'sweetalert2';
 import { Button } from './ui/button';
 import React from 'react';
 
+type ButtonProps = React.ComponentProps<typeof Button>;
+
 interface ConfirmProps {
-    variant?: string;
+    // This safely copies whatever options ('default', 'lg', 'sm', etc.) the Button allows
+    variant?: ButtonProps['variant'];
+    size?: ButtonProps['size'];
     requestMethod: string;
     url: string;
     msg: string;
@@ -14,11 +18,12 @@ interface ConfirmProps {
     successTitle: string;
     successMsg: string;
     successUrl: string;
-    rounded?: boolean;
+    rounded?: boolean; // Keep your custom props
 }
 
 export default function ConfirmButton({
     variant = 'default',
+    size = 'default',
     requestMethod,
     url,
     msg,
@@ -76,7 +81,15 @@ export default function ConfirmButton({
     };
 
     return (
-        <Button variant={variant} rounded={rounded} type="button" className={className} onClick={handleConfirm} title={title}>
+        <Button
+            variant={variant}
+            rounded={rounded}
+            size={size}
+            type="button"
+            className={className}
+            onClick={handleConfirm}
+            title={title}
+        >
             {children}
         </Button>
     );

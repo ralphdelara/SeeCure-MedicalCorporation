@@ -6,9 +6,19 @@ use Diglactic\Breadcrumbs\Breadcrumbs;
 use Diglactic\Breadcrumbs\Generator as BreadcrumbTrail;
 
 // Consultation
-Breadcrumbs::for('consultations', function (BreadcrumbTrail $trail) {
-    $trail->push('Consultation', route('consultations'));
+Breadcrumbs::for('consultations', function (BreadcrumbTrail $trail, ?string $status = null) {
+    if (! empty($status)) {
+        if (!in_array($status, ['pending', 'completed'])) {
+            abort(404);
+        }
+        $trail->parent('consultations');
+        $trail->push(ucfirst($status), route('consultations', ['status' => $status]));
+    } else {
+        $trail->push('Consultation', route('consultations'));
+    }
+
 });
+
 Breadcrumbs::for('consultation.details', function (BreadcrumbTrail $trail, string $consultationId) {
     $trail->parent('consultations');
     $trail->push('Consultation Details', route('consultation.details', ['consultationId' => $consultationId]));
@@ -35,4 +45,22 @@ Breadcrumbs::for('user.details', function (BreadcrumbTrail $trail, string $id) {
 // Front Desk
 Breadcrumbs::for('front-desk', function (BreadcrumbTrail $trail) {
     $trail->push('Front Desk', route('front-desk'));
+});
+
+// Laboratory
+Breadcrumbs::for('laboratory', function (BreadcrumbTrail $trail, ?string $status = null) {
+    if (! empty($status)) {
+        if (!in_array($status, ['pending', 'completed'])) {
+            abort(404);
+        }
+        $trail->parent('laboratory');
+        $trail->push(ucfirst($status), route('laboratory', ['status' => $status]));
+    } else {
+        $trail->push('Laboratory', route('laboratory'));
+    }
+
+});
+Breadcrumbs::for('laboratory.details', function (BreadcrumbTrail $trail, string $id) {
+    $trail->parent('laboratory');
+    $trail->push('Laboratory Details', route('laboratory.details', ['id' => $id]));
 });

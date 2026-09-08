@@ -24,7 +24,6 @@ return new class extends Migration
             $table->boolean('has_radiology')->default(false);
             $table->boolean('is_emergency')->default(false);
 
-            $table->foreignId('priority_type_id')->constrained();
             $table->foreignId('visit_status_id')->constrained();
             $table->foreignUuid('created_by')->constrained('users', 'id');
             $table->foreignUuid('last_modified_by')->nullable()->constrained('users', 'id');

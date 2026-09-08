@@ -3,12 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * @property string $id
  * @property string $consultation_id
  * @property int $signs_or_symptom_id
  * @property-read Consultation $consultation
@@ -27,8 +25,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 ])]
 class ConsultationSignsOrSymptom extends Model
 {
-    use HasUuids;
-
     public $timestamps = false;
 
     public function consultation(): BelongsTo

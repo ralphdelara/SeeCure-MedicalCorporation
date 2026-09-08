@@ -30,13 +30,13 @@ class LogDiagnosisSave implements ShouldQueue
         } else {
             $data = $this->updated($diagnosis, $savedFields, $originalFields);
         }
-/*
+
         ConsultationAudit::create([
             'consultation_id' => $diagnosis->consultation_id,
             'audit_type_id'   => $type === 'created' ? AuditTypeEnum::ADD : AuditTypeEnum::UPDATE,
             'data'            => json_encode($data),
             'created_by'      => Auth::id(),
-        ]);*/
+        ]);
     }
 
     public function created(ConsultationDiagnosis $diagnosis): array

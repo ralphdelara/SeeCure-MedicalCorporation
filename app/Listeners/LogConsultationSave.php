@@ -129,7 +129,7 @@ class LogConsultationSave implements ShouldQueue
     {
         $exclude = [
             'id', 'visit_id', 'patient_id', 'follow_up_date',
-            'created_by', 'created_at', 'status_id',
+            'created_by', 'created_at',
             'last_modified_by', 'updated_at', 'doctor_id', 'guardian_relationship_id',
         ];
 

@@ -2,74 +2,65 @@
 
 namespace App\Models;
 
-use App\Traits\CorrectTimezone;
-use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * @property string $id
- * @property string $laboratory_id
- * @property int $laboratory_test_type_id
- * @property string $data
- * @property string $created_by
- * @property string|null $last_modified_by
- * @property CarbonImmutable|null $created_at
- * @property CarbonImmutable|null $updated_at
- * @property-read User $createdBy
- * @property-read User|null $lastModifiedBy
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest whereCreatedBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest whereData($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest whereLaboratoryId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest whereLaboratoryTestTypeId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest whereLastModifiedBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest whereUpdatedAt($value)
- * @property-read Laboratory|null $laboratory
+ * @property int $id
  * @property string $name
  * @property numeric $price
  * @property int|null $laboratory_type_id
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LaboratoryTestField> $fields
+ * @property-read int|null $fields_count
+ * @property-read \App\Models\LaboratoryPackage|null $package
+ * @property-read \App\Models\LaboratoryType|null $type
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest whereLaboratoryTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTest wherePrice($value)
  * @mixin \Eloquent
  */
 #[Fillable([
-    'laboratory_id',
-    'laboratory_test_type_id',
-    'data',
-    'created_by',
-    'last_modified_by',
+    'name',
+    'price',
+    'laboratory_type_id',
 ])]
 class LaboratoryTest extends Model
 {
-    use CorrectTimezone, HasUuids;
+    public $timestamps = false;
 
     protected function casts(): array
     {
         return [
-            'data' => 'encrypted',
+            'name' => 'encrypted',
         ];
     }
 
-    public function laboratory(): BelongsTo
+    public function package(): HasOneThrough
     {
-        return $this->belongsTo(Laboratory::class, 'laboratory_id', 'id');
+        return $this->hasOneThrough(
+            LaboratoryPackage::class,
+            LaboratoryPackageTest::class,
+            'laboratory_test_id',
+            'id',
+            'id',
+            'laboratory_package_id'
+        );
     }
 
-    public function createdBy(): BelongsTo
+    public function type(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'created_by', 'id');
+        return $this->belongsTo(LaboratoryType::class, 'laboratory_type_id', 'id');
     }
 
-    public function lastModifiedBy(): BelongsTo
+    public function fields(): HasMany
     {
-        return $this->belongsTo(User::class, 'last_modified_by', 'id');
+        return $this->hasMany(LaboratoryTestField::class);
     }
 }

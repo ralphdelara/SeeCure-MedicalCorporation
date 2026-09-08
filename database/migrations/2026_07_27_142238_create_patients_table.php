@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -31,8 +30,7 @@ return new class extends Migration
             $table->foreignId('city_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('province_id')->nullable()->constrained()->nullOnDelete();
 
-            // priority_type_id in patients table is only for senior,
-            $table->foreignId('priority_type_id')->nullable()->constrained()->nullOnDelete();
+            $table->string('senior_citizen_id')->nullable();
             $table->foreignId('gender_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('civil_status_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('nationality_id')->nullable()->constrained()->nullOnDelete();

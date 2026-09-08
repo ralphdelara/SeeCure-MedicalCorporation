@@ -7,6 +7,7 @@ import { useState } from 'react';
 import DeleteButton from '@/components/delete-button';
 import { deletePrescription } from '@/actions/App/Http/Controllers/ConsultationController';
 import Pagination from '@/components/pagination';
+import SaveConsultation from './save-consultation';
 
 interface InertiaProps {
     consultationDetails: {
@@ -80,9 +81,13 @@ const Prescription = ({ showTab }: { showTab: boolean }) => {
                     />
                     <div className="card border shadow-none">
                         <div className="card-body">
-                            <div className="row w-100 mb-5">
-                                <div className="mt-2 text-right">
-                                    <Button size="lg" onClick={() => toggleModal('Add', defaultData)}>
+                            <div className="row mb-5 w-100">
+                                <div className="d-flex justify-content-between mt-2 mb-2">
+                                    <SaveConsultation />
+                                    <Button
+                                        size="lg"
+                                        onClick={() => toggleModal('Add', defaultData)}
+                                    >
                                         <i>
                                             <IconPlus className="me-1" />
                                         </i>
@@ -147,7 +152,10 @@ const Prescription = ({ showTab }: { showTab: boolean }) => {
                                                 <DeleteButton
                                                     url={deletePrescription(item.id).url}
                                                     msg={'<b>' + item.inventory_name + '</b>'}
-                                                    successUrl={window.location.pathname + window.location.search}
+                                                    successUrl={
+                                                        window.location.pathname +
+                                                        window.location.search
+                                                    }
                                                 />
                                             </td>
                                         </tr>

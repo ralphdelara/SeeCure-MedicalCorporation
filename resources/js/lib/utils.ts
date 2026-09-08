@@ -100,8 +100,6 @@ export function getUrlParams(param: string, defaultValue?: string) {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
 
-    console.log(queryString);
-
     return urlParams.get(param) ?? defaultValue ?? '';
 }
 

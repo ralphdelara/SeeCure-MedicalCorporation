@@ -159,7 +159,6 @@ export default function CallOut() {
                 startButtonRef.current?.click();
             }
         }, 1500);
-        console.log(speechStatus);
     }, [speechText]);
 
     const toggleMaximize = async (isMaximize: boolean) => {

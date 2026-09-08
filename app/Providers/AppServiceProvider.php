@@ -4,8 +4,10 @@ namespace App\Providers;
 
 use App\Models\Consultation;
 use App\Models\ConsultationDiagnosis;
+use App\Models\ConsultationDiagnosisIcd10Code;
 use App\Models\ConsultationSoap;
 use App\Models\Prescription;
+use App\Observers\ConsultationDiagnosisIcd10CodeObserver;
 use App\Observers\ConsultationDiagnosisObserver;
 use App\Observers\ConsultationObserver;
 use App\Observers\ConsultationSoapObserver;

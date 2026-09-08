@@ -43,7 +43,6 @@ class ConsultationAudit extends Model
         return [
             'data'       => 'encrypted',
             'created_at' => 'date:M d Y, h:i:s a',
-            'updated_at' => 'date:M d Y, h:i:s a',
         ];
     }
 

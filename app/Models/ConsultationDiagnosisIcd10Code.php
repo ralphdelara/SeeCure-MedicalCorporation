@@ -50,11 +50,6 @@ class ConsultationDiagnosisIcd10Code extends Model
         ];
     }
 
-    public function consultation(): BelongsTo
-    {
-        return $this->belongsTo(Consultation::class, 'consultation_id', 'id');
-    }
-
     public function consultationDiagnosis(): BelongsTo
     {
         return $this->belongsTo(ConsultationDiagnosis::class, 'consultation_diagnosis_id', 'id');

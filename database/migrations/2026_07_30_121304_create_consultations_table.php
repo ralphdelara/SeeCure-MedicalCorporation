@@ -21,6 +21,8 @@ return new class extends Migration
             $table->text('guardian_email')->nullable();
             $table->foreignId('guardian_relationship_id')->nullable()->constrained('relationships', 'id');
 
+            $table->boolean('is_completed')->default(false);
+
             $table->date('follow_up_date')->nullable();
             $table->foreignUuid('doctor_id')->constrained('users', 'id');
             $table->foreignUuid('created_by')->constrained('users', 'id');

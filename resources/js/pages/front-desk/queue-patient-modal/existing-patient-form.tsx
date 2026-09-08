@@ -48,6 +48,7 @@ const ExistingPatientForm = ({ data, setData, errors = {} }: QueuePatientFormPro
                             searchPatient(); // Calls your fetch logic directly
                         }
                     }}
+                    className="mb-2"
                 />
                 <TableList
                     header={[
