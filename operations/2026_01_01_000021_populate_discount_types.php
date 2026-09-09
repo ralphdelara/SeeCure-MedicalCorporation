@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\DiscountTypeEnum;
 use App\Models\DiscountType;
 use TimoKoerber\LaravelOneTimeOperations\OneTimeOperation;
 
@@ -25,11 +26,6 @@ return new class extends OneTimeOperation
      */
     public function process(): void
     {
-        DiscountType::fillAndInsert([
-            ['name' => 'Loyalty Card'],
-            ['name' => 'Senior Citizen'],
-            ['name' => 'Persons with Disability'],
-            ['name' => 'PhilHealth'],
-        ]);
+        DiscountType::fillAndInsert(DiscountTypeEnum::getArrayList());
     }
 };

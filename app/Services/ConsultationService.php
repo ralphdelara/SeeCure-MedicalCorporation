@@ -74,14 +74,12 @@ class ConsultationService
             });
         }
 
-        if ($status === 'pending') {
+        if ($status === 'completed') {
+            $consultationList = $consultationList->where('is_completed', true);
+        } else {
             $consultationList = $consultationList->whereHas('visit', function ($query) {
                 $query->where('visit_status_id', VisitStatusEnum::IN_CONSULTATION);
             });
-        }
-
-        if ($status === 'completed') {
-            $consultationList = $consultationList->where('is_completed', true);
         }
 
         $consultationList = $consultationList->orderBy('created_at')->paginate(50)

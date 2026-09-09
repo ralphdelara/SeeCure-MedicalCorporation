@@ -2,11 +2,15 @@
 
 namespace App\Providers;
 
+use App\Models\Billing;
+use App\Models\BillingDetail;
 use App\Models\Consultation;
 use App\Models\ConsultationDiagnosis;
 use App\Models\ConsultationDiagnosisIcd10Code;
 use App\Models\ConsultationSoap;
 use App\Models\Prescription;
+use App\Observers\BillingDetailObserver;
+use App\Observers\BillingObserver;
 use App\Observers\ConsultationDiagnosisIcd10CodeObserver;
 use App\Observers\ConsultationDiagnosisObserver;
 use App\Observers\ConsultationObserver;
@@ -56,6 +60,8 @@ class AppServiceProvider extends ServiceProvider
         ConsultationSoap::observe(ConsultationSoapObserver::class);
         ConsultationDiagnosis::observe(ConsultationDiagnosisObserver::class);
         Prescription::observe(PrescriptionObserver::class);
+        Billing::observe(BillingObserver::class);
+        BillingDetail::observe(BillingDetailObserver::class);
     }
 
     /**

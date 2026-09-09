@@ -3,7 +3,7 @@ import { IconPlus, IconUserDown, IconUserPlus } from '@tabler/icons-react';
 import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import toast, { Toaster } from 'react-hot-toast';
-import { queuePatient } from '@/actions/App/Http/Controllers/FrontDeskController';
+import { queue } from '@/actions/App/Http/Controllers/FrontDeskController';
 import { Button } from '@/components/ui/button';
 import ExistingPatientForm from './existing-patient-form';
 import SignsOrSymptomsForm from '../../../components/consultation/signs-or-symptoms-form';
@@ -74,7 +74,7 @@ const QueuePatient = () => {
     const submitQueue = (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        post(queuePatient().url, {
+        post(queue().url, {
             onSuccess: () => {
                 if (data.form_type === 'new') {
                     toast.success('Patient has been added.');

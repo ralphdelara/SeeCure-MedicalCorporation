@@ -61,14 +61,12 @@ class LaboratoryService
             });
         }
 
-        if ($status === 'pending') {
+        if ($status === 'completed') {
+            $laboratoryList = $laboratoryList->where('is_completed', true);
+        } else {
             $laboratoryList = $laboratoryList->whereHas('visit', function ($query) {
                 $query->where('visit_status_id', VisitStatusEnum::IN_LABORATORY);
             });
-        }
-
-        if ($status === 'completed') {
-            $laboratoryList = $laboratoryList->where('is_completed', true);
         }
 
         $laboratoryList = $laboratoryList
@@ -91,7 +89,7 @@ class LaboratoryService
         ?string $patientId,
         ?string $laboratoryId,
         array $laboratoryDetails,
-    ): void {
+    ): string {
         $laboratory = Laboratory::create([
             'visit_id'         => $visitId,
             'patient_id'       => $patientId,
@@ -163,6 +161,8 @@ class LaboratoryService
         ]);
 
         LaboratoryTestFieldData::fillAndInsert($insertTestFields);
+
+        return $laboratory->id;
     }
 
     public function getLaboratoryFormOptions(): array

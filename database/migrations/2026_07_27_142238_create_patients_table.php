@@ -16,21 +16,21 @@ return new class extends Migration
             $table->text('last_name');
             $table->text('first_name');
             $table->text('middle_name')->nullable();
-            $table->string('date_of_birth')->nullable();
-            $table->string('age')->nullable();
-            $table->string('contact_number1')->nullable();
-            $table->string('contact_number2')->nullable();
+            $table->text('date_of_birth')->nullable();
+            $table->text('age')->nullable();
+            $table->text('contact_number1')->nullable();
+            $table->text('contact_number2')->nullable();
             $table->text('email')->nullable();
-            $table->string('occupation')->nullable();
+            $table->text('occupation')->nullable();
             $table->text('philhealth_id')->nullable();
 
-            $table->string('house_no')->nullable();
+            $table->text('house_no')->nullable();
             $table->text('street')->nullable();
             $table->foreignId('barangay_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('city_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('province_id')->nullable()->constrained()->nullOnDelete();
 
-            $table->string('senior_citizen_id')->nullable();
+            $table->text('senior_citizen_id')->nullable();
             $table->foreignId('gender_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('civil_status_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('nationality_id')->nullable()->constrained()->nullOnDelete();

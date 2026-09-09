@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('professions', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('prefix')->nullable();
-            $table->string('suffix')->nullable();
+            $table->text('name');
+            $table->text('prefix')->nullable();
+            $table->text('suffix')->nullable();
         });
     }
 

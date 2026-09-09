@@ -38,7 +38,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory wherePatientId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereVisitId($value)
- * @property string|null $patient_name
  * @property bool $is_completed
  * @property-read Collection<int, \App\Models\LaboratoryTestData> $testData
  * @property-read int|null $test_data_count
@@ -46,6 +45,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory wherePatientName($value)
  * @property-read Collection<int, \App\Models\LaboratoryTestFieldData> $testFieldData
  * @property-read int|null $test_field_data_count
+ * @property string|null $patient_name
  * @mixin \Eloquent
  */
 #[Fillable([
@@ -53,7 +53,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
     'patient_id',
     'consultation_id',
     'is_completed',
-    'patient_name',
     'created_by',
     'last_modified_by',
 ])]

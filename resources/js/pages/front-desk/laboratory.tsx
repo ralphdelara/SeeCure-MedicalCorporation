@@ -34,58 +34,60 @@ export default () => {
                 <div className="d-flex align-items-center">
                     <h4 className="card-title">Laboratory</h4>
                 </div>
-                <TableList header={header}>
-                    {laboratoryList.map((item, index) => (
-                        <tr key={'front-desk-list-' + item.id}>
-                            <td className="text-right">
-                                <h5>{index + 1}</h5>
-                            </td>
-                            <td>
-                                <div className="d-block">
-                                    <div className="d-flex align-items-center">
-                                        <div style={{ width: '40px' }}>
-                                            <img
-                                                className="rounded-circle"
-                                                width="40"
-                                                height="40"
-                                                src="../assets/images/profile/user-2.jpg"
-                                            />
-                                        </div>
-                                        <div className="ms-3">
-                                            <h6 className="fs-4 fw-semibold mb-0">
-                                                <Link
-                                                    href={getPatientDetails(item.patient.id)}
-                                                    className="tooltip-container"
-                                                    data-title="Click to View Patient Details"
-                                                >
-                                                    {item.patient.full_name}
-                                                </Link>
-                                            </h6>
-                                            <span className="fw-normal">
-                                                {item.patient.gender
-                                                    ? item.patient.gender.name
-                                                    : 'N/A'}
-                                            </span>
+                <div className="overflow-y-auto" style={{ maxHeight: '350px' }}>
+                    <TableList header={header}>
+                        {laboratoryList.map((item, index) => (
+                            <tr key={'front-desk-lab-list-' + item.id}>
+                                <td className="text-right">
+                                    <h5>{index + 1}</h5>
+                                </td>
+                                <td>
+                                    <div className="d-block">
+                                        <div className="d-flex align-items-center">
+                                            <div style={{ width: '40px' }}>
+                                                <img
+                                                    className="rounded-circle"
+                                                    width="40"
+                                                    height="40"
+                                                    src="../assets/images/profile/user-2.jpg"
+                                                />
+                                            </div>
+                                            <div className="ms-3">
+                                                <h6 className="fs-4 fw-semibold mb-0">
+                                                    <Link
+                                                        href={getPatientDetails(item.patient.id)}
+                                                        className="tooltip-container"
+                                                        data-title="Click to View Patient Details"
+                                                    >
+                                                        {item.patient.full_name}
+                                                    </Link>
+                                                </h6>
+                                                <span className="fw-normal">
+                                                    {item.patient.gender
+                                                        ? item.patient.gender.name
+                                                        : 'N/A'}
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </td>
-                            <td>
-                                <DeleteButton
-                                    url={deleteQueue(item.id).url}
-                                    msg={'visit <b>' + item.patient.full_name + '</b>.'}
-                                />
-                            </td>
-                        </tr>
-                    ))}
-                    {laboratoryList.length === 0 && (
-                        <tr>
-                            <td colSpan={4} className="fs-7 text-danger text-center">
-                                No records
-                            </td>
-                        </tr>
-                    )}
-                </TableList>
+                                </td>
+                                <td>
+                                    <DeleteButton
+                                        url={deleteQueue(item.id).url}
+                                        msg={'visit <b>' + item.patient.full_name + '</b>.'}
+                                    />
+                                </td>
+                            </tr>
+                        ))}
+                        {laboratoryList.length === 0 && (
+                            <tr>
+                                <td colSpan={4} className="fs-7 text-danger text-center">
+                                    No records
+                                </td>
+                            </tr>
+                        )}
+                    </TableList>
+                </div>
             </div>
         </div>
     );

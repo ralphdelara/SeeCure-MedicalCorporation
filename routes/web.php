@@ -10,8 +10,10 @@ use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\LaboratoryController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\PharmacyController;
+use App\Http\Controllers\PrintController;
 use App\Http\Controllers\SystemController;
 use App\Http\Controllers\UserController;
+use App\Models\DiscountType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,7 +23,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
     Route::prefix('front-desk')->group(function () {
         Route::get('/', [FrontDeskController::class, 'index'])->name('front-desk');
-        Route::post('/', [FrontDeskController::class, 'queuePatient'])->name('front-desk.queue-patient');
+        Route::post('/', [FrontDeskController::class, 'queue'])->name('front-desk.queue');
         Route::delete('/{id}', [FrontDeskController::class, 'deleteQueue'])->name('front-desk.delete');
     });
 
@@ -49,6 +51,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::patch('/complete/{consultationId}', [ConsultationController::class, 'completeConsultation'])->name('consultation.completed');
         });
     });
+
     Route::prefix('laboratory')->group(function() {
         Route::get('/{status?}', [LaboratoryController::class, 'getLaboratoryList'])->name('laboratory');
         Route::get('/package/{id}/tests', [LaboratoryController::class, 'getTests'])->name('laboratory.package.tests');
@@ -60,6 +63,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::patch('/complete/{id}', [LaboratoryController::class, 'completeLaboratory'])->name('laboratory.completed');
         });
         Route::delete('/{id}', [LaboratoryController::class, 'deleteLaboratory'])->name('laboratory.delete');
+    });
+
+    Route::prefix('billing')->group(function() {
+        Route::get('/{status?}', [BillingController::class, 'getBillingList'])->name('billing');
+        Route::get('/package/{id}/tests', [BillingController::class, 'getTests'])->name('billing.package.tests');
+        Route::post('/', [BillingController::class, 'addOrUpdateBilling'])->name('billing.add-or-update');
+        Route::prefix('/details')->group(function () {
+            Route::get('/{id}', [BillingController::class, 'getBillingDetails'])->name('billing.details');
+            Route::get('/{id}/audit-log', [BillingController::class, 'getAuditLog'])->name('billing.details.audit-log');
+            Route::patch('/', [BillingController::class, 'updateDetails'])->name('billing.details.update');
+            Route::patch('/complete/{id}', [BillingController::class, 'completeBilling'])->name('billing.completed');
+        });
+        Route::delete('/{id}', [BillingController::class, 'deleteBilling'])->name('billing.delete');
     });
 
     Route::inertia('radiology', 'radiology')->name('radiology');
@@ -94,10 +110,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/city/{cityId}/barangay', [AddressController::class, 'getBarangayList'])->name('address.barangays');
     });
 
-    Route::prefix('billing')->group(function () {
-        Route::get('/', [BillingController::class, 'index'])->name('billing');
-    });
-
     Route::prefix('pharmacy')->group(function () {
         Route::get('/', [PharmacyController::class, 'index'])->name('pharmacy');
     });
@@ -105,9 +117,21 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('settings')->group(function () {
         Route::get('/icd10-codes', [Icd10CodeController::class, 'getIcd10Codes']);
     });
-    // Route::inertia('test1', 'test')->name('test');
+
+    Route::prefix('print')->group(function () {
+        Route::get('/prescription/{consultationId}', [PrintController::class, 'printPrescription'])->name('print.prescription');
+    });
 
     Route::get('/testt', function () {
+        DiscountType::find(1)->update([
+            'name' => Crypt::encryptString('Senior'),
+        ]);
+        DiscountType::find(2)->update([
+            'name' => Crypt::encryptString('PWD'),
+        ]);
+        DiscountType::find(3)->update([
+            'name' => Crypt::encryptString('Promo'),
+        ]);
     });
     Route::inertia('/test-socket', 'test-reverb')->name('test');
     Route::get('/test-socket-send', function (Request $request) {

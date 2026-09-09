@@ -11,11 +11,15 @@ use App\Models\Relationship;
 use App\Models\SignsOrSymptom;
 use App\Models\Visit;
 use App\Models\VitalSign;
+use App\Services\BillingService;
+use App\Services\CashierService;
 use App\Services\ConsultationService;
 use App\Services\DoctorService;
 use App\Services\LaboratoryService;
 use App\Services\PatientService;
 use App\Services\PatientVitalSignService;
+use App\Services\PharmacyService;
+use App\Services\RadiologyService;
 use App\Services\VisitService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -34,6 +38,10 @@ class FrontDeskController extends Controller
         $relationshipOptions = Relationship::all();
         $consultationList = app(ConsultationService::class)->getSmallPendingConsultationList();
         $laboratoryList = app(LaboratoryService::class)->getSmallPendingLaboratoryList();
+        $billingList = app(BillingService::class)->getSmallPendingBillingList();
+        $cashierList = app(CashierService::class)->getSmallPendingCashierList();
+        $radiologyList = app(RadiologyService::class)->getSmallPendingRadiologyList();
+        $pharmacyList = app(PharmacyService::class)->getSmallPendingPharmacyList();
         $priorityTypeOptions = PriorityType::all();
         $laboratoryFormOptions = app(LaboratoryService::class)->getLaboratoryFormOptions();
 
@@ -46,12 +54,74 @@ class FrontDeskController extends Controller
             'laboratoryTestOptions',
             'consultationList',
             'laboratoryList',
+            'billingList',
+            'cashierList',
+            'radiologyList',
+            'pharmacyList',
             'priorityTypeOptions',
             'laboratoryFormOptions',
         ));
     }
 
-    public function queuePatient(Request $request): void
+    public function queue(Request $request): void
+    {
+        $this->validate($request);
+
+        $patientDetails = $this->queuePatient($request);
+
+        $patientId = $patientDetails['patientId'];
+
+        $visitId = $this->queueVisit($request, $patientId, $patientDetails['isSenior']);
+
+        $consultationId = null;
+
+        if ($request->has_consultation === 1) {
+            $consultationId = $this->queueConsultation(
+                $request,
+                $patientId,
+                $visitId,
+            );
+        }
+
+        $laboratoryId = null;
+
+        if ($request->has_laboratory === 1) {
+            $laboratoryId = $this->queueLaboratory(
+                $request,
+                $patientId,
+                $visitId,
+                $consultationId,
+            );
+        }
+
+        $radiologyId = null;
+
+        if ($request->has_radiology === 1) {
+            $radiologyId = $this->queueRadiology(
+                $request,
+                $patientId,
+                $visitId,
+                $consultationId,
+            );
+        }
+
+        // billing id for cashier data
+        $billingId = app(BillingService::class)->storeBilling(
+            $patientId,
+            $visitId,
+            $consultationId,
+            $laboratoryId,
+            $radiologyId,
+        );
+
+        $cashier = app(CashierService::class)->storeCashier(
+            $patientId,
+            $visitId,
+            $billingId,
+        );
+    }
+
+    public function validate(Request $request)
     {
         $request->validate([
             'patient_id'           => 'required_if:form_type,existing',
@@ -82,7 +152,10 @@ class FrontDeskController extends Controller
 
             'form_type.required' => 'The form type selection is required.',
         ]);
+    }
 
+    public function queuePatient(Request $request): array
+    {
         $patientDetails = $request->only(
             'patient_id',
             'last_name',
@@ -108,47 +181,12 @@ class FrontDeskController extends Controller
             'senior_citizen_id',
         );
 
-        $consultDetails = $request->only(
-            'guardian_name',
-            'guardian_contact_number',
-            'guardian_email',
-            'guardian_relationship_id',
-            'doctor_id',
-            'consultation_types_id',
-            'signs_or_symptoms_id',
-        );
+        $patientId = $patientDetails['patient_id'];
+        $isSenior = false;
 
-        $visitDetails = $request->only(
-            'patient_id',
-            'has_consultation',
-            'has_laboratory',
-            'has_radiology',
-            'is_emergency',
-            'priority_type_ids',
-        );
-
-        $laboratoryDetails = $request->only(
-            'laboratory_id',
-            'laboratory_package_id',
-            'other_test_ids',
-        );
-
-        if (
-            $visitDetails['has_laboratory'] === 1
-            || $visitDetails['has_radiology'] === 1
-        ) {
-            $visitDetails['visit_status_id'] = VisitStatusEnum::IN_BILLING;
-        } else {
-            $visitDetails['visit_status_id'] = VisitStatusEnum::IN_CONSULTATION;
-        }
-
-        $vitalSigns = $request->vital_signs;
-
-        $patientId = $request->input('patient_id');
-
-        if (!empty($patientDetails['date_of_birth'])) {
+        if (! empty($patientDetails['date_of_birth'])) {
             if (computeExactAge($patientDetails['date_of_birth']) >= 60) {
-                $visitDetails['priority_type_ids'][] = PriorityTypeEnum::SENIOR_CITIZEN;
+                $isSenior = true;
             } else {
                 $patientDetails['senior_citizen_id'] = '';
             }
@@ -163,32 +201,94 @@ class FrontDeskController extends Controller
             $patient = Patient::find($patientId);
 
             $isSenior = $patient->is_senior;
-
-            if ($isSenior) {
-                $visitDetails['priority_type_ids'][] = PriorityTypeEnum::SENIOR_CITIZEN;
-            }
         }
 
-        $visitId = app(VisitService::class)->queuePatient($patientId, $visitDetails);
+        return [
+            'patientId' => $patientId,
+            'isSenior'  => $isSenior,
+        ];
+    }
 
-        $consultationId = null;
+    public function queueVisit(Request $request, string $patientId, bool $isSenior): string
+    {
+        $visitDetails = $request->only(
+            'patient_id',
+            'has_consultation',
+            'has_laboratory',
+            'has_radiology',
+            'is_emergency',
+            'priority_type_ids',
+        );
 
-        if ($request->has_consultation === 1) {
-            $consultationId = app(ConsultationService::class)->storeConsultation($visitId, $patientId, $consultDetails);
-
-            broadcast(new NotifyDoctor(
-                'Notification',
-                'A new patient has been queued',
-                1,
-                $consultDetails['doctor_id'],
-            ));
+        if (
+            $visitDetails['has_laboratory'] === 1
+            || $visitDetails['has_radiology'] === 1
+        ) {
+            $visitDetails['visit_status_id'] = VisitStatusEnum::IN_BILLING;
+        } else {
+            $visitDetails['visit_status_id'] = VisitStatusEnum::IN_CONSULTATION;
         }
 
-        if ($request->has_laboratory === 1) {
-            app(LaboratoryService::class)->storeLaboratory($visitId, $patientId,  $consultationId, $laboratoryDetails);
+        if ($isSenior) {
+            $visitDetails['priority_type_ids'][] = PriorityTypeEnum::SENIOR_CITIZEN;
         }
+
+        return app(VisitService::class)->storeVisit($patientId, $visitDetails);
+    }
+
+    public function queueConsultation(
+        Request $request,
+        string $patientId,
+        string $visitId,
+    ): string {
+        $consultDetails = $request->only(
+            'guardian_name',
+            'guardian_contact_number',
+            'guardian_email',
+            'guardian_relationship_id',
+            'doctor_id',
+            'consultation_types_id',
+            'signs_or_symptoms_id',
+        );
+        $vitalSigns = $request->vital_signs;
+
+        $consultationId = app(ConsultationService::class)->storeConsultation($visitId, $patientId, $consultDetails);
+
+        /*
+                    broadcast(new NotifyDoctor(
+                        'Notification',
+                        'A new patient has been queued',
+                        1,
+                        $consultDetails['doctor_id'],
+                    ));*/
 
         app(PatientVitalSignService::class)->storeVitalSigns($patientId, $consultationId, $vitalSigns);
+
+        return $consultationId;
+    }
+
+    public function queueLaboratory(
+        Request $request,
+        string $patientId,
+        string $visitId,
+        string $consultationId,
+    ): string {
+        $laboratoryDetails = $request->only(
+            'laboratory_id',
+            'laboratory_package_id',
+            'other_test_ids',
+        );
+
+        return app(LaboratoryService::class)->storeLaboratory($visitId, $patientId, $consultationId, $laboratoryDetails);
+    }
+
+    public function queueRadiology(
+        Request $request,
+        string $patientId,
+        string $visitId,
+        string $consultationId,
+    ): string {
+        return '';
     }
 
     public function deleteQueue(string $id): void

@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('vital_sign_fields', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('unit');
+            $table->text('name');
+            $table->text('unit');
             $table->foreignId('vital_sign_id')->constrained();
         });
     }

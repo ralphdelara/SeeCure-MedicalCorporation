@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignUuid('patient_id')->constrained()->cascadeOnDelete();
 
             $table->text('guardian_name')->nullable();
-            $table->string('guardian_contact_number')->nullable();
+            $table->text('guardian_contact_number')->nullable();
             $table->text('guardian_email')->nullable();
             $table->foreignId('guardian_relationship_id')->nullable()->constrained('relationships', 'id');
 

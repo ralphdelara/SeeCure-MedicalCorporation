@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('audit_types', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->text('name');
         });
     }
 
