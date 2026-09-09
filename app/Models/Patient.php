@@ -111,6 +111,7 @@ use Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient wherePriorityTypeId($value)
  * @property string|null $senior_citizen_id
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereSeniorCitizenId($value)
+ * @property-read bool $is_senior
  * @mixin \Eloquent
  */
 #[Fillable([

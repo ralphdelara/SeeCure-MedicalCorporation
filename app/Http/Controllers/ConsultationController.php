@@ -133,4 +133,9 @@ class ConsultationController extends Controller
     {
         app(ConsultationService::class)->completeConsultation($consultationId);
     }
+
+    public function printPrescription()
+    {
+        
+    }
 }

@@ -2,12 +2,12 @@
 
 namespace App\Events;
 
-use App\Models\Laboratory;
+use App\Models\Consultation;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class LaboratorySaved
+class ConsultationSaved
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -15,7 +15,7 @@ class LaboratorySaved
      * type can be 'created' or 'updated'
      */
     public function __construct(
-        public Laboratory $laboratory,
+        public Consultation $consultation,
         public string $type,
         public array $savedFields = [],
         public array $originalFields = [],

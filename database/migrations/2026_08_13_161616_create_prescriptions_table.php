@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignUuid('consultation_id')->constrained()->cascadeOnDelete();
             $table->text('inventory_id')->nullable();
             $table->text('inventory_name');
-            $table->string('quantity');
+            $table->text('quantity');
             $table->text('dosage');
             $table->foreignUuid('created_by')->constrained('users', 'id');
             $table->foreignUuid('last_modified_by')->nullable()->constrained('users', 'id');

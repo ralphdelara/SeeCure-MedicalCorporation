@@ -5,6 +5,10 @@
     user-select: none; /* Standard syntax */
 }
 
+.table tbody tr:hover {
+    border-left: solid 2px var(--bs-success) !important;
+}
+
 .table tbody td {
     vertical-align: top;
 }

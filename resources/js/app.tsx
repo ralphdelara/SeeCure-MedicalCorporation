@@ -29,6 +29,8 @@ createInertiaApp({
                 return null;
             case name === 'system/call-out':
                 return null;
+            case name.includes('print-templates/'):
+                return null;
             case name.startsWith('auth/'):
                 return AuthLayout;
             default:

@@ -8,7 +8,7 @@ use Diglactic\Breadcrumbs\Generator as BreadcrumbTrail;
 // Consultation
 Breadcrumbs::for('consultations', function (BreadcrumbTrail $trail, ?string $status = null) {
     if (! empty($status)) {
-        if (!in_array($status, ['pending', 'completed'])) {
+        if (!in_array($status, ['completed'])) {
             abort(404);
         }
         $trail->parent('consultations');
@@ -50,7 +50,7 @@ Breadcrumbs::for('front-desk', function (BreadcrumbTrail $trail) {
 // Laboratory
 Breadcrumbs::for('laboratory', function (BreadcrumbTrail $trail, ?string $status = null) {
     if (! empty($status)) {
-        if (!in_array($status, ['pending', 'completed'])) {
+        if (!in_array($status, ['completed'])) {
             abort(404);
         }
         $trail->parent('laboratory');

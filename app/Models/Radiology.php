@@ -40,7 +40,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
     'patient_id',
     'consultation_id',
     'is_completed',
-    'patient_name',
     'created_by',
     'last_modified_by',
 ])]

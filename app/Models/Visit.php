@@ -60,6 +60,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read int|null $laboratory_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Radiology> $radiology
  * @property-read int|null $radiology_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Billing> $billing
+ * @property-read int|null $billing_count
  * @mixin \Eloquent
  */
 #[Fillable([
@@ -111,6 +113,11 @@ class Visit extends Model
     public function laboratory(): HasMany
     {
         return $this->hasMany(Laboratory::class);
+    }
+
+    public function billing(): HasMany
+    {
+        return $this->hasMany(Billing::class);
     }
 
     public function visitStatus(): BelongsTo

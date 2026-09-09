@@ -93,8 +93,6 @@ const LaboratoryDetails = () => {
         setDataFields(fields);
     }, []);
 
-    console.log(dataFields)
-
     return (
         <>
             <Head title={selectedTabName} />

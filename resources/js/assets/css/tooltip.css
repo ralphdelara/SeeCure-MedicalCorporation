@@ -4,7 +4,7 @@
     display: inline-block;
 }
 
-/* 1. The Tooltip Box */
+/* The Tooltip Box */
 .tooltip-container::after {
     content: attr(data-title);
     position: absolute;
@@ -23,7 +23,7 @@
     z-index: 100;
 }
 
-/* 2. The Tooltip Arrow (Pointing Down) */
+/* The Tooltip Arrow (Pointing Down) */
 .tooltip-container::before {
     content: '';
     position: absolute;
@@ -40,7 +40,7 @@
     z-index: 100;
 }
 
-/* 3. Show both Box and Arrow on Hover */
+/* Show both Box and Arrow on Hover */
 .tooltip-container:hover::after,
 .tooltip-container:hover::before {
     opacity: 1;

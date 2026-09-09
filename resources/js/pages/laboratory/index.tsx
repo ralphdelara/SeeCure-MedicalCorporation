@@ -6,12 +6,8 @@ import TableList from '@/components/table';
 import type { Pages } from '@/types/pagination';
 import type { LaboratoryTableList } from '@/components/laboratory/list';
 import {
-    IconCalendarDot,
-    IconGenderAgender,
-    IconMail,
-    IconPhone,
+    IconFlaskFilled,
     IconStethoscope,
-    IconTrash,
     IconUserEdit,
 } from '@tabler/icons-react';
 import { Button } from '@/components/ui/button';
@@ -182,7 +178,7 @@ export default function LaboratoryList() {
                                                     title="Laboratory Details"
                                                 >
                                                     <i>
-                                                        <IconUserEdit size={18} />
+                                                        <IconFlaskFilled size={18} />
                                                     </i>
                                                 </Button>
                                             </Link>
