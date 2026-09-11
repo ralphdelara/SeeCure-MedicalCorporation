@@ -120,6 +120,11 @@ class Visit extends Model
         return $this->hasMany(Billing::class);
     }
 
+    public function cashier(): HasMany
+    {
+        return $this->hasMany(Cashier::class);
+    }
+
     public function visitStatus(): BelongsTo
     {
         return $this->belongsTo(VisitStatus::class, 'visit_status_id', 'id');

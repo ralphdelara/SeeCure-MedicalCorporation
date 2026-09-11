@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Models\Billing;
 use App\Models\BillingDetail;
+use App\Models\Cashier;
+use App\Models\CashierDetail;
 use App\Models\Consultation;
 use App\Models\ConsultationDiagnosis;
 use App\Models\ConsultationDiagnosisIcd10Code;
@@ -11,6 +13,8 @@ use App\Models\ConsultationSoap;
 use App\Models\Prescription;
 use App\Observers\BillingDetailObserver;
 use App\Observers\BillingObserver;
+use App\Observers\CashierDetailObserver;
+use App\Observers\CashierObserver;
 use App\Observers\ConsultationDiagnosisIcd10CodeObserver;
 use App\Observers\ConsultationDiagnosisObserver;
 use App\Observers\ConsultationObserver;
@@ -62,6 +66,8 @@ class AppServiceProvider extends ServiceProvider
         Prescription::observe(PrescriptionObserver::class);
         Billing::observe(BillingObserver::class);
         BillingDetail::observe(BillingDetailObserver::class);
+        Cashier::observe(CashierObserver::class);
+        CashierDetail::observe(CashierDetailObserver::class);
     }
 
     /**

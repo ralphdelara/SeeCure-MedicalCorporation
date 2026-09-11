@@ -2,9 +2,9 @@ import { completeBilling } from '@/actions/App/Http/Controllers/BillingControlle
 import ConfirmButton from '@/components/confirm-button';
 import { billing } from '@/routes';
 import { usePage } from '@inertiajs/react';
-import { IconDeviceFloppy } from '@tabler/icons-react';
+import { IconChecklist } from '@tabler/icons-react';
 
-const SaveBilling = () => {
+const ConfirmBilling = () => {
     const { billingDetails } = usePage().props as unknown as {
         billingDetails: {
             id: string;
@@ -18,16 +18,16 @@ const SaveBilling = () => {
             msg={
                 'This will move the patient to "Cashier" and the billing will be marked as completed!'
             }
-            title="Save Billing"
+            title="Complete Billing"
             successTitle="Success!"
-            successMsg="The billing record has been saved."
+            successMsg="The billing record has been completed."
             successUrl={billing().url}
             size="lg"
         >
-            <IconDeviceFloppy />
-            Save Billing
+            <IconChecklist />
+            Complete Billing
         </ConfirmButton>
     );
 };
 
-export default SaveBilling;
+export default ConfirmBilling;

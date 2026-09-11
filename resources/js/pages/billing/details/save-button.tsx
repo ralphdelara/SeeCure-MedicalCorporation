@@ -1,16 +1,34 @@
 import { Button } from '@/components/ui/button';
 import { IconDeviceFloppy, IconExclamationCircleFilled } from '@tabler/icons-react';
-import SaveBilling from './save-billing';
+import ConfirmBilling from './complete-billing';
+import { usePage } from '@inertiajs/react';
 
 const SaveButton = ({ type, isDirty }: { type: string; isDirty: boolean }) => {
+    const { billingDetails } = usePage().props as unknown as {
+        billingDetails: { is_completed: boolean };
+    };
+
     return (
         <div className="d-flex justify-content-between m-4">
-            <SaveBilling />
+            {!billingDetails.is_completed && <ConfirmBilling />}
+            {billingDetails.is_completed && (
+                <h5 className="text-danger">
+                    Billing Completed
+                    <button
+                        type="button"
+                        className="tooltip-container"
+                        data-title="This billing is already completed."
+                    >
+                        <IconExclamationCircleFilled />
+                    </button>
+                </h5>
+            )}
             <h5 className="text-danger">
                 {isDirty && (
                     <>
                         Unsaved changes{' '}
                         <button
+                            type="button"
                             className="tooltip-container"
                             data-title="Changes made arent saved unless the 'Save' button is clicked"
                         >

@@ -13,11 +13,28 @@ export default function System() {
             <div className="card">
                 <div className="card-body">
                     <div className="row w-100">
-                <div className="col-md-6">
-                    <Link className="btn btn-success btn-lg" href={callOut().url}>Call Out Display</Link>
+                        <div className="col-md-3 text-center">
+                            <Link className="btn btn-success btn-lg" href={callOut().url}>
+                                Call Out Display
+                            </Link>
+                        </div>
+                        <div className="col-md-3 text-center">
+                            <Link className="btn btn-success btn-lg" href={callOut().url}>
+                                Check Transaction
+                            </Link>
+                        </div>
+                        <div className="col-md-3 text-center">
+                            <Link className="btn btn-success btn-lg" href={callOut().url}>
+                                Backup Database
+                            </Link>
+                        </div>
+                        <div className="col-md-3 text-center">
+                            <Link className="btn btn-success btn-lg" href={callOut().url}>
+                                Backup Database
+                            </Link>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            </div>
             </div>
         </>
     );

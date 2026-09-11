@@ -2,9 +2,9 @@ import { completeConsultation } from '@/actions/App/Http/Controllers/Consultatio
 import ConfirmButton from '@/components/confirm-button';
 import { consultations } from '@/routes';
 import { usePage } from '@inertiajs/react';
-import { IconDeviceFloppy } from '@tabler/icons-react';
+import { IconChecklist } from '@tabler/icons-react';
 
-const SaveConsultation = () => {
+const CompleteConsultation = () => {
     const { consultationDetails } = usePage().props as unknown as {
         consultationDetails: {
             id: string;
@@ -18,16 +18,16 @@ const SaveConsultation = () => {
             msg={
                 'This will move the patient to "Billing" and the consultation will be marked as completed!'
             }
-            title="Save Consultation"
+            title="Complete Consultation"
             successTitle="Success!"
-            successMsg="The consultation record has been saved."
+            successMsg="The consultation record has been completed."
             successUrl={consultations().url}
             size="lg"
         >
-            <IconDeviceFloppy />
-            Save Consultation
+            <IconChecklist />
+            Complete Consultation
         </ConfirmButton>
     );
 };
 
-export default SaveConsultation;
+export default CompleteConsultation;

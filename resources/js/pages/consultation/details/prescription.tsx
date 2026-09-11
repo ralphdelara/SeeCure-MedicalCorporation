@@ -7,7 +7,7 @@ import { useState } from 'react';
 import DeleteButton from '@/components/delete-button';
 import { deletePrescription } from '@/actions/App/Http/Controllers/ConsultationController';
 import Pagination from '@/components/pagination';
-import SaveConsultation from './save-consultation';
+import SaveConsultation from './complete-consultation';
 
 interface InertiaProps {
     consultationDetails: {
