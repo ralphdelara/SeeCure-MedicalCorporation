@@ -8,7 +8,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class NotifyCashier implements ShouldBroadcastNow
+class NotifyPayment implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -33,7 +33,7 @@ class NotifyCashier implements ShouldBroadcastNow
     public function broadcastOn(): array
     {
         return [
-            new Channel('cashier'),
+            new Channel('payment'),
         ];
     }
 }

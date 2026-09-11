@@ -4,10 +4,12 @@ namespace App\Models;
 
 use App\Traits\CorrectTimezone;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Guarded;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @property int $id
@@ -47,6 +49,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Billing wherePatientId($value)
  * @mixin \Eloquent
  */
+// Guarded blocks specified fields from being added/updated via ::create and ::update
+#[Guarded([
+    'id',
+])]
 #[Fillable([
     'patient_id',
     'visit_id',
@@ -80,6 +86,11 @@ class Billing extends Model
     public function patient(): BelongsTo
     {
         return $this->belongsTo(Patient::class, 'patient_id', 'id');
+    }
+
+    public function cashier(): HasOne
+    {
+        return $this->hasOne(Cashier::class);
     }
 
     public function createdBy(): BelongsTo

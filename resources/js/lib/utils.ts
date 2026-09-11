@@ -35,7 +35,7 @@ export function getExactAge(startDate: string, endDate: string) {
 }
 
 export function formatMoney(amount: string) {
-    return parseFloat(amount).toLocaleString('en-US', {
+    return '₱' + parseFloat(amount).toLocaleString('en-US', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
     });

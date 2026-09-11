@@ -396,23 +396,29 @@ class LaboratoryService
         $laboratory = Laboratory::with('visit', 'visit.consultation', 'visit.radiology')
             ->find($id);
 
+        if ($laboratory->is_completed) {
+            abort(404);
+        }
+
         $laboratory->update([
             'is_completed' => true,
         ]);
 
-        if ($laboratory->visit->has_radiology) {
+        if (app(VisitService::class)->hasPending($laboratory->visit->radiology?->toArray() ?? [])) {
+            // move to radiology if has pending radiology
             foreach ($laboratory->visit->radiology as $radiology) {
-                if (! $radiology->is_completed) {
-                    Visit::find($laboratory->visit->id)->update([
-                        'visit_status_id' => VisitStatusEnum::IN_RADIOLOGY,
-                    ]);
-                    exit;
-                }
+                Visit::find($laboratory->visit->id)->update([
+                    'visit_status_id' => VisitStatusEnum::IN_RADIOLOGY,
+                ]);
             }
         } elseif ($laboratory->visit->has_consultation) {
+            // move to consultation
             Visit::find($laboratory->visit->id)->update([
                 'visit_status_id' => VisitStatusEnum::IN_CONSULTATION,
             ]);
+
+            // set is_completed to false to activate Consultation Data
+            // because only one consultation data is allowed per visit
             Consultation::find($laboratory->visit->consultation->id)->update([
                 'is_completed' => false,
             ]);

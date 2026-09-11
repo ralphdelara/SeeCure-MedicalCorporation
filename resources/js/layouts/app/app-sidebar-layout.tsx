@@ -19,7 +19,6 @@ import { useState } from 'react';
 import logoText from '@/assets/images/logos/logo_text.png';
 import userImg from '@/assets/images/profile/user-1.jpg';
 import {
-    cashier,
     consultations,
     dashboard,
     frontDesk,
@@ -31,6 +30,7 @@ import {
     users,
     pharmacy,
     billing,
+    cashier,
 } from '@/routes';
 
 type NavSidebarProps = {

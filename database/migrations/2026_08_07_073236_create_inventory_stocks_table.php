@@ -15,7 +15,6 @@ return new class extends Migration
         Schema::create('inventory_stocks', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('inventory_id')->constrained('inventory', 'id')->cascadeOnDelete();
-            $table->foreignUuid('transaction_id')->constrained();
             $table->decimal('cost_price', 12, 2);
             $table->decimal('quantity', 12, 2);
             $table->decimal('stock_onhand', 12, 2);

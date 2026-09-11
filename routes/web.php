@@ -3,6 +3,7 @@
 use App\Events\CallOut;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\BillingController;
+use App\Http\Controllers\CashierController;
 use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\FrontDeskController;
 use App\Http\Controllers\Icd10CodeController;
@@ -52,7 +53,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
     });
 
-    Route::prefix('laboratory')->group(function() {
+    Route::prefix('laboratory')->group(function () {
         Route::get('/{status?}', [LaboratoryController::class, 'getLaboratoryList'])->name('laboratory');
         Route::get('/package/{id}/tests', [LaboratoryController::class, 'getTests'])->name('laboratory.package.tests');
         Route::post('/', [LaboratoryController::class, 'addOrUpdateLaboratory'])->name('laboratory.add-or-update');
@@ -65,7 +66,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/{id}', [LaboratoryController::class, 'deleteLaboratory'])->name('laboratory.delete');
     });
 
-    Route::prefix('billing')->group(function() {
+    Route::prefix('billing')->group(function () {
         Route::get('/{status?}', [BillingController::class, 'getBillingList'])->name('billing');
         Route::get('/package/{id}/tests', [BillingController::class, 'getTests'])->name('billing.package.tests');
         Route::post('/', [BillingController::class, 'addOrUpdateBilling'])->name('billing.add-or-update');
@@ -78,6 +79,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/{id}', [BillingController::class, 'deleteBilling'])->name('billing.delete');
     });
 
+    Route::prefix('cashier')->group(function () {
+        Route::get('/{status?}', [CashierController::class, 'getCashierList'])->name('cashier');
+        Route::post('/', [CashierController::class, 'addOrUpdateCashier'])->name('cashier.add-or-update');
+        Route::prefix('/details')->group(function () {
+            Route::get('/{id}', [CashierController::class, 'getCashierDetails'])->name('cashier.details');
+            Route::get('/{id}/audit-log', [CashierController::class, 'getAuditLog'])->name('cashier.details.audit-log');
+            Route::patch('/', [CashierController::class, 'updateDetails'])->name('cashier.details.update');
+            Route::patch('/complete/{id}', [CashierController::class, 'completeCashier'])->name('cashier.completed');
+            Route::post('/payment', [CashierController::class, 'addOrUpdatePayment'])->name('cashier.details.add-or-update-payment');
+        });
+    });
+
     Route::inertia('radiology', 'radiology')->name('radiology');
     Route::prefix('inventory')->group(function () {
         Route::get('/', [InventoryController::class, 'index'])->name('inventory');
@@ -86,7 +99,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('inventory.add-or-update-inventory');
         Route::delete('/{id}', [InventoryController::class, 'deleteInventory'])->name('inventory.delete');
     });
-    Route::inertia('cashier', 'cashier')->name('cashier');
 
     Route::get('/users', [UserController::class, 'index'])->name('users');
     Route::prefix('user')->group(function () {

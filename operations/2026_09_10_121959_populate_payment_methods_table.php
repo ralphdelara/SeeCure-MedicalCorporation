@@ -1,6 +1,7 @@
 <?php
 
-use App\Models\TransactionType;
+use App\Enums\PaymentMethodEnum;
+use App\Models\PaymentMethod;
 use TimoKoerber\LaravelOneTimeOperations\OneTimeOperation;
 
 return new class extends OneTimeOperation
@@ -25,12 +26,6 @@ return new class extends OneTimeOperation
      */
     public function process(): void
     {
-        TransactionType::fillAndInsert([
-            ['name' => 'Sales Receipt'],
-            ['name' => 'Invoice'],
-            ['name' => 'Consultation'],
-            ['name' => 'Laboratory'],
-            ['name' => 'Consultation with Laboratory'],
-        ]);
+        PaymentMethod::fillAndInsert(PaymentMethodEnum::getArrayList());
     }
 };

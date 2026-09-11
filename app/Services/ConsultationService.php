@@ -360,6 +360,10 @@ class ConsultationService
     {
         $consultation = Consultation::with('visit')->find($consultationId);
 
+        if ($consultation->is_completed) {
+            abort(404);
+        }
+
         $consultation->update([
             'is_completed' => true,
         ]);

@@ -13,6 +13,7 @@ use App\Models\Visit;
 use App\Models\VitalSign;
 use App\Services\BillingService;
 use App\Services\CashierService;
+use App\Services\PaymentService;
 use App\Services\ConsultationService;
 use App\Services\DoctorService;
 use App\Services\LaboratoryService;
@@ -105,7 +106,7 @@ class FrontDeskController extends Controller
             );
         }
 
-        // billing id for cashier data
+        // billing id for payment data
         $billingId = app(BillingService::class)->storeBilling(
             $patientId,
             $visitId,
@@ -114,7 +115,7 @@ class FrontDeskController extends Controller
             $radiologyId,
         );
 
-        $cashier = app(CashierService::class)->storeCashier(
+        app(CashierService::class)->storeCashier(
             $patientId,
             $visitId,
             $billingId,

@@ -7,6 +7,7 @@ use App\Traits\CorrectTimezone;
 use App\Traits\PersonDetails;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Guarded;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
@@ -114,6 +115,10 @@ use Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted;
  * @property-read bool $is_senior
  * @mixin \Eloquent
  */
+// Guarded blocks specified fields from being added/updated via ::create and ::update
+#[Guarded([
+    'id',
+])]
 #[Fillable([
     'last_name',
     'first_name',

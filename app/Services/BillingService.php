@@ -9,6 +9,7 @@ use App\Events\BillingViewed;
 use App\Models\Billing;
 use App\Models\BillingAudit;
 use App\Models\BillingDetail;
+use App\Models\Cashier;
 use App\Models\Laboratory;
 use App\Models\Patient;
 use App\Models\Visit;
@@ -183,16 +184,19 @@ class BillingService
 
     public function completeBilling(string $id)
     {
-        $billing = Billing::with('visit')
+        $billing = Billing::with('visit', 'cashier', 'visit.consultation.prescriptions')
             ->find($id);
 
         $billing->update([
             'is_completed' => true,
         ]);
 
+        // move to cashier
         Visit::find($billing->visit->id)->update([
             'visit_status_id' => VisitStatusEnum::IN_CASHIER,
         ]);
+
+        app(CashierService::class)->storeCashierDetails($billing);
     }
 
     public function updateDetails(array $details)
