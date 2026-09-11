@@ -8,6 +8,7 @@ const CompleteLaboratory = () => {
     const { laboratoryDetails } = usePage().props as unknown as {
         laboratoryDetails: {
             id: string;
+            moveToText: string;
         };
     };
 
@@ -16,7 +17,9 @@ const CompleteLaboratory = () => {
             requestMethod="PATCH"
             url={completeLaboratory(laboratoryDetails.id).url}
             msg={
-                'This will move the patient to "Radiology" or "Consultation" and the laboratory will be marked as completed!'
+                laboratoryDetails.moveToText !== 'Completed'
+                ? 'This will move the patient to "' + laboratoryDetails.moveToText + '" and the laboratory will be marked as completed!'
+                : 'This will complete the Patient Visit.'
             }
             title="Complete Laboratory"
             successTitle="Success!"

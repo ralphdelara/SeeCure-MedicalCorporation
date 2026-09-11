@@ -249,6 +249,8 @@ class CashierService
             'visit.consultation' => function ($query) {
                 $query->select('id', 'visit_id');
             },
+            'visit.laboratory',
+            'visit.radiology',
         ])->orderBy(
             CashierDetail::select('created_at')->whereColumn('cashier_details.id', 'cashier.id'),
         )->find($cashierId);
@@ -259,7 +261,18 @@ class CashierService
 
         CashierViewed::dispatch($cashier);
 
-        return $cashier->toArray();
+        $moveToText = 'Pharmacy';
+
+        if (app(VisitService::class)->hasPending($cashier->visit->laboratory?->toArray() ?? [])) {
+            $moveToText = 'Laboratory';
+        } elseif (app(VisitService::class)->hasPending($cashier->visit->radiology?->toArray() ?? [])) {
+            $moveToText = 'Radiology';
+        }
+
+        $cashier = $cashier->toArray();
+        $cashier['moveToText'] = $moveToText;
+
+        return $cashier;
     }
 
     public function completeCashier(string $id)

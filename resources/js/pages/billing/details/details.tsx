@@ -3,7 +3,7 @@ import { Select } from '@/components/ui/select';
 import { useEffect, useState } from 'react';
 import { useForm, usePage, Link } from '@inertiajs/react';
 import { Options } from '@/types/options';
-import { formSubmitResponse } from '@/lib/utils';
+import { formatMoney, formSubmitResponse } from '@/lib/utils';
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import SaveButton from './save-button';
@@ -18,7 +18,9 @@ interface InertiaProps {
         details: {
             id: string;
             name: string;
-            type: string;
+            type: {
+                name: string;
+            };
             billing_type_id: number;
             price: string | number;
             discount: string | number;
@@ -62,22 +64,10 @@ const Details = ({ showTab }: { showTab: boolean }) => {
         { name: 'Discount', align: 'center' },
         { name: 'Discount Type', align: 'center' },
         { name: 'Tax', align: 'center' },
-        { name: 'Nett Price', align: 'center' },
+        { name: 'Nett Price',
+            className: 'sticky-right', align: 'center' },
         { name: 'Added By', align: 'left' },
         { name: 'Last Modified By', align: 'left' },
-        {
-            name: (
-                <Link href="">
-                    <Button rounded={true}>
-                        <i>
-                            <IconPrinter size={18} />
-                        </i>
-                    </Button>
-                </Link>
-            ),
-            className: 'sticky-right',
-            align: 'right',
-        },
     ];
 
     const submitDetails = async (e: React.SubmitEvent<HTMLFormElement>) => {
@@ -216,6 +206,9 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                                     <td className="sticky-left">
                                                         <h6 className="fs-5 fw-semibold">
                                                             {item.name}
+                                                        </h6>
+                                                        <h6 className="fs-3 fw-normal text-wrap">
+                                                            {item.type.name}
                                                         </h6>
                                                     </td>
                                                     <td>
@@ -356,26 +349,6 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                                             </div>
                                                         </div>
                                                     </td>
-                                                    <td className="sticky-right">
-                                                        {item.billing_type_id === 1 && (
-                                                            <Button
-                                                                rounded={true}
-                                                                className="tooltip-container me-1"
-                                                                title="Prescription"
-                                                                type="button"
-                                                                onClick={() =>
-                                                                    triggerPrintPrescription(
-                                                                        billingDetails.visit
-                                                                            .consultation.id,
-                                                                    )
-                                                                }
-                                                            >
-                                                                <i>
-                                                                    <IconPrinter size={18} />
-                                                                </i>
-                                                            </Button>
-                                                        )}
-                                                    </td>
                                                 </tr>
                                             );
                                         })}
@@ -385,31 +358,19 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                             </td>
                                             <td className="text-center">
                                                 <h6 className="fs-6 fw-semibold">
-                                                    ₱{' '}
-                                                    {data.total_price.toLocaleString('en-US', {
-                                                        minimumFractionDigits: 2,
-                                                        maximumFractionDigits: 2,
-                                                    })}
+                                                    {formatMoney(data.total_price)}
                                                 </h6>
                                             </td>
                                             <td className="text-center">
                                                 <h6 className="fs-6 fw-semibold">
-                                                    ₱{' '}
-                                                    {data.total_discount.toLocaleString('en-US', {
-                                                        minimumFractionDigits: 2,
-                                                        maximumFractionDigits: 2,
-                                                    })}
+                                                    {formatMoney(data.total_discount)}
                                                 </h6>
                                             </td>
                                             <td></td>
                                             <td></td>
                                             <td className="text-center">
                                                 <h6 className="fs-6 fw-semibold">
-                                                    ₱{' '}
-                                                    {data.total_nett_price.toLocaleString('en-US', {
-                                                        minimumFractionDigits: 2,
-                                                        maximumFractionDigits: 2,
-                                                    })}
+                                                    {formatMoney(data.total_nett_price)}
                                                 </h6>
                                             </td>
                                             <td></td>
