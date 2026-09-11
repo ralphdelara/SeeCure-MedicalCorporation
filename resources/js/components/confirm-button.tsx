@@ -42,9 +42,14 @@ export default function ConfirmButton({
             html: msg,
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonText: 'Yes',
+            confirmButtonText: "Yes, I'm sure!",
             confirmButtonColor: '#d33',
             showLoaderOnConfirm: true,
+            customClass: {
+                confirmButton: 'btn btn-lg btn-success me-2',
+                cancelButton: 'btn btn-lg btn-danger',
+            },
+            buttonsStyling: false,
 
             preConfirm: async () => {
                 try {

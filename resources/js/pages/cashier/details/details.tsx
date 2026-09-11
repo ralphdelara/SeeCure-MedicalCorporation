@@ -3,7 +3,7 @@ import { Select } from '@/components/ui/select';
 import { useEffect } from 'react';
 import { useForm, usePage } from '@inertiajs/react';
 import { Options } from '@/types/options';
-import { formSubmitResponse } from '@/lib/utils';
+import { formatMoney, formSubmitResponse } from '@/lib/utils';
 import React from 'react';
 import SaveButton from './save-button';
 import { updateDetails } from '@/actions/App/Http/Controllers/CashierController';
@@ -414,31 +414,19 @@ console.log(totalPrice);
                                             </td>
                                             <td className="text-center">
                                                 <h6 className="fs-6 fw-semibold">
-                                                    ₱{' '}
-                                                    {data.total_cost_price.toLocaleString('en-US', {
-                                                        minimumFractionDigits: 2,
-                                                        maximumFractionDigits: 2,
-                                                    })}
+                                                    {formatMoney(data.total_cost_price)}
                                                 </h6>
                                             </td>
                                             <td className="text-center">
                                             </td>
                                             <td className="text-center">
                                                 <h6 className="fs-6 fw-semibold">
-                                                    ₱{' '}
-                                                    {data.total_price.toLocaleString('en-US', {
-                                                        minimumFractionDigits: 2,
-                                                        maximumFractionDigits: 2,
-                                                    })}
+                                                    {formatMoney(data.total_price)}
                                                 </h6>
                                             </td>
                                             <td className="text-center">
                                                 <h6 className="fs-6 fw-semibold">
-                                                    ₱{' '}
-                                                    {data.total_discount.toLocaleString('en-US', {
-                                                        minimumFractionDigits: 2,
-                                                        maximumFractionDigits: 2,
-                                                    })}
+                                                    {formatMoney(data.total_discount)}
                                                 </h6>
                                             </td>
                                             <td></td>
@@ -446,11 +434,7 @@ console.log(totalPrice);
                                             </td>
                                             <td className="text-center sticky-right">
                                                 <h6 className="fs-6 fw-semibold">
-                                                    ₱{' '}
-                                                    {data.total_nett_price.toLocaleString('en-US', {
-                                                        minimumFractionDigits: 2,
-                                                        maximumFractionDigits: 2,
-                                                    })}
+                                                    {formatMoney(data.total_nett_price)}
                                                 </h6>
                                             </td>
                                             <td></td>

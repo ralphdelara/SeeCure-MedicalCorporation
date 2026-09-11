@@ -232,6 +232,14 @@ class LaboratoryService
             abort(404);
         }
 
+        $moveToText = 'Completed';
+
+        if (app(VisitService::class)->hasPending($laboratory->visit->radiology?->toArray() ?? [])) {
+            $moveToText = 'Radiology';
+        } elseif ($laboratory->visit->has_consultation) {
+            $moveToText = 'Consultation';
+        }
+
         LaboratoryViewed::dispatch($laboratory);
 
         $laboratory = $laboratory->toArray();
@@ -251,6 +259,7 @@ class LaboratoryService
         }
 
         $laboratory['test_data'] = $testFields;
+        $laboratory['moveToText'] = $moveToText;
 
         return $laboratory;
     }
@@ -406,11 +415,9 @@ class LaboratoryService
 
         if (app(VisitService::class)->hasPending($laboratory->visit->radiology?->toArray() ?? [])) {
             // move to radiology if has pending radiology
-            foreach ($laboratory->visit->radiology as $radiology) {
-                Visit::find($laboratory->visit->id)->update([
-                    'visit_status_id' => VisitStatusEnum::IN_RADIOLOGY,
-                ]);
-            }
+            Visit::find($laboratory->visit->id)->update([
+                'visit_status_id' => VisitStatusEnum::IN_RADIOLOGY,
+            ]);
         } elseif ($laboratory->visit->has_consultation) {
             // move to consultation
             Visit::find($laboratory->visit->id)->update([
@@ -421,6 +428,10 @@ class LaboratoryService
             // because only one consultation data is allowed per visit
             Consultation::find($laboratory->visit->consultation->id)->update([
                 'is_completed' => false,
+            ]);
+        } else {
+            Visit::find($laboratory->visit->id)->update([
+                'visit_status_id' => VisitStatusEnum::COMPLETED,
             ]);
         }
     }
