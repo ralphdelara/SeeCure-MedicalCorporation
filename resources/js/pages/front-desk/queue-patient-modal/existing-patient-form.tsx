@@ -9,6 +9,7 @@ import TableList from '@/components/table';
 import { Item } from '@radix-ui/react-dropdown-menu';
 import { IconCalendarDot, IconGenderAgender, IconMail, IconPhone } from '@tabler/icons-react';
 import { PatientTableList } from '@/components/patient/list';
+import personDefault from '@/assets/images/profile/person-default.png';
 
 const ExistingPatientForm = ({ data, setData, errors = {} }: QueuePatientFormProps) => {
     const [keyword, setKeyword] = useState('');
@@ -66,7 +67,10 @@ const ExistingPatientForm = ({ data, setData, errors = {} }: QueuePatientFormPro
                         <tr
                             key={'existing-patient-' + item.id}
                             onClick={() => selectPatient(item.id)}
-                            className={'cursor-pointer' + (item.id === data.patient_id ? ' border-2 border-success' : '')}
+                            className={
+                                'cursor-pointer' +
+                                (item.id === data.patient_id ? ' border-success border-2' : '')
+                            }
                         >
                             <td>
                                 <div className="d-block">
@@ -76,7 +80,7 @@ const ExistingPatientForm = ({ data, setData, errors = {} }: QueuePatientFormPro
                                                 className="rounded-circle"
                                                 width="40"
                                                 height="40"
-                                                src="../assets/images/profile/user-2.jpg"
+                                                src={personDefault}
                                             />
                                         </div>
                                         <div className="ms-3">

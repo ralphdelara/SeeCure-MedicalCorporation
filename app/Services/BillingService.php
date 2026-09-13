@@ -147,6 +147,8 @@ class BillingService
 
     public function getBillingDetails(string $billingId): ?array
     {
+        abortIfInvalidUuid($billingId);
+
         $billing = Billing::with([
             'patient' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name', 'age', 'gender_id', 'patient_suffix_id');
@@ -221,10 +223,15 @@ class BillingService
         ]);
 
         foreach ($details as $detailId => $field) {
+
+            $discountTypeId = $field['discount_type_id'] !== 0
+                ? $field['discount_type_id']
+                : null;
+
             BillingDetail::find($detailId)->update([
                 'price'            => $field['price'],
                 'discount'         => $field['discount'],
-                'discount_type_id' => $field['discount_type_id'],
+                'discount_type_id' => $discountTypeId,
                 'tax_percent'      => $field['tax_percent'],
                 'tax_amount'       => $field['nett_price'] - ($field['price'] - $field['discount']),
                 'nett_price'       => $field['nett_price'],

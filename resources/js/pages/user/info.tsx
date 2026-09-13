@@ -3,6 +3,7 @@ import React from 'react';
 import { Link } from '@inertiajs/react';
 import { getUserDetails } from '@/actions/App/Http/Controllers/UserController';
 import { UserDetailsProps } from '@/components/user/user-details';
+import personDefault from '@/assets/images/profile/person-default.png';
 
 interface InertiaProps {
     userDetails: UserDetailsProps;
@@ -20,7 +21,7 @@ const UserInfo = ({ userDetails, children }: InertiaProps) => {
                                 <div className="d-flex align-items-center justify-content-center round-110">
                                     <div className="d-flex align-items-center justify-content-center rounded-circle round-100 overflow-hidden border border-4 border-white">
                                         <img
-                                            src="/assets/images/profile/user-1.jpg"
+                                            src={personDefault}
                                             alt="modernize-img"
                                             className="h-100 w-100"
                                         />
@@ -42,17 +43,13 @@ const UserInfo = ({ userDetails, children }: InertiaProps) => {
                             <div className="border-end border-success">&nbsp;</div>
                             <div className="p-2 text-center">
                                 <i className="ti ti-user-circle fs-6 d-block mb-2"></i>
-                                <h4 className="lh-1 mb-0">
-                                    {userDetails.gender?.name ?? 'N/A'}
-                                </h4>
+                                <h4 className="lh-1 mb-0">{userDetails.gender?.name ?? 'N/A'}</h4>
                                 <p className="mb-0">Gender</p>
                             </div>
                             <div className="border-end border-success">&nbsp;</div>
                             <div className="p-2 text-center">
                                 <i className="ti ti-user-check fs-6 d-block mb-2"></i>
-                                <h4 className="lh-1 mb-0">
-                                    {userDetails.status?.name ?? 'N/A'}
-                                </h4>
+                                <h4 className="lh-1 mb-0">{userDetails.status?.name ?? 'N/A'}</h4>
                                 <p className="mb-0">Status</p>
                             </div>
                         </div>

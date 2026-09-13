@@ -6,6 +6,7 @@ import { announcements, calendar, logout, notes, reminders } from '@/routes';
 import { Button } from '@/components/ui/button';
 import { fetchUrl } from '@/lib/utils';
 import NotifyDoctor from '@/pages/notifications/notify-doctor';
+import personDefault from '@/assets/images/profile/person-default.png';
 
 type NavHeaderProps = {
     toggleSidebar: () => void;
@@ -297,7 +298,7 @@ export default function NavHeader({ toggleSidebar }: NavHeaderProps) {
                                             <div className="d-flex align-items-center">
                                                 <div className="user-profile-img">
                                                     <img
-                                                        src="/assets/images/profile/user-1.jpg"
+                                                        src={personDefault}
                                                         className="rounded-circle"
                                                         width="35"
                                                         height="35"
@@ -321,7 +322,7 @@ export default function NavHeader({ toggleSidebar }: NavHeaderProps) {
                                                 </div>
                                                 <div className="d-flex align-items-center border-bottom mx-7 py-9">
                                                     <img
-                                                        src="/assets/images/profile/user-1.jpg"
+                                                        src={personDefault}
                                                         className="rounded-circle"
                                                         width="80"
                                                         height="80"

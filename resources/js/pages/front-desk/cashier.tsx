@@ -5,6 +5,7 @@ import { usePage, Link } from '@inertiajs/react';
 import { getPatientDetails } from '@/actions/App/Http/Controllers/PatientController';
 import { deleteQueue } from '@/actions/App/Http/Controllers/FrontDeskController';
 import DeleteButton from '@/components/delete-button';
+import personDefault from '@/assets/images/profile/person-default.png';
 
 interface InertiaProps {
     cashierList: {
@@ -48,7 +49,7 @@ export default () => {
                                                     className="rounded-circle"
                                                     width="40"
                                                     height="40"
-                                                    src="../assets/images/profile/user-2.jpg"
+                                                    src={personDefault}
                                                 />
                                             </div>
                                             <div className="ms-3">

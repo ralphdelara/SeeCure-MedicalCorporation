@@ -217,11 +217,13 @@ class CashierService
                 $query->select('id', 'name');
             },
             'cashier',
-        ])->whereVisitStatusId(VisitStatusEnum::IN_BILLING)->get()->toArray();
+        ])->whereVisitStatusId(VisitStatusEnum::IN_CASHIER)->get()->toArray();
     }
 
     public function getCashierDetails(string $cashierId): ?array
     {
+        abortIfInvalidUuid($cashierId);
+
         $cashier = Cashier::with([
             'patient' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name', 'age', 'gender_id', 'patient_suffix_id');

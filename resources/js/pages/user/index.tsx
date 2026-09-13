@@ -9,6 +9,7 @@ import { IconMail, IconPhone, IconUserEdit } from '@tabler/icons-react';
 import { Button } from '@/components/ui/button';
 import NewUser from './new-user-modal';
 import DeleteButton from '@/components/delete-button';
+import personDefault from '@/assets/images/profile/person-default.png';
 
 interface InertiaProps {
     userList: {
@@ -76,7 +77,7 @@ export default function UserList() {
                                                             className="rounded-circle"
                                                             width="40"
                                                             height="40"
-                                                            src="../assets/images/profile/user-2.jpg"
+                                                            src={personDefault}
                                                         />
                                                     </div>
                                                     <div className="ms-3">
@@ -167,7 +168,7 @@ export default function UserList() {
                                                         className="rounded-circle"
                                                         width="40"
                                                         height="40"
-                                                        src="../assets/images/profile/user-2.jpg"
+                                                        src={personDefault}
                                                     />
                                                 </div>
                                                 <div className="ms-3">

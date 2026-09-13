@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property string $id
@@ -75,6 +76,14 @@ class Inventory extends Model
 
     public $table = 'inventory';
 
+    protected function casts(): array
+    {
+        return [
+            'created_at'              => 'date:M d, Y h:i a',
+            'updated_at'              => 'date:M d, Y h:i a',
+        ];
+    }
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(InventoryCategory::class, 'inventory_category_id', 'id');
@@ -83,6 +92,16 @@ class Inventory extends Model
     public function unit(): BelongsTo
     {
         return $this->belongsTo(InventoryUnit::class, 'inventory_unit_id', 'id');
+    }
+
+    public function stockMovement(): HasMany
+    {
+        return $this->hasMany(InventoryStockMovement::class);
+    }
+
+    public function audits(): HasMany
+    {
+        return $this->hasMany(InventoryAudit::class);
     }
 
     public function createdBy(): BelongsTo

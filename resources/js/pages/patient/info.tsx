@@ -3,6 +3,7 @@ import React from 'react';
 import { Link } from '@inertiajs/react';
 import { getPatientDetails } from '@/actions/App/Http/Controllers/PatientController';
 import { PatientDetailsProps } from '@/components/patient/patient-details';
+import personDefault from '@/assets/images/profile/person-default.png';
 
 interface InertiaProps {
     patientDetails: PatientDetailsProps;
@@ -20,7 +21,7 @@ const PatientInfo = ({ patientDetails, children }: InertiaProps) => {
                                 <div className="d-flex align-items-center justify-content-center round-110">
                                     <div className="d-flex align-items-center justify-content-center rounded-circle round-100 overflow-hidden border border-4 border-white">
                                         <img
-                                            src="/assets/images/profile/user-1.jpg"
+                                            src={personDefault}
                                             alt="modernize-img"
                                             className="h-100 w-100"
                                         />

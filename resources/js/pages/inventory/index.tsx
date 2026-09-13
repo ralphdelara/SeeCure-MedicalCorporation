@@ -1,7 +1,10 @@
-import { Head, usePage } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { IconEdit, IconPackage } from '@tabler/icons-react';
 import { useState } from 'react';
-import { deleteInventory } from '@/actions/App/Http/Controllers/InventoryController';
+import {
+    deleteInventory,
+    getInventoryDetails,
+} from '@/actions/App/Http/Controllers/InventoryController';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import DeleteButton from '@/components/delete-button';
 import SearchField from '@/components/search-field';
@@ -13,6 +16,7 @@ import type { Pages } from '@/types/pagination';
 import AddInventory from './add-or-update-inventory';
 import type { AddInventoryForm, InventoryList } from './add-or-update-inventory/types';
 import AddOrUpdateModal from './add-or-update-inventory-modal';
+import inventoryDefault from '@/assets/images/inventory/inventory-default.png';
 
 interface InertiaProps {
     inventoryList: {
@@ -30,11 +34,13 @@ export default function Inventory() {
 
     const header = [
         { name: '#', align: 'right' },
-        { name: 'Inventory', width: '25px', align: 'left' },
+        { name: 'Inventory • unit', className: 'sticky-left', width: '25px', align: 'left' },
         { name: 'Category', align: 'left' },
         { name: 'Stock', align: 'right' },
         { name: 'Cost Price', align: 'right' },
         { name: 'Selling Price', align: 'right' },
+        { name: 'Added by', align: 'right' },
+        { name: 'Last Modified By', align: 'right' },
         { name: '', className: 'sticky-right', align: 'right' },
     ];
 
@@ -63,36 +69,45 @@ export default function Inventory() {
                                 <td className="text-right">
                                     <h5>{pageData.from + index}</h5>
                                 </td>
-                                <td style={{ width: '100px' }}>
-                                    <table>
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    <div className="round-40 rounded-circle d-flex align-items-center justify-content-center text-bg-info text-white">
-                                                        <IconPackage />
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <h6 className="ms-2">{item.name}</h6>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                <td className="sticky-left">
+                                    <div className="d-block">
+                                        <div className="d-flex align-items-center">
+                                            <div style={{ width: '40px' }}>
+                                                <img
+                                                    className="rounded-circle"
+                                                    width="40"
+                                                    height="40"
+                                                    src={inventoryDefault}
+                                                />
+                                            </div>
+                                            <div className="ms-3">
+                                                <h6
+                                                    className="fs-4 fw-semibold mb-0 text-wrap"
+                                                    style={{ width: '300px' }}
+                                                >
+                                                    <Link
+                                                        href={getInventoryDetails(item.id)}
+                                                        className="tooltip-container"
+                                                        data-title="Click to View Inventory Details"
+                                                    >
+                                                        {item.name}
+                                                    </Link>
+                                                </h6>
+                                                <span className="fw-normal">{item.unit.name}</span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </td>
                                 <td className="text-left">
-                                    <h6>
+                                    <h6 className="text-wrap" style={{ width: '200px' }}>
                                         {item.category.name}
-                                        <small>
-                                            <br />
-                                            {item.unit.name}
-                                        </small>
                                     </h6>
                                 </td>
                                 <td className={'text-right'}>
                                     <h6
                                         className={parseFloat(item.stock) <= 0 ? 'text-danger' : ''}
                                     >
-                                        {formatMoney(item.stock)}
+                                        {item.stock}
                                     </h6>
                                 </td>
                                 <td className="text-right">
@@ -101,41 +116,40 @@ export default function Inventory() {
                                 <td className="text-right">
                                     <h6>{formatMoney(item.selling_price_vat_inclusive)}</h6>
                                 </td>
-                                <td className="sticky-right text-nowrap">
-                                    <Button
-                                        variant="primary"
-                                        rounded={true}
-                                        title="Edit"
-                                        className="me-2"
-                                        onClick={() =>
-                                            toggleEditModal({
-                                                id: item.id,
-                                                name: item.name,
-                                                inventory_category_id: item.category.id,
-                                                inventory_unit_id: item.unit.id,
-                                                stock: item.stock,
-                                                cost_price: item.cost_price,
-                                                selling_price_vat_exclusive:
-                                                    item.selling_price_vat_exclusive,
-                                                selling_price_vat_inclusive:
-                                                    item.selling_price_vat_inclusive,
-                                                markup_amount: item.markup_amount,
-                                                markup_percent: item.markup_percent,
-                                                vat_percent: item.vat_percent,
-                                                vat_amount: item.vat_amount,
-                                                photo: item.photo,
-                                            })
-                                        }
+                                <td>
+                                    <div className="d-flex align-items-start">
+                                        <div>
+                                            <h6 className="fs-4 fw-semibold">
+                                                {item.created_by.full_name}
+                                            </h6>
+                                            <h6 className="fs-4 fw-normal">{item.created_at}</h6>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div className="d-flex align-items-start">
+                                        <div className="ms-3">
+                                            <h6 className="fs-4 fw-semibold">
+                                                {item.last_modified_by?.full_name ?? ''}
+                                            </h6>
+                                            <h6 className="fs-4 fw-normal">
+                                                {item.updated_at ?? ''}
+                                            </h6>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td className="sticky-right">
+                                    <Link
+                                        href={getInventoryDetails(item.id)}
+                                        className="tooltip-container"
+                                        data-title="Click to View Inventory Details"
                                     >
-                                        <i>
-                                            <IconEdit size={20} />
-                                        </i>
-                                    </Button>
-                                    <Button rounded={true} className="me-2" title="View Inventory">
-                                        <i>
-                                            <IconPackage size={20} />
-                                        </i>
-                                    </Button>
+                                        <Button rounded={true} className="me-2">
+                                            <i>
+                                                <IconPackage size={20} />
+                                            </i>
+                                        </Button>
+                                    </Link>
 
                                     <DeleteButton
                                         url={deleteInventory(item.id).url}
@@ -150,7 +164,7 @@ export default function Inventory() {
                         ))}
                         {tableData.length === 0 && (
                             <tr>
-                                <td colSpan={9} className="text-center">
+                                <td colSpan={11} className="text-center">
                                     No records
                                 </td>
                             </tr>

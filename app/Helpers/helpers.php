@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 if (! function_exists('formatName')) {
     function formatName(string $name)
@@ -95,5 +96,16 @@ if (! function_exists('getRelatedAuditFields')) {
         }, $fields['detached'] ?? []);
 
         return $newFields;
+    }
+}
+
+if (! function_exists('abortIfInvalidUuid')) {
+    function abortIfInvalidUuid(
+        string $uuid
+    ): void {
+        // for postgresql, mysql doesnt need this
+        if (! Str::isUuid($uuid)) {
+            abort(404);
+        }
     }
 }

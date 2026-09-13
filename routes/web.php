@@ -94,6 +94,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('radiology', 'radiology')->name('radiology');
     Route::prefix('inventory')->group(function () {
         Route::get('/', [InventoryController::class, 'index'])->name('inventory');
+        Route::prefix('details')->group(function () {
+            Route::get('/{inventoryId}', [InventoryController::class, 'getInventoryDetails'])->name('inventory.details');
+            Route::post('/{inventoryId}/stock-movement', [InventoryController::class, 'addOrUpdateStockMovement'])->name('inventory.stock-movement.add-or-update');
+            Route::delete('/{inventoryId}/stock-movement/{stockMovementId}', [InventoryController::class, 'deleteStockMovement'])->name('inventory.details.delete.stock-movement');
+        });
+        Route::get('/{id}/audit-log', [InventoryController::class, 'getAuditLog'])->name('inventory.details.audit-log');
         Route::get('/search', [InventoryController::class, 'getSmallInventoryList'])->name('inventory.search');
         Route::match(['POST', 'PUT'], '/', [InventoryController::class, 'addOrUpdateInventory'])
             ->name('inventory.add-or-update-inventory');
