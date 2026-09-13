@@ -14,7 +14,14 @@ export interface InventoryList {
     selling_price_vat_exclusive: string;
     selling_price_vat_inclusive: string;
     photo?: string;
-    created_by: string;
+    created_by: {
+        full_name: string;
+    };
+    created_at: string;
+    last_modified_by: {
+        full_name: string;
+    };
+    updated_at: string;
 }
 
 export interface AddInventoryForm {

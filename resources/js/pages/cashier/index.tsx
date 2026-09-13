@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { getCashierDetails } from '@/actions/App/Http/Controllers/CashierController';
 import { getPatientDetails } from '@/actions/App/Http/Controllers/PatientController';
 import { Options } from '@/types/options';
+import personDefault from '@/assets/images/profile/person-default.png';
 
 interface InertiaProps {
     cashierList: {
@@ -55,7 +56,7 @@ export default function Cashier() {
                                                             className="rounded-circle"
                                                             width="40"
                                                             height="40"
-                                                            src="../assets/images/profile/user-2.jpg"
+                                                            src={personDefault}
                                                         />
                                                     </div>
                                                     <div className="ms-3">

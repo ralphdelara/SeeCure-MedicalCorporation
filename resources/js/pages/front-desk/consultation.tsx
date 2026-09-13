@@ -7,6 +7,7 @@ import { getUserDetails } from '@/actions/App/Http/Controllers/UserController';
 import TableList from '@/components/table';
 import DeleteButton from '@/components/delete-button';
 import { deleteQueue } from '@/actions/App/Http/Controllers/FrontDeskController';
+import personDefault from '@/assets/images/profile/person-default.png';
 
 interface InertiaProps {
     consultationList: {
@@ -62,7 +63,7 @@ export default () => {
                                                     className="rounded-circle"
                                                     width="40"
                                                     height="40"
-                                                    src="../assets/images/profile/user-2.jpg"
+                                                    src={personDefault}
                                                 />
                                             </div>
                                             <div className="ms-3">

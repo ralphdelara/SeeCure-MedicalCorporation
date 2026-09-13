@@ -272,7 +272,7 @@ class FrontDeskController extends Controller
         Request $request,
         string $patientId,
         string $visitId,
-        string $consultationId,
+        ?string $consultationId,
     ): string {
         $laboratoryDetails = $request->only(
             'laboratory_id',

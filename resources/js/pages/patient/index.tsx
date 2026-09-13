@@ -16,6 +16,7 @@ import {
 import { Button } from '@/components/ui/button';
 import NewPatient from './new-patient-modal';
 import DeleteButton from '@/components/delete-button';
+import personDefault from '@/assets/images/profile/person-default.png';
 
 interface InertiaProps {
     patientList: {
@@ -74,7 +75,7 @@ export default function PatientList() {
                                                             className="rounded-circle"
                                                             width="40"
                                                             height="40"
-                                                            src="../assets/images/profile/user-2.jpg"
+                                                            src={personDefault}
                                                         />
                                                     </div>
                                                     <div className="ms-3">

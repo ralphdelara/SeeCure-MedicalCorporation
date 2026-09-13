@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { getPaymentDetails } from '@/actions/App/Http/Controllers/PaymentController';
 import { getPatientDetails } from '@/actions/App/Http/Controllers/PatientController';
 import { Options } from '@/types/options';
+import personDefault from '@/assets/images/profile/person-default.png';
 
 interface InertiaProps {
     paymentList: {
@@ -60,7 +61,7 @@ export default function Payment() {
                                                             className="rounded-circle"
                                                             width="40"
                                                             height="40"
-                                                            src="../assets/images/profile/user-2.jpg"
+                                                            src={personDefault}
                                                         />
                                                     </div>
                                                     <div className="ms-3">

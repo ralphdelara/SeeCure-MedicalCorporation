@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\StockMovementTypeEnum;
 use App\Models\StockMovementType;
 use TimoKoerber\LaravelOneTimeOperations\OneTimeOperation;
 
@@ -25,9 +26,6 @@ return new class extends OneTimeOperation
      */
     public function process(): void
     {
-        StockMovementType::fillAndInsert([
-            ['name' => 'Stock In'],
-            ['name' => 'Stock Out'],
-        ]);
+        StockMovementType::fillAndInsert(StockMovementTypeEnum::getArrayList());
     }
 };

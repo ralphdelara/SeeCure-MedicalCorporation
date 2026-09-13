@@ -13,6 +13,7 @@ import {
     getConsultationDetails,
 } from '@/actions/App/Http/Controllers/ConsultationController';
 import { fetchUrl } from '@/lib/utils';
+import personDefault from '@/assets/images/profile/person-default.png';
 
 interface InertiaProps {
     consultationList: {
@@ -87,7 +88,7 @@ export default function Consultation() {
                                                     className="rounded-circle"
                                                     width="40"
                                                     height="40"
-                                                    src="../assets/images/profile/user-2.jpg"
+                                                    src={personDefault}
                                                 />
                                             </div>
                                             <div className="ms-3">
@@ -155,7 +156,7 @@ export default function Consultation() {
                                                     className="rounded-circle"
                                                     width="40"
                                                     height="40"
-                                                    src="../assets/images/profile/user-2.jpg"
+                                                    src={personDefault}
                                                 />
                                             </div>
                                             <div className="ms-3">

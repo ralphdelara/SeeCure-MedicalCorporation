@@ -98,6 +98,8 @@ class ConsultationService
 
     public function getConsultationDetails(string $consultationId): ?array
     {
+        abortIfInvalidUuid($consultationId);
+
         $consultation = Consultation::with([
             'patient' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name', 'age', 'gender_id', 'patient_suffix_id');

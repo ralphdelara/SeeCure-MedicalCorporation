@@ -162,10 +162,7 @@ class PatientService
 
     public function getPatientDetails(string $id): array
     {
-        // for postgresql, mysql doesnt need this
-        if (! Str::isUuid($id)) {
-            abort(404);
-        }
+        abortIfInvalidUuid($id);
 
         $patient = Patient::with([
             'gender',

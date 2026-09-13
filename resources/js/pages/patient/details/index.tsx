@@ -3,21 +3,13 @@ import { Breadcrumbs } from '@/components/breadcrumbs';
 import PatientInfo from '@/pages/patient/info';
 import { useState } from 'react';
 import {
-    IconActivity,
     IconCalendarUser,
     IconFiles,
-    IconFlask,
     IconListDetails,
-    IconScan,
-    IconStethoscope,
     IconUserCode,
 } from '@tabler/icons-react';
 import { PatientDetailsProps } from '@/components/patient/patient-details';
 import Details from './details';
-import Consultation from './consultation';
-import Laboratory from './laboratory';
-import Radiology from './radiology';
-import VitalSigns from './vital-signs';
 import Documents from './documents';
 import AuditLog from './audit-log';
 import Visits from './visits';

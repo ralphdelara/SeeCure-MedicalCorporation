@@ -2,7 +2,12 @@
 
 namespace App\Services;
 
+use App\Enums\AuditTypeEnum;
+use App\Enums\StockMovementTypeEnum;
+use App\Events\InventoryViewed;
 use App\Models\Inventory;
+use App\Models\InventoryAudit;
+use App\Models\InventoryStockMovement;
 use Arr;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,8 +20,16 @@ class InventoryService
     ): array {
         $inventoryList = Inventory::with([
             'createdBy' => function ($query) {
-                $query->select('id', 'first_name', 'last_name');
+                $query->select('id', 'first_name', 'middle_name', 'last_name');
             },
+            'createdBy.professions',
+            'createdBy.specialties',
+            'lastModifiedBy' => function ($query) {
+                $query->select('id', 'first_name', 'middle_name', 'last_name');
+            },
+            'lastModifiedBy.professions',
+            'lastModifiedBy.specialties',
+            'lastModifiedBy',
             'unit' => function ($query) {
                 $query->select('id', 'name');
             },
@@ -80,5 +93,124 @@ class InventoryService
             ->get();
 
         return $inventory->toArray();
+    }
+
+    public function getInventoryDetails(string $id): array
+    {
+        abortIfInvalidUuid($id);
+
+        $inventory = Inventory::with([
+            'category',
+            'unit',
+            'audits',
+            'stockMovement',
+            'stockMovement.stockMovementType',
+            'stockMovement.createdBy' => function ($query) {
+                $query->select('id', 'first_name', 'middle_name', 'last_name');
+            },
+            'stockMovement.createdBy.professions',
+            'stockMovement.createdBy.specialties',
+            'stockMovement.lastModifiedBy' => function ($query) {
+                $query->select('id', 'first_name', 'middle_name', 'last_name');
+            },
+            'stockMovement.lastModifiedBy.professions',
+            'stockMovement.lastModifiedBy.specialties',
+        ])->find($id);
+
+        if (empty($inventory)) {
+            abort(404);
+        }
+
+        InventoryViewed::dispatch($inventory);
+
+        return $inventory->toArray();
+    }
+
+    public function addOrUpdateStockMovement(
+        string $inventoryId,
+        array $stockMovementDetails,
+    ): void {
+        $isUpdate = ! empty($stockMovementDetails['stock_movement_id']);
+        $inventory = Inventory::find($inventoryId);
+
+        if ($isUpdate) {
+            $stockMovement = InventoryStockMovement::find($stockMovementDetails['stock_movement_id']);
+            $currentStock = $stockMovement->current_stock;
+        } else {
+            $currentStock = $inventory->stock;
+            $stockMovementDetails['created_by'] = Auth::id();
+        }
+
+        $newCostPrice = $stockMovementDetails['cost_price'];
+        $newQuantity = $stockMovementDetails['quantity'];
+        $newTotalPrice = $newCostPrice * $newQuantity;
+        $stockMovementDetails['last_modified_by'] = Auth::id();
+        $newStock = $this->computeNewStock($currentStock, $newQuantity, $stockMovementDetails['stock_movement_type_id']);
+        $stockMovementDetails['new_stock'] = $newStock;
+        $stockMovementDetails['total_price'] = $newTotalPrice;
+        $stockMovementDetails['inventory_id'] = $inventoryId;
+        $stockMovementDetails['current_stock'] = $currentStock;
+
+        if ($isUpdate) {
+            $stockMovement->update($stockMovementDetails);
+        } else {
+            InventoryStockMovement::create($stockMovementDetails);
+        }
+
+        $inventory->update([
+            'stock'            => $newStock,
+            'last_modified_by' => Auth::id(),
+        ]);
+    }
+
+    public function computeNewStock(float $currentStock, int|float $quantity, int $stockMovementTypeId): float
+    {
+        return match (StockMovementTypeEnum::tryFrom($stockMovementTypeId)) {
+            StockMovementTypeEnum::STOCK_IN => $currentStock + $quantity,
+            default                         => $currentStock - $quantity
+        };
+    }
+
+    public function deleteStockMovement(string $inventoryId, string $stockMovementId): void
+    {
+        $stockMovement = InventoryStockMovement::find($stockMovementId);
+
+        if (empty($stockMovement)) {
+            abort(404);
+        }
+
+        $inventory = Inventory::find($inventoryId);
+
+        $quantity = $stockMovement->quantity;
+        $currentStock = $inventory->stock;
+
+        if (StockMovementTypeEnum::tryFrom($stockMovement->stock_movement_type_id) === StockMovementTypeEnum::STOCK_IN) {
+            // subtract added stock
+            $newStock = $currentStock - $quantity;
+        } else {
+            $newStock = $currentStock + $quantity;
+        }
+
+        $stockMovement->delete();
+
+        $inventory->update([
+            'stock' => $newStock,
+        ]);
+    }
+
+    public function getAuditLog(string $id): array
+    {
+        return InventoryAudit::with([
+            'createdBy' => function ($query) {
+                $query->select('id', 'first_name', 'middle_name', 'last_name');
+            },
+            'createdBy.professions',
+            'createdBy.specialties',
+            'auditType',
+        ])
+            ->select('audit_type_id', 'data', 'created_by', 'created_at')
+            ->where('inventory_id', $id)
+            ->orderBy('created_at', 'desc')
+            ->get()->toArray();
     }
 }

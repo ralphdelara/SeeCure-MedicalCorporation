@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\StockMovementTypeEnum;
 use App\Models\Inventory;
 use App\Models\InventoryCategory;
 use App\Models\InventoryUnit;
+use App\Models\StockMovementType;
 use App\Services\InventoryService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -64,5 +66,48 @@ class InventoryController extends Controller
     public function getSmallInventoryList(Request $request): array
     {
         return app(InventoryService::class)->getSmallInventoryList($request->only('keyword', 'category_id'));
+    }
+
+    public function getInventoryDetails(string $id): Response
+    {
+        $inventoryDetails = app(InventoryService::class)->getInventoryDetails($id);
+        $inventoryCategoryOptions = InventoryCategory::all();
+        $inventoryUnitOptions = InventoryUnit::all();
+        $stockMovementTypeOptions = StockMovementType::where('id', '!=', StockMovementTypeEnum::STOCK_OUT_PRESCRIPTION)->get();
+
+        return Inertia::render('inventory/details/index', compact(
+            'inventoryDetails',
+            'inventoryCategoryOptions',
+            'inventoryUnitOptions',
+            'stockMovementTypeOptions',
+        ));
+    }
+
+    public function deleteStockMovement(string $inventoryId, string $stockMovementId): void
+    {
+        app(InventoryService::class)->deleteStockMovement($inventoryId, $stockMovementId);
+    }
+
+    public function addOrUpdateStockMovement(Request $request, string $inventoryId): void
+    {
+        $stockMovementDetails = $request->only(
+            'inventory_id',
+            'stock_movement_id',
+            'stock_movement_type_id',
+            'cost_price',
+            'quantity',
+            'lot_no',
+            'manufacture_date',
+            'expiry_date',
+            'supplier',
+            'reference_no',
+        );
+
+        app(InventoryService::class)->addOrUpdateStockMovement($inventoryId, $stockMovementDetails);
+    }
+
+    public function getAuditLog(string $id): array
+    {
+        return app(InventoryService::class)->getAuditLog($id);
     }
 }

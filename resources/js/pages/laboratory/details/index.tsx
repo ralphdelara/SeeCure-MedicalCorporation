@@ -3,14 +3,7 @@ import PatientInfo from '@/pages/patient/info';
 import Details from './details';
 import AuditLog from './audit-log';
 import {
-    IconActivity,
-    IconFiles,
-    IconFlask,
-    IconListCheck,
     IconListDetails,
-    IconPrescription,
-    IconScan,
-    IconStethoscope,
     IconUserCode,
 } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';

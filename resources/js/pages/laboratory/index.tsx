@@ -5,11 +5,7 @@ import SearchField from '@/components/search-field';
 import TableList from '@/components/table';
 import type { Pages } from '@/types/pagination';
 import type { LaboratoryTableList } from '@/components/laboratory/list';
-import {
-    IconFlaskFilled,
-    IconStethoscope,
-    IconUserEdit,
-} from '@tabler/icons-react';
+import { IconFlaskFilled, IconStethoscope, IconUserEdit } from '@tabler/icons-react';
 import { Button } from '@/components/ui/button';
 import DeleteButton from '@/components/delete-button';
 import {
@@ -19,6 +15,7 @@ import {
 import { getPatientDetails } from '@/actions/App/Http/Controllers/PatientController';
 import { Label } from '@/components/ui/label';
 import { getConsultationDetails } from '@/actions/App/Http/Controllers/ConsultationController';
+import personDefault from '@/assets/images/profile/person-default.png';
 
 interface InertiaProps {
     laboratoryList: {
@@ -70,7 +67,7 @@ export default function LaboratoryList() {
                                                             className="rounded-circle"
                                                             width="40"
                                                             height="40"
-                                                            src="../assets/images/profile/user-2.jpg"
+                                                            src={personDefault}
                                                         />
                                                     </div>
                                                     <div className="ms-3">

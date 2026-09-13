@@ -17,7 +17,6 @@ import {
 } from '@tabler/icons-react';
 import { useState } from 'react';
 import logoText from '@/assets/images/logos/logo_text.png';
-import userImg from '@/assets/images/profile/user-1.jpg';
 import {
     consultations,
     dashboard,
@@ -32,6 +31,7 @@ import {
     billing,
     cashier,
 } from '@/routes';
+import personDefault from '@/assets/images/profile/person-default.png';
 
 type NavSidebarProps = {
     toggleSidebar: () => void;
@@ -168,7 +168,7 @@ export default function NavSidebar({ toggleSidebar }: NavSidebarProps) {
                 <div className="hstack gap-3">
                     <div className="john-img">
                         <img
-                            src={userImg}
+                            src={personDefault}
                             className="rounded-circle"
                             width="40"
                             height="40"
