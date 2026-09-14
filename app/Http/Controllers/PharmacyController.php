@@ -2,12 +2,82 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pharmacy;
+use App\Models\DiscountType;
+use App\Models\Payment;
+use App\Models\PaymentMethod;
+use App\Services\PharmacyService;
+use App\Services\PatientService;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class PharmacyController extends Controller
 {
-    public function index()
+    public function getPharmacyList(Request $request, ?string $status = null): Response
     {
-        return Inertia::render('pharmacy/index', []);
+        $pharmacyList = app(PharmacyService::class)->getPharmacyList(
+            $request->keyword,
+            $status,
+            $request->path(),
+        );
+
+        return Inertia::render('pharmacy/index', compact(
+            'pharmacyList',
+        ));
+    }
+
+    public function getPharmacyDetails(Request $request, string $pharmacyId): Response
+    {
+        $pharmacyDetails = app(PharmacyService::class)->getPharmacyDetails($pharmacyId);
+        $patientDetails = app(PatientService::class)->getPatientDetails($pharmacyDetails['patient_id']);
+
+        return Inertia::render('pharmacy/details/index', compact(
+            'pharmacyDetails',
+            'patientDetails',
+        ));
+    }
+
+    public function updateDetails(Request $request): void
+    {
+        $details = $request->all();
+
+        app(PharmacyService::class)->updateDetails($details);
+    }
+
+    public function deletePharmacy(string $id): void
+    {
+        Pharmacy::destroy($id);
+    }
+
+    public function completePharmacy(string $id): void
+    {
+        app(PharmacyService::class)->completePharmacy($id);
+    }
+
+    public function addOrUpdatePayment(Request $request): RedirectResponse
+    {
+        $paymentDetails = $request->only(
+            'pharmacy_id',
+            'patient_id',
+            'visit_id',
+            'payment_id',
+            'payment_method_id',
+            'reference_number',
+            'total_amount',
+            'amount_received',
+            'amount_change',
+        );
+
+        // to refresh usePage props
+        return back()->with([
+            'paymentDetails' => app(PharmacyService::class)->addOrUpdatePayment($paymentDetails)
+        ]);
+    }
+
+    public function getAuditLog(string $id): array
+    {
+        return app(PharmacyService::class)->getAuditLog($id);
     }
 }

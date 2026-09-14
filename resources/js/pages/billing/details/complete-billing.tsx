@@ -8,6 +8,7 @@ const ConfirmBilling = () => {
     const { billingDetails } = usePage().props as unknown as {
         billingDetails: {
             id: string;
+            moveToText: string;
         };
     };
 
@@ -16,7 +17,7 @@ const ConfirmBilling = () => {
             requestMethod="PATCH"
             url={completeBilling(billingDetails.id).url}
             msg={
-                'This will move the patient to "Cashier" and the billing will be marked as completed!'
+                'This will move the patient to "' + billingDetails.moveToText + '" and the billing will be marked as completed!'
             }
             title="Complete Billing"
             successTitle="Success!"

@@ -65,8 +65,8 @@ class LaboratoryService
             $laboratoryList = $laboratoryList->where('is_completed', true);
         } else {
             $laboratoryList = $laboratoryList->whereHas('visit', function ($query) {
-                $query->where('is_completed', false)
-                    ->where('visit_status_id', VisitStatusEnum::IN_LABORATORY);
+                $query->where('visit_status_id', VisitStatusEnum::IN_LABORATORY)
+                    ->where('is_completed', false);
             });
         }
 

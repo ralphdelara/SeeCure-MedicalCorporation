@@ -17,7 +17,9 @@ const CompleteCashier = () => {
             requestMethod="PATCH"
             url={completeCashier(cashierDetails.id).url}
             msg={
-                'This will move the patient to "' + cashierDetails.moveToText + '" and the cashier will be marked as completed!'
+                cashierDetails.moveToText !== 'Completed'
+                ? 'This will move the patient to "' + cashierDetails.moveToText + '" and the cashier will be marked as completed!'
+                : 'This will complete the Patient Visit.'
             }
             title="Complete Cashier"
             successTitle="Success!"

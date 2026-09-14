@@ -82,7 +82,8 @@ class ConsultationService
             $consultationList = $consultationList->where('is_completed', true);
         } else {
             $consultationList = $consultationList->whereHas('visit', function ($query) {
-                $query->where('visit_status_id', VisitStatusEnum::IN_CONSULTATION);
+                $query->where('visit_status_id', VisitStatusEnum::IN_CONSULTATION)
+                    ->where('is_completed', false);
             });
         }
 
@@ -418,7 +419,6 @@ class ConsultationService
             $laboratoryId,
             $radiologyId,
         );
-
 
         app(CashierService::class)->storeCashier(
             $visit->patient->id,
