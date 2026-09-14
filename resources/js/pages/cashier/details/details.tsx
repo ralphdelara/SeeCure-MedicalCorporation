@@ -110,7 +110,7 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                 totalNettPrice += parseFloat(product.nett_price);
             }
         });
-console.log(totalPrice);
+
         return {
             totalCostPrice: totalCostPrice,
             totalPrice: totalPrice,
@@ -259,16 +259,10 @@ console.log(totalPrice);
                                                                 type="text"
                                                                 id={quantityId}
                                                                 value={(data[item.id as keyof typeof data] as any)?.quantity ?? ''}
-                                                                onChange={(e) =>
-                                                                    computeNettPrice(
-                                                                        item.id,
-                                                                        'quantity',
-                                                                        e.target.value,
-                                                                    )
-                                                                }
                                                                 className="form-control"
                                                                 placeholder="0.00"
                                                                 style={{ width: '100px' }}
+                                                                readOnly={true}
                                                                 maxLength={10}
                                                             />
                                                         </div>

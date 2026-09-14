@@ -15,9 +15,12 @@ use App\Models\CashierDetail;
 use App\Models\Inventory;
 use App\Models\Patient;
 use App\Models\Payment;
+use App\Models\Pharmacy;
+use App\Models\PharmacyDetail;
 use App\Models\Visit;
 use Arr;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 
 class CashierService
@@ -61,7 +64,8 @@ class CashierService
             $cashierList = $cashierList->where('is_completed', true);
         } else {
             $cashierList = $cashierList->whereHas('visit', function ($query) {
-                $query->where('visit_status_id', VisitStatusEnum::IN_CASHIER);
+                $query->where('visit_status_id', VisitStatusEnum::IN_CASHIER)
+                    ->where('is_completed', false);
             });
         }
 
@@ -95,8 +99,16 @@ class CashierService
         return $cashier->id;
     }
 
-    public function storeCashierDetails(Billing $billing): void
+    public function storeCashierDetails(Billing $billing, ?array $pharmacyDetails = null): void
     {
+        $pharmacyQuantity = [];
+
+        if (!empty($pharmacyDetails)) {
+            $prescriptionIds = array_column(array_column($pharmacyDetails, 'prescription'), 'id');
+            $pharmacyQuantity = array_column($pharmacyDetails, 'pharmacy_quantity');
+            $pharmacyQuantity = array_combine($prescriptionIds, $pharmacyQuantity);
+        }
+
         // to prevent cashier details duplicate
         if (! empty($billing->cashier?->details->toArray())) {
             return;
@@ -126,18 +138,29 @@ class CashierService
             $prescriptionData = [];
 
             foreach ($prescriptions as $prescription) {
+                $quantity = $prescription->quantity;
+
+                if (array_key_exists($prescription->id, $pharmacyQuantity)) {
+                    // use the quantity defined by pharmacy
+                    $quantity = $pharmacyQuantity[$prescription->id];
+                }
+
                 $costPrice = $prescription->inventory_id ? $inventoryPrices[$prescription->inventory_id]['selling_price_vat_exclusive'] : 0;
-                $totalPrice = $costPrice * $prescription->quantity;
+                $totalPrice = $costPrice * $quantity;
                 $taxPercent = $prescription->inventory_id ? $inventoryPrices[$prescription->inventory_id]['vat_percent'] : 0;
                 $taxAmount = $totalPrice * ($taxPercent / 100);
                 $nettPrice = $totalPrice + $taxAmount;
 
+                if (empty($prescription->inventory_id)) {
+                    continue;
+                }
+
                 $prescriptionData[] = [
                     'cashier_id'       => $billing->cashier->id,
                     'cashier_type_id'  => CashierTypeEnum::PRESCRIPTION,
-                    'name'             => $prescription->inventory_name.(empty($prescription->inventory_id) ? ' (Outside Drug)' : ''),
+                    'name'             => $prescription->inventory_name,
                     'cost_price'       => $costPrice,
-                    'quantity'         => $prescription->quantity,
+                    'quantity'         => $quantity,
                     'total_price'      => $totalPrice,
                     'tax_percent'      => $taxPercent,
                     'tax_amount'       => $taxAmount,
@@ -261,7 +284,7 @@ class CashierService
 
         CashierViewed::dispatch($cashier);
 
-        $moveToText = 'Pharmacy';
+        $moveToText = 'Completed';
 
         if (app(VisitService::class)->hasPending($cashier->visit->laboratory?->toArray() ?? [])) {
             $moveToText = 'Laboratory';
@@ -303,9 +326,9 @@ class CashierService
                 'visit_status_id' => VisitStatusEnum::IN_RADIOLOGY,
             ]);
         } else {
-            // move to pharmacy
+            // complete the patient visit
             Visit::find($cashier->visit->id)->update([
-                'visit_status_id' => VisitStatusEnum::IN_PHARMACY,
+                'visit_status_id' => VisitStatusEnum::COMPLETED,
             ]);
         }
     }

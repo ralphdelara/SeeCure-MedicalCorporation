@@ -391,6 +391,7 @@ namespace App\Models{
  * @property bool $is_completed
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereIsCompleted($value)
  * @mixin \Eloquent
+ * @property-read int|null $laboratory_count
  */
 	class Consultation extends \Eloquent {}
 }
@@ -1293,6 +1294,11 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * @property-read \App\Models\Consultation|null $consultation
+ * @property-read \App\Models\User|null $createdBy
+ * @property-read \App\Models\User|null $lastModifiedBy
+ * @property-read \App\Models\Patient|null $patient
+ * @property-read \App\Models\Visit|null $visit
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy query()
@@ -1302,9 +1308,83 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * @property int $id
+ * @property string $pharmacy_id
+ * @property int $audit_type_id
+ * @property string $data
+ * @property string $created_by
+ * @property \Carbon\CarbonImmutable $created_at
+ * @property-read \App\Models\AuditType $auditType
+ * @property-read \App\Models\User $createdBy
+ * @property-read \App\Models\Pharmacy $pharmacy
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyAudit newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyAudit newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyAudit query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyAudit whereAuditTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyAudit whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyAudit whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyAudit whereData($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyAudit whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyAudit wherePharmacyId($value)
+ */
+	class PharmacyAudit extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property string $id
+ * @property string $pharmacy_id
+ * @property string $prescription_id
+ * @property string $prescription_quantity
+ * @property string $pharmacy_quantity
+ * @property string $created_by
+ * @property string|null $last_modified_by
+ * @property \Carbon\CarbonImmutable|null $created_at
+ * @property \Carbon\CarbonImmutable|null $updated_at
+ * @property-read \App\Models\Consultation|null $consultation
+ * @property-read \App\Models\User $createdBy
+ * @property-read \App\Models\User|null $lastModifiedBy
+ * @property-read \App\Models\Patient|null $patient
+ * @property-read \App\Models\Visit|null $visit
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetail newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetail newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetail query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetail whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetail whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetail whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetail whereLastModifiedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetail wherePharmacyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetail wherePharmacyQuantity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetail wherePrescriptionId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetail wherePrescriptionQuantity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetail whereUpdatedAt($value)
+ */
+	class PharmacyDetail extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property string $pharmacy_id
+ * @property string $prescription_id
+ * @property string $prescription_quantity
+ * @property string $pharmacy_quantity
+ * @property string $created_by
+ * @property string|null $last_modified_by
+ * @property \Carbon\CarbonImmutable|null $created_at
+ * @property \Carbon\CarbonImmutable|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetails newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetails newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetails query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetails whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetails whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetails whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetails whereLastModifiedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetails wherePharmacyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetails wherePharmacyQuantity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetails wherePrescriptionId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetails wherePrescriptionQuantity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetails whereUpdatedAt($value)
  */
 	class PharmacyDetails extends \Eloquent {}
 }

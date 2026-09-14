@@ -58,7 +58,8 @@ class BillingService
             $billingList = $billingList->where('is_completed', true);
         } else {
             $billingList = $billingList->whereHas('visit', function ($query) {
-                $query->where('visit_status_id', VisitStatusEnum::IN_BILLING);
+                $query->where('visit_status_id', VisitStatusEnum::IN_BILLING)
+                    ->where('is_completed', false);
             });
         }
 
@@ -200,6 +201,12 @@ class BillingService
                 $query->select('id');
             },
             'visit.consultation' => function ($query) {
+                $query->select('id', 'visit_id', 'is_completed');
+            },
+            'visit.laboratory' => function ($query) {
+                $query->select('id', 'visit_id');
+            },
+            'visit.radiology' => function ($query) {
                 $query->select('id', 'visit_id');
             },
         ])->find($billingId);
@@ -210,17 +217,58 @@ class BillingService
 
         BillingViewed::dispatch($billing);
 
-        return $billing->toArray();
+        $moveToText = 'Cashier';
+
+        if (
+            !app(VisitService::class)->hasPending($billing->visit->laboratory?->toArray() ?? [])
+            && !app(VisitService::class)->hasPending($billing->visit->radiology?->toArray() ?? [])
+            && $billing->visit->consultation->is_completed
+        ) {
+            // move to pharmacy if theres no pending lab or radio and if consultation is completed
+            $moveToText = 'Pharmacy';
+        }
+
+        $billing = $billing->toArray();
+        $billing['moveToText'] = $moveToText;
+
+        return $billing;
     }
 
     public function completeBilling(string $id)
     {
-        $billing = Billing::with('visit', 'cashier', 'visit.consultation.prescriptions')
-            ->find($id);
+        $billing = Billing::with(
+            'visit',
+            'visit.laboratory',
+            'visit.radiology',
+            'visit.consultation',
+            'cashier',
+            'visit.consultation.prescriptions'
+        )->find($id);
 
         $billing->update([
             'is_completed' => true,
         ]);
+
+        $visit = $billing->visit;
+
+        $hasLabPending = app(VisitService::class)->hasPending($visit->laboratory?->toArray() ?? []);
+        $hasRadioPending = app(VisitService::class)->hasPending($visit->radiology?->toArray() ?? []);
+
+        // move to pharmacy first not cashier for prescription qty if doctor is done in consultation
+        if (!$hasLabPending && !$hasRadioPending && $billing->visit->consultation->is_completed) {
+            Visit::find($billing->visit->id)->update([
+                'visit_status_id' => VisitStatusEnum::IN_PHARMACY,
+            ]);
+
+            app(PharmacyService::class)->storePharmacy(
+                $billing->patient_id,
+                $billing->visit->id,
+                $billing->visit->consultation->id,
+                $billing->id,
+            );
+
+            return;
+        }
 
         // move to cashier
         Visit::find($billing->visit->id)->update([

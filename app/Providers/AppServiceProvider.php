@@ -12,6 +12,8 @@ use App\Models\ConsultationDiagnosisIcd10Code;
 use App\Models\ConsultationSoap;
 use App\Models\Inventory;
 use App\Models\InventoryStockMovement;
+use App\Models\Pharmacy;
+use App\Models\PharmacyDetail;
 use App\Models\Prescription;
 use App\Observers\BillingDetailObserver;
 use App\Observers\BillingObserver;
@@ -23,6 +25,8 @@ use App\Observers\ConsultationObserver;
 use App\Observers\ConsultationSoapObserver;
 use App\Observers\InventoryObserver;
 use App\Observers\InventoryStockMovementObserver;
+use App\Observers\PharmacyDetailObserver;
+use App\Observers\PharmacyObserver;
 use App\Observers\PrescriptionObserver;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Schema\Blueprint;
@@ -74,6 +78,8 @@ class AppServiceProvider extends ServiceProvider
         CashierDetail::observe(CashierDetailObserver::class);
         Inventory::observe(InventoryObserver::class);
         InventoryStockMovement::observe(InventoryStockMovementObserver::class);
+        Pharmacy::observe(PharmacyObserver::class);
+        PharmacyDetail::observe(PharmacyDetailObserver::class);
     }
 
     /**

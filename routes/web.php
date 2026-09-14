@@ -15,6 +15,7 @@ use App\Http\Controllers\PrintController;
 use App\Http\Controllers\SystemController;
 use App\Http\Controllers\UserController;
 use App\Models\DiscountType;
+use App\Services\PharmacyService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -92,6 +93,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
     });
 
+    Route::prefix('pharmacy')->group(function () {
+        Route::get('/{status?}', [PharmacyController::class, 'getPharmacyList'])->name('pharmacy');
+        Route::post('/', [PharmacyController::class, 'addOrUpdatePharmacy'])->name('pharmacy.add-or-update');
+        Route::prefix('/details')->group(function () {
+            Route::get('/{id}', [PharmacyController::class, 'getPharmacyDetails'])->name('pharmacy.details');
+            Route::get('/{id}/audit-log', [PharmacyController::class, 'getAuditLog'])->name('pharmacy.details.audit-log');
+            Route::patch('/', [PharmacyController::class, 'updateDetails'])->name('pharmacy.details.update');
+            Route::patch('/complete/{id}', [PharmacyController::class, 'completePharmacy'])->name('pharmacy.completed');
+        });
+    });
+
     Route::inertia('radiology', 'radiology')->name('radiology');
     Route::prefix('inventory')->group(function () {
         Route::get('/', [InventoryController::class, 'index'])->name('inventory');
@@ -129,10 +141,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/city/{cityId}/barangay', [AddressController::class, 'getBarangayList'])->name('address.barangays');
     });
 
-    Route::prefix('pharmacy')->group(function () {
-        Route::get('/', [PharmacyController::class, 'index'])->name('pharmacy');
-    });
-
     Route::prefix('settings')->group(function () {
         Route::get('/icd10-codes', [Icd10CodeController::class, 'getIcd10Codes']);
     });
@@ -142,15 +150,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::get('/testt', function () {
-        DiscountType::find(1)->update([
-            'name' => Crypt::encryptString('Senior'),
-        ]);
-        DiscountType::find(2)->update([
-            'name' => Crypt::encryptString('PWD'),
-        ]);
-        DiscountType::find(3)->update([
-            'name' => Crypt::encryptString('Promo'),
-        ]);
+        app(PharmacyService::class)->completePharmacy('01a09f98-2820-7290-b751-cd382be48d74');
     });
     Route::inertia('/test-socket', 'test-reverb')->name('test');
     Route::get('/test-socket-send', function (Request $request) {

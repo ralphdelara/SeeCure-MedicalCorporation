@@ -49,7 +49,8 @@ class RadiologyService
             $billingList = $billingList->where('is_completed', true);
         } else {
             $billingList = $billingList->whereHas('visit', function ($query) {
-                $query->where('visit_status_id', VisitStatusEnum::IN_BILLING);
+                $query->where('visit_status_id', VisitStatusEnum::IN_RADIOLOGY)
+                    ->where('is_completed', false);
             });
         }
 
