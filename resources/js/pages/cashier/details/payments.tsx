@@ -20,8 +20,8 @@ interface PaymentDetailsProps {
     patient_id: string;
     visit_id: string;
     payment_id: string;
-    payment_method_id: string|number;
-    reference_number: string|number;
+    payment_method_id: string | number;
+    reference_number: string | number;
     total_amount: string;
     amount_received: string;
     amount_change: string;
@@ -132,13 +132,26 @@ const Payments = ({ showTab }: { showTab: boolean }) => {
 
     const printReceipt = () => {};
 
+    const isPaid = () => {
+        if (paymentDetails) {
+            return paymentDetails.receipt_sequence !== '';
+        }
+
+        return false;
+    };
+
     return (
         <>
             <div className={'tab-content mt-3' + (!showTab ? ' hidden' : '')}>
                 <div className="tab-pane fade show active" role="tabpanel" tabIndex={1}>
                     <form onSubmit={submitDetails}>
                         <div className="me-4">
-                            <SaveButton type="Payments" isDirty={isDirty} hideSaveButton={true} />
+                            <SaveButton
+                                type="Payments"
+                                isDirty={isDirty}
+                                hideSaveButton={true}
+                                isPaid={isPaid()}
+                            />
                         </div>
                         <div className="row g-3 mb-5 w-100">
                             <div className="col-md-8">
@@ -190,13 +203,13 @@ const Payments = ({ showTab }: { showTab: boolean }) => {
                                                                 <small>{item.type.name}</small>
                                                             </td>
                                                             <td style={{ textAlign: 'right' }}>
-                                                                {formatMoney(item.cost_price)}
+                                                                {formatMoney(item.cost_price ?? 0)}
                                                             </td>
                                                             <td style={{ textAlign: 'right' }}>
-                                                                {item.quantity}
+                                                                {item.quantity ?? 0}
                                                             </td>
                                                             <td style={{ textAlign: 'right' }}>
-                                                                {formatMoney(item.total_price)}
+                                                                {formatMoney(item.total_price ?? 0)}
                                                             </td>
                                                         </tr>
                                                     ))}

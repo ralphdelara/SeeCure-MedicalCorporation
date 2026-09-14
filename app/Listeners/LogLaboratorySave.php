@@ -30,6 +30,10 @@ class LogLaboratorySave implements ShouldQueue
             $data = $this->updated($laboratory, $savedFields, $originalFields);
         }
 
+        if (empty($data)) {
+            return;
+        }
+
         LaboratoryAudit::create([
             'laboratory_id' => $laboratory->id,
             'audit_type_id' => $type === 'created' ? AuditTypeEnum::ADD : AuditTypeEnum::UPDATE,

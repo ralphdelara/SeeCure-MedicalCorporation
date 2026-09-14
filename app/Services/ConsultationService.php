@@ -2,19 +2,23 @@
 
 namespace App\Services;
 
+use App\Enums\BillingTypeEnum;
 use App\Enums\SignsOrSymptomEnum;
 use App\Enums\VisitStatusEnum;
 use App\Events\ConsultationViewed;
 use App\Events\Icd10CodeSaved;
 use App\Events\SignsOrSymptomsSaved;
+use App\Models\BillingDetail;
 use App\Models\Consultation;
 use App\Models\ConsultationAudit;
 use App\Models\ConsultationDiagnosis;
 use App\Models\ConsultationDiagnosisIcd10Code;
 use App\Models\ConsultationSoap;
 use App\Models\Icd10Code;
+use App\Models\Laboratory;
 use App\Models\Patient;
 use App\Models\Prescription;
+use App\Models\Radiology;
 use App\Models\Visit;
 use Arr;
 use Illuminate\Database\Eloquent\Builder;
@@ -144,6 +148,19 @@ class ConsultationService
             'prescriptions.lastModifiedBy',
             'prescriptions.lastModifiedBy.professions',
             'prescriptions.lastModifiedBy.specialties',
+            'laboratory',
+            'laboratory.testData.test',
+            'laboratory.testData.fields.field',
+            'laboratory.testData.fields.createdBy' => function ($query) {
+                $query->select('id', 'first_name', 'middle_name', 'last_name');
+            },
+            'laboratory.testData.fields.createdBy.professions',
+            'laboratory.testData.fields.createdBy.specialties',
+            'laboratory.testData.fields.lastModifiedBy' => function ($query) {
+                $query->select('id', 'first_name', 'middle_name', 'last_name');
+            },
+            'laboratory.testData.fields.lastModifiedBy.professions',
+            'laboratory.testData.fields.lastModifiedBy.specialties',
         ])->find($consultationId);
 
         if (empty($consultation)) {
@@ -360,7 +377,9 @@ class ConsultationService
 
     public function completeConsultation(string $consultationId)
     {
-        $consultation = Consultation::with('visit')->find($consultationId);
+        $consultation = Consultation::with('visit', 'visit.billing', 'visit.laboratory', 'visit.patient', 'visit.consultation', 'visit.radiology')
+            ->find($consultationId);
+        $visit = $consultation->visit;
 
         if ($consultation->is_completed) {
             abort(404);
@@ -370,6 +389,44 @@ class ConsultationService
             'is_completed' => true,
         ]);
 
+        $hasLabPending = app(VisitService::class)->hasPending($visit->laboratory?->toArray() ?? []);
+        $hasRadioPending = app(VisitService::class)->hasPending($visit->radiology?->toArray() ?? []);
+
+        // check if has pending laboratory or radiology before moving to Billing
+        $laboratoryId = null;
+        $radiologyId = null;
+        if ($hasLabPending) {
+            $laboratoryId = Laboratory::where('is_completed', false)->get()->first()->id;
+        }
+        if ($hasRadioPending) {
+            $radiologyId = Radiology::where('is_completed', false)->get()->first()->id;
+        }
+
+        if ($hasLabPending || $hasRadioPending) {
+            // set to null to prevent adding consultation in billing if has pending
+            $consultationId = null;
+        } else {
+            // set to consultationId to proceed with consultation fee
+            $consultationId = $consultation->id;
+        }
+
+        // if laboratoryId and radiologyId is null then proceed to consultation fee
+        $billingId = app(BillingService::class)->storeBilling(
+            $visit->patient->id,
+            $visit->id,
+            $consultationId,
+            $laboratoryId,
+            $radiologyId,
+        );
+
+
+        app(CashierService::class)->storeCashier(
+            $visit->patient->id,
+            $visit->id,
+            $billingId,
+        );
+
+        // set visit status to billing
         Visit::find($consultation->visit->id)->update([
             'visit_status_id' => VisitStatusEnum::IN_BILLING,
         ]);

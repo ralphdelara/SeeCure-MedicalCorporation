@@ -1,3 +1,4 @@
+import { NormalRangeProps } from '@/pages/laboratory/details/details-test-fields';
 import type { InertiaLinkProps } from '@inertiajs/react';
 import { clsx } from 'clsx';
 import type { ClassValue } from 'clsx';
@@ -34,11 +35,14 @@ export function getExactAge(startDate: string, endDate: string) {
     return { years, months, days };
 }
 
-export function formatMoney(amount: string) {
-    return '₱' + parseFloat(amount).toLocaleString('en-US', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-    });
+export function formatMoney(amount: string | number) {
+    return (
+        '₱' +
+        parseFloat(amount.toString()).toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        })
+    );
 }
 
 export async function fetchUrl(url: string, method: string, data: object) {
@@ -104,5 +108,37 @@ export function getUrlParams(param: string, defaultValue?: string) {
 }
 
 export function convertSnakeToTitleCase(word: string) {
-    return word.replace(/_/g, ' ').replace(/\b\w/g, match => match.toUpperCase());
+    return word.replace(/_/g, ' ').replace(/\b\w/g, (match) => match.toUpperCase());
+}
+
+const parseNormalRange = (min: string, max: string) => {
+    if (min === '') {
+        return max;
+    }
+
+    if (max === '') {
+        return max;
+    }
+
+    return min + ' - ' + max;
+};
+
+export function getNormalRange(field: NormalRangeProps, gender_id: number) {
+    const normalRangeBothMin = field.normal_range_both_min ?? '';
+    const normalRangeFemaleMin = field.normal_range_female_min ?? '';
+    const normalRangeMaleMin = field.normal_range_male_min ?? '';
+
+    const normalRangeBothMax = field.normal_range_both_max ?? '';
+    const normalRangeFemaleMax = field.normal_range_female_max ?? '';
+    const normalRangeMaleMax = field.normal_range_male_max ?? '';
+
+    if (gender_id === 1) {
+        // 1 - Female
+        return parseNormalRange(normalRangeFemaleMin, normalRangeFemaleMax);
+    } else if (gender_id === 2) {
+        // 2 - Male
+        return parseNormalRange(normalRangeMaleMin, normalRangeMaleMax);
+    } else {
+        return parseNormalRange(normalRangeBothMin, normalRangeBothMax);
+    }
 }

@@ -27,14 +27,12 @@ class VisitService
 
     public function hasPending(array $arrayData): bool
     {
-        $hasPending = false;
-
         foreach ($arrayData as $data) {
             if (!$data['is_completed']) {
-                $hasPending = true;
+                return true;
             }
         }
 
-        return $hasPending;
+        return false;
     }
 }

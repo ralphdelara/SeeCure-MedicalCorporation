@@ -50,6 +50,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::delete('/prescription/{prescriptionId}', [ConsultationController::class, 'deletePrescription'])->name('consultation.details.delete.prescription');
             Route::post('/call-out', [ConsultationController::class, 'callOutPatient'])->name('consultation.call-out');
             Route::patch('/complete/{consultationId}', [ConsultationController::class, 'completeConsultation'])->name('consultation.completed');
+            Route::post('/laboratory/add', [ConsultationController::class, 'addLaboratory'])->name('add.laboratory');
         });
     });
 

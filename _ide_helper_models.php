@@ -692,8 +692,9 @@ namespace App\Models{
  * @property numeric $quantity
  * @property numeric $new_stock
  * @property numeric $total_price
- * @property string|null $manufacture_date
- * @property string|null $expiry_date
+ * @property string $lot_no
+ * @property \Carbon\CarbonImmutable $manufacture_date
+ * @property \Carbon\CarbonImmutable $expiry_date
  * @property string|null $supplier
  * @property string|null $reference_no
  * @property string $created_by
@@ -701,9 +702,9 @@ namespace App\Models{
  * @property \Carbon\CarbonImmutable|null $created_at
  * @property \Carbon\CarbonImmutable|null $updated_at
  * @property-read \App\Models\User $createdBy
- * @property-read \App\Models\StockMovementType $inventory
+ * @property-read \App\Models\Inventory $inventory
  * @property-read \App\Models\User|null $lastModifiedBy
- * @property-read \App\Models\Inventory|null $stockMovementType
+ * @property-read \App\Models\StockMovementType $stockMovementType
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryStockMovement newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryStockMovement newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryStockMovement query()
@@ -715,6 +716,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryStockMovement whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryStockMovement whereInventoryId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryStockMovement whereLastModifiedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryStockMovement whereLotNo($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryStockMovement whereManufactureDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryStockMovement whereNewStock($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryStockMovement whereQuantity($value)
@@ -965,6 +967,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestFieldData whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestFieldData whereValue($value)
  * @mixin \Eloquent
+ * @property int $order_no
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestFieldData whereOrderNo($value)
  */
 	class LaboratoryTestFieldData extends \Eloquent {}
 }

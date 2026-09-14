@@ -150,9 +150,9 @@ class Consultation extends Model
         return $this->hasMany(Prescription::class);
     }
 
-    public function laboratory(): HasOne
+    public function laboratory(): HasMany
     {
-        return $this->hasOne(Laboratory::class);
+        return $this->hasMany(Laboratory::class);
     }
 
     public function radiology(): HasOne

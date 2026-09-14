@@ -9,7 +9,6 @@ use App\Events\BillingViewed;
 use App\Models\Billing;
 use App\Models\BillingAudit;
 use App\Models\BillingDetail;
-use App\Models\Cashier;
 use App\Models\Laboratory;
 use App\Models\Patient;
 use App\Models\Visit;
@@ -32,6 +31,7 @@ class BillingService
                 $query->select('id', 'name');
             },
             'details',
+            'details.type',
             'createdBy' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name');
             },
@@ -79,7 +79,7 @@ class BillingService
     public function storeBilling(
         string $patientId,
         string $visitId,
-        ?string $billingId,
+        ?string $consultationId,
         ?string $laboratoryId,
         ?string $radiologyId,
     ): string {
@@ -90,7 +90,11 @@ class BillingService
             'last_modified_by' => Auth::id(),
         ]);
 
-        if (! empty($billingId)) {
+        $totalPrice = 0;
+        $totalDiscount = 0;
+        $totalNettPrice = 0;
+
+        if (! empty($consultationId)) {
             BillingDetail::create([
                 'billing_id'       => $billing->id,
                 'billing_type_id'  => BillingTypeEnum::CONSULTATION,
@@ -101,32 +105,56 @@ class BillingService
         }
 
         if (! empty($laboratoryId)) {
-            $labDetails = [];
-
-            $laboratory = Laboratory::with('testData', 'testData.fields')->find($laboratoryId);
-
-            foreach ($laboratory->testData as $data) {
-                $test = LaboratoryTestEnum::tryFrom($data->laboratory_test_id);
-
-                $labDetails[] = [
-                    'billing_id'       => $billing->id,
-                    'billing_type_id'  => BillingTypeEnum::CONSULTATION,
-                    'name'             => $test?->description() ?? 'N/A',
-                    'price'            => $test?->price(),
-                    'nett_price'       => $test?->price(),
-                    'created_by'       => Auth::id(),
-                    'last_modified_by' => Auth::id(),
-                ];
-            }
-
-            BillingDetail::fillAndInsert($labDetails);
+            $labCosts = $this->storeLabBilling($billing->id, $laboratoryId);
+            $totalPrice += $labCosts['totalPrice'];
+            $totalNettPrice += $labCosts['totalNettPrice'];
         }
 
         if (! empty($radiologyId)) {
 
         }
 
+        Billing::find($billing->id)->update([
+            'total_price'      => $totalPrice,
+            'total_discount'   => $totalDiscount,
+            'total_tax_amount' => $totalNettPrice - ($totalPrice - $totalDiscount),
+            'total_nett_price' => $totalNettPrice,
+        ]);
+
         return $billing->id;
+    }
+
+    public function storeLabBilling(string $billingId, string $laboratoryId): array
+    {
+        $labDetails = [];
+        $totalPrice = 0;
+        $totalNettPrice = 0;
+
+        $laboratory = Laboratory::with('testData', 'testData.fields')->find($laboratoryId);
+
+        foreach ($laboratory->testData as $data) {
+            $testEnum = LaboratoryTestEnum::tryFrom($data->laboratory_test_id);
+
+            $totalPrice += $testEnum?->price();
+            $totalNettPrice += $testEnum?->price();
+
+            $labDetails[] = [
+                'billing_id'       => $billingId,
+                'billing_type_id'  => BillingTypeEnum::LABORATORY,
+                'name'             => $testEnum?->description() ?? 'N/A',
+                'price'            => $testEnum?->price(),
+                'nett_price'       => $testEnum?->price(),
+                'created_by'       => Auth::id(),
+                'last_modified_by' => Auth::id(),
+            ];
+        }
+
+        BillingDetail::fillAndInsert($labDetails);
+
+        return [
+            'totalPrice'     => $totalPrice,
+            'totalNettPrice' => $totalNettPrice,
+        ];
     }
 
     public function getSmallPendingBillingList(): array
@@ -157,6 +185,7 @@ class BillingService
                 $query->select('id', 'name');
             },
             'details',
+            'details.type',
             'details.createdBy' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name');
             },

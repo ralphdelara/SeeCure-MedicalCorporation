@@ -88,13 +88,13 @@ class LaboratoryService
     public function storeLaboratory(
         ?string $visitId,
         ?string $patientId,
-        ?string $laboratoryId,
+        ?string $consultationId,
         array $laboratoryDetails,
     ): string {
         $laboratory = Laboratory::create([
             'visit_id'         => $visitId,
             'patient_id'       => $patientId,
-            'laboratory_id'    => $laboratoryId,
+            'consultation_id'  => $consultationId,
             'created_by'       => Auth::id(),
             'last_modified_by' => Auth::id(),
         ]);
@@ -217,7 +217,9 @@ class LaboratoryService
             'testData',
             'testData.type',
             'testData.test',
-            'testData.fields',
+            'testData.fields' => function ($query) {
+                $query->orderBy('order_no');
+            },
             'testData.fields.field',
             'createdBy' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name');
@@ -233,6 +235,14 @@ class LaboratoryService
 
         if (empty($laboratory)) {
             abort(404);
+        }
+
+        $moveToText = 'Completed';
+
+        if (app(VisitService::class)->hasPending($laboratory->visit->radiology?->toArray() ?? [])) {
+            $moveToText = 'Radiology';
+        } elseif ($laboratory->visit->has_consultation) {
+            $moveToText = 'Consultation';
         }
 
         LaboratoryViewed::dispatch($laboratory);
@@ -254,6 +264,7 @@ class LaboratoryService
         }
 
         $laboratory['test_data'] = $testFields;
+        $laboratory['moveToText'] = $moveToText;
 
         return $laboratory;
     }
@@ -328,6 +339,10 @@ class LaboratoryService
             ];
         }
 
+        if (empty($updateFields)) {
+            return;
+        }
+
         LaboratoryTestData::upsert(
             $tests,
             uniqueBy: ['id'],
@@ -380,6 +395,10 @@ class LaboratoryService
             ];
         }
 
+        if (empty($updateFields)) {
+            return;
+        }
+
         LaboratoryTestFieldData::upsert(
             $fields,
             uniqueBy: ['id'],
@@ -409,11 +428,9 @@ class LaboratoryService
 
         if (app(VisitService::class)->hasPending($laboratory->visit->radiology?->toArray() ?? [])) {
             // move to radiology if has pending radiology
-            foreach ($laboratory->visit->radiology as $radiology) {
-                Visit::find($laboratory->visit->id)->update([
-                    'visit_status_id' => VisitStatusEnum::IN_RADIOLOGY,
-                ]);
-            }
+            Visit::find($laboratory->visit->id)->update([
+                'visit_status_id' => VisitStatusEnum::IN_RADIOLOGY,
+            ]);
         } elseif ($laboratory->visit->has_consultation) {
             // move to consultation
             Visit::find($laboratory->visit->id)->update([
@@ -424,6 +441,10 @@ class LaboratoryService
             // because only one consultation data is allowed per visit
             Consultation::find($laboratory->visit->consultation->id)->update([
                 'is_completed' => false,
+            ]);
+        } else {
+            Visit::find($laboratory->visit->id)->update([
+                'visit_status_id' => VisitStatusEnum::COMPLETED,
             ]);
         }
     }

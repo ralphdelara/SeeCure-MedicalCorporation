@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\CallOut;
 use App\Models\Consultation;
 use App\Models\InventoryCategory;
+use App\Models\Laboratory;
 use App\Models\LaboratoryTestType;
 use App\Models\Prescription;
 use App\Models\Relationship;
@@ -132,6 +133,36 @@ class ConsultationController extends Controller
     public function completeConsultation(string $consultationId): void
     {
         app(ConsultationService::class)->completeConsultation($consultationId);
+    }
+
+    public function addLaboratory(Request $request): void
+    {
+        $laboratoryDetails = $request->only(
+            'consultation_id',
+            'patient_id',
+            'visit_id',
+            'laboratory_id',
+            'laboratory_package_id',
+            'other_test_ids',
+        );
+
+        // Prevent adding new record if has pending laboratory
+        $pendingLabCount = Laboratory::where('consultation_id', $laboratoryDetails['consultation_id'])
+            ->where('is_completed', false)->count();
+
+        if ($pendingLabCount > 0) {
+            return;
+        }
+
+        $patientId = $laboratoryDetails['patient_id'];
+        $visitId = $laboratoryDetails['visit_id'];
+        $consultationId = $laboratoryDetails['consultation_id'];
+
+        unset($laboratoryDetails['consultation_id']);
+        unset($laboratoryDetails['patient_id']);
+        unset($laboratoryDetails['visit_id']);
+
+        app(LaboratoryService::class)->storeLaboratory($visitId, $patientId, $consultationId, $laboratoryDetails);
     }
 
     public function printPrescription()
