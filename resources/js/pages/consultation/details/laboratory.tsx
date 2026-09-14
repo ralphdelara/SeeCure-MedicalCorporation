@@ -150,7 +150,7 @@ const Laboratory = ({ showTab }: { showTab: boolean }) => {
                                     )})}
                                     {laboratory.length === 0 && (
                                         <tr>
-                                            <td colSpan={5} className="text-center">
+                                            <td colSpan={5} className="text-center fs-6 text-danger">
                                                 No record
                                             </td>
                                         </tr>
