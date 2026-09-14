@@ -80,7 +80,7 @@ const ConsultationForm = ({ data, setData, errors = {} }: QueuePatientFormProps)
                     </div>
                 </div>
             </div>
-            <div className="form-group mb-3">
+            <div className="form-group">
                 <Label htmlFor="doctor-id" className="form-label">
                     Doctor *
                 </Label>
@@ -92,6 +92,22 @@ const ConsultationForm = ({ data, setData, errors = {} }: QueuePatientFormProps)
                     id="doctor-id"
                 />
                 <InputError message={errors.doctor_id} className="mt-2" />
+            </div>
+            <div className="form-group mb-3">
+                <Label htmlFor="doctor-id" className="form-label">
+                    Reason for Consult
+                </Label>
+
+                <Input
+                    value={data.consult_reason}
+                    onChange={(e) => setData('consult_reason', e.target.value)}
+                    id="consult_reason"
+                    type="text"
+                    className="form-control"
+                    placeholder="ex. Backache"
+                    maxLength={100}
+                />
+                <InputError message={errors.consult_reason} className="mt-2" />
             </div>
 
             <SignsOrSymptomsForm data={data} setData={setData} errors={errors} />

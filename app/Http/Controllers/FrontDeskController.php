@@ -256,6 +256,7 @@ class FrontDeskController extends Controller
             'doctor_id',
             'consultation_types_id',
             'signs_or_symptoms_id',
+            'consult_reason',
         );
         $vitalSigns = $request->vital_signs;
 
