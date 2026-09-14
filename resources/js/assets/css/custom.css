@@ -98,38 +98,42 @@ nav ul.pagination li:not(.active) > a.page-link:hover {
 
 /* Spin */
 .animate-rotate {
-  animation: spin-clockwise 2s linear infinite;
+    animation: spin-clockwise 2s linear infinite;
 }
 
 .animate-rotate-reverse {
-  animation: spin-counter-clockwise 2s linear infinite;
+    animation: spin-counter-clockwise 2s linear infinite;
 }
 
 @keyframes spin-clockwise {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 /* Spin */
 
 /* Reset List */
 .html-list-reset ol {
-  list-style-type: decimal !important;
-  padding-left: 40px !important;
-  margin-top: 1em !important;
-  margin-bottom: 1em !important;
+    list-style-type: decimal !important;
+    padding-left: 40px !important;
+    margin-top: 1em !important;
+    margin-bottom: 1em !important;
 }
 
 .html-list-reset ul {
-  list-style-type: disc !important;
-  padding-left: 40px !important;
-  margin-top: 1em !important;
-  margin-bottom: 1em !important;
+    list-style-type: disc !important;
+    padding-left: 40px !important;
+    margin-top: 1em !important;
+    margin-bottom: 1em !important;
 }
 
 .html-list-reset li {
-  display: list-item !important;
-  list-style-position: outside !important;
-  margin-bottom: 0.25em !important;
+    display: list-item !important;
+    list-style-position: outside !important;
+    margin-bottom: 0.25em !important;
 }
 /* Reset List */
 
