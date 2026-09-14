@@ -47,6 +47,7 @@ const Details = ({ showTab }: { showTab: boolean }) => {
         guardian_relationship_id: consultationDetails.guardian_relationship_id ?? '',
         signs_or_symptoms_id: getIdsFromArrayData(consultationDetails.signs_or_symptoms ?? []),
         doctor_id: consultationDetails.doctor.id,
+        consult_reason: consultationDetails.consult_reason,
     });
 
     const submitDetails = (e: React.SubmitEvent<HTMLFormElement>) => {
@@ -176,6 +177,20 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                                         e.target.value,
                                                     )
                                                 }
+                                            />
+                                            <Label htmlFor="consult_reason" className="form-label">
+                                                Reason for Consult
+                                            </Label>
+                                            <Input
+                                                value={data.consult_reason}
+                                                onChange={(e) =>
+                                                    setData('consult_reason', e.target.value)
+                                                }
+                                                id="consult_reason"
+                                                type="text"
+                                                className="form-control"
+                                                placeholder="ex. Med cert"
+                                                maxLength={100}
                                             />
                                         </div>
                                     </div>

@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Events\CallOut;
-use App\Models\Consultation;
 use App\Models\InventoryCategory;
 use App\Models\Laboratory;
-use App\Models\LaboratoryTestType;
+use App\Models\PatientVitalSign;
 use App\Models\Prescription;
 use App\Models\Relationship;
 use App\Models\SignsOrSymptom;
@@ -72,7 +71,7 @@ class ConsultationController extends Controller
 
     public function updateDetails(Request $request): void
     {
-        $details = $request->only('id', 'guardian_name', 'guardian_contact_number', 'guardian_email', 'guardian_relationship_id', 'signs_or_symptoms_id', 'doctor_id');
+        $details = $request->only('id', 'guardian_name', 'guardian_contact_number', 'guardian_email', 'guardian_relationship_id', 'signs_or_symptoms_id', 'doctor_id', 'consult_reason');
 
         app(ConsultationService::class)->updateDetails($details);
     }
@@ -112,9 +111,35 @@ class ConsultationController extends Controller
         app(ConsultationService::class)->addOrUpdatePrescription($prescriptionDetails);
     }
 
+    public function addOrUpdateVitalSigns(Request $request): void
+    {
+        $request->validate([
+            'patient_vital_sign_id' => 'required',
+            'consultation_id'       => 'required',
+            'vital_sign_id'         => 'required',
+            'vital_sign_field_id'   => 'required',
+            'value'                 => 'required',
+        ]);
+
+        $vitalSignDetails = $request->only(
+            'patient_vital_sign_id',
+            'consultation_id',
+            'vital_sign_id',
+            'vital_sign_field_id',
+            'value',
+        );
+
+        app(ConsultationService::class)->addOrUpdateVitalSigns($vitalSignDetails);
+    }
+
     public function deletePrescription(string $id): void
     {
         Prescription::destroy($id);
+    }
+
+    public function deleteVitalSigns(string $patientVitalSignsId): void
+    {
+        PatientVitalSign::destroy($patientVitalSignsId);
     }
 
     public function callOutPatient(Request $request): void
@@ -165,8 +190,5 @@ class ConsultationController extends Controller
         app(LaboratoryService::class)->storeLaboratory($visitId, $patientId, $consultationId, $laboratoryDetails);
     }
 
-    public function printPrescription()
-    {
-        
-    }
+    public function printPrescription() {}
 }

@@ -17,9 +17,11 @@ use App\Models\ConsultationSoap;
 use App\Models\Icd10Code;
 use App\Models\Laboratory;
 use App\Models\Patient;
+use App\Models\PatientVitalSign;
 use App\Models\Prescription;
 use App\Models\Radiology;
 use App\Models\Visit;
+use App\Models\VitalSign;
 use Arr;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -134,6 +136,12 @@ class ConsultationService
             'patientVitalSign.vitalSignField' => function ($query) {
                 $query->select('id', 'name', 'unit');
             },
+            'patientVitalSign.createdBy',
+            'patientVitalSign.createdBy.professions',
+            'patientVitalSign.createdBy.specialties',
+            'patientVitalSign.lastModifiedBy',
+            'patientVitalSign.lastModifiedBy.professions',
+            'patientVitalSign.lastModifiedBy.specialties',
             'doctor' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name');
             },
@@ -169,8 +177,9 @@ class ConsultationService
         }
 
         ConsultationViewed::dispatch($consultation);
+        $consultation = $consultation->toArray();
 
-        return $consultation->toArray();
+        return $consultation;
     }
 
     public function storeConsultation(
@@ -186,6 +195,7 @@ class ConsultationService
             'guardian_email'           => $consultDetails['guardian_email'],
             'guardian_relationship_id' => $consultDetails['guardian_relationship_id'],
             'doctor_id'                => $consultDetails['doctor_id'],
+            'consult_reason'           => $consultDetails['consult_reason'],
             'created_by'               => Auth::id(),
             'last_modified_by'         => Auth::id(),
         ]);
@@ -287,6 +297,20 @@ class ConsultationService
         Prescription::updateOrCreate(
             ['id' => $id],
             $prescriptionDetails,
+        );
+    }
+
+    public function addOrUpdateVitalSigns(array $vitalSignDetails): void
+    {
+        if (empty($vitalSignDetails['patient_vital_sign_id'])) {
+            $vitalSignDetails['created_by'] = Auth::id();
+        }
+
+        $vitalSignDetails['last_modified_by'] = Auth::id();
+
+        PatientVitalSign::updateOrCreate(
+            ['id' => $vitalSignDetails['patient_vital_sign_id']],
+            $vitalSignDetails
         );
     }
 

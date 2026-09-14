@@ -75,6 +75,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
     'guardian_contact_number',
     'guardian_email',
     'guardian_relationship_id',
+    'consult_reason',
     'is_completed',
     'doctor_id',
     'created_by',

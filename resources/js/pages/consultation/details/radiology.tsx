@@ -35,7 +35,7 @@ const Radiology = ({showTab}: {showTab: boolean}) => {
                                     </Button>
                                 </div>
                                 <div className="col-lg-12">
-                                    <h4 className="fw-bolder">Radiology</h4>
+                                    <h4 className="fw-bolder">Radiology (Under maintenance)</h4>
                                 </div>
                                 <TableList header={header} hasPage={false}>
                                     <tr>

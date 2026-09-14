@@ -52,6 +52,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::patch('/diagnosis', [ConsultationController::class, 'updateDiagnosis'])->name('consultation.details.update.diagnosis');
             Route::post('/prescription', [ConsultationController::class, 'addOrUpdatePrescription'])->name('consultation.details.add-or-update.prescription');
             Route::delete('/prescription/{prescriptionId}', [ConsultationController::class, 'deletePrescription'])->name('consultation.details.delete.prescription');
+            Route::delete('/vital-signs/{patientVitalSignsId}', [ConsultationController::class, 'deleteVitalSigns'])->name('consultation.details.delete.vital-signs');
+            Route::post('/vital-signs', [ConsultationController::class, 'addOrUpdateVitalSigns'])->name('consultation.details.add-or-update.vital-signs');
             Route::post('/call-out', [ConsultationController::class, 'callOutPatient'])->name('consultation.call-out');
             Route::patch('/complete/{consultationId}', [ConsultationController::class, 'completeConsultation'])->name('consultation.completed');
             Route::post('/laboratory/add', [ConsultationController::class, 'addLaboratory'])->name('add.laboratory');

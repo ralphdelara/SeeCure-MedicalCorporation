@@ -35,7 +35,7 @@ const Documents = () => {
                                     </Button>
                                 </div>
                                 <div className="col-lg-12">
-                                    <h4 className="fw-bolder">Documents</h4>
+                                    <h4 className="fw-bolder">Documents (Under maintenance)</h4>
                                 </div>
                                 <TableList header={header} hasPage={false}>
                                     <tr>
