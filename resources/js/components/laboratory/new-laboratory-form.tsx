@@ -78,7 +78,7 @@ const NewLaboratoryForm = ({ data, setData, errors = {} }: AddOrUpdateLaboratory
 
     return (
         <>
-            <div className="row mb-2">
+            <div className="row mb-3">
                 <Select
                     value={data.laboratory_package_id}
                     onChange={(e) => togglePackage(e.target.value)}

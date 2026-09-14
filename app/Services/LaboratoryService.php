@@ -88,13 +88,13 @@ class LaboratoryService
     public function storeLaboratory(
         ?string $visitId,
         ?string $patientId,
-        ?string $laboratoryId,
+        ?string $consultationId,
         array $laboratoryDetails,
     ): string {
         $laboratory = Laboratory::create([
             'visit_id'         => $visitId,
             'patient_id'       => $patientId,
-            'laboratory_id'    => $laboratoryId,
+            'consultation_id'  => $consultationId,
             'created_by'       => Auth::id(),
             'last_modified_by' => Auth::id(),
         ]);
@@ -217,7 +217,9 @@ class LaboratoryService
             'testData',
             'testData.type',
             'testData.test',
-            'testData.fields',
+            'testData.fields' => function ($query) {
+                $query->orderBy('order_no');
+            },
             'testData.fields.field',
             'createdBy' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name');
@@ -337,6 +339,10 @@ class LaboratoryService
             ];
         }
 
+        if (empty($updateFields)) {
+            return;
+        }
+
         LaboratoryTestData::upsert(
             $tests,
             uniqueBy: ['id'],
@@ -387,6 +393,10 @@ class LaboratoryService
                 'last_modified_by'         => Auth::id(),
                 'updated_at'               => now(),
             ];
+        }
+
+        if (empty($updateFields)) {
+            return;
         }
 
         LaboratoryTestFieldData::upsert(

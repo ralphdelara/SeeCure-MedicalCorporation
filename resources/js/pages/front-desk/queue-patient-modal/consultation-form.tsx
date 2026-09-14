@@ -5,6 +5,8 @@ import { Label } from '@/components/ui/label';
 import { Select } from '@/components/ui/select';
 import type { Options } from '@/types/options';
 import type { QueuePatientFormProps } from './types';
+import SignsOrSymptomsForm from '@/components/consultation/signs-or-symptoms-form';
+import VitalSignsForm from '@/components/vital-signs/vital-signs-form';
 
 interface InertiaProps {
     doctors: Options[];
@@ -91,6 +93,9 @@ const ConsultationForm = ({ data, setData, errors = {} }: QueuePatientFormProps)
                 />
                 <InputError message={errors.doctor_id} className="mt-2" />
             </div>
+
+            <SignsOrSymptomsForm data={data} setData={setData} errors={errors} />
+            <VitalSignsForm data={data} setData={setData} />
         </div>
     );
 };

@@ -28,7 +28,7 @@ const VitalSignsForm = ({ data, setData }: VitalSignsFormProps) => {
     };
 
     return (
-        <section role="tabpanel" className="body current">
+        <section role="tabpanel" className="body current mb-3">
             <Label className="form-label fs-5">Vital Signs</Label>
             <div className="row g-4">
                 {vitalSigns.map((item, index) => {

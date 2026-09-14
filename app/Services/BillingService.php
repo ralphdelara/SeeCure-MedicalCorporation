@@ -9,7 +9,6 @@ use App\Events\BillingViewed;
 use App\Models\Billing;
 use App\Models\BillingAudit;
 use App\Models\BillingDetail;
-use App\Models\Cashier;
 use App\Models\Laboratory;
 use App\Models\Patient;
 use App\Models\Visit;
@@ -106,28 +105,9 @@ class BillingService
         }
 
         if (! empty($laboratoryId)) {
-            $labDetails = [];
-
-            $laboratory = Laboratory::with('testData', 'testData.fields')->find($laboratoryId);
-
-            foreach ($laboratory->testData as $data) {
-                $testEnum = LaboratoryTestEnum::tryFrom($data->laboratory_test_id);
-
-                $totalPrice += $testEnum?->price();
-                $totalNettPrice += $testEnum?->price();
-
-                $labDetails[] = [
-                    'billing_id'       => $billing->id,
-                    'billing_type_id'  => BillingTypeEnum::LABORATORY,
-                    'name'             => $testEnum?->description() ?? 'N/A',
-                    'price'            => $testEnum?->price(),
-                    'nett_price'       => $testEnum?->price(),
-                    'created_by'       => Auth::id(),
-                    'last_modified_by' => Auth::id(),
-                ];
-            }
-
-            BillingDetail::fillAndInsert($labDetails);
+            $labCosts = $this->storeLabBilling($billing->id, $laboratoryId);
+            $totalPrice += $labCosts['totalPrice'];
+            $totalNettPrice += $labCosts['totalNettPrice'];
         }
 
         if (! empty($radiologyId)) {
@@ -142,6 +122,39 @@ class BillingService
         ]);
 
         return $billing->id;
+    }
+
+    public function storeLabBilling(string $billingId, string $laboratoryId): array
+    {
+        $labDetails = [];
+        $totalPrice = 0;
+        $totalNettPrice = 0;
+
+        $laboratory = Laboratory::with('testData', 'testData.fields')->find($laboratoryId);
+
+        foreach ($laboratory->testData as $data) {
+            $testEnum = LaboratoryTestEnum::tryFrom($data->laboratory_test_id);
+
+            $totalPrice += $testEnum?->price();
+            $totalNettPrice += $testEnum?->price();
+
+            $labDetails[] = [
+                'billing_id'       => $billingId,
+                'billing_type_id'  => BillingTypeEnum::LABORATORY,
+                'name'             => $testEnum?->description() ?? 'N/A',
+                'price'            => $testEnum?->price(),
+                'nett_price'       => $testEnum?->price(),
+                'created_by'       => Auth::id(),
+                'last_modified_by' => Auth::id(),
+            ];
+        }
+
+        BillingDetail::fillAndInsert($labDetails);
+
+        return [
+            'totalPrice'     => $totalPrice,
+            'totalNettPrice' => $totalNettPrice,
+        ];
     }
 
     public function getSmallPendingBillingList(): array

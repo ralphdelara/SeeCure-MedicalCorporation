@@ -106,20 +106,26 @@ class FrontDeskController extends Controller
             );
         }
 
-        // billing id for payment data
-        $billingId = app(BillingService::class)->storeBilling(
-            $patientId,
-            $visitId,
-            $consultationId,
-            $laboratoryId,
-            $radiologyId,
-        );
+        // set consultationIdForBilling to null if theres a laboratory or radiology request
+        // because the patient is not yet consulted so there shouldnt be Consultation in billing
+        if (!empty($laboratoryId) || !empty($radiologyId)) {
+            $consultationIdForBilling = null;
+            // create billing and cashier data if there is a laboratory or radiology
+            // billing id for payment data
+            $billingId = app(BillingService::class)->storeBilling(
+                $patientId,
+                $visitId,
+                $consultationIdForBilling,
+                $laboratoryId,
+                $radiologyId,
+            );
 
-        app(CashierService::class)->storeCashier(
-            $patientId,
-            $visitId,
-            $billingId,
-        );
+            app(CashierService::class)->storeCashier(
+                $patientId,
+                $visitId,
+                $billingId,
+            );
+        }
     }
 
     public function validate(Request $request)

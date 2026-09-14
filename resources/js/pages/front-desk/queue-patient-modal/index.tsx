@@ -193,7 +193,7 @@ const QueuePatient = () => {
                                     {priorityTypeOptions.map((item, index) => (
                                         <div
                                             className={'col-md-4'}
-                                            key={'signsOrSymptoms-' + index}
+                                            key={'priorityType-' + index}
                                         >
                                             {item.id !== 3 && (
                                                 <div className="form-check form-check-inline">
@@ -203,7 +203,7 @@ const QueuePatient = () => {
                                                         id={'priority_type_ids-' + index}
                                                         value={item.id}
                                                         onChange={(e) => updatePriorityTypes(e)}
-                                                        name="signs-or-symptoms"
+                                                        name="priority-type"
                                                         checked={data.priority_type_ids.includes(
                                                             item.id,
                                                         )}
@@ -225,14 +225,6 @@ const QueuePatient = () => {
                                 </div>
 
                                 <MedicalServices data={data} setData={setData} errors={errors} />
-                                {data.has_consultation === 1 && (
-                                    <SignsOrSymptomsForm
-                                        data={data}
-                                        setData={setData}
-                                        errors={errors}
-                                    />
-                                )}
-                                <VitalSignsForm data={data} setData={setData} />
                             </div>
                         </div>
                     </Modal.Body>

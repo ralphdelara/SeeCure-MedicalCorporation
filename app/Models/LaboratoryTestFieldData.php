@@ -55,6 +55,8 @@ class LaboratoryTestFieldData extends Model
     {
         return [
             'value' => 'encrypted',
+            'created_at' => 'date:M d, Y h:i a',
+            'updated_at' => 'date:M d, Y h:i a',
         ];
     }
 

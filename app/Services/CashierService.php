@@ -98,7 +98,7 @@ class CashierService
     public function storeCashierDetails(Billing $billing): void
     {
         // to prevent cashier details duplicate
-        if (! empty($billing->cashier->details->toArray())) {
+        if (! empty($billing->cashier?->details->toArray())) {
             return;
         }
 
