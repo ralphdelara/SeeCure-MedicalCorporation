@@ -5,6 +5,7 @@ use App\Http\Controllers\AddressController;
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\CashierController;
 use App\Http\Controllers\ConsultationController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FrontDeskController;
 use App\Http\Controllers\Icd10CodeController;
 use App\Http\Controllers\InventoryController;
@@ -22,7 +23,9 @@ use Illuminate\Support\Facades\Route;
 Route::permanentRedirect('/', '/login');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::inertia('dashboard', 'dashboard')->name('dashboard');
+    Route::prefix('dashboard')->group(function () {
+        Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    });
     Route::prefix('front-desk')->group(function () {
         Route::get('/', [FrontDeskController::class, 'index'])->name('front-desk');
         Route::post('/', [FrontDeskController::class, 'queue'])->name('front-desk.queue');
@@ -104,7 +107,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
     });
 
-    Route::inertia('radiology', 'radiology')->name('radiology');
+    Route::inertia('radiology/{radiologyId?}', 'radiology')->name('radiology');
     Route::prefix('inventory')->group(function () {
         Route::get('/', [InventoryController::class, 'index'])->name('inventory');
         Route::prefix('details')->group(function () {
