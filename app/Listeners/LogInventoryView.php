@@ -29,8 +29,8 @@ class LogInventoryView implements ShouldQueue
 
             // this prevents duplicate view log if same user keeps refreshing the page
             if (
-                $previousRow->createdBy->id !== Auth::id()
-                || $minutesDifference <= 9
+                $previousRow->createdBy->id === Auth::id()
+                && $minutesDifference <= 5
             ) {
                 return;
             }
