@@ -27,11 +27,9 @@ class LogLaboratoryView implements ShouldQueue
             $minutesDifference = $createdAt->diffInMinutes(now());
 
             // this prevents duplicate view log if same user keeps refreshing the page
-            /** @var \App\Models\User $creator */
-            $creator = $previousRow->createdBy;
             if (
-                $creator->id !== Auth::id()
-                || $minutesDifference <= 9
+                $previousRow->createdBy->id === Auth::id()
+                && $minutesDifference <= 5
             ) {
                 return;
             }
