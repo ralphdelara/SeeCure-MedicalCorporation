@@ -222,7 +222,7 @@ class BillingService
         if (
             !app(VisitService::class)->hasPending($billing->visit->laboratory?->toArray() ?? [])
             && !app(VisitService::class)->hasPending($billing->visit->radiology?->toArray() ?? [])
-            && $billing->visit->consultation->is_completed
+            && $billing->visit->consultation?->is_completed
         ) {
             // move to pharmacy if theres no pending lab or radio and if consultation is completed
             $moveToText = 'Pharmacy';
