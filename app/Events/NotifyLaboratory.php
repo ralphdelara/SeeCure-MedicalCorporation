@@ -17,13 +17,9 @@ class NotifyLaboratory implements ShouldBroadcastNow
      */
     public function __construct(
         public string $name,
-        public int $totalCount,
         public string $message,
-    ) {
-        $this->name = $name;
-        $this->totalCount = $totalCount;
-        $this->message = $message;
-    }
+        public int $totalCount,
+    ) {}
 
     /**
      * Get the channels the event should broadcast on.

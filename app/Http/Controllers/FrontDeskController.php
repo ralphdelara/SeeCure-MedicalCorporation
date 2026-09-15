@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\PriorityTypeEnum;
 use App\Enums\VisitStatusEnum;
+use App\Events\NotifyBilling;
 use App\Events\NotifyDoctor;
 use App\Models\Patient;
 use App\Models\PriorityType;
@@ -13,7 +14,6 @@ use App\Models\Visit;
 use App\Models\VitalSign;
 use App\Services\BillingService;
 use App\Services\CashierService;
-use App\Services\PaymentService;
 use App\Services\ConsultationService;
 use App\Services\DoctorService;
 use App\Services\LaboratoryService;
@@ -108,7 +108,7 @@ class FrontDeskController extends Controller
 
         // set consultationIdForBilling to null if theres a laboratory or radiology request
         // because the patient is not yet consulted so there shouldnt be Consultation in billing
-        if (!empty($laboratoryId) || !empty($radiologyId)) {
+        if (! empty($laboratoryId) || ! empty($radiologyId)) {
             $consultationIdForBilling = null;
             // create billing and cashier data if there is a laboratory or radiology
             // billing id for payment data
@@ -125,6 +125,28 @@ class FrontDeskController extends Controller
                 $visitId,
                 $billingId,
             );
+
+            broadcast(new NotifyBilling(
+                'Notification',
+                'Patient has been placed in billing',
+                Visit::where('visit_status_id', VisitStatusEnum::IN_BILLING)->count(),
+            ));
+
+            app(VisitService::class)->notifyFrontDesk();
+        }
+
+        if (
+            $request->has_laboratory === 0
+            && $request->has_radiology === 0
+            && $request->has_consultation === 1
+        ) {
+            broadcast(new NotifyDoctor(
+                'Notification',
+                'Patient has been placed in consultation',
+                Visit::where('visit_status_id', VisitStatusEnum::IN_CONSULTATION)->count(),
+            ));
+
+            app(VisitService::class)->notifyFrontDesk();
         }
     }
 
@@ -261,14 +283,6 @@ class FrontDeskController extends Controller
         $vitalSigns = $request->vital_signs;
 
         $consultationId = app(ConsultationService::class)->storeConsultation($visitId, $patientId, $consultDetails);
-
-        /*
-                    broadcast(new NotifyDoctor(
-                        'Notification',
-                        'A new patient has been queued',
-                        1,
-                        $consultDetails['doctor_id'],
-                    ));*/
 
         app(PatientVitalSignService::class)->storeVitalSigns($patientId, $consultationId, $vitalSigns);
 

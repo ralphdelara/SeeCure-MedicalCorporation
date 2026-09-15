@@ -195,7 +195,7 @@ class ConsultationService
             'guardian_email'           => $consultDetails['guardian_email'],
             'guardian_relationship_id' => $consultDetails['guardian_relationship_id'],
             'doctor_id'                => $consultDetails['doctor_id'],
-            'consult_reason'           => $consultDetails['consult_reason'],
+            'consult_reason'           => $consultDetails['consult_reason'] ?? '',
             'created_by'               => Auth::id(),
             'last_modified_by'         => Auth::id(),
         ]);

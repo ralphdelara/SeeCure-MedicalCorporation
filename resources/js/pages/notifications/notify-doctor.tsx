@@ -54,9 +54,10 @@ const NotifyDoctor = () => {
 
     useEffect(() => {
         // Listening to your Laravel Echo channel
-        echo.channel('consultation-' + auth.user.id).listen(
+        echo.channel('consultation').listen(
             'NotifyDoctor',
-            (e: { name: string; message: string; count: number; doctorId: string }) => {
+            (e: { name: string; message: string; count: number;}) => {
+                console.log(e.message);
                 // Fire the audio sound effect
                 playSound();
 
@@ -70,7 +71,7 @@ const NotifyDoctor = () => {
         );
 
         return () => {
-            echo.leaveChannel('consultation-' + auth.user.id);
+            echo.leaveChannel('consultation');
         };
     }, []);
 

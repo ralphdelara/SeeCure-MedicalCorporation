@@ -18,10 +18,7 @@ class CallOut implements ShouldBroadcastNow
     public function __construct(
         public string $patientName,
         public string $department,
-    ) {
-        $this->patientName = $patientName;
-        $this->department = $department;
-    }
+    ) {}
 
     /**
      * Get the channels the event should broadcast on.

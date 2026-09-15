@@ -42,38 +42,134 @@ return new class extends OneTimeOperation
 
         ]);
 
-        UserProfession::create([
-            'user_id'       => $user->id, // SYSTEM USER
-            'profession_id' => 6, // Other
-        ]);
+        $firstNames = [
+            'Ralph',
+            'Gio',
+            'Tweeny',
+            'Riva',
+            'Alecsandra',
+            'Dezenith',
+            'Robelyn',
+            'Atela Marie',
+            'Nene',
+            'Donna',
+            'Lyka',
+            'Amria Canice',
+            'Bianca Ysobel',
+            'Charles Eugene',
+            'Christian Paulo',
+            'Keziah Emm',
+            'Lyka Loraine',
+            'Palomar',
+            'Arnelie',
+            'Keith Louise',
+            'Mary Angela',
+            'Riva',
+            'Riezl Antonette',
+            'Tricia Ann',
+            'Ma. Angel',
+        ];
 
-        $user2 = User::create([
-            'first_name' => 'Lyka Loraine',
-            'last_name'  => 'Zulueta',
-            'username'   => 'lykaz',
-            'password'   => Hash::make('chintot'),
-            'gender_id'  => 1, // Female
+        $lastNames = [
+            'De Lara',
+            'Solano',
+            'Arboleda',
+            'Esponilla',
+            'Gacote',
+            'Nedic',
+            'Tolsa',
+            'Taningco',
+            'Nene',
+            'Alcazarin',
+            'Lyka',
+            'Laude',
+            'Tabaar',
+            'Villanoche',
+            'Reyes',
+            'Miraflor',
+            'Zulueta',
+            'Palomar',
+            'Fenera',
+            'Vega',
+            'Rasgo',
+            'Esponilla',
+            'Mationg',
+            'Soquiat',
+            'Silverio',
+        ];
 
-            'status' => true,
+        $middleNames = [
+            '',
+            'M',
+            'R',
+            'N',
+            'G',
+            'V',
+            'M',
+            '',
+            'N',
+            'N',
+            'l',
+            'N',
+            'S',
+            '.',
+            'T',
+            'S',
+            'N',
+            '.',
+            'D',
+            'R',
+            'V',
+            'N',
+            'T',
+            'A',
+            'N',
+        ];
 
-            'department_id' => 2, // Consultation
-            'position_id'   => 6, // GP
+        $userNames = [
+            'ralph',
+            'gio',
+            'tweenny',
+            'riva',
+            'alecs',
+            'dez',
+            'rob',
+            'atela',
+            'nene',
+            'don',
+            'lyka',
+            'amria',
+            'bianca',
+            'charles',
+            'christian',
+            'keziah',
+            'loraine',
+            'palomar',
+            'arnelie',
+            'louise',
+            'mary',
+            'riva',
+            'riezl',
+            'tricia',
+            'angel',
+        ];
 
-            'first_name_index' => 'Lyka Loraine',
-            'last_name_index'  => 'Zulueta',
-
-            'username_index' => 'lykaz',
-            'created_by'     => $user->id, // SYSTEM USER
-
-        ]);
-
-        UserProfession::create([
-            'user_id'       => $user2->id,
-            'profession_id' => 1, // Doctor
-        ]);
-        UserProfession::create([
-            'user_id'       => $user2->id,
-            'profession_id' => 2, // Med tech
-        ]);
+        foreach ($firstNames as $key => $data) {
+            User::create([
+                'username' => $userNames[$key],
+                'password' => Hash::make($userNames[$key]),
+                'last_name' => $lastNames[$key],
+                'first_name' => $data,
+                'middle_name' => $middleNames[$key],
+                'first_name_index' => $data,
+                'last_name_index'  => $lastNames[$key],
+                'username_index'   => $userNames[$key],
+                'department_id' => 1, // Admin
+                'position_id' => 1,
+            'status'           => true,
+                'created_by' => $user->id, // System User
+                'last_modified_by' => $user->id // System User
+            ]);
+        }
     }
 };

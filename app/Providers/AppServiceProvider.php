@@ -15,6 +15,7 @@ use App\Models\InventoryStockMovement;
 use App\Models\Pharmacy;
 use App\Models\PharmacyDetail;
 use App\Models\Prescription;
+use App\Models\Visit;
 use App\Observers\BillingDetailObserver;
 use App\Observers\BillingObserver;
 use App\Observers\CashierDetailObserver;
@@ -28,6 +29,7 @@ use App\Observers\InventoryStockMovementObserver;
 use App\Observers\PharmacyDetailObserver;
 use App\Observers\PharmacyObserver;
 use App\Observers\PrescriptionObserver;
+use App\Observers\VisitObserver;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\Grammars\PostgresGrammar;
@@ -68,6 +70,7 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');
         }
 
+        Visit::observe(VisitObserver::class);
         Consultation::observe(ConsultationObserver::class);
         ConsultationSoap::observe(ConsultationSoapObserver::class);
         ConsultationDiagnosis::observe(ConsultationDiagnosisObserver::class);
