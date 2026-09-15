@@ -4,7 +4,9 @@ import { useEffect, useRef, useState } from 'react';
 import {
     IconArrowsMaximize,
     IconArrowsMinimize,
+    IconBuildingBank,
     IconFlask,
+    IconPrescription,
     IconReportMoney,
     IconScan,
     IconStethoscope,
@@ -45,6 +47,8 @@ export default function CallOut() {
         Consultation: '',
         Laboratory: '',
         Radiology: '',
+        Pharmacy: '',
+        Billing: '',
         Cashier: '',
     });
 
@@ -69,6 +73,20 @@ export default function CallOut() {
             grad: 'grad-rose',
             ring: 'ring-rose',
             chip: 'chip-rose',
+        },
+        {
+            name: 'Billing',
+            icon: <IconBuildingBank />,
+            grad: 'grad-sky',
+            ring: 'ring-sky',
+            chip: 'chip-sky',
+        },
+        {
+            name: 'Pharmacy',
+            icon: <IconPrescription />,
+            grad: 'grad-violet',
+            ring: 'ring-violet',
+            chip: 'chip-violet',
         },
         {
             name: 'Cashier',
@@ -242,8 +260,8 @@ export default function CallOut() {
                                     <h2 className={'patient-name text-white ' + blinkText}>
                                         {calledDepartment.patientName}
                                     </h2>
-                                    <p className="proceed">
-                                        Please proceed to {calledDepartment.department}
+                                    <p className="proceed fs-9">
+                                        Please proceed to <span className="fw-bolder fs-10">{calledDepartment.department}</span>
                                     </p>
                                 </>
                             )}

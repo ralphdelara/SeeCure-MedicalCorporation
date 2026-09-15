@@ -2,6 +2,14 @@
 
 namespace App\Services;
 
+use App\Enums\VisitStatusEnum;
+use App\Events\NotifyBilling;
+use App\Events\NotifyCashier;
+use App\Events\NotifyDoctor;
+use App\Events\NotifyFrontDesk;
+use App\Events\NotifyLaboratory;
+use App\Events\NotifyPharmacy;
+use App\Events\NotifyRadiology;
 use App\Models\Visit;
 use Illuminate\Support\Facades\Auth;
 
@@ -28,11 +36,103 @@ class VisitService
     public function hasPending(array $arrayData): bool
     {
         foreach ($arrayData as $data) {
-            if (!$data['is_completed']) {
+            if (array_key_exists('is_completed', $data) && ! $data['is_completed']) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    public function notifyDepartments(Visit $visit): void
+    {
+        if (
+            $visit->visit_status_id
+            === VisitStatusEnum::IN_BILLING
+        ) {
+            $count = Visit::where('visit_status_id', VisitStatusEnum::IN_BILLING)->count();
+
+            broadcast(new NotifyBilling(
+                'Notification',
+                'Patient has been placed in billing',
+                $count,
+            ));
+        }
+
+        if (
+            $visit->visit_status_id
+            === VisitStatusEnum::IN_CASHIER
+        ) {
+            $count = Visit::where('visit_status_id', VisitStatusEnum::IN_CASHIER)->count();
+
+            broadcast(new NotifyCashier(
+                'Notification',
+                'Patient has been placed in cashier',
+                $count,
+            ));
+        }
+
+        if (
+            $visit->visit_status_id
+            === VisitStatusEnum::IN_PHARMACY
+        ) {
+            $count = Visit::where('visit_status_id', VisitStatusEnum::IN_PHARMACY)->count();
+
+            broadcast(new NotifyPharmacy(
+                'Notification',
+                'Patient has been placed in pharmacy',
+                $count,
+            ));
+        }
+
+        if (
+            $visit->visit_status_id
+            === VisitStatusEnum::IN_LABORATORY
+        ) {
+            $count = Visit::where('visit_status_id', VisitStatusEnum::IN_LABORATORY)->count();
+
+            broadcast(new NotifyLaboratory(
+                'Notification',
+                'Patient has been placed in laboratory',
+                $count,
+            ));
+        }
+
+        if (
+            $visit->visit_status_id
+            === VisitStatusEnum::IN_CONSULTATION
+        ) {
+            $count = Visit::where('visit_status_id', VisitStatusEnum::IN_CONSULTATION)->count();
+
+            broadcast(new NotifyDoctor(
+                'Notification',
+                'Patient has been placed in consultation',
+                $count,
+            ));
+        }
+
+        if (
+            $visit->visit_status_id
+            === VisitStatusEnum::IN_RADIOLOGY
+        ) {
+            $count = Visit::where('visit_status_id', VisitStatusEnum::IN_RADIOLOGY)->count();
+
+            broadcast(new NotifyRadiology(
+                'Notification',
+                'Patient has been placed in radiology',
+                $count,
+            ));
+        }
+
+        $this->notifyFrontDesk();
+    }
+
+    public function notifyFrontDesk(): void
+    {
+        broadcast(new NotifyFrontDesk(
+            'Notification',
+            '',
+            0,
+        ));
     }
 }

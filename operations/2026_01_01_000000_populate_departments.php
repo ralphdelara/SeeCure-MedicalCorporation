@@ -27,11 +27,13 @@ return new class extends OneTimeOperation
     {
         Department::fillAndInsert([
             ['name' => 'Administrator'],
+            ['name' => 'Billing'],
+            ['name' => 'Cashier'],
             ['name' => 'Consultation'],
-            ['name' => 'Finance'],
-            ['name' => 'Information Technology'],
+            ['name' => 'Front Desk'],
             ['name' => 'Laboratory'],
-            ['name' => 'Inventory'],
+            ['name' => 'Radiology'],
+            ['name' => 'Pharmacy'],
         ]);
     }
 };

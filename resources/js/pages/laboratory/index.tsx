@@ -1,11 +1,11 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import { Breadcrumbs } from '@/components/breadcrumbs';
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import SearchField from '@/components/search-field';
 import TableList from '@/components/table';
 import type { Pages } from '@/types/pagination';
 import type { LaboratoryTableList } from '@/components/laboratory/list';
-import { IconFlaskFilled, IconStethoscope, IconUserEdit } from '@tabler/icons-react';
+import { IconFlaskFilled, IconStethoscope, IconVolume, IconVolumeOff } from '@tabler/icons-react';
 import { Button } from '@/components/ui/button';
 import DeleteButton from '@/components/delete-button';
 import {
@@ -16,6 +16,8 @@ import { getPatientDetails } from '@/actions/App/Http/Controllers/PatientControl
 import { Label } from '@/components/ui/label';
 import { getConsultationDetails } from '@/actions/App/Http/Controllers/ConsultationController';
 import personDefault from '@/assets/images/profile/person-default.png';
+import { fetchUrl } from '@/lib/utils';
+import { callOutPatient } from '@/routes/system';
 
 interface InertiaProps {
     laboratoryList: {
@@ -42,6 +44,30 @@ export default function LaboratoryList() {
     };
     const { laboratoryList } = usePage().props as unknown as InertiaProps;
     const { tableData, pageData } = laboratoryList;
+    const [allowCallPatient, setAllowCallPatient] = useState(true);
+
+    const callPatient = async (patientName: string) => {
+        if (!allowCallPatient) return;
+
+        // Lock the button immediately BEFORE the network request starts
+        setAllowCallPatient(false);
+
+        try {
+            const response = await fetchUrl(callOutPatient().url, 'POST', {
+                patientName: patientName,
+                department: 'Laboratory',
+            });
+
+            // Handle your response here if needed
+        } catch (error) {
+            console.error('Failed to call patient:', error);
+            setAllowCallPatient(true);
+        } finally {
+            const timer = setTimeout(() => {
+                setAllowCallPatient(true);
+            }, 10000);
+        }
+    };
 
     return (
         <>
@@ -168,6 +194,25 @@ export default function LaboratoryList() {
                                             </div>
                                         </td>
                                         <td className="sticky-right">
+                                            <Button
+                                                rounded={true}
+                                                className="me-1"
+                                                title={
+                                                    allowCallPatient
+                                                        ? 'Call Patient'
+                                                        : 'Please wait...'
+                                                }
+                                                disabled={!allowCallPatient}
+                                                onClick={() => callPatient(item.patient.full_name)}
+                                            >
+                                                <i>
+                                                    {allowCallPatient && <IconVolume size={18} />}
+                                                    {!allowCallPatient && (
+                                                        <IconVolumeOff size={18} />
+                                                    )}
+                                                </i>
+                                            </Button>
+
                                             <Link href={getLaboratoryDetails(item.id)}>
                                                 <Button
                                                     rounded={true}

@@ -4,12 +4,15 @@ import SearchField from '@/components/search-field';
 import TableList from '@/components/table';
 import type { Pages } from '@/types/pagination';
 import type { BillingTableList } from '@/components/billing/list';
-import { IconReceipt } from '@tabler/icons-react';
+import { IconReceipt, IconVolume, IconVolumeOff } from '@tabler/icons-react';
 import { Button } from '@/components/ui/button';
 import { getBillingDetails } from '@/actions/App/Http/Controllers/BillingController';
 import { getPatientDetails } from '@/actions/App/Http/Controllers/PatientController';
 import { Options } from '@/types/options';
 import personDefault from '@/assets/images/profile/person-default.png';
+import { useState } from 'react';
+import { fetchUrl } from '@/lib/utils';
+import { callOutPatient } from '@/routes/system';
 
 interface InertiaProps {
     billingList: {
@@ -31,6 +34,30 @@ export default function Billing() {
     ];
     const { billingList } = usePage().props as unknown as InertiaProps;
     const { tableData, pageData } = billingList;
+    const [allowCallPatient, setAllowCallPatient] = useState(true);
+
+    const callPatient = async (patientName: string) => {
+        if (!allowCallPatient) return;
+
+        // Lock the button immediately BEFORE the network request starts
+        setAllowCallPatient(false);
+
+        try {
+            const response = await fetchUrl(callOutPatient().url, 'POST', {
+                patientName: patientName,
+                department: 'Billing',
+            });
+
+            // Handle your response here if needed
+        } catch (error) {
+            console.error('Failed to call patient:', error);
+            setAllowCallPatient(true);
+        } finally {
+            const timer = setTimeout(() => {
+                setAllowCallPatient(true);
+            }, 10000);
+        }
+    };
 
     return (
         <>
@@ -126,6 +153,25 @@ export default function Billing() {
                                             </div>
                                         </td>
                                         <td className="sticky-right">
+                                            <Button
+                                                rounded={true}
+                                                className="me-1"
+                                                title={
+                                                    allowCallPatient
+                                                        ? 'Call Patient'
+                                                        : 'Please wait...'
+                                                }
+                                                disabled={!allowCallPatient}
+                                                onClick={() => callPatient(item.patient.full_name)}
+                                            >
+                                                <i>
+                                                    {allowCallPatient && <IconVolume size={18} />}
+                                                    {!allowCallPatient && (
+                                                        <IconVolumeOff size={18} />
+                                                    )}
+                                                </i>
+                                            </Button>
+
                                             <Link href={getBillingDetails(item.id)}>
                                                 <Button
                                                     rounded={true}

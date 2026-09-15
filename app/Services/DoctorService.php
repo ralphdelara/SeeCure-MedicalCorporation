@@ -11,7 +11,7 @@ class DoctorService
     {
         return User::with(['department', 'professions', 'specialties', 'position'])
             ->select('id', 'first_name', 'middle_name', 'last_name')
-            ->where('department_id', 2) // Consultation
+            ->where('department_id', 4) // Consultation
             ->whereHas('professions', function ($query) {
                 $query->where('professions.id', 1); // Doctor
             })

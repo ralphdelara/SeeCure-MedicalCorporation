@@ -63,8 +63,8 @@ export default function Login({ status }: Props) {
                                         <InputError message={errors.password} />
                                     </div>
 
-                                    <div className="flex items-center space-x-3">
-                                        <Checkbox id="remember" name="remember" tabIndex={3} />
+                                    <div className="flex items-center space-x-3 hidden">
+                                        <Checkbox id="remember" name="remember" tabIndex={3} checked={true}/>
                                         <Label htmlFor="remember" className="form-label">
                                             Remember me
                                         </Label>

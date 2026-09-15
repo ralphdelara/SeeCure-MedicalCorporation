@@ -2,11 +2,17 @@ import { Link, usePage } from '@inertiajs/react';
 import { IconBellRinging, IconDots, IconLogout, IconMenu2, IconSearch } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import logoText from '@/assets/images/logos/logo_text.png';
-import { announcements, calendar, logout, notes, reminders } from '@/routes';
+import { announcements, calendar, frontDesk, logout, notes, reminders } from '@/routes';
 import { Button } from '@/components/ui/button';
 import { fetchUrl } from '@/lib/utils';
 import NotifyDoctor from '@/pages/notifications/notify-doctor';
 import personDefault from '@/assets/images/profile/person-default.png';
+import NotifyBilling from '@/pages/notifications/notify-billing';
+import NotifyPharmacy from '@/pages/notifications/notify-pharmacy';
+import NotifyCashier from '@/pages/notifications/notify-cashier';
+import NotifyLaboratory from '@/pages/notifications/notify-laboratory';
+import NotifyRadiology from '@/pages/notifications/notify-radiology';
+import NotifyFrontDesk from '@/pages/notifications/notify-front-desk';
 
 type NavHeaderProps = {
     toggleSidebar: () => void;
@@ -20,6 +26,7 @@ interface User {
 }
 
 export default function NavHeader({ toggleSidebar }: NavHeaderProps) {
+    const { url } = usePage();
     const [showTopNav, setShowTopNav] = useState(false);
     const { auth } = usePage().props as unknown as {
         auth: { user: User; professions: string[]; specialties: string[] };
@@ -433,9 +440,15 @@ export default function NavHeader({ toggleSidebar }: NavHeaderProps) {
                     </nav>
                 </div>
             </header>
-            {user.department.name === 'Consultation' &&
-                professions.includes('Doctor') &&
-                specialties.length === 0 && <NotifyDoctor />}
+            {user.department.name === 'Consultation' && <NotifyDoctor />}
+            {user.department.name === 'Billing' && <NotifyBilling />}
+            {user.department.name === 'Pharmacy' && <NotifyPharmacy />}
+            {user.department.name === 'Cashier' && <NotifyCashier />}
+            {user.department.name === 'Laboratory' && <NotifyLaboratory />}
+            {user.department.name === 'Radiology' && <NotifyRadiology />}
+            {user.department.name === 'FrontDesk' && <NotifyRadiology />}
+
+            {url.includes(frontDesk().url) && <NotifyFrontDesk/>}
         </>
     );
 }

@@ -19,7 +19,6 @@ class NotifyDoctor implements ShouldBroadcastNow
         public string $name,
         public string $message,
         public int $totalCount,
-        public string $doctorId,
     ) {}
 
     /**
@@ -30,7 +29,7 @@ class NotifyDoctor implements ShouldBroadcastNow
     public function broadcastOn(): array
     {
         return [
-            new Channel('consultation-'.$this->doctorId),
+            new Channel('consultation'),
         ];
     }
 }

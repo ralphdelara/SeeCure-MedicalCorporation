@@ -54,7 +54,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::delete('/prescription/{prescriptionId}', [ConsultationController::class, 'deletePrescription'])->name('consultation.details.delete.prescription');
             Route::delete('/vital-signs/{patientVitalSignsId}', [ConsultationController::class, 'deleteVitalSigns'])->name('consultation.details.delete.vital-signs');
             Route::post('/vital-signs', [ConsultationController::class, 'addOrUpdateVitalSigns'])->name('consultation.details.add-or-update.vital-signs');
-            Route::post('/call-out', [ConsultationController::class, 'callOutPatient'])->name('consultation.call-out');
             Route::patch('/complete/{consultationId}', [ConsultationController::class, 'completeConsultation'])->name('consultation.completed');
             Route::post('/laboratory/add', [ConsultationController::class, 'addLaboratory'])->name('add.laboratory');
         });
@@ -134,6 +133,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('system')->group(function () {
         Route::get('/', [SystemController::class, 'index'])->name('system');
         Route::get('/call-out', [SystemController::class, 'callOut'])->name('system.call-out');
+
+        Route::post('/call-out', [SystemController::class, 'callOutPatient'])->name('system.call-out-patient');
     });
 
     Route::inertia('announcements', 'announcements')->name('announcements');

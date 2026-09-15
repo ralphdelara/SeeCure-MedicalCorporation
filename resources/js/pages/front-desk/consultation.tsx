@@ -83,7 +83,7 @@ export default () => {
                                                 </span>
 
                                                 <h6 className="fs-2 fw-semibold mb-0">
-                                                    {item.consultation.doctor.full_name}
+                                                    {item.consultation?.doctor?.full_name}
                                                 </h6>
                                             </div>
                                         </div>

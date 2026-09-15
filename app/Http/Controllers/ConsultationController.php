@@ -142,14 +142,6 @@ class ConsultationController extends Controller
         PatientVitalSign::destroy($patientVitalSignsId);
     }
 
-    public function callOutPatient(Request $request): void
-    {
-        broadcast(new CallOut(
-            $request->patientName ?? '',
-            'Consultation',
-        ));
-    }
-
     public function getAuditLog(string $consultationId): array
     {
         return app(ConsultationService::class)->getAuditLog($consultationId);

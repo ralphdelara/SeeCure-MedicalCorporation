@@ -9,11 +9,11 @@ import { Button } from '@/components/ui/button';
 import { Fragment, useState } from 'react';
 import { getPatientDetails } from '@/actions/App/Http/Controllers/PatientController';
 import {
-    callOutPatient,
     getConsultationDetails,
 } from '@/actions/App/Http/Controllers/ConsultationController';
 import { fetchUrl } from '@/lib/utils';
 import personDefault from '@/assets/images/profile/person-default.png';
+import { callOutPatient } from '@/routes/system';
 
 interface InertiaProps {
     consultationList: {
@@ -54,6 +54,7 @@ export default function Consultation() {
         try {
             const response = await fetchUrl(callOutPatient().url, 'POST', {
                 patientName: patientName,
+                department: 'Consultation',
             });
 
             // Handle your response here if needed

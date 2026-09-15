@@ -47,7 +47,7 @@ return new class extends OneTimeOperation
             ['name' => 'Laboratory Aide'],
 
             // IT
-            ['name' => 'Full Stack Software Engineer'],
+            ['name' => 'IT Software'],
             ['name' => 'Bot'],
             ['name' => 'Encoder'],
         ]);
