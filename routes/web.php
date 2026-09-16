@@ -1,6 +1,5 @@
 <?php
 
-use App\Events\CallOut;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\CashierController;
@@ -15,9 +14,6 @@ use App\Http\Controllers\PharmacyController;
 use App\Http\Controllers\PrintController;
 use App\Http\Controllers\SystemController;
 use App\Http\Controllers\UserController;
-use App\Models\DiscountType;
-use App\Services\PharmacyService;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::permanentRedirect('/', '/login');
@@ -154,16 +150,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('print')->group(function () {
         Route::get('/prescription/{consultationId}', [PrintController::class, 'printPrescription'])->name('print.prescription');
     });
+});
 
-    Route::get('/testt', function () {
-        app(PharmacyService::class)->completePharmacy('01a09f98-2820-7290-b751-cd382be48d74');
-    });
-    Route::inertia('/test-socket', 'test-reverb')->name('test');
-    Route::get('/test-socket-send', function (Request $request) {
-        broadcast(new CallOut(
-            $request->patientName ?? '',
-            $request->department ?? '',
-        ));
-    })->name('test-notify');
-    Route::inertia('/test-speech', 'calendar')->name('test-speech');
+Route::get('/ping', function () {
+    return response()->noContent();
 });

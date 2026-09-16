@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Connection Lost</title>
+        <style>
+            body {
+                margin: 0;
+                background: #ffffff;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 70vh;
+                font-family: 'Lato', sans-serif;
+            }
+            .container {
+                text-align: center;
+            }
+            .text {
+                color: #000;
+                font-weight: 300;
+                font-size: 45px;
+                margin-bottom: 40px;
+                animation: fade-in-out 2.5s infinite;
+                text-align: center;
+            }
+
+            .loading-dots {
+                display: flex;
+                justify-content: center;
+                gap: 12px; /* Spaces the dots evenly */
+            }
+
+            .loading-dots span {
+                width: 20px;
+                height: 20px;
+                background-color: #333;
+                border-radius: 50%;
+                /* Apply the animation to all dots */
+                animation: dot-pulse 1.5s infinite ease-in-out;
+            }
+
+            /* Stagger the animations by adjusting the delay for each dot */
+            .loading-dots span:nth-child(1) {
+                animation-delay: 0s;
+            }
+
+            .loading-dots span:nth-child(2) {
+                animation-delay: 0.2s;
+            }
+
+            .loading-dots span:nth-child(3) {
+                animation-delay: 0.4s;
+            }
+
+            /* The actual "loading one-by-one" effect */
+            @keyframes dot-pulse {
+                0%,
+                100% {
+                    opacity: 0.3;
+                    transform: scale(0.8);
+                }
+                50% {
+                    opacity: 1;
+                    transform: scale(1.2);
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="card">
+            <div class="text">
+                <img src="/logo_text.png" width="500" />
+                <p id="status-message"></p>
+            </div>
+            <div class="loading-dots" id="loading-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+
+        <script>
+            const statusMessage = document.getElementById('status-message');
+            let checkInterval;
+
+            async function tryReconnect() {
+                // Don't waste server resources if the device itself is completely offline
+                if (!navigator.onLine) {
+                    statusMessage.textContent = 'Your device is not connected to network.';
+                    document.getElementById('loading-dots').style.display = 'none';
+                    return;
+                }
+
+                document.getElementById('loading-dots').removeAttribute('style');
+
+                statusMessage.textContent = 'Reconnecting to the server';
+
+                try {
+                    // Ping your Laravel endpoint with a cache-buster
+                    const response = await fetch(`/ping?_t=${Date.now()}`, {
+                        method: 'HEAD',
+                        cache: 'no-store',
+                    });
+
+                    if (response.ok) {
+                        // Server is up! Clear interval and reload the exact page the user was trying to access
+                        clearInterval(checkInterval);
+                        window.location.reload();
+                    }
+                } catch (error) {
+                    statusMessage.textContent = 'Server is still unreachable. Retrying shortly';
+                }
+            }
+
+            // Run immediately on load
+            tryReconnect();
+
+            // Check every 10 seconds while the user is stuck on this screen
+            checkInterval = setInterval(tryReconnect, 10000);
+
+            // Also instantly trigger a check the millisecond the device regains network access
+            window.addEventListener('online', tryReconnect);
+        </script>
+    </body>
+</html>

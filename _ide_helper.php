@@ -24448,6 +24448,49 @@ namespace Diglactic\Breadcrumbs {
             }
     }
 
+namespace EragLaravelPwa\Facades {
+    /**
+     */
+    class PWA {
+        /**
+         * @static
+         */
+        public static function HeadTag()
+        {
+            /** @var \EragLaravelPwa\Services\PWAService $instance */
+            return $instance->HeadTag();
+        }
+
+        /**
+         * @static
+         */
+        public static function RegisterServiceWorkerScript()
+        {
+            /** @var \EragLaravelPwa\Services\PWAService $instance */
+            return $instance->RegisterServiceWorkerScript();
+        }
+
+        /**
+         * @static
+         */
+        public static function createOrUpdate($manifest)
+        {
+            /** @var \EragLaravelPwa\Services\PWAService $instance */
+            return $instance->createOrUpdate($manifest);
+        }
+
+        /**
+         * @static
+         */
+        public static function update($manifestData)
+        {
+            /** @var \EragLaravelPwa\Services\PWAService $instance */
+            return $instance->update($manifestData);
+        }
+
+            }
+    }
+
 namespace Laravel\Mcp\Facades {
     /**
      * @see Registrar
@@ -29997,6 +30040,7 @@ namespace  {
     class View extends \Illuminate\Support\Facades\View {}
     class Vite extends \Illuminate\Support\Facades\Vite {}
     class Breadcrumbs extends \Diglactic\Breadcrumbs\Breadcrumbs {}
+    class PWA extends \EragLaravelPwa\Facades\PWA {}
     class Mcp extends \Laravel\Mcp\Facades\Mcp {}
 }
 

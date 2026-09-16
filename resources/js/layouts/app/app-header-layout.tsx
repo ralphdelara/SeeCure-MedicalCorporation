@@ -161,7 +161,7 @@ export default function NavHeader({ toggleSidebar }: NavHeaderProps) {
                                                 >
                                                     <span className="me-3">
                                                         <img
-                                                            src="/assets/images/profile/user-2.jpg"
+                                                            src={personDefault}
                                                             alt="user"
                                                             className="rounded-circle"
                                                             width="48"
@@ -183,7 +183,7 @@ export default function NavHeader({ toggleSidebar }: NavHeaderProps) {
                                                 >
                                                     <span className="me-3">
                                                         <img
-                                                            src="/assets/images/profile/user-3.jpg"
+                                                            src={personDefault}
                                                             alt="user"
                                                             className="rounded-circle"
                                                             width="48"
@@ -205,7 +205,7 @@ export default function NavHeader({ toggleSidebar }: NavHeaderProps) {
                                                 >
                                                     <span className="me-3">
                                                         <img
-                                                            src="/assets/images/profile/user-4.jpg"
+                                                            src={personDefault}
                                                             alt="user"
                                                             className="rounded-circle"
                                                             width="48"
@@ -227,7 +227,7 @@ export default function NavHeader({ toggleSidebar }: NavHeaderProps) {
                                                 >
                                                     <span className="me-3">
                                                         <img
-                                                            src="/assets/images/profile/user-5.jpg"
+                                                            src={personDefault}
                                                             alt="user"
                                                             className="rounded-circle"
                                                             width="48"
@@ -249,7 +249,7 @@ export default function NavHeader({ toggleSidebar }: NavHeaderProps) {
                                                 >
                                                     <span className="me-3">
                                                         <img
-                                                            src="/assets/images/profile/user-6.jpg"
+                                                            src={personDefault}
                                                             alt="user"
                                                             className="rounded-circle"
                                                             width="48"
@@ -271,7 +271,7 @@ export default function NavHeader({ toggleSidebar }: NavHeaderProps) {
                                                 >
                                                     <span className="me-3">
                                                         <img
-                                                            src="/assets/images/profile/user-7.jpg"
+                                                            src={personDefault}
                                                             alt="user"
                                                             className="rounded-circle"
                                                             width="48"
@@ -362,7 +362,7 @@ export default function NavHeader({ toggleSidebar }: NavHeaderProps) {
                                                     >
                                                         <span className="d-flex align-items-center justify-content-center text-bg-light rounded-1 p-6">
                                                             <img
-                                                                src="/assets/images/svgs/icon-account.svg"
+                                                                src={personDefault}
                                                                 alt="modernize-img"
                                                                 width="24"
                                                                 height="24"
@@ -383,7 +383,7 @@ export default function NavHeader({ toggleSidebar }: NavHeaderProps) {
                                                     >
                                                         <span className="d-flex align-items-center justify-content-center text-bg-light rounded-1 p-6">
                                                             <img
-                                                                src="/assets/images/svgs/icon-inbox.svg"
+                                                                src={personDefault}
                                                                 alt="modernize-img"
                                                                 width="24"
                                                                 height="24"
@@ -404,7 +404,7 @@ export default function NavHeader({ toggleSidebar }: NavHeaderProps) {
                                                     >
                                                         <span className="d-flex align-items-center justify-content-center text-bg-light rounded-1 p-6">
                                                             <img
-                                                                src="/assets/images/svgs/icon-tasks.svg"
+                                                                src={personDefault}
                                                                 alt="modernize-img"
                                                                 width="24"
                                                                 height="24"

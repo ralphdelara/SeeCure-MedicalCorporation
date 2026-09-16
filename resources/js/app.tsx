@@ -46,3 +46,13 @@ createInertiaApp({
 
 // This will set light / dark mode on load...
 initializeTheme();
+
+// --- PWA Offline Request Interceptor ---
+// Intercepts failed Inertia page changes caused by a lost network connection
+window.addEventListener('inertia:invalid', (event: any) => {
+    if (!navigator.onLine) {
+        event.preventDefault();
+
+        alert('You are currently offline. Please check your internet connection and try again.');
+    }
+});
