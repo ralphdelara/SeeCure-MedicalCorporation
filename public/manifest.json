@@ -1,0 +1,16 @@
+{
+    "name": "See Cure Medical Corporation",
+    "short_name": "See Cure",
+    "start_url": "/",
+    "background_color": "#000000",
+    "description": "A hospital information system designed to easily manage patient details and hospital data.",
+    "display": "fullscreen",
+    "theme_color": "#0d937a",
+    "icons": [
+        {
+            "src": "logo.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}
