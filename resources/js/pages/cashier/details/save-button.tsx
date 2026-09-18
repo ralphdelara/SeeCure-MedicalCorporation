@@ -7,13 +7,13 @@ import Swal from 'sweetalert2';
 const SaveButton = ({
     type,
     isDirty,
-    isPaid,
+    isPaid = false,
     hideSaveButton = false,
 }: {
     type: string;
     isDirty: boolean;
     hideSaveButton?: boolean;
-    isPaid: boolean;
+    isPaid?: boolean;
 }) => {
     const { cashierDetails } = usePage().props as unknown as {
         cashierDetails: { is_completed: boolean };

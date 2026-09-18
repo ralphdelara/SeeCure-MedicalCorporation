@@ -12,6 +12,50 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 // Guarded blocks specified fields from being added/updated via ::create and ::update
+/**
+ * @property string $id
+ * @property string $patient_id
+ * @property string $visit_id
+ * @property string $billing_id
+ * @property numeric|null $total_cost_price
+ * @property numeric|null $total_price
+ * @property numeric|null $total_discount
+ * @property numeric|null $total_tax
+ * @property numeric|null $total_nett_price
+ * @property bool $is_completed
+ * @property string $created_by
+ * @property string|null $last_modified_by
+ * @property \Carbon\CarbonImmutable|null $created_at
+ * @property \Carbon\CarbonImmutable|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CashierAudit> $audits
+ * @property-read int|null $audits_count
+ * @property-read \App\Models\Billing $billing
+ * @property-read \App\Models\User $createdBy
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CashierDetail> $details
+ * @property-read int|null $details_count
+ * @property-read \App\Models\User|null $lastModifiedBy
+ * @property-read \App\Models\Patient $patient
+ * @property-read \App\Models\Payment|null $payment
+ * @property-read \App\Models\Visit $visit
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cashier newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cashier newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cashier query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cashier whereBillingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cashier whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cashier whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cashier whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cashier whereIsCompleted($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cashier whereLastModifiedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cashier wherePatientId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cashier whereTotalCostPrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cashier whereTotalDiscount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cashier whereTotalNettPrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cashier whereTotalPrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cashier whereTotalTax($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cashier whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cashier whereVisitId($value)
+ * @mixin \Eloquent
+ */
 #[Guarded([
     'id',
 ])]

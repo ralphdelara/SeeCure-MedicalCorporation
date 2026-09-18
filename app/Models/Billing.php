@@ -47,6 +47,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read \App\Models\Patient $patient
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Billing whereIsCompleted($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Billing wherePatientId($value)
+ * @property-read \App\Models\Cashier|null $cashier
  * @mixin \Eloquent
  */
 // Guarded blocks specified fields from being added/updated via ::create and ::update

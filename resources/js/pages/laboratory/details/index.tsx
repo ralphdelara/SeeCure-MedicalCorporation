@@ -2,10 +2,7 @@ import { Breadcrumbs } from '@/components/breadcrumbs';
 import PatientInfo from '@/pages/patient/info';
 import Details from './details';
 import AuditLog from './audit-log';
-import {
-    IconListDetails,
-    IconUserCode,
-} from '@tabler/icons-react';
+import { IconListDetails, IconUserCode } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { Head, usePage } from '@inertiajs/react';
 import { PatientDetailsProps } from '@/components/patient/patient-details';
@@ -28,7 +25,7 @@ interface InertiaProps {
                     field_type: string;
                     field: {
                         id: string;
-                    }
+                    };
                     value: string;
                 }[];
             }[];
@@ -65,24 +62,34 @@ const LaboratoryDetails = () => {
     useEffect(() => {
         let fields: any = {};
         laboratoryDetails.test_data.forEach((item, index) => {
+            if (item.type_id !== 2) {
+                fields['type_' + item.type_id + '_test_0_remarks'] = '';
+            }
+
             item.tests.forEach((item2, index2) => {
-                fields[
-                    'test_' +
-                        item2.test.id +
-                        '_remarks_' +
-                        item2.id +
-                        '_' +
-                        item2.laboratory_package_id +
-                        '_' +
-                        item2.laboratory_type_id
-                ] = item2.remarks ?? '';
                 item2.fields.forEach((item3, index3) => {
                     if (item3.field_type !== 'label') {
-                        fields['field_' + item2.id + '_' + item3.id + '_' + item3.field.id] = item3.value ?? '';
+                        fields['field_' + item2.id + '_' + item3.id + '_' + item3.field.id] =
+                            item3.value ?? '';
                     }
                 });
+
+                if (item.type_id === 2 && ['Urinalysis', 'Fecalysis'].includes(item2.test.name)) {
+                    fields['type_' + item.type_id + '_test_' + item2.test.id + '_remarks'] = '';
+                }
             });
         });
+
+        laboratoryDetails.remarks.forEach((item2, index2) => {
+            fields[
+                'type_' +
+                    item2.laboratory_type_id +
+                    '_test_' +
+                    (item2.laboratory_test_id ?? '0') +
+                    '_remarks'
+            ] = item2.remarks ?? '';
+        });
+
         setDataFields(fields);
     }, []);
 

@@ -8,18 +8,23 @@ use App\Events\LaboratoryViewed;
 use App\Models\Consultation;
 use App\Models\Laboratory;
 use App\Models\LaboratoryAudit;
+use App\Models\LaboratoryField;
 use App\Models\LaboratoryPackage;
 use App\Models\LaboratoryPackageTest;
+use App\Models\LaboratoryRemark;
 use App\Models\LaboratoryTest;
-use App\Models\LaboratoryTestData;
 use App\Models\LaboratoryTestField;
 use App\Models\LaboratoryTestFieldData;
+use App\Models\LaboratoryType;
 use App\Models\Patient;
+use App\Models\User;
 use App\Models\Visit;
 use Arr;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Str;
 
 class LaboratoryService
 {
@@ -32,8 +37,8 @@ class LaboratoryService
             'patient' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name', 'patient_suffix_id', 'gender_id');
             },
-            'patient.suffix.name',
-            'patient.gender.name',
+            'patient.suffix',
+            'patient.gender',
             'testData',
             'testData.package',
             'testData.type',
@@ -131,18 +136,26 @@ class LaboratoryService
         $testDataIds = $laboratory->testData()->createMany($insertTests)
             ->pluck('id', 'laboratory_test_id');
 
-        $fields = LaboratoryTestField::whereIn('laboratory_test_id', $testIds)->get();
+        $fields = LaboratoryTestField::whereIn('laboratory_test_id', $testIds)
+            ->orderBy('laboratory_field_id')->get();
 
         $insertTestFields = [];
 
+        $testFieldIds = [];
+
         foreach ($fields as $field) {
+            if (in_array($field->laboratory_field_id, $testFieldIds)) {
+                continue;
+            }
+
             $insertTestFields[] = [
-                'laboratory_id'            => $laboratory->id,
-                'laboratory_test_data_id'  => $testDataIds[$field->laboratory_test_id],
-                'laboratory_test_field_id' => $field->id,
-                'created_by'               => Auth::id(),
-                'last_modified_by'         => Auth::id(),
+                'laboratory_id'           => $laboratory->id,
+                'laboratory_test_data_id' => $testDataIds[$field->laboratory_test_id],
+                'laboratory_field_id'     => $field->laboratory_field_id,
+                'created_by'              => Auth::id(),
+                'last_modified_by'        => Auth::id(),
             ];
+            $testFieldIds[] = $field->laboratory_field_id;
         }
 
         $auditData = [
@@ -214,13 +227,19 @@ class LaboratoryService
             'patient.gender' => function ($query) {
                 $query->select('id', 'name');
             },
+            'remarks',
             'testData',
             'testData.type',
             'testData.test',
             'testData.fields' => function ($query) {
-                $query->orderBy('order_no');
+                $query->orderBy('id');
             },
             'testData.fields.field',
+            'performedBy' => function ($query) {
+                $query->select('id', 'first_name', 'middle_name', 'last_name');
+            },
+            'performedBy.professions',
+            'performedBy.specialties',
             'createdBy' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name');
             },
@@ -258,8 +277,9 @@ class LaboratoryService
             });
 
             $testFields[] = [
-                'type'  => $type,
-                'tests' => array_values($tests), // array_values resets key to 0
+                'type_id' => $key,
+                'type'    => $type,
+                'tests'   => array_values($tests), // array_values resets key to 0
             ];
         }
 
@@ -293,68 +313,60 @@ class LaboratoryService
 
         $details['last_modified_by'] = Auth::id();
 
-        $this->updateTest($id, $details);
+        $this->updateLabFields($id, $details);
 
         $this->updateTestFields($id, $details);
+
+        $this->updateTestRemarks($id, $details);
     }
 
-    public function updateTest(string $id, array $details): void
+    public function updateLabFields(string $id, array $details): void
     {
-        $tests = [];
+
+        $fields = [];
         $updateFields = [];
+        $lab = Laboratory::with(
+            'performedBy',
+            'performedBy.professions',
+            'performedBy.specialties',
+        )->find($id);
 
-        $allTests = LaboratoryTest::select('id', 'name')->get()->pluck('name', 'id')->toArray();
-        $prevTests = LaboratoryTestData::select('laboratory_test_id', 'remarks')->get()->pluck('value', 'laboratory_test_id')->toArray();
-
-        foreach ($details as $key => $value) {
-            if (
-                ! str_contains($key, '_remarks')
-            ) {
-                continue;
-            }
-
-            $testDataArr = explode('_', str_replace('_remarks', '', str_replace('test_', '', $key)));
-
-            // used double equal for both null and empty string
-            if ($prevTests[$testDataArr[0]] == $value) {
-                continue;
-            }
+        if ($lab->performed_by !== $details['performed_by']) {
+            $fields['performed_by'] = $details['performed_by'];
+            $newPerformedBy = User::with('professions', 'specialties')->find($details['performed_by']);
 
             $updateFields[] = [
-                'field' => $allTests[$testDataArr[0]],
-                'from'  => null,
-                'to'    => $value,
-            ];
-
-            $tests[] = [
-                'id'                    => $testDataArr[1],
-                'laboratory_id'         => $id,
-                'laboratory_package_id' => $testDataArr[2] !== 'null' ? (int) $testDataArr[2] : null,
-                'laboratory_type_id'    => (int) $testDataArr[3],
-                'laboratory_test_id'    => (int) $testDataArr[0],
-                'created_by'            => Auth::id(),
-                'remarks'               => Crypt::encryptString($value),
-                'last_modified_by'      => Auth::id(),
-                'updated_at'            => now(),
+                'field' => 'Performed By',
+                'from'  => $lab->performedBy?->full_name,
+                'to'    => $newPerformedBy?->full_name,
             ];
         }
 
-        if (empty($updateFields)) {
-            return;
+        $datePerformed = $details['date_performed'];
+        if (! empty($datePerformed)) {
+            $datePerformed = Carbon::parse($details['date_performed'])?->format('M d, Y');
+        }
+        if ($lab->date_performed?->format('M d, Y') !== $datePerformed) {
+            $updateFields[] = [
+                'field' => 'Date Performed',
+                'from'  => $lab->date_performed?->format('M d, Y'),
+                'to'    => $datePerformed,
+            ];
         }
 
-        LaboratoryTestData::upsert(
-            $tests,
-            uniqueBy: ['id'],
-            update: ['remarks', 'last_modified_by', 'updated_at'],
-        );
+        if (! empty($updateFields)) {
+            Laboratory::find($id)->update([
+                'performed_by'   => $details['performed_by'],
+                'date_performed' => $details['date_performed'],
+            ]);
 
-        $this->logAudit(
-            $id,
-            AuditTypeEnum::UPDATE,
-            'Laboratory Test has been updated.',
-            $updateFields,
-        );
+            $this->logAudit(
+                $id,
+                AuditTypeEnum::UPDATE,
+                'Laboratory has been updated.',
+                $updateFields,
+            );
+        }
     }
 
     public function updateTestFields(string $id, array $details): void
@@ -362,11 +374,16 @@ class LaboratoryService
         $fields = [];
         $updateFields = [];
 
-        $allTestFields = LaboratoryTestField::select('id', 'name')->get()->pluck('name', 'id')->toArray();
-        $prevTestFieldData = LaboratoryTestFieldData::select('laboratory_test_field_id', 'value')->get()->pluck('value', 'laboratory_test_field_id')->toArray();
+        $allFields = LaboratoryField::select('id', 'name')->get()->pluck('name', 'id')->toArray();
+        $prevTestFieldData = LaboratoryTestFieldData::select('laboratory_field_id', 'value')
+            ->where('laboratory_id', $id)
+            ->get()->pluck('value', 'laboratory_field_id')->toArray();
 
         foreach ($details as $key => $value) {
-            if (! str_contains($key, 'field_')) {
+            if (
+                ! str_contains($key, 'field_')
+                || str_contains($key, '_remarks')
+            ) {
                 continue;
             }
 
@@ -378,20 +395,20 @@ class LaboratoryService
             }
 
             $updateFields[] = [
-                'field' => $allTestFields[$ids[2]],
+                'field' => $allFields[$ids[2]],
                 'from'  => $prevTestFieldData[$ids[2]],
                 'to'    => $value,
             ];
 
             $fields[] = [
-                'laboratory_id'            => $id,
-                'id'                       => $ids[1],
-                'laboratory_test_data_id'  => $ids[0],
-                'laboratory_test_field_id' => (int) $ids[2],
-                'value'                    => Crypt::encryptString($value),
-                'created_by'               => Auth::id(),
-                'last_modified_by'         => Auth::id(),
-                'updated_at'               => now(),
+                'laboratory_id'           => $id,
+                'id'                      => $ids[1],
+                'laboratory_test_data_id' => $ids[0],
+                'laboratory_field_id'     => (int) $ids[2],
+                'value'                   => Crypt::encryptString($value),
+                'created_by'              => Auth::id(),
+                'last_modified_by'        => Auth::id(),
+                'updated_at'              => now(),
             ];
         }
 
@@ -409,6 +426,92 @@ class LaboratoryService
             $id,
             AuditTypeEnum::UPDATE,
             'Laboratory Test Field has been updated.',
+            $updateFields,
+        );
+    }
+
+    public function updateTestRemarks(string $id, array $details)
+    {
+        $fields = [];
+        $updateFields = [];
+        $labRemarksCount = LaboratoryRemark::where('laboratory_id')->count();
+        $allTest = LaboratoryTest::select('id', 'name')->get()->pluck('name', 'id')->toArray();
+        $allTypeFields = LaboratoryType::select('id', 'name')->get()->pluck('name', 'id')->toArray();
+        $prevTestRemarksData = LaboratoryRemark::select('laboratory_test_id', 'remarks')
+            ->where('laboratory_id', $id)
+            ->get()->pluck('remarks', 'laboratory_test_id')->toArray();
+        $prevTypeRemarksData = LaboratoryRemark::select('laboratory_type_id', 'remarks')
+            ->where('laboratory_id', $id)
+            ->get()->pluck('remarks', 'laboratory_type_id')->toArray();
+        $prevTestRemarksIds = LaboratoryRemark::select('laboratory_test_id', 'id')
+            ->where('laboratory_id', $id)
+            ->get()->pluck('id', 'laboratory_test_id')->toArray();
+        $prevTypeRemarksIds = LaboratoryRemark::select('laboratory_type_id', 'id')
+            ->where('laboratory_id', $id)
+            ->get()->pluck('id', 'laboratory_type_id')->toArray();
+
+        foreach ($details as $key => $value) {
+            if (
+                ! str_contains($key, '_remarks')
+            ) {
+                continue;
+            }
+
+            $ids = explode('_', str_replace('type_', '', str_replace('_test', '', str_replace('_remarks', '', $key))));
+            $typeId = $ids[0];
+            $testId = $ids[1];
+
+            $remarksId = match (true) {
+                $testId === '0' && isset($prevTypeRemarksIds[$typeId]) => $prevTypeRemarksIds[$typeId],
+                $testId !== '0' && isset($prevTestRemarksIds[$testId]) => $prevTestRemarksIds[$testId],
+                default                                                => $labRemarksCount > 0 ? null : Str::uuid7(), // set to null to trigger error preventing duplicate data
+            };
+
+            $fieldsTmp = [
+                'id'                 => $remarksId,
+                'laboratory_id'      => $id,
+                'laboratory_type_id' => $typeId,
+                'laboratory_test_id' => $testId === '0' ? null : $testId,
+                'remarks'            => Crypt::encryptString($value),
+                'created_by'         => Auth::id(),
+                'last_modified_by'   => Auth::id(),
+                'created_at'         => now(),
+                'updated_at'         => now(),
+            ];
+
+            $fields[] = $fieldsTmp;
+
+            $from = match (true) {
+                $testId === '0' && array_key_exists($typeId, $prevTypeRemarksData) => $prevTypeRemarksData[$typeId],
+                $testId !== '0' && array_key_exists($testId, $prevTestRemarksData) => $prevTestRemarksData[$testId],
+                default                                                            => null,
+            };
+
+            if ($from == $value) {
+                continue;
+            }
+
+            $updateFields[] = [
+                'field' => $testId === '0' ? $allTypeFields[$typeId] : $allTest[$testId],
+                'from'  => $from,
+                'to'    => $value,
+            ];
+        }
+
+        if (empty($updateFields)) {
+            return;
+        }
+
+        LaboratoryRemark::upsert(
+            $fields,
+            uniqueBy: ['id'],
+            update: ['remarks', 'last_modified_by', 'updated_at'],
+        );
+
+        $this->logAudit(
+            $id,
+            AuditTypeEnum::UPDATE,
+            'Laboratory Remarks has been updated.',
             $updateFields,
         );
     }

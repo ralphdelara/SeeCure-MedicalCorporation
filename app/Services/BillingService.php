@@ -220,8 +220,8 @@ class BillingService
         $moveToText = 'Cashier';
 
         if (
-            !app(VisitService::class)->hasPending($billing->visit->laboratory?->toArray() ?? [])
-            && !app(VisitService::class)->hasPending($billing->visit->radiology?->toArray() ?? [])
+            ! app(VisitService::class)->hasPending($billing->visit->laboratory?->toArray() ?? [])
+            && ! app(VisitService::class)->hasPending($billing->visit->radiology?->toArray() ?? [])
             && $billing->visit->consultation?->is_completed
         ) {
             // move to pharmacy if theres no pending lab or radio and if consultation is completed
@@ -242,7 +242,7 @@ class BillingService
             'visit.radiology',
             'visit.consultation',
             'cashier',
-            'visit.consultation.prescriptions'
+            'visit.consultation.prescriptions',
         )->find($id);
 
         $billing->update([
@@ -255,7 +255,7 @@ class BillingService
         $hasRadioPending = app(VisitService::class)->hasPending($visit->radiology?->toArray() ?? []);
 
         // move to pharmacy first not cashier for prescription qty if doctor is done in consultation
-        if (!$hasLabPending && !$hasRadioPending && $billing->visit->consultation->is_completed) {
+        if (! $hasLabPending && ! $hasRadioPending && $billing->visit->consultation->is_completed) {
             Visit::find($billing->visit->id)->update([
                 'visit_status_id' => VisitStatusEnum::IN_PHARMACY,
             ]);

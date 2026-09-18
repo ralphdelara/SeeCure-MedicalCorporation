@@ -62,6 +62,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read int|null $radiology_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Billing> $billing
  * @property-read int|null $billing_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Cashier> $cashier
+ * @property-read int|null $cashier_count
  * @mixin \Eloquent
  */
 #[Fillable([

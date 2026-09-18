@@ -1,3 +1,4 @@
+import { printBilling, printLaboratory, printPrescription } from '@/actions/App/Http/Controllers/PrintController';
 import { NormalRangeProps } from '@/pages/laboratory/details/details-test-fields';
 import type { InertiaLinkProps } from '@inertiajs/react';
 import { clsx } from 'clsx';
@@ -140,5 +141,19 @@ export function getNormalRange(field: NormalRangeProps, gender_id: number) {
         return parseNormalRange(normalRangeMaleMin, normalRangeMaleMax);
     } else {
         return parseNormalRange(normalRangeBothMin, normalRangeBothMax);
+    }
+}
+
+export function printDocument(type: string, id: string) {
+    if (type === 'prescription') {
+        window.open(printPrescription(id).url);
+    }
+
+    if (type === 'billing') {
+        window.open(printBilling(id).url);
+    }
+
+    if (type === 'laboratory') {
+        window.open(printLaboratory(id).url);
     }
 }

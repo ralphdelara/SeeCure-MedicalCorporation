@@ -9,6 +9,40 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property string $id
+ * @property string $patient_id
+ * @property string $visit_id
+ * @property string $consultation_id
+ * @property string $billing_id
+ * @property bool $is_completed
+ * @property string $created_by
+ * @property string|null $last_modified_by
+ * @property \Carbon\CarbonImmutable|null $created_at
+ * @property \Carbon\CarbonImmutable|null $updated_at
+ * @property-read \App\Models\Billing $billing
+ * @property-read \App\Models\Consultation $consultation
+ * @property-read \App\Models\User $createdBy
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PharmacyDetail> $details
+ * @property-read int|null $details_count
+ * @property-read \App\Models\User|null $lastModifiedBy
+ * @property-read \App\Models\Patient $patient
+ * @property-read \App\Models\Visit $visit
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy whereBillingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy whereConsultationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy whereIsCompleted($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy whereLastModifiedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy wherePatientId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy whereVisitId($value)
+ * @mixin \Eloquent
+ */
 #[Fillable([
     'patient_id',
     'visit_id',

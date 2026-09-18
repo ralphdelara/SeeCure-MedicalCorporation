@@ -15,7 +15,7 @@ const UserInfo = ({ userDetails, children }: InertiaProps) => {
         <div className="card mt-2">
             <div className="card-body mb-0 p-0">
                 <div className="row align-items-center g-3 w-100">
-                    <div className="col-lg-1 order-lg-1 order-1">
+                    <div className="col-lg-3 order-lg-1 order-1">
                         <div>
                             <div className="d-flex align-items-center justify-content-center mb-2">
                                 <div className="d-flex align-items-center justify-content-center round-110">
@@ -30,7 +30,7 @@ const UserInfo = ({ userDetails, children }: InertiaProps) => {
                             </div>
                         </div>
                     </div>
-                    <div className="col-lg-10 order-lg-2 order-2">
+                    <div className="col-lg-5 order-lg-2 order-2">
                         <div className="text-dark fs-7 fw-bolder mb-0 text-center">
                             {userDetails.full_name}
                         </div>
@@ -54,7 +54,7 @@ const UserInfo = ({ userDetails, children }: InertiaProps) => {
                             </div>
                         </div>
                     </div>
-                    <div className="col-lg-1 order-last">
+                    <div className="col-lg-4 order-last">
                         <ul className="list-unstyled d-flex align-items-center justify-content-center justify-content-lg-end pe-xxl-4 mx-4 my-3 gap-3">
                             <li>
                                 <Link

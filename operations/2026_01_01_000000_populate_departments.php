@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\DepartmentEnum;
 use App\Models\Department;
 use TimoKoerber\LaravelOneTimeOperations\OneTimeOperation;
 
@@ -25,15 +26,6 @@ return new class extends OneTimeOperation
      */
     public function process(): void
     {
-        Department::fillAndInsert([
-            ['name' => 'Administrator'],
-            ['name' => 'Billing'],
-            ['name' => 'Cashier'],
-            ['name' => 'Consultation'],
-            ['name' => 'Front Desk'],
-            ['name' => 'Laboratory'],
-            ['name' => 'Radiology'],
-            ['name' => 'Pharmacy'],
-        ]);
+        Department::fillAndInsert(DepartmentEnum::getArrayList());
     }
 };

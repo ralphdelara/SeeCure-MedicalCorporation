@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('pharmacy_quantity');
 
             $table->foreignUuid('created_by')->constrained('users', 'id');
-            $table->foreignUuid('last_modified_by')->nullable()->constrained('users', 'id');
+            $table->foreignUuid('last_modified_by')->constrained('users', 'id')->nullable();
             $table->timestamps();
         });
     }

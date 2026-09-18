@@ -8,6 +8,11 @@ import React from 'react';
 import SaveButton from './save-button';
 import { updateDetails } from '@/actions/App/Http/Controllers/CashierController';
 import TableList from '@/components/table';
+import { Button } from '@/components/ui/button';
+import { IconArrowLeft, IconBuildingBank } from '@tabler/icons-react';
+import ConfirmButton from '@/components/confirm-button';
+import { cashier } from '@/routes';
+import { sendBackToBilling } from '@/routes/cashier/details';
 
 interface InertiaProps {
     cashierDetails: {
@@ -49,7 +54,8 @@ interface InertiaProps {
 }
 
 const Details = ({ showTab }: { showTab: boolean }) => {
-    const { cashierDetails, discountType } = usePage().props as unknown as InertiaProps;
+    const { cashierDetails, discountType, paymentDetails } = usePage()
+        .props as unknown as InertiaProps;
 
     const { data, setData, patch, isDirty, setDefaults } = useForm({
         id: cashierDetails.id,
@@ -160,7 +166,7 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                 ? 0.0
                 : parseFloat(updatedItem.tax_percent as string);
 
-            updatedItem.total_price = allBlank ? '' : (cost_price * quantity);
+            updatedItem.total_price = allBlank ? '' : cost_price * quantity;
             const basePrice = updatedItem.total_price - discount;
             const totalNettPrice = (basePrice * (1 + tax_percent / 100)).toFixed(2);
             updatedItem.nett_price = allBlank ? '' : totalNettPrice;
@@ -197,13 +203,39 @@ const Details = ({ showTab }: { showTab: boolean }) => {
         setDefaults({ ...data, ...initialFields });
     }, [cashierDetails.details]);
 
+    const isPaid = () => {
+        if (paymentDetails) {
+            return paymentDetails.receipt_sequence !== '';
+        }
+
+        return false;
+    };
+
     return (
         <>
             <div className={'tab-content mt-3' + (!showTab ? ' hidden' : '')}>
                 <div className="tab-pane fade show active" role="tabpanel" tabIndex={1}>
                     <form onSubmit={submitDetails}>
                         <div className="me-4">
-                            <SaveButton type="Details" isDirty={isDirty} />
+                            <SaveButton type="Details" isDirty={isDirty} isPaid={isPaid()} />
+                        </div>
+                        <div className="d-flex justify-content-end">
+                            {!isPaid() && (
+                                <ConfirmButton
+                                    requestMethod="PATCH"
+                                    url={sendBackToBilling(cashierDetails.billing_id).url}
+                                    msg={
+                                        'This patient will be sent back to Billing for amount correction(s)!'
+                                    }
+                                    className="btn-lg me-5"
+                                    title="Move Back to Billing"
+                                    successTitle="Success!"
+                                    successMsg="The record has been updated."
+                                    successUrl={cashier().url}
+                                >
+                                    <IconBuildingBank /> Send to Billing
+                                </ConfirmButton>
+                            )}
                         </div>
                         <div className="card border shadow-sm">
                             <div className="card-body">
@@ -220,10 +252,16 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                             return (
                                                 <tr key={'detail-' + index}>
                                                     <td className="sticky-left">
-                                                        <h6 className="fs-5 fw-semibold text-wrap" style={{width: '300px'}}>
+                                                        <h6
+                                                            className="fs-5 fw-semibold text-wrap"
+                                                            style={{ width: '300px' }}
+                                                        >
                                                             {item.name}
                                                         </h6>
-                                                        <h6 className="fs-3 fw-normal text-wrap" style={{width: '300px'}}>
+                                                        <h6
+                                                            className="fs-3 fw-normal text-wrap"
+                                                            style={{ width: '300px' }}
+                                                        >
                                                             {item.type.name}
                                                         </h6>
                                                     </td>
@@ -235,14 +273,14 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                                             <Input
                                                                 type="text"
                                                                 id={costPriceId}
-                                                                value={(data[item.id as keyof typeof data] as any)?.cost_price ?? ''}
-                                                                onChange={(e) =>
-                                                                    computeNettPrice(
-                                                                        item.id,
-                                                                        'cost_price',
-                                                                        e.target.value,
-                                                                    )
+                                                                value={
+                                                                    (
+                                                                        data[
+                                                                            item.id as keyof typeof data
+                                                                        ] as any
+                                                                    )?.cost_price ?? ''
                                                                 }
+                                                                readOnly={true}
                                                                 className="form-control"
                                                                 placeholder="0.00"
                                                                 style={{ width: '100px' }}
@@ -258,7 +296,13 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                                             <Input
                                                                 type="text"
                                                                 id={quantityId}
-                                                                value={(data[item.id as keyof typeof data] as any)?.quantity ?? ''}
+                                                                value={
+                                                                    (
+                                                                        data[
+                                                                            item.id as keyof typeof data
+                                                                        ] as any
+                                                                    )?.quantity ?? ''
+                                                                }
                                                                 className="form-control"
                                                                 placeholder="0.00"
                                                                 style={{ width: '100px' }}
@@ -275,7 +319,13 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                                             <Input
                                                                 type="text"
                                                                 id={totalPriceId}
-                                                                value={(data[item.id as keyof typeof data] as any)?.total_price ?? ''}
+                                                                value={
+                                                                    (
+                                                                        data[
+                                                                            item.id as keyof typeof data
+                                                                        ] as any
+                                                                    )?.total_price ?? ''
+                                                                }
                                                                 className="form-control"
                                                                 placeholder="0.00"
                                                                 style={{ width: '100px' }}
@@ -293,7 +343,11 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                                                 type="text"
                                                                 id={discountId}
                                                                 value={
-                                                                    (data[item.id as keyof typeof data] as any)?.discount ?? ''
+                                                                    (
+                                                                        data[
+                                                                            item.id as keyof typeof data
+                                                                        ] as any
+                                                                    )?.discount ?? ''
                                                                 }
                                                                 onChange={(e) =>
                                                                     computeNettPrice(
@@ -313,8 +367,11 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                                         <Select
                                                             id={discountTypeId}
                                                             value={
-                                                                (data[item.id as keyof typeof data] as any)?.discount_type_id ??
-                                                                ''
+                                                                (
+                                                                    data[
+                                                                        item.id as keyof typeof data
+                                                                    ] as any
+                                                                )?.discount_type_id ?? ''
                                                             }
                                                             onChange={(e) =>
                                                                 computeNettPrice(
@@ -337,7 +394,11 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                                                 type="text"
                                                                 id={taxPercentId}
                                                                 value={
-                                                                    (data[item.id as keyof typeof data] as any)?.tax_percent ?? ''
+                                                                    (
+                                                                        data[
+                                                                            item.id as keyof typeof data
+                                                                        ] as any
+                                                                    )?.tax_percent ?? ''
                                                                 }
                                                                 onChange={(e) =>
                                                                     computeNettPrice(
@@ -362,7 +423,11 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                                                 type="text"
                                                                 id={nettPriceId}
                                                                 value={
-                                                                    (data[item.id as keyof typeof data] as any)?.nett_price ?? ''
+                                                                    (
+                                                                        data[
+                                                                            item.id as keyof typeof data
+                                                                        ] as any
+                                                                    )?.nett_price ?? ''
                                                                 }
                                                                 readOnly={true}
                                                                 className="form-control"
@@ -411,8 +476,7 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                                     {formatMoney(data.total_cost_price)}
                                                 </h6>
                                             </td>
-                                            <td className="text-center">
-                                            </td>
+                                            <td className="text-center"></td>
                                             <td className="text-center">
                                                 <h6 className="fs-6 fw-semibold">
                                                     {formatMoney(data.total_price)}
@@ -424,9 +488,8 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                                 </h6>
                                             </td>
                                             <td></td>
-                                            <td>
-                                            </td>
-                                            <td className="text-center sticky-right">
+                                            <td></td>
+                                            <td className="sticky-right text-center">
                                                 <h6 className="fs-6 fw-semibold">
                                                     {formatMoney(data.total_nett_price)}
                                                 </h6>

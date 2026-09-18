@@ -29,7 +29,7 @@ return new class extends Migration
             $table->decimal('amount_change', 12, 2)->nullable();
 
             $table->foreignUuid('created_by')->constrained('users', 'id');
-            $table->foreignUuid('last_modified_by')->nullable()->constrained('users', 'id');
+            $table->foreignUuid('last_modified_by')->constrained('users', 'id')->nullable();
             $table->timestamps();
         });
 

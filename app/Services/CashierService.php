@@ -16,11 +16,9 @@ use App\Models\Inventory;
 use App\Models\Patient;
 use App\Models\Payment;
 use App\Models\Pharmacy;
-use App\Models\PharmacyDetail;
 use App\Models\Visit;
 use Arr;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 
 class CashierService
@@ -103,7 +101,7 @@ class CashierService
     {
         $pharmacyQuantity = [];
 
-        if (!empty($pharmacyDetails)) {
+        if (! empty($pharmacyDetails)) {
             $prescriptionIds = array_column(array_column($pharmacyDetails, 'prescription'), 'id');
             $pharmacyQuantity = array_column($pharmacyDetails, 'pharmacy_quantity');
             $pharmacyQuantity = array_combine($prescriptionIds, $pharmacyQuantity);
@@ -431,5 +429,20 @@ class CashierService
             ->where('cashier_id', $cashierId)
             ->orderBy('created_at', 'desc')
             ->get()->toArray();
+    }
+
+    public function sendBackToBilling(string $billingId): void
+    {
+        $billing = Billing::with('visit')->find($billingId);
+
+        // move back to billing
+        Visit::find($billing->visit->id)->update([
+            'visit_status_id' => VisitStatusEnum::IN_BILLING,
+        ]);
+
+        // update billing is_completed status to false
+        $billing->update([
+            'is_completed' => false,
+        ]);
     }
 }

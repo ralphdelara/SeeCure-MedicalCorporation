@@ -7,6 +7,27 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $id
+ * @property string $cashier_id
+ * @property int $audit_type_id
+ * @property string $data
+ * @property string $created_by
+ * @property \Carbon\CarbonImmutable $created_at
+ * @property-read \App\Models\AuditType $auditType
+ * @property-read \App\Models\Cashier $cashier
+ * @property-read \App\Models\User $createdBy
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CashierAudit newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CashierAudit newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CashierAudit query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CashierAudit whereAuditTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CashierAudit whereCashierId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CashierAudit whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CashierAudit whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CashierAudit whereData($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CashierAudit whereId($value)
+ * @mixin \Eloquent
+ */
 #[Fillable([
     'cashier_id',
     'audit_type_id',

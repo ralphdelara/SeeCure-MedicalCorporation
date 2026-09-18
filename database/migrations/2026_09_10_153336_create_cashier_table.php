@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('cashier', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('patient_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('patient_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignUuid('visit_id')->constrained()->cascadeOnDelete();
             $table->foreignUuid('billing_id')->constrained('billing', 'id')->cascadeOnDelete();
 
@@ -26,7 +26,7 @@ return new class extends Migration
             $table->boolean('is_completed')->default(false);
 
             $table->foreignUuid('created_by')->constrained('users', 'id');
-            $table->foreignUuid('last_modified_by')->nullable()->constrained('users', 'id');
+            $table->foreignUuid('last_modified_by')->constrained('users', 'id')->nullable();
             $table->timestamps();
         });
     }

@@ -224,11 +224,6 @@ export default function LaboratoryList() {
                                                     </i>
                                                 </Button>
                                             </Link>
-
-                                            <DeleteButton
-                                                url={deleteLaboratory(item.id).url}
-                                                msg={'record'}
-                                            />
                                         </td>
                                     </tr>
                                 ))}

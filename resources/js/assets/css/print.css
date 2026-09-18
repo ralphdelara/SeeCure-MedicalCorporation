@@ -1,0 +1,26 @@
+:root {
+    /* Define your "Office Theme" variables */
+    --ms-theme-headings: 'Calibri Light', 'Segoe UI Light', sans-serif;
+    --ms-theme-body: Calibri, 'Segoe UI', Arial, sans-serif;
+    font-family: Calibri, sans-serif;
+    font-variant-ligatures: none;
+}
+
+h1,
+h2,
+h3 {
+    font-family: var(--ms-theme-headings);
+}
+
+p,
+li,
+td {
+    font-family: var(--ms-theme-body);
+}
+
+@media print {
+    .page-break {
+        break-before: page; /* Modern standard */
+        page-break-before: always; /* Fallback for older browsers */
+    }
+}

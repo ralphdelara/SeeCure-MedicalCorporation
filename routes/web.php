@@ -90,6 +90,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::patch('/', [CashierController::class, 'updateDetails'])->name('cashier.details.update');
             Route::patch('/complete/{id}', [CashierController::class, 'completeCashier'])->name('cashier.completed');
             Route::post('/payment', [CashierController::class, 'addOrUpdatePayment'])->name('cashier.details.add-or-update-payment');
+            Route::patch('/send-back-to-billing/{billingId}', [CashierController::class, 'sendBackToBilling'])->name('cashier.details.send-back-to-billing');
         });
     });
 
@@ -149,6 +150,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('print')->group(function () {
         Route::get('/prescription/{consultationId}', [PrintController::class, 'printPrescription'])->name('print.prescription');
+        Route::get('/billing/{billingId}', [PrintController::class, 'printBilling'])->name('print.billing');
+        Route::get('/receipt/{receiptNo}', [PrintController::class, 'printReceipt'])->name('print.receipt');
+        Route::get('/laboratory/{laboratoryId}', [PrintController::class, 'printLaboratory'])->name('print.laboratory');
     });
 });
 

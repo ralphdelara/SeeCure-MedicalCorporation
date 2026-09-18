@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('billing', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('patient_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('patient_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignUuid('visit_id')->constrained()->cascadeOnDelete();
 
             $table->decimal('total_price', 12, 2)->nullable();
@@ -24,7 +24,7 @@ return new class extends Migration
             $table->boolean('is_completed')->default(false);
 
             $table->foreignUuid('created_by')->constrained('users', 'id');
-            $table->foreignUuid('last_modified_by')->nullable()->constrained('users', 'id');
+            $table->foreignUuid('last_modified_by')->constrained('users', 'id')->nullable();
             $table->timestamps();
         });
     }

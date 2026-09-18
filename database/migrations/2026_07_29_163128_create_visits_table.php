@@ -26,7 +26,7 @@ return new class extends Migration
 
             $table->foreignId('visit_status_id')->constrained();
             $table->foreignUuid('created_by')->constrained('users', 'id');
-            $table->foreignUuid('last_modified_by')->nullable()->constrained('users', 'id');
+            $table->foreignUuid('last_modified_by')->constrained('users', 'id')->nullable();
             $table->timestamps();
 
             $table->index('visit_status_id');

@@ -26,7 +26,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read User $createdBy
  * @property-read User|null $lastModifiedBy
  * @property-read BillingType $type
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail query()
@@ -42,11 +41,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail wherePrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail whereTax($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail whereUpdatedAt($value)
- *
  * @property int|null $discount_type_id
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail whereDiscountTypeId($value)
- *
+ * @property numeric|null $tax_percent
+ * @property numeric|null $tax_amount
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail whereTaxAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail whereTaxPercent($value)
  * @mixin \Eloquent
  */
 #[Fillable([

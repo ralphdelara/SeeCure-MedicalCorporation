@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\DepartmentEnum;
 use App\Models\User;
 use App\Services\UserService;
+use Auth;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -68,6 +70,17 @@ class UserController extends Controller
 
         if (! empty($userDetails['user_id']) && empty($userDetails['password'])) {
             unset($userDetails['password']);
+        }
+
+        if (! empty($userDetails['user_id'])) {
+            if (
+                $userDetails['user_id'] !== Auth::id()
+                && Auth::user()->department_id !== DepartmentEnum::ADMINISTRATOR->value
+            ) {
+                // temporarily prevent user from updating other users information
+                // except admin
+                abort(403);
+            }
         }
 
         app(UserService::class)->addOrUpdateUser($userDetails);

@@ -66,6 +66,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereFollowUpDate($value)
  * @property bool $is_completed
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereIsCompleted($value)
+ * @property string|null $consult_reason
+ * @property-read int|null $laboratory_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereConsultReason($value)
  * @mixin \Eloquent
  */
 #[Fillable([

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\PositionEnum;
 use App\Models\Laboratory;
+use App\Models\User;
 use App\Services\LaboratoryService;
 use App\Services\PatientService;
 use Illuminate\Http\Request;
@@ -31,19 +33,31 @@ class LaboratoryController extends Controller
         return app(LaboratoryService::class)->getTests($id);
     }
 
-    public function addOrUpdateLaboratory(Request $request): void
-    {
-
-    }
+    public function addOrUpdateLaboratory(Request $request): void {}
 
     public function getLaboratoryDetails(string $id): Response
     {
         $laboratoryDetails = app(LaboratoryService::class)->getLaboratoryDetails($id);
         $patientDetails = app(PatientService::class)->getPatientDetails($laboratoryDetails['patient_id']);
 
+        $staffOptionsArr = User::with('professions', 'specialties')->whereIn(
+            'position_id',
+            [
+                PositionEnum::HEAD_OF_LABORATORY,
+                PositionEnum::MEDICAL_TECHNOLOGIST,
+                PositionEnum::MEDICAL_TECHNOLOGIST_SUPERVISOR,
+            ],
+        )->get()->toArray();
+
+        $staffOptions = array_map(fn($item) => [
+            'id'   => $item['id'],
+            'name' => $item['full_name'],
+        ], $staffOptionsArr);
+
         return Inertia::render('laboratory/details/index', compact(
             'laboratoryDetails',
             'patientDetails',
+            'staffOptions',
         ));
     }
 

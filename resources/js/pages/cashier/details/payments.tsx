@@ -3,7 +3,7 @@ import { Select } from '@/components/ui/select';
 import { useEffect, useState } from 'react';
 import { useForm, usePage } from '@inertiajs/react';
 import { Options } from '@/types/options';
-import { formatMoney, formSubmitResponse } from '@/lib/utils';
+import { formatMoney, formSubmitResponse, printDocument } from '@/lib/utils';
 import React from 'react';
 import SaveButton from './save-button';
 import { updateDetails } from '@/actions/App/Http/Controllers/CashierController';
@@ -130,8 +130,6 @@ const Payments = ({ showTab }: { showTab: boolean }) => {
         setData('amount_received', amountReceived);
     };
 
-    const printReceipt = () => {};
-
     const isPaid = () => {
         if (paymentDetails) {
             return paymentDetails.receipt_sequence !== '';
@@ -163,7 +161,7 @@ const Payments = ({ showTab }: { showTab: boolean }) => {
                                                     <Button
                                                         size="lg"
                                                         type="button"
-                                                        onClick={() => printReceipt()}
+                                                        onClick={() => printDocument('')}
                                                     >
                                                         <IconPrinter /> Print Receipt
                                                     </Button>
@@ -312,7 +310,7 @@ const Payments = ({ showTab }: { showTab: boolean }) => {
                                                         </span>
                                                         <Input
                                                             name="amount_received"
-                                                            type="number"
+                                                            type="text"
                                                             value={data.amount_received}
                                                             onChange={(e) =>
                                                                 computeChange(e.target.value)

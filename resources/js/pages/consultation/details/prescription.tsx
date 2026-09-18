@@ -1,6 +1,13 @@
 import { Head, usePage } from '@inertiajs/react';
 import TableList from '@/components/table';
-import { IconEdit, IconFilePlus, IconPencilPlus, IconPlus, IconTrash } from '@tabler/icons-react';
+import {
+    IconEdit,
+    IconFilePlus,
+    IconPencilPlus,
+    IconPlus,
+    IconPrescription,
+    IconTrash,
+} from '@tabler/icons-react';
 import { Button } from '@/components/ui/button';
 import PrescriptionModal, { ModalFormProps } from './prescription-modal';
 import { useState } from 'react';
@@ -8,6 +15,7 @@ import DeleteButton from '@/components/delete-button';
 import { deletePrescription } from '@/actions/App/Http/Controllers/ConsultationController';
 import Pagination from '@/components/pagination';
 import SaveConsultation from './complete-consultation';
+import { printDocument } from '@/lib/utils';
 
 interface InertiaProps {
     consultationDetails: {
@@ -95,6 +103,21 @@ const Prescription = ({ showTab }: { showTab: boolean }) => {
                                     </Button>
                                 </div>
                                 <div className="col-lg-12">
+                                    <div className="text-right">
+                                        <Button
+                                            size="lg"
+                                            type="button"
+                                            onClick={() =>
+                                                printDocument(
+                                                    'prescription',
+                                                    consultationDetails.id,
+                                                )
+                                            }
+                                        >
+                                            <IconPrescription />
+                                            Print Prescription
+                                        </Button>
+                                    </div>
                                     <h4 className="fw-bolder">Prescription</h4>
                                 </div>
                                 <TableList header={header} hasPage={false}>

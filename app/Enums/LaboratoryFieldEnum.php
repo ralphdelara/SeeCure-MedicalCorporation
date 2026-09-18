@@ -4,10 +4,10 @@ namespace App\Enums;
 
 use App\Traits\EnumTraits;
 
-enum LaboratoryTestFieldEnum: int
+enum LaboratoryFieldEnum: int
 {
     use EnumTraits;
-// Clinical Chemistry
+    // Clinical Chemistry
     case FBS = 1;
     case RBS = 2;
     case BUN = 3;
@@ -110,9 +110,12 @@ enum LaboratoryTestFieldEnum: int
     case SALMONELLA_TYPHI_IGM_ANTIBODY = 89;
     case SALMONELLA_TYPHI_IGG_ANTIBODY = 90;
 
-    case HBSAG = 91;
-    case RPR_ANTI_TP = 92;
-    case RESULT_TEXT = 93;
+    case PREGNANCY_URINE_RESULT_TEXT = 91;
+    case PREGNANCY_SERUM_RESULT_TEXT = 92;
+    case RPR_ANTI_TP_RESULT_TEXT = 93;
+    case HBSAG_RESULT_TEXT = 94;
+    case CRP_QUANTITATIVE_RESULT_TEXT = 95;
+    case H_PYLORI_RESULT_TEXT = 96;
 
     public function description(): string
     {
@@ -216,9 +219,12 @@ enum LaboratoryTestFieldEnum: int
             self::DENGUE_IGG_ANTIBODY           => 'Dengue IgG Antibody',
             self::SALMONELLA_TYPHI_IGM_ANTIBODY => 'Salmonella typhi IgM Antibody',
             self::SALMONELLA_TYPHI_IGG_ANTIBODY => 'Salmonella typhi IgG Antibody',
-            self::HBSAG                         => 'HBsAg',
-            self::RPR_ANTI_TP                   => 'RPR / Anti-TP',
-            self::RESULT_TEXT                   => 'Result',
+            self::PREGNANCY_URINE_RESULT_TEXT   => 'Pregnancy (Urine)',
+            self::PREGNANCY_SERUM_RESULT_TEXT   => 'Pregnancy (Serum)',
+            self::RPR_ANTI_TP_RESULT_TEXT       => 'RPR / Anti-TP',
+            self::HBSAG_RESULT_TEXT             => 'HBsAg',
+            self::CRP_QUANTITATIVE_RESULT_TEXT  => 'CRP (Quantitative)',
+            self::H_PYLORI_RESULT_TEXT          => 'Helicobacter pylori Antibody Test',
         };
     }
 
@@ -324,9 +330,12 @@ enum LaboratoryTestFieldEnum: int
             self::DENGUE_IGG_ANTIBODY           => 'text',
             self::SALMONELLA_TYPHI_IGM_ANTIBODY => 'text',
             self::SALMONELLA_TYPHI_IGG_ANTIBODY => 'text',
-            self::HBSAG                         => 'text',
-            self::RPR_ANTI_TP                   => 'text',
-            self::RESULT_TEXT                   => 'text',
+            self::PREGNANCY_URINE_RESULT_TEXT   => 'text',
+            self::PREGNANCY_SERUM_RESULT_TEXT   => 'text',
+            self::RPR_ANTI_TP_RESULT_TEXT       => 'text',
+            self::HBSAG_RESULT_TEXT             => 'text',
+            self::CRP_QUANTITATIVE_RESULT_TEXT  => 'text',
+            self::H_PYLORI_RESULT_TEXT          => 'text',
         };
     }
 
@@ -670,9 +679,12 @@ enum LaboratoryTestFieldEnum: int
             self::DENGUE_IGG_ANTIBODY           => null,
             self::SALMONELLA_TYPHI_IGM_ANTIBODY => null,
             self::SALMONELLA_TYPHI_IGG_ANTIBODY => null,
-            self::HBSAG                         => null,
-            self::RPR_ANTI_TP                   => null,
-            self::RESULT_TEXT                   => null,
+            self::PREGNANCY_URINE_RESULT_TEXT   => null,
+            self::PREGNANCY_SERUM_RESULT_TEXT   => null,
+            self::RPR_ANTI_TP_RESULT_TEXT       => null,
+            self::HBSAG_RESULT_TEXT             => null,
+            self::CRP_QUANTITATIVE_RESULT_TEXT  => null,
+            self::H_PYLORI_RESULT_TEXT          => null,
         };
     }
 
@@ -778,9 +790,12 @@ enum LaboratoryTestFieldEnum: int
             self::DENGUE_IGG_ANTIBODY           => null,
             self::SALMONELLA_TYPHI_IGM_ANTIBODY => null,
             self::SALMONELLA_TYPHI_IGG_ANTIBODY => null,
-            self::HBSAG                         => null,
-            self::RPR_ANTI_TP                   => null,
-            self::RESULT_TEXT                   => null,
+            self::PREGNANCY_URINE_RESULT_TEXT   => null,
+            self::PREGNANCY_SERUM_RESULT_TEXT   => null,
+            self::RPR_ANTI_TP_RESULT_TEXT       => null,
+            self::HBSAG_RESULT_TEXT             => null,
+            self::CRP_QUANTITATIVE_RESULT_TEXT  => null,
+            self::H_PYLORI_RESULT_TEXT          => null,
         };
     }
 }

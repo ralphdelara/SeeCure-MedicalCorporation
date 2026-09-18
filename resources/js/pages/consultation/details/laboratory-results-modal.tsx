@@ -56,7 +56,14 @@ const LaboratoryResultsModal = ({
                                             {item.fields.length > 1 && (
                                                 <Fragment>
                                                     {item.fields.map((field, fieldIndex) => (
-                                                        <tr key={'testList-' + index + '-' + fieldIndex}>
+                                                        <tr
+                                                            key={
+                                                                'testList-' +
+                                                                index +
+                                                                '-' +
+                                                                fieldIndex
+                                                            }
+                                                        >
                                                             <td>{field.field.name}</td>
                                                             <td>{field.value}</td>
                                                             <td>
@@ -80,7 +87,7 @@ const LaboratoryResultsModal = ({
                                                         </h5>
                                                         {getNormalRange(
                                                             item.fields[0].field,
-                                                            patientDetails.gender_id,
+                                                            patientDetails.gender_id ?? 0,
                                                         )}
                                                     </td>
                                                     <td width="50%">

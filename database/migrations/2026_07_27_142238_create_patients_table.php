@@ -45,7 +45,7 @@ return new class extends Migration
             $table->unsignedBigInteger('batch')->nullable();
 
             $table->foreignUuid('created_by')->constrained('users', 'id');
-            $table->foreignUuid('last_modified_by')->nullable()->constrained('users', 'id');
+            $table->foreignUuid('last_modified_by')->constrained('users', 'id')->nullable();
             $table->timestamps();
         });
     }

@@ -86,4 +86,9 @@ class CashierController extends Controller
     {
         return app(CashierService::class)->getAuditLog($id);
     }
+
+    public function sendBackToBilling(string $billingId): void
+    {
+        app(CashierService::class)->sendBackToBilling($billingId);
+    }
 }

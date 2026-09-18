@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\CompanyProfile;
 use Diglactic\Breadcrumbs\Breadcrumbs;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -83,6 +84,7 @@ class HandleInertiaRequests extends Middleware
                 'professions' => $professions,
                 'specialties' => $specialties,
             ],
+            'company' => CompanyProfile::find(1),
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'breadcrumbs' => $breadcrumbs,
         ];
