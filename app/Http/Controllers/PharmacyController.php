@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Pharmacy;
 use App\Models\DiscountType;
-use App\Models\Payment;
-use App\Models\PaymentMethod;
+use App\Models\Pharmacy;
 use App\Services\PharmacyService;
-use App\Services\PatientService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -31,11 +28,13 @@ class PharmacyController extends Controller
     public function getPharmacyDetails(Request $request, string $pharmacyId): Response
     {
         $pharmacyDetails = app(PharmacyService::class)->getPharmacyDetails($pharmacyId);
-        $patientDetails = app(PatientService::class)->getPatientDetails($pharmacyDetails['patient_id']);
+        $patientDetails = $pharmacyDetails['visit']['patient'];
+        $discountType = DiscountType::all();
 
         return Inertia::render('pharmacy/details/index', compact(
             'pharmacyDetails',
             'patientDetails',
+            'discountType',
         ));
     }
 
@@ -72,7 +71,7 @@ class PharmacyController extends Controller
 
         // to refresh usePage props
         return back()->with([
-            'paymentDetails' => app(PharmacyService::class)->addOrUpdatePayment($paymentDetails)
+            'paymentDetails' => app(PharmacyService::class)->addOrUpdatePayment($paymentDetails),
         ]);
     }
 

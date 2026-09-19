@@ -13,7 +13,6 @@ const Default = () => {
             dosage: string;
         }[];
     };
-    console.log(prescription);
 
     useEffect(() => {
         setTimeout(() => {

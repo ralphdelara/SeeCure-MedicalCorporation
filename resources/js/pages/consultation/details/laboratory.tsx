@@ -31,17 +31,14 @@ interface InertiaProps {
 }
 
 const Laboratory = ({ showTab }: { showTab: boolean }) => {
-    const { consultationDetails } = usePage().props as unknown as InertiaProps;
-    const { laboratory } = consultationDetails;
+    const { consultationDetails, laboratory } = usePage().props as unknown as InertiaProps;
 
     const [formShow, setFormShow] = useState(false);
     const [resultsShow, setResultsShow] = useState(false);
     const [resultsData, setResultsData] = useState([]);
     const [hasPendingLab, setHasPendingLab] = useState(false);
     const defaultData = {
-        consultation_id: consultationDetails.id,
         visit_id: consultationDetails.visit_id,
-        patient_id: consultationDetails.patient_id,
         laboratory_id: '',
         laboratory_package_id: '',
         other_test_ids: [] as string[],
@@ -113,46 +110,61 @@ const Laboratory = ({ showTab }: { showTab: boolean }) => {
                                             setHasPendingLab(true);
                                         }
                                         return (
-                                        <tr key={'cons-lab-' + index}>
-                                            <td className="text-right">
-                                                <h5>{index + 1}</h5>
-                                            </td>
-                                            <td>
-                                                <h5>{item.created_at}</h5>
-                                            </td>
-                                            <td>
-                                                {item.test_data.map((testData, testIndex) => (
-                                                    <h6 key={'cons-lab-'+index+'-test-' + testIndex}>{testData.test.name}</h6>
-                                                ))}
-                                            </td>
-                                            <td>
-                                                {item.is_completed ? (
-                                                    <span className="badge text-bg-success">
-                                                        Completed
-                                                    </span>
-                                                ) : (
-                                                    <span className="badge text-bg-danger">
-                                                        Pending
-                                                    </span>
-                                                )}
-                                            </td>
-                                            <td className="text-center">
-                                                <Button
-                                                    rounded={true}
-                                                    className="me-1 mb-1"
-                                                    title="View Results"
-                                                    onClick={() => toggleResultsModal(item.test_data)}
-                                                >
-                                                    <i>
-                                                        <IconChecklist />
-                                                    </i>
-                                                </Button>
-                                            </td>
-                                        </tr>
-                                    )})}
+                                            <tr key={'cons-lab-' + index}>
+                                                <td className="text-right">
+                                                    <h5>{index + 1}</h5>
+                                                </td>
+                                                <td>
+                                                    <h5>{item.created_at}</h5>
+                                                </td>
+                                                <td>
+                                                    {item.test_data.map((testData, testIndex) => (
+                                                        <h6
+                                                            key={
+                                                                'cons-lab-' +
+                                                                index +
+                                                                '-test-' +
+                                                                testIndex
+                                                            }
+                                                        >
+                                                            {testData.test.name}
+                                                        </h6>
+                                                    ))}
+                                                </td>
+                                                <td>
+                                                    {item.is_completed ? (
+                                                        <span className="badge text-bg-success">
+                                                            Completed
+                                                        </span>
+                                                    ) : (
+                                                        <span className="badge text-bg-danger">
+                                                            Pending
+                                                        </span>
+                                                    )}
+                                                </td>
+                                                <td className="text-center">
+                                                    <Button
+                                                        rounded={true}
+                                                        className="me-1 mb-1"
+                                                        title="View Results"
+                                                        onClick={() =>
+                                                            toggleResultsModal(item.test_data)
+                                                        }
+                                                    >
+                                                        <i>
+                                                            <IconChecklist />
+                                                        </i>
+                                                    </Button>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
                                     {laboratory.length === 0 && (
                                         <tr>
-                                            <td colSpan={5} className="text-center fs-6 text-danger">
+                                            <td
+                                                colSpan={5}
+                                                className="fs-6 text-danger text-center"
+                                            >
                                                 No record
                                             </td>
                                         </tr>

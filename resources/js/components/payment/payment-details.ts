@@ -1,7 +1,6 @@
 import { AddOrUpdatePaymentDetailsFormProps } from "./new-payment";
 
 export interface PaymentDetailsProps {
-    id: string;
     full_name?: string;
     age?: string;
     gender?: {

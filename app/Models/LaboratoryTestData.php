@@ -30,7 +30,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read LaboratoryPackage|null $package
  * @property-read LaboratoryTest $test
  * @property-read LaboratoryType $type
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestData newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestData newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestData query()
@@ -44,7 +43,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestData whereLastModifiedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestData whereRemarks($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestData whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 #[Fillable([

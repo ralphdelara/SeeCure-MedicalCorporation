@@ -26,7 +26,7 @@ export default function Cashier() {
     const header = [
         { name: '#', width: '5%', align: 'right' },
         { name: 'Patient • Gender', className: 'sticky-left', align: 'left' },
-        { name: 'Cashier Type', align: 'left' },
+        { name: 'Type', align: 'left' },
         { name: 'Status', align: 'left' },
         { name: 'Added By', align: 'left' },
         { name: 'Last Modified By', align: 'left' },
@@ -90,17 +90,17 @@ export default function Cashier() {
                                                         <h6 className="fs-4 fw-semibold mb-0">
                                                             <Link
                                                                 href={getPatientDetails(
-                                                                    item.patient.id,
+                                                                    item.visit.patient.id,
                                                                 )}
                                                                 className="tooltip-container"
                                                                 data-title="Click to View Patient Details"
                                                             >
-                                                                {item.patient.full_name}
+                                                                {item.visit.patient.full_name}
                                                             </Link>
                                                         </h6>
                                                         <span className="fw-normal">
-                                                            {item.patient.gender
-                                                                ? item.patient.gender.name
+                                                            {item.visit.patient.gender
+                                                                ? item.visit.patient.gender.name
                                                                 : 'N/A'}
                                                         </span>
                                                     </div>
@@ -108,14 +108,8 @@ export default function Cashier() {
                                             </div>
                                         </td>
                                         <td>
-                                            {item.details.map((detail, detailIndex) => (
-                                                <h6
-                                                    className="fs-4 fw-semibold mb-0"
-                                                    key={'detail-' + index + '-' + detailIndex}
-                                                >
-                                                    {detail.name}
-                                                </h6>
-                                            ))}
+                                            {item.pharmacy && 'Pharmacy'}
+                                            {item.billing && 'Billing'}
                                         </td>
                                         <td>
                                             {item.is_completed ? (
@@ -162,7 +156,9 @@ export default function Cashier() {
                                                         : 'Please wait...'
                                                 }
                                                 disabled={!allowCallPatient}
-                                                onClick={() => callPatient(item.patient.full_name)}
+                                                onClick={() =>
+                                                    callPatient(item.visit.patient.full_name)
+                                                }
                                             >
                                                 <i>
                                                     {allowCallPatient && <IconVolume size={18} />}

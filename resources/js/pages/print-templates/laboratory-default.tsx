@@ -17,7 +17,7 @@ const LaboratoryDefault = ({ item, index }) => {
             quantity: string;
         }[];
     };
-    console.log(remarksType);
+
     return (
         <>
             <Header />

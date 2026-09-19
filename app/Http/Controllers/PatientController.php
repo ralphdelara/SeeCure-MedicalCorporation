@@ -77,4 +77,9 @@ class PatientController extends Controller
     {
         return app(PatientService::class)->getSmallPatientList($request->keyword);
     }
+
+    public function getAuditLog(string $id): array
+    {
+        return app(PatientService::class)->getAuditLog($id);
+    }
 }

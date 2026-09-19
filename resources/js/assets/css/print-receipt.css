@@ -1,0 +1,8 @@
+@import url('@/assets/css/fonts-dot-matrix.css');
+
+@media print {
+    .page-break {
+        break-before: page; /* Modern standard */
+        page-break-before: always; /* Fallback for older browsers */
+    }
+}

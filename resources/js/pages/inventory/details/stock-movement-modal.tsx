@@ -100,7 +100,6 @@ const StockMovementModal = ({ formShow, setFormShow, formType, formData }: Modal
         setData('expiry_date', formData.expiry_date);
         setData('supplier', formData.supplier);
         setData('reference_no', formData.reference_no);
-        console.log(formData);
     }, [formData]);
 
     return (

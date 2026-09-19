@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('consultations', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('visit_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('patient_id')->constrained()->cascadeOnDelete();
 
             $table->text('guardian_name')->nullable();
             $table->text('guardian_contact_number')->nullable();
@@ -26,7 +25,7 @@ return new class extends Migration
             $table->date('follow_up_date')->nullable();
             $table->foreignUuid('doctor_id')->constrained('users', 'id');
             $table->foreignUuid('created_by')->constrained('users', 'id');
-            $table->foreignUuid('last_modified_by')->constrained('users', 'id')->nullable();
+            $table->foreignUuid('last_modified_by')->nullable()->constrained('users', 'id');
             $table->timestamps();
         });
     }

@@ -26,6 +26,26 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetails wherePrescriptionId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetails wherePrescriptionQuantity($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetails whereUpdatedAt($value)
+ * @property string $name
+ * @property numeric|null $cost_price
+ * @property int $quantity
+ * @property numeric|null $total_price
+ * @property numeric|null $discount
+ * @property int|null $discount_type_id
+ * @property numeric|null $tax_percent
+ * @property numeric|null $tax_amount
+ * @property numeric|null $nett_price
+ * @property int $order_no
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetails whereCostPrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetails whereDiscount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetails whereDiscountTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetails whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetails whereNettPrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetails whereOrderNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetails whereQuantity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetails whereTaxAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetails whereTaxPercent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetails whereTotalPrice($value)
  * @mixin \Eloquent
  */
 class PharmacyDetails extends Model

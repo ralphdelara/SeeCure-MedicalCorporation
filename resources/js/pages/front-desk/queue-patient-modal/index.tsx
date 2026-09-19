@@ -61,11 +61,13 @@ const QueuePatient = () => {
             has_laboratory: 0,
             has_radiology: 0,
             is_emergency: 0,
+            is_walk_in: 0,
             signs_or_symptoms_id: [],
             priority_type_ids: [],
 
             laboratory_id: '',
             laboratory_package_id: '',
+            consult_reason: '',
             other_test_ids: [],
 
             radiology_test_ids: [],
@@ -157,7 +159,7 @@ const QueuePatient = () => {
                                 )}
 
                                 <div className="row px-4">
-                                    <div className="col-md-12">
+                                    <div className="col-md-4">
                                         <div className="form-check form-check-inline">
                                             <input
                                                 className="form-check-input success"
@@ -180,8 +182,36 @@ const QueuePatient = () => {
                                                 <h5 className="fw-semibold">Emergency?</h5>
                                             </Label>
                                         </div>
+                                        <InputError
+                                            message={errors.is_emergency}
+                                            className="mt-2"
+                                        />
                                     </div>
-                                    <InputError message={errors.is_emergency} className="mt-2" />
+                                    <div className="col-md-4">
+                                        <div className="form-check form-check-inline">
+                                            <input
+                                                className="form-check-input success"
+                                                type="checkbox"
+                                                id="is_walk_in"
+                                                value="1"
+                                                onChange={(e) =>
+                                                    setData(
+                                                        'is_walk_in',
+                                                        e.currentTarget.checked ? 1 : 0,
+                                                    )
+                                                }
+                                                name="is_walk_in"
+                                                checked={data.is_walk_in === 1}
+                                            />
+                                            <Label
+                                                className="form-check-label"
+                                                htmlFor="is_walk_in"
+                                            >
+                                                <h5 className="fw-semibold">Walk In?</h5>
+                                            </Label>
+                                        </div>
+                                        <InputError message={errors.is_walk_in} className="mt-2" />
+                                    </div>
                                 </div>
 
                                 <div className="row mt-3 px-4">
@@ -191,10 +221,7 @@ const QueuePatient = () => {
                                         </Label>
                                     </div>
                                     {priorityTypeOptions.map((item, index) => (
-                                        <div
-                                            className={'col-md-4'}
-                                            key={'priorityType-' + index}
-                                        >
+                                        <div className={'col-md-4'} key={'priorityType-' + index}>
                                             {item.id !== 3 && (
                                                 <div className="form-check form-check-inline">
                                                     <input

@@ -20,20 +20,20 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property CarbonImmutable|null $updated_at
  * @property-read Consultation|null $consultation
  * @property-read User $createdBy
- * @property-read Collection<string, ConsultationDiagnosisIcd10Code> $icd10Codes
+ * @property-read Collection<string, DiagnosisIcd10Code> $icd10Codes
  * @property-read User|null $lastModifiedBy
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosis newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosis newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosis query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosis whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosis whereCreatedBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosis whereDiagnosis($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosis whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosis whereLastModifiedBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosis whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Diagnosis newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Diagnosis newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Diagnosis query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Diagnosis whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Diagnosis whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Diagnosis whereDiagnosis($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Diagnosis whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Diagnosis whereLastModifiedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Diagnosis whereUpdatedAt($value)
  * @property string $consultation_id
  * @property-read int|null $icd10_codes_count
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationDiagnosis whereConsultationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Diagnosis whereConsultationId($value)
  * @mixin \Eloquent
  */
 #[Fillable([
@@ -42,11 +42,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
     'created_by',
     'last_modified_by',
 ])]
-class ConsultationDiagnosis extends Model
+class Diagnosis extends Model
 {
     use CorrectTimezone, HasUuids;
 
-    public $table = 'consultation_diagnosis';
+    public $table = 'diagnosis';
 
     protected function casts(): array
     {
@@ -64,7 +64,7 @@ class ConsultationDiagnosis extends Model
 
     public function icd10Codes(): HasMany
     {
-        return $this->hasMany(ConsultationDiagnosisIcd10Code::class);
+        return $this->hasMany(DiagnosisIcd10Code::class);
     }
 
     public function createdBy(): BelongsTo

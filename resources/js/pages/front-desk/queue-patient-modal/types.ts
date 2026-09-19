@@ -13,6 +13,7 @@ export interface QueuePatientDetailsFormProps
         VitalSignsDetailsFormProps {
     form_type: string;
     is_emergency: number;
+    is_walk_in: number;
     has_laboratory: number;
     priority_type_ids: number[];
 }

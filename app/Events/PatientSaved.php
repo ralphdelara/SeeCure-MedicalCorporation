@@ -2,12 +2,12 @@
 
 namespace App\Events;
 
-use App\Models\CashierDetail;
+use App\Models\Patient;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class CashierDetailSaved
+class PatientSaved
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -15,7 +15,7 @@ class CashierDetailSaved
      * type can be 'created' or 'updated'
      */
     public function __construct(
-        public CashierDetail $cashierDetail,
+        public Patient $patient,
         public string $type,
         public array $savedFields = [],
         public array $originalFields = [],

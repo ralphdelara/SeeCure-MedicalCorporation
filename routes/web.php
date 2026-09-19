@@ -34,6 +34,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::match(['post', 'put'], '/', [PatientController::class, 'addOrUpdatePatient'])->name('patient.add-or-update');
         Route::delete('/{id}', [PatientController::class, 'deletePatient'])->name('patient.delete');
         Route::get('/{id}', [PatientController::class, 'getPatientDetails'])->name('patient.details');
+        Route::get('/{id}/audit-log', [PatientController::class, 'getAuditLog'])->name('patient.details.audit-log');
     });
 
     Route::prefix('/consultations')->group(function () {
@@ -153,6 +154,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/billing/{billingId}', [PrintController::class, 'printBilling'])->name('print.billing');
         Route::get('/receipt/{receiptNo}', [PrintController::class, 'printReceipt'])->name('print.receipt');
         Route::get('/laboratory/{laboratoryId}', [PrintController::class, 'printLaboratory'])->name('print.laboratory');
+        Route::get('/pharmacy/pick-list/{pharmacyId}', [PrintController::class, 'printPharmacyPickList'])->name('print.pharmacy-pick-list');
     });
 });
 

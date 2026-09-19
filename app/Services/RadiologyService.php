@@ -37,7 +37,7 @@ class RadiologyService
         ]);
 
         if (! empty($keyword)) {
-            $billingList = $billingList->whereHas('patient', function ($query) use ($keyword) {
+            $billingList = $billingList->whereHas('visit.patient', function ($query) use ($keyword) {
                 /** @var Builder|Patient $query */
                 $query->whereBlind('last_name_index', 'last_name_index', strtolower($keyword))
                     ->orWhereBlind('first_name_index', 'first_name_index', strtolower($keyword))

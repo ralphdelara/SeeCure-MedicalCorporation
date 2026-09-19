@@ -2,64 +2,64 @@
 
 namespace App\Models;
 
-use Carbon\CarbonImmutable;
+use App\Traits\CorrectTimezone;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * @property string $id
+ * @property int $id
  * @property string $patient_id
  * @property int $audit_type_id
- * @property array<array-key, mixed> $action
+ * @property string $data
  * @property string $created_by
- * @property CarbonImmutable|null $created_at
- * @property CarbonImmutable|null $updated_at
- * @property-read User $createdBy
- * @property-read Patient|null $patient
- * @property-read AuditType|null $type
+ * @property \Carbon\CarbonImmutable $created_at
+ * @property-read \App\Models\AuditType $auditType
+ * @property-read \App\Models\Patient $patient
+ * @property-read \App\Models\User $createdBy
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit whereAction($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit whereAuditTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit wherePatientId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit whereData($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit wherePatientId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 #[Fillable([
     'patient_id',
     'audit_type_id',
-    'action',
+    'data',
     'created_by',
 ])]
 class PatientAudit extends Model
 {
-    use HasUuids;
+    use CorrectTimezone;
+
+    public $timestamps = false;
 
     protected function casts(): array
     {
         return [
-            'action' => 'encrypted:array',
+            'data'       => 'encrypted',
+            'created_at' => 'date:M d Y, h:i:s a',
         ];
     }
 
     public function patient(): BelongsTo
     {
-        return $this->belongsTo(Patient::class);
-    }
-
-    public function type(): BelongsTo
-    {
-        return $this->belongsTo(AuditType::class);
+        return $this->belongsTo(Patient::class, 'patient_id', 'id');
     }
 
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by', 'id');
+    }
+
+    public function auditType(): BelongsTo
+    {
+        return $this->belongsTo(AuditType::class, 'audit_type_id', 'id');
     }
 }

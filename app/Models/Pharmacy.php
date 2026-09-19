@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use App\Traits\CorrectTimezone;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -18,16 +20,16 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property bool $is_completed
  * @property string $created_by
  * @property string|null $last_modified_by
- * @property \Carbon\CarbonImmutable|null $created_at
- * @property \Carbon\CarbonImmutable|null $updated_at
- * @property-read \App\Models\Billing $billing
- * @property-read \App\Models\Consultation $consultation
- * @property-read \App\Models\User $createdBy
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PharmacyDetail> $details
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
+ * @property-read Billing $billing
+ * @property-read Consultation $consultation
+ * @property-read User $createdBy
+ * @property-read Collection<int, PharmacyDetail> $details
  * @property-read int|null $details_count
- * @property-read \App\Models\User|null $lastModifiedBy
- * @property-read \App\Models\Patient $patient
- * @property-read \App\Models\Visit $visit
+ * @property-read User|null $lastModifiedBy
+ * @property-read Patient $patient
+ * @property-read Visit $visit
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy query()
@@ -41,20 +43,37 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy wherePatientId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy whereVisitId($value)
+ * @property numeric|null $total_cost_price
+ * @property numeric $total_quantity
+ * @property numeric|null $total_price
+ * @property numeric|null $total_discount
+ * @property numeric|null $total_tax
+ * @property numeric|null $total_nett_price
+ * @property int $transaction_no
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy whereTotalCostPrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy whereTotalDiscount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy whereTotalNettPrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy whereTotalPrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy whereTotalQuantity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy whereTotalTax($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy whereTransactionNo($value)
  * @mixin \Eloquent
  */
 #[Fillable([
-    'patient_id',
     'visit_id',
-    'consultation_id',
-    'billing_id',
+    'total_cost_price',
+    'total_quantity',
+    'total_price',
+    'total_discount',
+    'total_tax',
+    'total_nett_price',
     'is_completed',
     'created_by',
     'last_modified_by',
 ])]
 class Pharmacy extends Model
 {
-    use HasUuids, CorrectTimezone;
+    use CorrectTimezone, HasUuids;
 
     public $table = 'pharmacy';
 
@@ -66,24 +85,9 @@ class Pharmacy extends Model
         ];
     }
 
-    public function patient(): BelongsTo
-    {
-        return $this->belongsTo(Patient::class, 'patient_id', 'id');
-    }
-
     public function visit(): BelongsTo
     {
         return $this->belongsTo(Visit::class, 'visit_id', 'id');
-    }
-
-    public function consultation(): BelongsTo
-    {
-        return $this->belongsTo(Consultation::class, 'consultation_id', 'id');
-    }
-
-    public function billing(): BelongsTo
-    {
-        return $this->belongsTo(Billing::class, 'billing_id', 'id');
     }
 
     public function details(): HasMany

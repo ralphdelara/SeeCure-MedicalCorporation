@@ -7,7 +7,6 @@ use App\Models\DiscountType;
 use App\Models\Payment;
 use App\Models\PaymentMethod;
 use App\Services\CashierService;
-use App\Services\PatientService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -31,7 +30,7 @@ class CashierController extends Controller
     public function getCashierDetails(Request $request, string $cashierId): Response
     {
         $cashierDetails = app(CashierService::class)->getCashierDetails($cashierId);
-        $patientDetails = app(PatientService::class)->getPatientDetails($cashierDetails['patient_id']);
+        $patientDetails = $cashierDetails['visit']['patient'];
         $discountType = DiscountType::all();
         $paymentMethodOptions = PaymentMethod::all();
         $paymentDetails = Payment::where('cashier_id', $cashierId)->get()->first();
@@ -78,7 +77,7 @@ class CashierController extends Controller
 
         // to refresh usePage props
         return back()->with([
-            'paymentDetails' => app(CashierService::class)->addOrUpdatePayment($paymentDetails)
+            'paymentDetails' => app(CashierService::class)->addOrUpdatePayment($paymentDetails),
         ]);
     }
 

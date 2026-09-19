@@ -4,8 +4,8 @@ namespace App\Listeners;
 
 use App\Enums\AuditTypeEnum;
 use App\Events\PaymentSaved;
+use App\Models\CashierAudit;
 use App\Models\Payment;
-use App\Models\PaymentAudit;
 use Carbon\Carbon;
 use Crypt;
 use Illuminate\Contracts\Encryption\DecryptException;
@@ -30,8 +30,8 @@ class LogPaymentSave implements ShouldQueue
             $data = $this->updated($payment, $savedFields, $originalFields);
         }
 
-        PaymentAudit::create([
-            'payment_id' => $payment->id,
+        CashierAudit::create([
+            'cashier_id'    => $payment->cashier_id,
             'audit_type_id' => $type === 'created' ? AuditTypeEnum::ADD : AuditTypeEnum::UPDATE,
             'data'          => json_encode($data),
             'created_by'    => Auth::id(),

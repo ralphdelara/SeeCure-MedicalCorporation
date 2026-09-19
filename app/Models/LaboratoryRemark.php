@@ -26,7 +26,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read LaboratoryPackage|null $package
  * @property-read LaboratoryTest|null $test
  * @property-read LaboratoryType|null $type
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryRemark newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryRemark newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryRemark query()
@@ -40,7 +39,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryRemark whereLastModifiedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryRemark whereRemarks($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryRemark whereUpdatedAt($value)
- *
+ * @property-read \App\Models\LaboratoryField|null $field
  * @mixin \Eloquent
  */
 #[Fillable([

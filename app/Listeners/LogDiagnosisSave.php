@@ -5,7 +5,7 @@ namespace App\Listeners;
 use App\Enums\AuditTypeEnum;
 use App\Events\DiagnosisSaved;
 use App\Models\ConsultationAudit;
-use App\Models\ConsultationDiagnosis;
+use App\Models\Diagnosis;
 use Auth;
 use Carbon\Carbon;
 use Illuminate\Contracts\Encryption\DecryptException;
@@ -39,7 +39,7 @@ class LogDiagnosisSave implements ShouldQueue
         ]);
     }
 
-    public function created(ConsultationDiagnosis $diagnosis): array
+    public function created(Diagnosis $diagnosis): array
     {
         $fields = $diagnosis->getAttributes();
 
@@ -57,7 +57,7 @@ class LogDiagnosisSave implements ShouldQueue
     }
 
     public function updated(
-        ConsultationDiagnosis $diagnosis,
+        Diagnosis $diagnosis,
         array $savedFields,
         array $originalFields,
     ): array {

@@ -1,0 +1,15 @@
+@font-face {
+    font-family: 'Dot Matrix';
+    src: url(@/assets/fonts/dot-matrix/DOTMATRI.TTF) format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Dot Matrix';
+    src: url(@/assets/fonts/dot-matrix/DOTMBold.TTF) format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}

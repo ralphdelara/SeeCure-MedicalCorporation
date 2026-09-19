@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -14,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('visits', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('patient_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('patient_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('visit_status_id')->constrained();
+            $table->unsignedBigInteger('visit_no')->autoIncrement();
 
             $table->dateTime('admitted_at')->nullable();
             $table->dateTime('discharged_at')->nullable();
@@ -23,10 +24,10 @@ return new class extends Migration
             $table->boolean('has_laboratory')->default(false);
             $table->boolean('has_radiology')->default(false);
             $table->boolean('is_emergency')->default(false);
+            $table->boolean('is_walk_in')->default(false);
 
-            $table->foreignId('visit_status_id')->constrained();
             $table->foreignUuid('created_by')->constrained('users', 'id');
-            $table->foreignUuid('last_modified_by')->constrained('users', 'id')->nullable();
+            $table->foreignUuid('last_modified_by')->nullable()->constrained('users', 'id');
             $table->timestamps();
 
             $table->index('visit_status_id');

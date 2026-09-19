@@ -47,18 +47,30 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property numeric|null $tax_amount
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail whereTaxAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail whereTaxPercent($value)
+ * @property numeric|null $cost_price
+ * @property int $quantity
+ * @property numeric|null $total_price
+ * @property int $order_no
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail whereCostPrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail whereOrderNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail whereQuantity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail whereTotalPrice($value)
  * @mixin \Eloquent
  */
 #[Fillable([
     'billing_id',
     'billing_type_id',
     'name',
-    'price',
+
+    'cost_price',
+    'quantity',
+    'total_price',
     'discount',
     'discount_type_id',
     'tax_percent',
     'tax_amount',
     'nett_price',
+
     'created_by',
     'last_modified_by',
 ])]

@@ -28,7 +28,7 @@ interface InertiaProps {
                 name: string;
             };
             billing_type_id: number;
-            price: string | number;
+            cost_price: string | number;
             discount: string | number;
             discount_type_id: string | number;
             tax_percent: string | number;
@@ -56,9 +56,11 @@ interface InertiaProps {
 
 const Details = ({ showTab }: { showTab: boolean }) => {
     const { billingDetails, discountType } = usePage().props as unknown as InertiaProps;
-
+    console.log(billingDetails);
     const { data, setData, patch, isDirty, setDefaults } = useForm({
         id: billingDetails.id,
+        total_cost_price: billingDetails.total_cost_price ?? 0,
+        total_quantity: billingDetails.total_quantity ?? 0,
         total_price: billingDetails.total_price ?? 0,
         total_discount: billingDetails.total_discount ?? 0,
         total_nett_price: billingDetails.total_nett_price ?? 0,
@@ -84,6 +86,8 @@ const Details = ({ showTab }: { showTab: boolean }) => {
     };
 
     const totalValues = (tmpData: any) => {
+        let totalCostPrice = 0;
+        let totalQuantity = 0;
         let totalPrice = 0;
         let totalDiscount = 0;
         let totalNettPrice = 0;
@@ -96,8 +100,16 @@ const Details = ({ showTab }: { showTab: boolean }) => {
             // Cast 'item' so TypeScript knows it has dynamic string keys
             const product = item as Record<string, any>;
 
-            if (!isNaN(parseFloat(product.price))) {
-                totalPrice += parseFloat(product.price);
+            if (!isNaN(parseFloat(product.cost_price))) {
+                totalCostPrice += parseFloat(product.cost_price);
+            }
+
+            if (!isNaN(parseFloat(product.cost_price))) {
+                totalQuantity += parseFloat(product.quantity);
+            }
+
+            if (!isNaN(parseFloat(product.cost_price))) {
+                totalPrice += parseFloat(product.cost_price);
             }
 
             if (!isNaN(parseFloat(product.discount))) {
@@ -110,6 +122,8 @@ const Details = ({ showTab }: { showTab: boolean }) => {
         });
 
         return {
+            totalCostPrice: totalCostPrice.toFixed(2),
+            totalQuantity: totalQuantity.toFixed(2),
             totalPrice: totalPrice,
             totalDiscount: totalDiscount,
             totalNettPrice: totalNettPrice,
@@ -117,12 +131,14 @@ const Details = ({ showTab }: { showTab: boolean }) => {
     };
 
     const computeNettPrice = (id: string, field: string, value: string) => {
-        const parsedValue = isNaN(parseFloat(value)) ? 0.0 : parseFloat(value);
+        const parsedValue = isNaN(parseFloat(value)) ? 0.0 : value;
 
         setData((prevData: any) => {
             // Get the current item or fallback to empty values if it doesn't exist yet
             const currentItem = prevData[id] || {
-                price: '',
+                cost_price: '',
+                quantity: '',
+                total_price: '',
                 discount: '',
                 discount_type_id: '',
                 tax_percent: '',
@@ -136,14 +152,20 @@ const Details = ({ showTab }: { showTab: boolean }) => {
             };
 
             const allBlank =
-                updatedItem.price === '' &&
+                updatedItem.cost_price === '' &&
+                updatedItem.quantity === '' &&
+                updatedItem.total_price === '' &&
                 updatedItem.discount === '' &&
-                updatedItem.tax_percent === '';
+                updatedItem.tax_percent === '' &&
+                updatedItem.nett_price === '';
 
             // Safely parse all numbers from our updated item copy
-            const price = isNaN(parseFloat(updatedItem.price as string))
+            const cost_price = isNaN(parseFloat(updatedItem.cost_price as string))
                 ? 0.0
-                : parseFloat(updatedItem.price as string);
+                : parseFloat(updatedItem.cost_price as string);
+            const quantity = isNaN(parseFloat(updatedItem.quantity as string))
+                ? 0
+                : parseFloat(updatedItem.quantity as string);
             const discount = isNaN(parseFloat(updatedItem.discount as string))
                 ? 0.0
                 : parseFloat(updatedItem.discount as string);
@@ -151,7 +173,8 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                 ? 0.0
                 : parseFloat(updatedItem.tax_percent as string);
 
-            const basePrice = price - discount;
+            updatedItem.total_price = allBlank ? '' : (cost_price * quantity).toFixed(2);
+            const basePrice = updatedItem.total_price - discount;
             const totalNettPrice = (basePrice * (1 + tax_percent / 100)).toFixed(2);
             updatedItem.nett_price = allBlank ? '' : totalNettPrice;
 
@@ -161,6 +184,8 @@ const Details = ({ showTab }: { showTab: boolean }) => {
             return {
                 ...prevData,
                 [id]: updatedItem,
+                total_cost_price: totals.totalCostPrice,
+                total_quantity: totals.totalQuantity,
                 total_price: totals.totalPrice,
                 total_discount: totals.totalDiscount,
                 total_nett_price: totals.totalNettPrice,
@@ -172,7 +197,9 @@ const Details = ({ showTab }: { showTab: boolean }) => {
         const initialFields: Record<string, any> = {};
         billingDetails.details.map((item, index) => {
             initialFields[item.id] = {
-                price: item.price ?? '',
+                cost_price: item.cost_price ?? '',
+                quantity: item.quantity ?? '',
+                total_price: item.total_price ?? '',
                 discount: item.discount ?? '',
                 discount_type_id: item.discount_type_id ?? '',
                 tax_percent: item.tax_percent ?? '',
@@ -230,7 +257,7 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                 <div className="row g-3 mb-5 w-100">
                                     <TableList header={header}>
                                         {billingDetails.details.map((item, index) => {
-                                            let priceId = 'price-' + item.id;
+                                            let priceId = 'cost-price-' + item.id;
                                             let discountId = 'discount-' + item.id;
                                             let discountTypeId = 'discount-type-' + item.id;
                                             let taxPercentId = 'tax-percent-' + item.id;
@@ -258,12 +285,12 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                                                         data[
                                                                             item.id as keyof typeof data
                                                                         ] as any
-                                                                    )?.price ?? ''
+                                                                    )?.cost_price ?? ''
                                                                 }
                                                                 onChange={(e) =>
                                                                     computeNettPrice(
                                                                         item.id,
-                                                                        'price',
+                                                                        'cost_price',
                                                                         e.target.value,
                                                                     )
                                                                 }

@@ -23,7 +23,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read Laboratory $laboratory
  * @property-read User|null $lastModifiedBy
  * @property-read LaboratoryTestData $testData
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestFieldData newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestFieldData newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestFieldData query()
@@ -38,7 +37,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestFieldData whereValue($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestFieldData whereLaboratoryFieldId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestFieldData whereOrderNo($value)
- *
  * @mixin \Eloquent
  */
 #[Fillable([

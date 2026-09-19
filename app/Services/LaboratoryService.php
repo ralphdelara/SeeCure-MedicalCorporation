@@ -34,11 +34,11 @@ class LaboratoryService
         string $path,
     ): array {
         $laboratoryList = Laboratory::with([
-            'patient' => function ($query) {
+            'visit.patient' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name', 'patient_suffix_id', 'gender_id');
             },
-            'patient.suffix',
-            'patient.gender',
+            'visit.patient.suffix',
+            'visit.patient.gender',
             'testData',
             'testData.package',
             'testData.type',
@@ -58,7 +58,7 @@ class LaboratoryService
         ]);
 
         if (! empty($keyword)) {
-            $laboratoryList = $laboratoryList->whereHas('patient', function ($query) use ($keyword) {
+            $laboratoryList = $laboratoryList->whereHas('visit.patient', function ($query) use ($keyword) {
                 /** @var Builder|Patient $query */
                 $query->whereBlind('last_name_index', 'last_name_index', strtolower($keyword))
                     ->orWhereBlind('first_name_index', 'first_name_index', strtolower($keyword))
@@ -91,15 +91,11 @@ class LaboratoryService
     }
 
     public function storeLaboratory(
-        ?string $visitId,
-        ?string $patientId,
-        ?string $consultationId,
+        string $visitId,
         array $laboratoryDetails,
     ): string {
         $laboratory = Laboratory::create([
             'visit_id'         => $visitId,
-            'patient_id'       => $patientId,
-            'consultation_id'  => $consultationId,
             'created_by'       => Auth::id(),
             'last_modified_by' => Auth::id(),
         ]);
@@ -221,10 +217,10 @@ class LaboratoryService
         abortIfInvalidUuid($id);
 
         $laboratory = Laboratory::with([
-            'patient' => function ($query) {
+            'visit.patient' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name', 'age', 'gender_id', 'patient_suffix_id');
             },
-            'patient.gender' => function ($query) {
+            'visit.patient.gender' => function ($query) {
                 $query->select('id', 'name');
             },
             'remarks',
@@ -257,8 +253,9 @@ class LaboratoryService
         }
 
         $moveToText = 'Completed';
+        $radio = app(VisitService::class)->getPendingData($laboratory->visit->radiology?->toArray() ?? []);
 
-        if (app(VisitService::class)->hasPending($laboratory->visit->radiology?->toArray() ?? [])) {
+        if ($radio['pending']) {
             $moveToText = 'Radiology';
         } elseif ($laboratory->visit->has_consultation) {
             $moveToText = 'Consultation';
@@ -529,13 +526,15 @@ class LaboratoryService
             'is_completed' => true,
         ]);
 
-        if (app(VisitService::class)->hasPending($laboratory->visit->radiology?->toArray() ?? [])) {
+        $radio = app(VisitService::class)->getPendingData($laboratory->visit->radiology?->toArray() ?? []);
+
+        if ($radio['pending']) {
             // move to radiology if has pending radiology
             Visit::find($laboratory->visit->id)->update([
                 'visit_status_id' => VisitStatusEnum::IN_RADIOLOGY,
             ]);
         } elseif ($laboratory->visit->has_consultation) {
-            // move to consultation
+            // move to consultation if theres no pending radiology
             Visit::find($laboratory->visit->id)->update([
                 'visit_status_id' => VisitStatusEnum::IN_CONSULTATION,
             ]);
@@ -546,9 +545,15 @@ class LaboratoryService
                 'is_completed' => false,
             ]);
         } else {
+            // complete the patient visit if theres nothing else
             Visit::find($laboratory->visit->id)->update([
                 'visit_status_id' => VisitStatusEnum::COMPLETED,
             ]);
+
+            // delete patient info if walk in
+            if ($laboratory->visit->is_walk_in) {
+                Patient::find($laboratory->visit->patient_id)->delete();
+            }
         }
     }
 

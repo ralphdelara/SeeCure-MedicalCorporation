@@ -6,7 +6,6 @@ use App\Enums\PositionEnum;
 use App\Models\Laboratory;
 use App\Models\User;
 use App\Services\LaboratoryService;
-use App\Services\PatientService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -38,7 +37,7 @@ class LaboratoryController extends Controller
     public function getLaboratoryDetails(string $id): Response
     {
         $laboratoryDetails = app(LaboratoryService::class)->getLaboratoryDetails($id);
-        $patientDetails = app(PatientService::class)->getPatientDetails($laboratoryDetails['patient_id']);
+        $patientDetails = $laboratoryDetails['visit']['patient'];
 
         $staffOptionsArr = User::with('professions', 'specialties')->whereIn(
             'position_id',
@@ -49,7 +48,7 @@ class LaboratoryController extends Controller
             ],
         )->get()->toArray();
 
-        $staffOptions = array_map(fn($item) => [
+        $staffOptions = array_map(fn ($item) => [
             'id'   => $item['id'],
             'name' => $item['full_name'],
         ], $staffOptionsArr);

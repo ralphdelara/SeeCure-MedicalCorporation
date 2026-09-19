@@ -1,9 +1,9 @@
 import type { Options } from '@/types/options';
+import { VisitPatientInfo } from './visit';
 
-export interface ConsultationList {
+export interface ConsultationList extends VisitPatientInfo {
     id: string;
     patient_id: string;
-    patient: any;
     is_completed: number;
     doctor: {
         full_name: string;

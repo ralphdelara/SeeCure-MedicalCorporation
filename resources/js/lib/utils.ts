@@ -1,4 +1,10 @@
-import { printBilling, printLaboratory, printPrescription } from '@/actions/App/Http/Controllers/PrintController';
+import {
+    printBilling,
+    printLaboratory,
+    printPharmacyPickList,
+    printPrescription,
+    printReceipt,
+} from '@/actions/App/Http/Controllers/PrintController';
 import { NormalRangeProps } from '@/pages/laboratory/details/details-test-fields';
 import type { InertiaLinkProps } from '@inertiajs/react';
 import { clsx } from 'clsx';
@@ -156,4 +162,16 @@ export function printDocument(type: string, id: string) {
     if (type === 'laboratory') {
         window.open(printLaboratory(id).url);
     }
+
+    if (type === 'receipt') {
+        window.open(printReceipt(id).url);
+    }
+
+    if (type === 'pharmacy') {
+        window.open(printPharmacyPickList(id).url);
+    }
+}
+
+export function addZeroes(number: string | number) {
+    return String(number).padStart(8, '0');
 }

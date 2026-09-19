@@ -7,6 +7,7 @@ use App\Enums\LaboratoryTypeEnum;
 use App\Models\Billing;
 use App\Models\Laboratory;
 use App\Models\LaboratoryTestData;
+use App\Models\Pharmacy;
 use App\Models\Prescription;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -184,6 +185,12 @@ class PrintController extends Controller
     {
         $printTitle = 'RECEIPT';
 
+        return Inertia::render('print-templates/default', compact('printTitle', 'patient'));
+    }
+
+    public function printPharmacyPickList()
+    {
+        $pickList = Pharmacy;
         return Inertia::render('print-templates/default', compact('printTitle', 'patient'));
     }
 }

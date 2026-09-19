@@ -18,15 +18,19 @@ return new class extends Migration
 
             $table->text('name');
 
-            $table->decimal('price', 12, 2)->nullable();
+            $table->decimal('cost_price', 12, 2)->nullable();
+            $table->integer('quantity')->default(1);
+            $table->decimal('total_price', 12, 2)->nullable();
+
             $table->decimal('discount', 12, 2)->nullable();
             $table->foreignId('discount_type_id')->nullable()->constrained();
             $table->decimal('tax_percent', 12, 2)->nullable();
             $table->decimal('tax_amount', 12, 2)->nullable();
             $table->decimal('nett_price', 12, 2)->nullable();
+            $table->unsignedBigInteger('order_no')->autoIncrement()->unique();
 
             $table->foreignUuid('created_by')->constrained('users', 'id');
-            $table->foreignUuid('last_modified_by')->constrained('users', 'id')->nullable();
+            $table->foreignUuid('last_modified_by')->nullable()->constrained('users', 'id');
             $table->timestamps();
         });
     }

@@ -13,6 +13,7 @@ use App\Models\Laboratory;
 use App\Models\Patient;
 use App\Models\Visit;
 use Arr;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
@@ -24,12 +25,12 @@ class BillingService
         string $path,
     ): array {
         $billingList = Billing::with([
-            'patient' => function ($query) {
+            'visit',
+            'visit.patient' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name', 'age', 'gender_id', 'patient_suffix_id');
             },
-            'patient.gender' => function ($query) {
-                $query->select('id', 'name');
-            },
+            'visit.patient.suffix',
+            'visit.patient.gender',
             'details',
             'details.type',
             'createdBy' => function ($query) {
@@ -42,11 +43,10 @@ class BillingService
             },
             'lastModifiedBy.professions',
             'lastModifiedBy.specialties',
-            'visit',
         ]);
 
         if (! empty($keyword)) {
-            $billingList = $billingList->whereHas('patient', function ($query) use ($keyword) {
+            $billingList = $billingList->whereHas('visit.patient', function ($query) use ($keyword) {
                 /** @var Builder|Patient $query */
                 $query->whereBlind('last_name_index', 'last_name_index', strtolower($keyword))
                     ->orWhereBlind('first_name_index', 'first_name_index', strtolower($keyword))
@@ -78,15 +78,14 @@ class BillingService
     }
 
     public function storeBilling(
-        string $patientId,
         string $visitId,
-        ?string $consultationId,
-        ?string $laboratoryId,
-        ?string $radiologyId,
+        ?string $laboratoryId = null,
+        ?string $radiologyId = null,
+        ?string $consultationId = null,
     ): string {
         $billing = Billing::create([
-            'patient_id'       => $patientId,
             'visit_id'         => $visitId,
+            'control_header'   => Carbon::now()->format('Ymd'),
             'created_by'       => Auth::id(),
             'last_modified_by' => Auth::id(),
         ]);
@@ -94,28 +93,30 @@ class BillingService
         $totalPrice = 0;
         $totalDiscount = 0;
         $totalNettPrice = 0;
+        $totalQuantity = 0;
 
+        // create billing for consultation
         if (! empty($consultationId)) {
-            BillingDetail::create([
-                'billing_id'       => $billing->id,
-                'billing_type_id'  => BillingTypeEnum::CONSULTATION,
-                'name'             => BillingTypeEnum::CONSULTATION->description(),
-                'created_by'       => Auth::id(),
-                'last_modified_by' => Auth::id(),
-            ]);
+            $totalQuantity += 1;
+            $this->storeConsultationBilling($billing);
         }
 
+        // create billing for laboratory
         if (! empty($laboratoryId)) {
             $labCosts = $this->storeLabBilling($billing->id, $laboratoryId);
             $totalPrice += $labCosts['totalPrice'];
+            $totalQuantity += $labCosts['totalQuantity'];
             $totalNettPrice += $labCosts['totalNettPrice'];
         }
 
+        // create billing for radiology
         if (! empty($radiologyId)) {
 
         }
 
-        Billing::find($billing->id)->update([
+        $billing->update([
+            'total_cost_price' => $totalPrice,
+            'total_quantity'   => $totalQuantity,
             'total_price'      => $totalPrice,
             'total_discount'   => $totalDiscount,
             'total_tax_amount' => $totalNettPrice - ($totalPrice - $totalDiscount),
@@ -125,11 +126,23 @@ class BillingService
         return $billing->id;
     }
 
+    public function storeConsultationBilling(Billing $billing): void
+    {
+        BillingDetail::create([
+            'billing_id'       => $billing->id,
+            'billing_type_id'  => BillingTypeEnum::CONSULTATION,
+            'name'             => BillingTypeEnum::CONSULTATION->description(),
+            'created_by'       => Auth::id(),
+            'last_modified_by' => Auth::id(),
+        ]);
+    }
+
     public function storeLabBilling(string $billingId, string $laboratoryId): array
     {
         $labDetails = [];
         $totalPrice = 0;
         $totalNettPrice = 0;
+        $totalQuantity = 0;
 
         $laboratory = Laboratory::with('testData', 'testData.fields')->find($laboratoryId);
 
@@ -138,12 +151,14 @@ class BillingService
 
             $totalPrice += $testEnum?->price();
             $totalNettPrice += $testEnum?->price();
+            $totalQuantity += 1;
 
             $labDetails[] = [
                 'billing_id'       => $billingId,
                 'billing_type_id'  => BillingTypeEnum::LABORATORY,
                 'name'             => $testEnum?->description() ?? 'N/A',
-                'price'            => $testEnum?->price(),
+                'cost_price'       => $testEnum?->price(),
+                'total_price'      => $testEnum?->price(),
                 'nett_price'       => $testEnum?->price(),
                 'created_by'       => Auth::id(),
                 'last_modified_by' => Auth::id(),
@@ -154,6 +169,7 @@ class BillingService
 
         return [
             'totalPrice'     => $totalPrice,
+            'totalQuantity'  => $totalQuantity,
             'totalNettPrice' => $totalNettPrice,
         ];
     }
@@ -179,11 +195,20 @@ class BillingService
         abortIfInvalidUuid($billingId);
 
         $billing = Billing::with([
-            'patient' => function ($query) {
+            'visit',
+            'visit.patient' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name', 'age', 'gender_id', 'patient_suffix_id');
             },
-            'patient.gender' => function ($query) {
-                $query->select('id', 'name');
+            'visit.patient.suffix',
+            'visit.patient.gender',
+            'visit.consultation' => function ($query) {
+                $query->select('id', 'visit_id', 'is_completed');
+            },
+            'visit.laboratory' => function ($query) {
+                $query->select('id', 'visit_id');
+            },
+            'visit.radiology' => function ($query) {
+                $query->select('id', 'visit_id');
             },
             'details',
             'details.type',
@@ -197,18 +222,6 @@ class BillingService
             },
             'details.lastModifiedBy.professions',
             'details.lastModifiedBy.specialties',
-            'visit' => function ($query) {
-                $query->select('id');
-            },
-            'visit.consultation' => function ($query) {
-                $query->select('id', 'visit_id', 'is_completed');
-            },
-            'visit.laboratory' => function ($query) {
-                $query->select('id', 'visit_id');
-            },
-            'visit.radiology' => function ($query) {
-                $query->select('id', 'visit_id');
-            },
         ])->find($billingId);
 
         if (empty($billing)) {
@@ -218,15 +231,6 @@ class BillingService
         BillingViewed::dispatch($billing);
 
         $moveToText = 'Cashier';
-
-        if (
-            ! app(VisitService::class)->hasPending($billing->visit->laboratory?->toArray() ?? [])
-            && ! app(VisitService::class)->hasPending($billing->visit->radiology?->toArray() ?? [])
-            && $billing->visit->consultation?->is_completed
-        ) {
-            // move to pharmacy if theres no pending lab or radio and if consultation is completed
-            $moveToText = 'Pharmacy';
-        }
 
         $billing = $billing->toArray();
         $billing['moveToText'] = $moveToText;
@@ -241,61 +245,49 @@ class BillingService
             'visit.laboratory',
             'visit.radiology',
             'visit.consultation',
-            'cashier',
             'visit.consultation.prescriptions',
         )->find($id);
+
+        // create cashier details
+        app(CashierService::class)->storeCashier(
+            visitId: $billing->visit_id,
+            billingId: $billing->id,
+        );
 
         $billing->update([
             'is_completed' => true,
         ]);
 
-        $visit = $billing->visit;
-
-        $hasLabPending = app(VisitService::class)->hasPending($visit->laboratory?->toArray() ?? []);
-        $hasRadioPending = app(VisitService::class)->hasPending($visit->radiology?->toArray() ?? []);
-
-        // move to pharmacy first not cashier for prescription qty if doctor is done in consultation
-        if (! $hasLabPending && ! $hasRadioPending && $billing->visit->consultation->is_completed) {
-            Visit::find($billing->visit->id)->update([
-                'visit_status_id' => VisitStatusEnum::IN_PHARMACY,
-            ]);
-
-            app(PharmacyService::class)->storePharmacy(
-                $billing->patient_id,
-                $billing->visit->id,
-                $billing->visit->consultation->id,
-                $billing->id,
-            );
-
-            return;
-        }
-
         // move to cashier
-        Visit::find($billing->visit->id)->update([
+        $billing->visit->update([
             'visit_status_id' => VisitStatusEnum::IN_CASHIER,
         ]);
-
-        app(CashierService::class)->storeCashierDetails($billing);
     }
 
     public function updateDetails(array $details)
     {
         $id = $details['id'];
+        $totalCostPrice = $details['total_cost_price'];
+        $totalQuantity = $details['total_quantity'];
         $totalPrice = $details['total_price'];
         $totalDiscount = $details['total_discount'];
         $totalNettPrice = $details['total_nett_price'];
 
         unset(
             $details['id'],
+            $details['total_cost_price'],
+            $details['total_quantity'],
             $details['total_price'],
             $details['total_discount'],
             $details['total_nett_price'],
         );
 
         Billing::find($id)->update([
+            'total_cost_price' => $totalCostPrice,
+            'total_quantity'   => $totalQuantity,
             'total_price'      => $totalPrice,
             'total_discount'   => $totalDiscount,
-            'total_tax_amount' => $totalNettPrice - ($totalPrice - $totalDiscount),
+            'total_tax'        => $totalNettPrice - ($totalPrice - $totalDiscount),
             'total_nett_price' => $totalNettPrice,
         ]);
 
@@ -306,11 +298,11 @@ class BillingService
                 : null;
 
             BillingDetail::find($detailId)->update([
-                'price'            => $field['price'],
+                'cost_price'       => $field['cost_price'],
                 'discount'         => $field['discount'],
                 'discount_type_id' => $discountTypeId,
                 'tax_percent'      => $field['tax_percent'],
-                'tax_amount'       => $field['nett_price'] - ($field['price'] - $field['discount']),
+                'tax_amount'       => $field['nett_price'] - ($field['cost_price'] - $field['discount']),
                 'nett_price'       => $field['nett_price'],
             ]);
         }

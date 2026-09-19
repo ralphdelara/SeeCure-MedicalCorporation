@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Enums\AuditTypeEnum;
 use App\Enums\StockMovementTypeEnum;
 use App\Events\InventoryViewed;
 use App\Models\Inventory;
@@ -212,5 +211,16 @@ class InventoryService
             ->where('inventory_id', $id)
             ->orderBy('created_at', 'desc')
             ->get()->toArray();
+    }
+
+    public function getPrices(array $inventoryIds): array
+    {
+        return array_column(Inventory::select(
+            'id',
+            'selling_price_vat_exclusive',
+            'selling_price_vat_inclusive',
+            'vat_amount',
+            'vat_percent',
+        )->whereIn('id', $inventoryIds)->get()->toArray(), null, 'id');
     }
 }

@@ -113,6 +113,10 @@ use Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted;
  * @property string|null $senior_citizen_id
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereSeniorCitizenId($value)
  * @property-read bool $is_senior
+ * @property-read Collection<int, \App\Models\Visit> $visits
+ * @property-read int|null $visits_count
+ * @property-read Collection<int, \App\Models\PatientVitalSign> $vitalSigns
+ * @property-read int|null $vital_signs_count
  * @mixin \Eloquent
  */
 // Guarded blocks specified fields from being added/updated via ::create and ::update
@@ -229,29 +233,19 @@ class Patient extends Model implements CipherSweetEncrypted
         return $this->belongsTo(User::class, 'last_modified_by', 'id');
     }
 
+    public function visits(): HasMany
+    {
+        return $this->hasMany(Visit::class);
+    }
+
     public function audits(): HasMany
     {
         return $this->hasMany(PatientAudit::class);
     }
 
-    public function patientVitalSigns(): HasMany
+    public function vitalSigns(): HasMany
     {
         return $this->hasMany(PatientVitalSign::class);
-    }
-
-    public function consultation(): HasMany
-    {
-        return $this->hasMany(Consultation::class);
-    }
-
-    public function laboratory(): HasMany
-    {
-        return $this->hasMany(Laboratory::class);
-    }
-
-    public function patientAudit(): HasMany
-    {
-        return $this->hasMany(PatientAudit::class);
     }
 
     /**

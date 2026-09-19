@@ -12,13 +12,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('patient_audits', function (Blueprint $table) {
+        Schema::create('diagnosis_icd10_codes', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('patient_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('audit_type_id')->constrained();
-            $table->text('action');
-            $table->foreignUuid('created_by')->constrained('users', 'id');
-            $table->timestamps();
+            $table->foreignUuid('diagnosis_id')->constrained('diagnosis', 'id')->cascadeOnDelete();
+            $table->text('icd10_code_id')->nullable();
         });
     }
 
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('patient_audits');
+        Schema::dropIfExists('diagnosis_icd10_codes');
     }
 };

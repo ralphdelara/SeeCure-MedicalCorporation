@@ -79,62 +79,73 @@ const AuditLog = () => {
                                             <div className="table-responsive ms-3">
                                                 <table className="table-custom">
                                                     <tbody>
-                                                    {data.fields.map((item2, index2) => (
-                                                        <Fragment key={'log-field-' + index2}>
-                                                            <tr>
-                                                                <td
-                                                                    colSpan={4}
-                                                                    className="fw-semibold"
-                                                                >
-                                                                    {convertSnakeToTitleCase(
-                                                                        item2.field,
+                                                        {data.fields.map((item2, index2) => (
+                                                            <Fragment key={'log-field-' + index2}>
+                                                                <tr>
+                                                                    <td
+                                                                        colSpan={4}
+                                                                        className="fw-semibold"
+                                                                    >
+                                                                        {convertSnakeToTitleCase(
+                                                                            item2.field,
+                                                                        )}
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    {(item2.from ?? '') !== '' && (
+                                                                        <>
+                                                                            <td className="p-1">
+                                                                                From:{' '}
+                                                                            </td>
+                                                                            <td
+                                                                                className="fw-semibold html-list-reset py-1 pe-3"
+                                                                                dangerouslySetInnerHTML={{
+                                                                                    __html: DOMPurify.sanitize(
+                                                                                        item2.from,
+                                                                                    ),
+                                                                                }}
+                                                                            ></td>
+                                                                        </>
                                                                     )}
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                {item2.from && (
-                                                                    <>
-                                                                        <td className="p-1">
-                                                                            From:{' '}
-                                                                        </td>
-                                                                        <td className="fw-semibold py-1 pe-3 html-list-reset"
-                                                                            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(item2.from) }}>
-                                                                        </td>
-                                                                    </>
-                                                                )}
-                                                                {item2.to && (
-                                                                    <>
-                                                                        <td className="p-1">
-                                                                            To:{' '}
-                                                                        </td>
-                                                                        <td className="fw-semibold py-1 pe-3 html-list-reset"
-                                                                            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(item2.to) }}>
-                                                                        </td>
-                                                                    </>
-                                                                )}
-                                                                {item2.added && (
-                                                                    <>
-                                                                        <td className="p-1">
-                                                                            Added:{' '}
-                                                                        </td>
-                                                                        <td className="fw-semibold py-1 pe-3">
-                                                                            {item2.added}
-                                                                        </td>
-                                                                    </>
-                                                                )}
-                                                                {item2.deleted && (
-                                                                    <>
-                                                                        <td className="p-1">
-                                                                            Deleted:{' '}
-                                                                        </td>
-                                                                        <td className="fw-semibold py-1 pe-3">
-                                                                            {item2.deleted}
-                                                                        </td>
-                                                                    </>
-                                                                )}
-                                                            </tr>
-                                                        </Fragment>
-                                                    ))}
+                                                                    {(item2.to ?? '') !== '' && (
+                                                                        <>
+                                                                            <td className="p-1">
+                                                                                To:{' '}
+                                                                            </td>
+                                                                            <td
+                                                                                className="fw-semibold html-list-reset py-1 pe-3"
+                                                                                dangerouslySetInnerHTML={{
+                                                                                    __html: DOMPurify.sanitize(
+                                                                                        item2.to,
+                                                                                    ),
+                                                                                }}
+                                                                            ></td>
+                                                                        </>
+                                                                    )}
+                                                                    {(item2.added ?? '') !== '' && (
+                                                                        <>
+                                                                            <td className="p-1">
+                                                                                Added:{' '}
+                                                                            </td>
+                                                                            <td className="fw-semibold py-1 pe-3">
+                                                                                {item2.added}
+                                                                            </td>
+                                                                        </>
+                                                                    )}
+                                                                    {(item2.deleted ?? '') !==
+                                                                        '' && (
+                                                                        <>
+                                                                            <td className="p-1">
+                                                                                Deleted:{' '}
+                                                                            </td>
+                                                                            <td className="fw-semibold py-1 pe-3">
+                                                                                {item2.deleted}
+                                                                            </td>
+                                                                        </>
+                                                                    )}
+                                                                </tr>
+                                                            </Fragment>
+                                                        ))}
                                                     </tbody>
                                                 </table>
                                             </div>

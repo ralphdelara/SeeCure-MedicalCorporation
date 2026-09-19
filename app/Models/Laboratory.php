@@ -27,7 +27,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read Collection<int, LaboratoryTest> $tests
  * @property-read int|null $tests_count
  * @property-read Visit $visit
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory query()
@@ -39,30 +38,27 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory wherePatientId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereVisitId($value)
- *
  * @property bool $is_completed
  * @property-read Collection<int, LaboratoryTestData> $testData
  * @property-read int|null $test_data_count
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereIsCompleted($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory wherePatientName($value)
- *
  * @property-read Collection<int, LaboratoryTestFieldData> $testFieldData
  * @property-read int|null $test_field_data_count
  * @property string|null $patient_name
  * @property string|null $performed_by
  * @property CarbonImmutable|null $date_performed
  * @property-read User|null $performedBy
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereDateProcessed($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereProcessedBy($value)
- *
+ * @property-read Collection<int, \App\Models\LaboratoryRemark> $remarks
+ * @property-read int|null $remarks_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereDatePerformed($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory wherePerformedBy($value)
  * @mixin \Eloquent
  */
 #[Fillable([
     'visit_id',
-    'patient_id',
-    'consultation_id',
     'performed_by',
     'date_performed',
     'is_completed',
@@ -87,16 +83,6 @@ class Laboratory extends Model
     public function visit(): BelongsTo
     {
         return $this->belongsTo(Visit::class, 'visit_id', 'id');
-    }
-
-    public function patient(): BelongsTo
-    {
-        return $this->belongsTo(Patient::class, 'patient_id', 'id');
-    }
-
-    public function consultation(): BelongsTo
-    {
-        return $this->belongsTo(Consultation::class, 'consultation_id', 'id');
     }
 
     public function performedBy(): BelongsTo

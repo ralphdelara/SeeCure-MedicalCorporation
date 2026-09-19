@@ -138,3 +138,10 @@ if (! function_exists('customDecrypt')) {
         }
     }
 }
+
+if (! function_exists('isAllNull')) {
+    function isAllNull(array $array): bool
+    {
+        return count(array_filter($array, fn($value) => $value !== null)) === 0;
+    }
+}

@@ -13,18 +13,21 @@ return new class extends Migration
     {
         Schema::create('billing', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('patient_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignUuid('visit_id')->constrained()->cascadeOnDelete();
 
+            $table->decimal('total_cost_price', 12, 2)->nullable();
+            $table->decimal('total_quantity', 12)->nullable();
             $table->decimal('total_price', 12, 2)->nullable();
             $table->decimal('total_discount', 12, 2)->nullable();
             $table->decimal('total_tax', 12, 2)->nullable();
             $table->decimal('total_nett_price', 12, 2)->nullable();
 
             $table->boolean('is_completed')->default(false);
+            $table->string('control_header', 10);
+            $table->unsignedBigInteger('control_no')->autoIncrement();
 
             $table->foreignUuid('created_by')->constrained('users', 'id');
-            $table->foreignUuid('last_modified_by')->constrained('users', 'id')->nullable();
+            $table->foreignUuid('last_modified_by')->nullable()->constrained('users', 'id');
             $table->timestamps();
         });
     }

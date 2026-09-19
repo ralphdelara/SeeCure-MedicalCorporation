@@ -2,18 +2,16 @@
 
 namespace App\Services;
 
-use App\Enums\BillingTypeEnum;
 use App\Enums\SignsOrSymptomEnum;
 use App\Enums\VisitStatusEnum;
 use App\Events\ConsultationViewed;
 use App\Events\Icd10CodeSaved;
 use App\Events\SignsOrSymptomsSaved;
-use App\Models\BillingDetail;
 use App\Models\Consultation;
 use App\Models\ConsultationAudit;
-use App\Models\ConsultationDiagnosis;
-use App\Models\ConsultationDiagnosisIcd10Code;
 use App\Models\ConsultationSoap;
+use App\Models\Diagnosis;
+use App\Models\DiagnosisIcd10Code;
 use App\Models\Icd10Code;
 use App\Models\Laboratory;
 use App\Models\Patient;
@@ -21,7 +19,6 @@ use App\Models\PatientVitalSign;
 use App\Models\Prescription;
 use App\Models\Radiology;
 use App\Models\Visit;
-use App\Models\VitalSign;
 use Arr;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -34,12 +31,11 @@ class ConsultationService
         string $path,
     ): array {
         $consultationList = Consultation::with([
-            'patient' => function ($query) {
+            'visit.patient' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name', 'age', 'gender_id', 'patient_suffix_id');
             },
-            'patient.gender' => function ($query) {
-                $query->select('id', 'name');
-            },
+            'visit.patient.suffix',
+            'visit.patient.gender',
             'createdBy' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name');
             },
@@ -72,7 +68,7 @@ class ConsultationService
         ]);
 
         if (! empty($keyword)) {
-            $consultationList = $consultationList->whereHas('patient', function ($query) use ($keyword) {
+            $consultationList = $consultationList->whereHas('visit.patient', function ($query) use ($keyword) {
                 /** @var Builder|Patient $query */
                 $query->whereBlind('last_name_index', 'last_name_index', strtolower($keyword))
                     ->orWhereBlind('first_name_index', 'first_name_index', strtolower($keyword))
@@ -108,12 +104,11 @@ class ConsultationService
         abortIfInvalidUuid($consultationId);
 
         $consultation = Consultation::with([
-            'patient' => function ($query) {
+            'visit.patient' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name', 'age', 'gender_id', 'patient_suffix_id');
             },
-            'patient.gender' => function ($query) {
-                $query->select('id', 'name');
-            },
+            'visit.patient.suffix',
+            'visit.patient.gender',
             'createdBy' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name');
             },
@@ -157,19 +152,18 @@ class ConsultationService
             'prescriptions.lastModifiedBy',
             'prescriptions.lastModifiedBy.professions',
             'prescriptions.lastModifiedBy.specialties',
-            'laboratory',
-            'laboratory.testData.test',
-            'laboratory.testData.fields.field',
-            'laboratory.testData.fields.createdBy' => function ($query) {
+            'visit.laboratory.testData.test',
+            'visit.laboratory.testData.fields.field',
+            'visit.laboratory.testData.fields.createdBy' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name');
             },
-            'laboratory.testData.fields.createdBy.professions',
-            'laboratory.testData.fields.createdBy.specialties',
-            'laboratory.testData.fields.lastModifiedBy' => function ($query) {
+            'visit.laboratory.testData.fields.createdBy.professions',
+            'visit.laboratory.testData.fields.createdBy.specialties',
+            'visit.laboratory.testData.fields.lastModifiedBy' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name');
             },
-            'laboratory.testData.fields.lastModifiedBy.professions',
-            'laboratory.testData.fields.lastModifiedBy.specialties',
+            'visit.laboratory.testData.fields.lastModifiedBy.professions',
+            'visit.laboratory.testData.fields.lastModifiedBy.specialties',
         ])->find($consultationId);
 
         if (empty($consultation)) {
@@ -184,12 +178,10 @@ class ConsultationService
 
     public function storeConsultation(
         string $visitId,
-        string $patientId,
         array $consultDetails,
     ): string {
         $consultation = Consultation::create([
             'visit_id'                 => $visitId,
-            'patient_id'               => $patientId,
             'guardian_name'            => $consultDetails['guardian_name'],
             'guardian_contact_number'  => $consultDetails['guardian_contact_number'],
             'guardian_email'           => $consultDetails['guardian_email'],
@@ -209,7 +201,7 @@ class ConsultationService
             'last_modified_by' => Auth::id(),
         ]);
 
-        ConsultationDiagnosis::create([
+        Diagnosis::create([
             'consultation_id'  => $consultation->id,
             'created_by'       => Auth::id(),
             'last_modified_by' => Auth::id(),
@@ -275,10 +267,10 @@ class ConsultationService
 
         $diagnosisDetails['last_modified_by'] = Auth::id();
 
-        $consultationDiagnosis = ConsultationDiagnosis::with('icd10Codes', 'consultation')->find($id);
-        $consultationDiagnosis->update($diagnosisDetails);
+        $diagnosis = Diagnosis::with('icd10Codes', 'consultation')->find($id);
+        $diagnosis->update($diagnosisDetails);
 
-        $this->updateIcd10Code($consultationDiagnosis, $icd10Ids);
+        $this->updateIcd10Code($diagnosis, $icd10Ids);
     }
 
     public function addOrUpdatePrescription(array $prescriptionDetails): void
@@ -310,7 +302,7 @@ class ConsultationService
 
         PatientVitalSign::updateOrCreate(
             ['id' => $vitalSignDetails['patient_vital_sign_id']],
-            $vitalSignDetails
+            $vitalSignDetails,
         );
     }
 
@@ -353,11 +345,11 @@ class ConsultationService
     }
 
     public function updateIcd10Code(
-        ConsultationDiagnosis $diagnosis,
+        Diagnosis $diagnosis,
         array $ids,
     ): void {
         $diagnosis->loadMissing('consultation');
-        $deletedRes = ConsultationDiagnosisIcd10Code::with('icd10Code')->where('consultation_diagnosis_id', $diagnosis->id)->get()->toArray();
+        $deletedRes = DiagnosisIcd10Code::with('icd10Code')->where('diagnosis_id', $diagnosis->id)->get()->toArray();
         $added = Icd10Code::whereIn('id', $ids);
         $deleted = array_column($deletedRes, 'icd10_code');
 
@@ -379,17 +371,17 @@ class ConsultationService
             $deleteIcd10[] = $deletedRes[$key]['id'];
         }
 
-        ConsultationDiagnosisIcd10Code::destroy($deleteIcd10);
+        DiagnosisIcd10Code::destroy($deleteIcd10);
 
         $insertIcd10 = [];
         foreach ($newAddedIds as $id) {
             $insertIcd10[] = [
-                'consultation_diagnosis_id' => $diagnosis->id,
-                'icd10_code_id'             => $id,
+                'diagnosis_id'  => $diagnosis->id,
+                'icd10_code_id' => $id,
             ];
         }
 
-        ConsultationDiagnosisIcd10Code::fillAndInsert($insertIcd10);
+        DiagnosisIcd10Code::fillAndInsert($insertIcd10);
 
         Icd10CodeSaved::dispatch(
             [
@@ -414,20 +406,20 @@ class ConsultationService
             'is_completed' => true,
         ]);
 
-        $hasLabPending = app(VisitService::class)->hasPending($visit->laboratory?->toArray() ?? []);
-        $hasRadioPending = app(VisitService::class)->hasPending($visit->radiology?->toArray() ?? []);
+        $lab = app(VisitService::class)->getPendingData($visit->laboratory?->toArray() ?? []);
+        $radio = app(VisitService::class)->getPendingData($visit->radiology?->toArray() ?? []);
 
         // check if has pending laboratory or radiology before moving to Billing
         $laboratoryId = null;
         $radiologyId = null;
-        if ($hasLabPending) {
-            $laboratoryId = Laboratory::where('is_completed', false)->get()->first()->id;
+        if ($lab['pending']) {
+            $laboratoryId = $lab['id'];
         }
-        if ($hasRadioPending) {
-            $radiologyId = Radiology::where('is_completed', false)->get()->first()->id;
+        if ($radio['pending']) {
+            $radiologyId = $radio['id'];
         }
 
-        if ($hasLabPending || $hasRadioPending) {
+        if ($lab['pending'] || $radio['pending']) {
             // set to null to prevent adding consultation in billing if has pending
             $consultationId = null;
         } else {
@@ -436,22 +428,32 @@ class ConsultationService
         }
 
         // if laboratoryId and radiologyId is null then proceed to consultation fee
-        $billingId = app(BillingService::class)->storeBilling(
-            $visit->patient->id,
-            $visit->id,
-            $consultationId,
-            $laboratoryId,
-            $radiologyId,
+        app(BillingService::class)->storeBilling(
+            visitId: $visit->id,
+            laboratoryId: $laboratoryId,
+            radiologyId: $radiologyId,
+            consultationId: $consultationId,
         );
 
-        app(CashierService::class)->storeCashier(
-            $visit->patient->id,
-            $visit->id,
-            $billingId,
-        );
+        $lab = app(VisitService::class)->getPendingData($consultation->visit->laboratory?->toArray() ?? []);
+        $radio = app(VisitService::class)->getPendingData($consultation->radiology?->toArray() ?? []);
 
-        // set visit status to billing
-        Visit::find($consultation->visit->id)->update([
+        // check if has pending laboratory or radiology before moving to Billing
+        if (
+            ! $lab['pending']
+            && ! $radio['pending']
+        ) {
+            // create pharmacy record if theres no pending lab/radio and consultation is completed
+            // pharmacy is optional so its not required for patient to go to pharmacy inorder
+            // to complete the visit
+            app(PharmacyService::class)->storePharmacy(
+                visit: $visit,
+                prescriptions: $visit->consultation->prescriptions->toArray(),
+            );
+        }
+
+        // move patient to billing
+        $visit->update([
             'visit_status_id' => VisitStatusEnum::IN_BILLING,
         ]);
     }

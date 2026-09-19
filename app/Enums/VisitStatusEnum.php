@@ -17,6 +17,7 @@ enum VisitStatusEnum: int
     case COMPLETED = 7; // for outpatient
     case ADMITTED = 8; // for inpatient / admitted
     case DISCHARGED = 9; // for inpatient / admitted
+    case CANCELLED = 10; // for patient that cancelled
 
     public function description(): string
     {
@@ -30,6 +31,7 @@ enum VisitStatusEnum: int
             self::COMPLETED       => 'Completed',
             self::ADMITTED        => 'Admitted',
             self::DISCHARGED      => 'Discharged',
+            self::CANCELLED       => 'Cancelled',
         };
     }
 }

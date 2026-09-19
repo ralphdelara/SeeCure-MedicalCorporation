@@ -22,7 +22,6 @@ const Default = () => {
             quantity: string;
         }[];
     };
-    console.log(remarks);
 
     useEffect(() => {
         setTimeout(() => {

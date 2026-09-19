@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Billing;
 use App\Models\DiscountType;
 use App\Services\BillingService;
-use App\Services\PatientService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -28,7 +27,7 @@ class BillingController extends Controller
     public function getBillingDetails(Request $request, string $billingId): Response
     {
         $billingDetails = app(BillingService::class)->getBillingDetails($billingId);
-        $patientDetails = app(PatientService::class)->getPatientDetails($billingDetails['patient_id']);
+        $patientDetails = $billingDetails['visit']['patient'];
         $discountType = DiscountType::all();
 
         return Inertia::render('billing/details/index', compact(

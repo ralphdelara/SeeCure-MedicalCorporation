@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\CorrectTimezone;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Guarded;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -26,15 +27,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property numeric|null $amount_change
  * @property string $created_by
  * @property string|null $last_modified_by
- * @property \Carbon\CarbonImmutable|null $created_at
- * @property \Carbon\CarbonImmutable|null $updated_at
- * @property-read \App\Models\Cashier $cashier
- * @property-read \App\Models\User $createdBy
- * @property-read \App\Models\User|null $lastModifiedBy
- * @property-read \App\Models\PaymentMethod|null $method
- * @property-read \App\Models\Patient $patient
- * @property-read \App\Models\PaymentStatus $status
- * @property-read \App\Models\Visit $visit
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
+ * @property-read Cashier $cashier
+ * @property-read User $createdBy
+ * @property-read User|null $lastModifiedBy
+ * @property-read PaymentMethod|null $method
+ * @property-read Patient $patient
+ * @property-read PaymentStatus $status
+ * @property-read Visit $visit
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment query()
@@ -55,17 +56,19 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment whereTotalAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment whereVisitId($value)
+ * @property string $transaction_header
+ * @property int $transaction_no
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment whereTransactionHeader($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment whereTransactionNo($value)
  * @mixin \Eloquent
  */
 #[Guarded([
     'id',
-    'receipt_number',
+    'transaction_no',
 ])]
 #[Fillable([
-    'patient_id',
-    'visit_id',
     'cashier_id',
-    'receipt_sequence_header',
+    'transaction_header',
     'payment_method_id',
     'payment_status_id',
     'reference_number',
@@ -87,16 +90,6 @@ class Payment extends Model
             'created_at'       => 'date:M d, Y h:i a',
             'updated_at'       => 'date:M d, Y h:i a',
         ];
-    }
-
-    public function visit(): BelongsTo
-    {
-        return $this->belongsTo(Visit::class, 'visit_id', 'id');
-    }
-
-    public function patient(): BelongsTo
-    {
-        return $this->belongsTo(Patient::class, 'patient_id', 'id');
     }
 
     public function cashier(): BelongsTo
