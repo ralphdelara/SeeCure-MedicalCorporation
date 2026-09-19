@@ -176,6 +176,7 @@ const Payments = ({ showTab }: { showTab: boolean }) => {
                                                         -
                                                         {addZeroes(
                                                             paymentDetails?.transaction_no,
+                                                            8,
                                                         ) ?? '••••••••'}
                                                     </h5>
                                                 </>

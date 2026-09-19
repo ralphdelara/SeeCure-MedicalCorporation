@@ -31,7 +31,7 @@ class LogPatientSave implements ShouldQueue
         }
 
         PatientAudit::create([
-            'patient_id' => $patient->id,
+            'patient_id'    => $patient->id,
             'audit_type_id' => $type === 'created' ? AuditTypeEnum::ADD : AuditTypeEnum::UPDATE,
             'data'          => json_encode($data),
             'created_by'    => Auth::id(),
@@ -40,11 +40,30 @@ class LogPatientSave implements ShouldQueue
 
     private function created(Patient $patient): array
     {
-        $patient->getAttributes();
+        $patientData = $patient->getAttributes();
+        $fields = [];
+        $this->removeUnimportantFields($patientData);
+
+        foreach ($patientData as $field => $value) {
+            if (
+                empty($value)
+                || in_array($field, ['first_name', 'middle_name', 'last_name'])
+            ) {
+                continue;
+            }
+            if (in_array($field, ['first_name_index', 'middle_name_index', 'last_name_index'])) {
+                $field = str_replace('_index', '', $field);
+            }
+            $fields[] = [
+                'field' => $field,
+                'from'  => null,
+                'to'    => $value,
+            ];
+        }
 
         return [
             'title'  => 'Patient has been added.',
-            'fields' => [],
+            'fields' => $fields,
         ];
     }
 
@@ -54,8 +73,12 @@ class LogPatientSave implements ShouldQueue
         array $originalFields,
     ): array {
         $fields = [];
+        $this->removeUnimportantFields($savedFields);
 
         foreach ($savedFields as $field => $newValue) {
+            if (in_array($field, ['first_name_index', 'middle_name_index', 'last_name_index'])) {
+                continue;
+            }
             $oldValue = $originalFields[$field];
 
             if ($patient->hasCast($field, 'encrypted')) {
@@ -94,5 +117,17 @@ class LogPatientSave implements ShouldQueue
             'title'  => 'Patient has been updated.',
             'fields' => $fields,
         ];
+    }
+
+    private function removeUnimportantFields(array &$fields): void
+    {
+        $exclude = [
+            'id', 'created_by', 'created_at',
+            'last_modified_by', 'updated_at',
+        ];
+
+        foreach ($exclude as $key) {
+            unset($fields[$key]);
+        }
     }
 }

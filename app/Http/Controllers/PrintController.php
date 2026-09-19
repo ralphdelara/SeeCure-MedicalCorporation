@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Enums\LaboratoryTestEnum;
 use App\Enums\LaboratoryTypeEnum;
 use App\Models\Billing;
+use App\Models\CompanyProfile;
 use App\Models\Laboratory;
 use App\Models\LaboratoryTestData;
+use App\Models\Payment;
 use App\Models\Pharmacy;
 use App\Models\Prescription;
 use Inertia\Inertia;
@@ -183,14 +185,32 @@ class PrintController extends Controller
 
     public function printReceipt(string $receiptId): Response
     {
-        $printTitle = 'RECEIPT';
+        abortIfInvalidUuid($receiptId);
 
-        return Inertia::render('print-templates/default', compact('printTitle', 'patient'));
+        $receiptData = Payment::with('cashier.billing.details', 'cashier.pharmacy.details')->find($receiptId);
+        $company = CompanyProfile::find(1);
+        $billing = $receiptData['cashier']['billing'];
+        $pharmacy = $receiptData['cashier']['pharmacy'];
+
+        $itemData = $billing ?? $pharmacy;
+
+        if (empty($receiptData)) {
+            abort(404);
+        }
+
+        return Inertia::render('print-templates/receipt', compact('receiptData', 'itemData', 'company'));
     }
 
-    public function printPharmacyPickList()
+    public function printPharmacyPickList(string $pharmacyId)
     {
-        $pickList = Pharmacy;
-        return Inertia::render('print-templates/default', compact('printTitle', 'patient'));
+        abortIfInvalidUuid($pharmacyId);
+
+        $pickListDetails = Pharmacy::with('details')->find($pharmacyId);
+
+        if (empty($pickListDetails)) {
+            abort(404);
+        }
+
+        return Inertia::render('print-templates/pick-list', compact('pickListDetails'));
     }
 }

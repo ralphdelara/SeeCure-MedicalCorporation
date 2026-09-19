@@ -212,12 +212,7 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                 size="lg"
                                 type="button"
                                 className="me-2"
-                                onClick={() =>
-                                    printDocument(
-                                        'prescription',
-                                        pharmacyDetails.visit.consultation.id,
-                                    )
-                                }
+                                onClick={() => printDocument('pharmacy', pharmacyDetails.id)}
                             >
                                 <IconPrinter /> Print Pick List
                             </Button>
