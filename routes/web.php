@@ -34,6 +34,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::match(['post', 'put'], '/', [PatientController::class, 'addOrUpdatePatient'])->name('patient.add-or-update');
         Route::delete('/{id}', [PatientController::class, 'deletePatient'])->name('patient.delete');
         Route::get('/{id}', [PatientController::class, 'getPatientDetails'])->name('patient.details');
+        Route::get('/{id}/audit-log', [PatientController::class, 'getAuditLog'])->name('patient.details.audit-log');
     });
 
     Route::prefix('/consultations')->group(function () {
@@ -87,9 +88,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::prefix('/details')->group(function () {
             Route::get('/{id}', [CashierController::class, 'getCashierDetails'])->name('cashier.details');
             Route::get('/{id}/audit-log', [CashierController::class, 'getAuditLog'])->name('cashier.details.audit-log');
-            Route::patch('/', [CashierController::class, 'updateDetails'])->name('cashier.details.update');
             Route::patch('/complete/{id}', [CashierController::class, 'completeCashier'])->name('cashier.completed');
             Route::post('/payment', [CashierController::class, 'addOrUpdatePayment'])->name('cashier.details.add-or-update-payment');
+            Route::patch('/send-back-to-billing/{billingId}', [CashierController::class, 'sendBackToBilling'])->name('cashier.details.send-back-to-billing');
+            Route::patch('/send-back-to-pharmacy/{pharmacyId}', [CashierController::class, 'sendBackToPharmacy'])->name('cashier.details.send-back-to-pharmacy');
         });
     });
 
@@ -102,6 +104,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::patch('/', [PharmacyController::class, 'updateDetails'])->name('pharmacy.details.update');
             Route::patch('/complete/{id}', [PharmacyController::class, 'completePharmacy'])->name('pharmacy.completed');
         });
+        Route::delete('/{id}', [PharmacyController::class, 'deletePharmacy'])->name('pharmacy.delete');
     });
 
     Route::inertia('radiology/{radiologyId?}', 'radiology')->name('radiology');
@@ -149,6 +152,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('print')->group(function () {
         Route::get('/prescription/{consultationId}', [PrintController::class, 'printPrescription'])->name('print.prescription');
+        Route::get('/billing/{billingId}', [PrintController::class, 'printBilling'])->name('print.billing');
+        Route::get('/receipt/{receiptNo}', [PrintController::class, 'printReceipt'])->name('print.receipt');
+        Route::get('/laboratory/{laboratoryId}', [PrintController::class, 'printLaboratory'])->name('print.laboratory');
+        Route::get('/pharmacy/pick-list/{pharmacyId}', [PrintController::class, 'printPharmacyPickList'])->name('print.pharmacy-pick-list');
     });
 });
 

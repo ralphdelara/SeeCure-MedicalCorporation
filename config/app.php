@@ -97,7 +97,9 @@ return [
 
     'cipher' => 'AES-256-GCM',
 
-    'key' => env('APP_KEY'),
+    'key'                      => env('APP_KEY'),
+    'document_validate_key'    => env('APP_KEY_DOCUMENT_VALIDATE'),
+    'document_validate_cipher' => 'AES-256-CBC',
 
     'previous_keys' => [
         ...array_filter(

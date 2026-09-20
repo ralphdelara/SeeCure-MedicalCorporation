@@ -32,7 +32,6 @@ interface InertiaProps {
 const VitalSigns = ({ showTab }: { showTab: boolean }) => {
     const { consultationDetails, vitalSigns } = usePage().props as unknown as InertiaProps;
     const { patient_vital_sign } = consultationDetails;
-    console.log(vitalSigns);
     const [formShow, setFormShow] = useState(false);
     const defaultData = {
         id: '',
@@ -93,14 +92,15 @@ const VitalSigns = ({ showTab }: { showTab: boolean }) => {
                                     </Button>
                                 </div>
                                 <div className="col-lg-12">
-                                    <h4 className="fw-bolder">Vital Signs</h4>
+                                    <h4 className="fw-bolder">Vital Signs (under maintenance)</h4>
                                 </div>
                                 <TableList header={header} hasPage={false}>
                                     {patient_vital_sign.map((item, index) => (
                                         <tr key={'vitalSigns-' + item.id}>
                                             <td className="text-right">{index + 1}</td>
                                             <td>
-                                                {item.vital_sign_field.name}<br/>
+                                                {item.vital_sign_field.name}
+                                                <br />
                                                 {item.vital_sign.name}
                                             </td>
                                             <td>{item.value}</td>
@@ -139,10 +139,12 @@ const VitalSigns = ({ showTab }: { showTab: boolean }) => {
                                                             id: item.id,
                                                             consultation_id: consultationDetails.id,
                                                             vital_sign_id: item.vital_sign_id,
-                                                            vital_sign_field_id: item.vital_sign_field_id,
+                                                            vital_sign_field_id:
+                                                                item.vital_sign_field_id,
                                                             value: item.value,
                                                             vital_sign_name: item.vital_sign.name,
-                                                            vital_sign_field_name: item.vital_sign_field.name,
+                                                            vital_sign_field_name:
+                                                                item.vital_sign_field.name,
                                                             unit: item.vital_sign_field.unit,
                                                         })
                                                     }
@@ -154,7 +156,13 @@ const VitalSigns = ({ showTab }: { showTab: boolean }) => {
 
                                                 <DeleteButton
                                                     url={deleteVitalSigns(item.id).url}
-                                                    msg={'<b>' + item.vital_sign.name + ' ' + item.vital_sign_field.name + '</b>'}
+                                                    msg={
+                                                        '<b>' +
+                                                        item.vital_sign.name +
+                                                        ' ' +
+                                                        item.vital_sign_field.name +
+                                                        '</b>'
+                                                    }
                                                     successUrl={
                                                         window.location.pathname +
                                                         window.location.search

@@ -52,6 +52,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Inventory whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Inventory whereVatAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Inventory whereVatPercent($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\InventoryAudit> $audits
+ * @property-read int|null $audits_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\InventoryStockMovement> $stockMovement
+ * @property-read int|null $stock_movement_count
  * @mixin \Eloquent
  */
 #[Fillable([

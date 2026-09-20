@@ -3,11 +3,12 @@ includes:
     - vendor/nesbot/carbon/extension.neon
 
 parameters:
+    # Only scan core application code during real-time editor checks
     paths:
         - app/
-        - bootstrap/app.php
-        - config/
-        - database/
-        - routes/
 
     level: 5
+
+    # Speeds up analysis by utilizing internal PHPStan performance enhancements
+    featureToggles:
+        bleedingEdge: true

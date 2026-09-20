@@ -1,19 +1,32 @@
 import { Button } from '@/components/ui/button';
-import { IconChecklist, IconDeviceFloppy, IconExclamationCircleFilled } from '@tabler/icons-react';
+import {
+    IconBuildingBank,
+    IconChecklist,
+    IconDeviceFloppy,
+    IconExclamationCircleFilled,
+    IconPrescription,
+} from '@tabler/icons-react';
+import { Link } from '@inertiajs/react';
 import CompleteCashier from './complete-cashier';
 import { usePage } from '@inertiajs/react';
 import Swal from 'sweetalert2';
+import { sendBackToBilling, sendBackToPharmacy } from '@/routes/cashier/details';
+import SendToBilling from './send-to-billing';
+import SendToPharmacy from './send-to-pharmacy';
 
 const SaveButton = ({
     type,
     isDirty,
-    isPaid,
-    hideSaveButton = false,
+    paymentType,
+    paymentId,
+    isPaid = false,
 }: {
     type: string;
     isDirty: boolean;
-    hideSaveButton?: boolean;
-    isPaid: boolean;
+    paymentType?: string;
+    itemData?: { id: string };
+    isPaid?: boolean;
+    paymentId: string;
 }) => {
     const { cashierDetails } = usePage().props as unknown as {
         cashierDetails: { is_completed: boolean };
@@ -62,15 +75,11 @@ const SaveButton = ({
                     </>
                 )}
             </h5>
-            {!hideSaveButton ? (
-                <Button size="lg" className="ms-3">
-                    <i>
-                        <IconDeviceFloppy className="me-1" />
-                    </i>
-                    Save {type}
-                </Button>
-            ) : (
-                <div></div>
+            {paymentType === 'Billing' && !isPaid && (
+                <SendToBilling id={paymentId}/>
+            )}
+            {paymentType === 'Pharmacy' && !isPaid && (
+                <SendToPharmacy id={paymentId}/>
             )}
         </div>
     );

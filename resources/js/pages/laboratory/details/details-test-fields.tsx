@@ -59,7 +59,7 @@ const DetailsTestFields = ({
         <>
             {test.fields.map((testField, testFieldIndex) => {
                 let fieldId = 'field_' + test.id + '_' + testField.id + '_' + testField.field.id;
-                let normalRange = getNormalRange(testField.field, patientDetails.gender_id);
+                let normalRange = getNormalRange(testField.field, patientDetails.gender_id ?? 0);
                 return (
                     <Fragment key={'key-' + fieldId}>
                         {testField.field.field_type === 'label' && (

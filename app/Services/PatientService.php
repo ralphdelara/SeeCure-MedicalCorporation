@@ -2,18 +2,19 @@
 
 namespace App\Services;
 
+use App\Events\PatientViewed;
 use App\Models\Barangay;
 use App\Models\City;
 use App\Models\CivilStatus;
 use App\Models\Gender;
 use App\Models\Nationality;
 use App\Models\Patient;
+use App\Models\PatientAudit;
 use App\Models\PatientSuffix;
 use App\Models\Province;
 use Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class PatientService
 {
@@ -171,16 +172,18 @@ class PatientService
             'province',
             'city',
             'barangay',
-            'consultation',
-            'laboratory',
             'civilStatus',
             'nationality',
-            'patientAudit',
+            'visits',
+            'vitalSigns',
+            'audits',
         ])->find($id);
 
         if (empty($patient)) {
             abort(404);
         }
+
+        PatientViewed::dispatch($patient);
 
         return $patient->toArray();
     }
@@ -209,5 +212,21 @@ class PatientService
             ->get();
 
         return $patient->toArray();
+    }
+
+    public function getAuditLog(string $patientId): array
+    {
+        return PatientAudit::with([
+            'createdBy' => function ($query) {
+                $query->select('id', 'first_name', 'middle_name', 'last_name');
+            },
+            'createdBy.professions',
+            'createdBy.specialties',
+            'auditType',
+        ])
+            ->select('audit_type_id', 'data', 'created_by', 'created_at')
+            ->where('patient_id', $patientId)
+            ->orderBy('created_at', 'desc')
+            ->get()->toArray();
     }
 }

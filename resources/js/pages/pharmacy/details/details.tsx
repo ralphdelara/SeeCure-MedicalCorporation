@@ -3,7 +3,7 @@ import { Select } from '@/components/ui/select';
 import { useEffect } from 'react';
 import { useForm, usePage } from '@inertiajs/react';
 import { Options } from '@/types/options';
-import { formSubmitResponse } from '@/lib/utils';
+import { formatMoney, formSubmitResponse, printDocument } from '@/lib/utils';
 import React from 'react';
 import SaveButton from './save-button';
 import { updateDetails } from '@/actions/App/Http/Controllers/PharmacyController';
@@ -38,16 +38,25 @@ interface InertiaProps {
 }
 
 const Details = ({ showTab }: { showTab: boolean }) => {
-    const { pharmacyDetails } = usePage().props as unknown as InertiaProps;
+    const { pharmacyDetails, discountType } = usePage().props as unknown as InertiaProps;
     const { data, setData, patch, isDirty, setDefaults } = useForm({
         id: pharmacyDetails.id,
+        total_cost_price: pharmacyDetails.total_cost_price ?? 0,
+        total_quantity: pharmacyDetails.total_quantity ?? 0,
+        total_price: pharmacyDetails.total_price ?? 0,
+        total_discount: pharmacyDetails.total_discount ?? 0,
+        total_nett_price: pharmacyDetails.total_nett_price ?? 0,
     });
-    console.log(pharmacyDetails);
 
     const header = [
         { name: 'Item', className: 'sticky-left', align: 'left' },
-        { name: 'Prescription Qty', align: 'center' },
-        { name: 'Pharmacy Qty', align: 'center' },
+        { name: 'Cost Price', align: 'center' },
+        { name: 'Quantity', align: 'center' },
+        { name: 'Total Price', align: 'center' },
+        { name: 'Discount', align: 'center' },
+        { name: 'Discount Type', align: 'center' },
+        { name: 'Tax %', align: 'center' },
+        { name: 'Nett Price', className: 'sticky-right', align: 'center' },
         { name: 'Added By', align: 'left' },
         { name: 'Last Modified By', align: 'left' },
     ];
@@ -64,8 +73,13 @@ const Details = ({ showTab }: { showTab: boolean }) => {
         const initialFields: Record<string, any> = {};
         pharmacyDetails.details.map((item, index) => {
             initialFields[item.id] = {
-                prescription_quantity: item.prescription_quantity ?? '',
-                pharmacy_quantity: item.pharmacy_quantity ?? '',
+                cost_price: item.cost_price ?? '',
+                quantity: item.quantity ?? '',
+                total_price: item.total_price ?? '',
+                discount: item.discount ?? '',
+                discount_type_id: item.discount_type_id ?? '',
+                tax_percent: item.tax_percent ?? '',
+                nett_price: item.nett_price ?? '',
             };
         });
 
@@ -73,13 +87,112 @@ const Details = ({ showTab }: { showTab: boolean }) => {
         setDefaults({ ...data, ...initialFields });
     }, [pharmacyDetails.details]);
 
-    const changePharmacyQty = (detailId: string, field: string, newValue: string) => {
-        const initialFields: Record<string, any> = {};
-        initialFields[detailId] = {
-            prescription_quantity: data[detailId as keyof typeof data].prescription_quantity,
-            pharmacy_quantity: newValue,
+    const totalValues = (tmpData: any) => {
+        let totalCostPrice = 0;
+        let totalQuantity = 0;
+        let totalPrice = 0;
+        let totalDiscount = 0;
+        let totalNettPrice = 0;
+
+        Object.values(tmpData).forEach((item) => {
+            if (typeof item !== 'object' || item === null) {
+                return;
+            }
+
+            // Cast 'item' so TypeScript knows it has dynamic string keys
+            const product = item as Record<string, any>;
+
+            if (!isNaN(parseFloat(product.cost_price))) {
+                totalCostPrice += parseFloat(product.cost_price);
+            }
+
+            if (!isNaN(parseFloat(product.cost_price))) {
+                totalQuantity += parseFloat(product.quantity);
+            }
+
+            if (!isNaN(parseFloat(product.cost_price))) {
+                totalPrice += parseFloat(product.cost_price) * parseFloat(product.quantity);
+            }
+
+            if (!isNaN(parseFloat(product.discount))) {
+                totalDiscount += parseFloat(product.discount);
+            }
+
+            if (!isNaN(parseFloat(product.nett_price))) {
+                totalNettPrice += parseFloat(product.nett_price);
+            }
+        });
+
+        return {
+            totalCostPrice: totalCostPrice.toFixed(2),
+            totalQuantity: totalQuantity.toFixed(2),
+            totalPrice: totalPrice.toFixed(2),
+            totalDiscount: totalDiscount.toFixed(2),
+            totalNettPrice: totalNettPrice.toFixed(2),
         };
-        setData({ ...data, ...initialFields });
+    };
+
+    const computeNettPrice = (id: string, field: string, value: string) => {
+        const parsedValue = isNaN(parseFloat(value)) ? 0.0 : value;
+
+        setData((prevData: any) => {
+            // Get the current item or fallback to empty values if it doesn't exist yet
+            const currentItem = prevData[id] || {
+                cost_price: '',
+                quantity: '',
+                total_price: '',
+                discount: '',
+                discount_type_id: '',
+                tax_percent: '',
+                nett_price: '',
+            };
+
+            // Create a fresh copy of the item and apply the new dynamic field value
+            const updatedItem = {
+                ...currentItem,
+                [field]: parsedValue,
+            };
+
+            const allBlank =
+                updatedItem.cost_price === '' &&
+                updatedItem.quantity === '' &&
+                updatedItem.total_price === '' &&
+                updatedItem.discount === '' &&
+                updatedItem.tax_percent === '' &&
+                updatedItem.nett_price === '';
+
+            // Safely parse all numbers from our updated item copy
+            const cost_price = isNaN(parseFloat(updatedItem.cost_price as string))
+                ? 0.0
+                : parseFloat(updatedItem.cost_price as string);
+            const quantity = isNaN(parseFloat(updatedItem.quantity as string))
+                ? 0
+                : parseFloat(updatedItem.quantity as string);
+            const discount = isNaN(parseFloat(updatedItem.discount as string))
+                ? 0.0
+                : parseFloat(updatedItem.discount as string);
+            const tax_percent = isNaN(parseFloat(updatedItem.tax_percent as string))
+                ? 0.0
+                : parseFloat(updatedItem.tax_percent as string);
+
+            updatedItem.total_price = allBlank ? '' : (cost_price * quantity).toFixed(2);
+            const basePrice = updatedItem.total_price - discount;
+            const totalNettPrice = (basePrice * (1 + tax_percent / 100)).toFixed(2);
+            updatedItem.nett_price = allBlank ? '' : totalNettPrice;
+
+            let totals = totalValues({ ...prevData, [id]: updatedItem });
+
+            // Return a completely fresh state object
+            return {
+                ...prevData,
+                [id]: updatedItem,
+                total_cost_price: totals.totalCostPrice,
+                total_quantity: totals.totalQuantity,
+                total_price: totals.totalPrice,
+                total_discount: totals.totalDiscount,
+                total_nett_price: totals.totalNettPrice,
+            };
+        });
     };
 
     const triggerPrintPrescription = (consultationId: string) => {
@@ -94,35 +207,42 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                         <div className="me-4">
                             <SaveButton type="Details" isDirty={isDirty} />
                         </div>
+                        <div className="d-flex justify-content-end me-5">
+                            <Button
+                                size="lg"
+                                type="button"
+                                className="me-2"
+                                onClick={() => printDocument('pharmacy', pharmacyDetails.id)}
+                            >
+                                <IconPrinter /> Print Pick List
+                            </Button>
+
+                            <Button
+                                size="lg"
+                                type="button"
+                                onClick={() =>
+                                    printDocument(
+                                        'prescription',
+                                        pharmacyDetails.visit.consultation.id,
+                                    )
+                                }
+                            >
+                                <IconPrinter />
+                                Print Prescription
+                            </Button>
+                        </div>
                         <div className="card border shadow-sm">
                             <div className="card-body">
-                                <div className="text-right">
-                                    <Button
-                                        size="lg"
-                                        className="mb-3"
-                                        type="button"
-                                        onClick={() =>
-                                            triggerPrintPrescription(
-                                                pharmacyDetails.consultation_id,
-                                            )
-                                        }
-                                    >
-                                        <IconPrinter />
-                                        Print Prescription
-                                    </Button>
-                                </div>
                                 <div className="row g-3 mb-5 w-100">
                                     <TableList header={header}>
                                         {pharmacyDetails.details.map((item, index) => {
-                                            console.log(item);
-                                            let prescriptionQtyId = 'prescription-qty-' + item.id;
-                                            let pharmacyQtyId = 'pharmacy-quantity-' + item.id;
-                                            let allowEdit = true;
-
-                                            if (item.prescription.inventory_id === null) {
-                                                allowEdit = false;
-                                            }
-
+                                            let costPriceId = 'cost-price-' + item.id;
+                                            let quantityId = 'quantity-' + item.id;
+                                            let totalPriceId = 'total-price-' + item.id;
+                                            let discountId = 'discount-' + item.id;
+                                            let discountTypeId = 'discount-type-' + item.id;
+                                            let taxPercentId = 'tax-percent-' + item.id;
+                                            let nettPriceId = 'nett-price-' + item.id;
                                             return (
                                                 <tr key={'detail-' + index}>
                                                     <td className="sticky-left">
@@ -130,39 +250,37 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                                             className="fs-5 fw-semibold text-wrap"
                                                             style={{ width: '300px' }}
                                                         >
-                                                            {item.prescription.inventory_name}
+                                                            {item.name}
                                                         </h6>
                                                     </td>
                                                     <td>
                                                         <div className="input-group d-flex mb-3 flex-nowrap">
                                                             <span className="input-group-text">
-                                                                #
+                                                                ₱
                                                             </span>
                                                             <Input
                                                                 type="text"
-                                                                id={prescriptionQtyId}
+                                                                id={costPriceId}
                                                                 value={
                                                                     (
                                                                         data[
                                                                             item.id as keyof typeof data
                                                                         ] as any
-                                                                    )?.prescription_quantity ?? ''
+                                                                    )?.cost_price ?? ''
                                                                 }
-                                                                readOnly={true}
-                                                                className={
-                                                                    'form-control' +
-                                                                    (!allowEdit && ' is-invalid')
+                                                                onChange={(e) =>
+                                                                    computeNettPrice(
+                                                                        item.id,
+                                                                        'cost_price',
+                                                                        e.target.value,
+                                                                    )
                                                                 }
+                                                                className="form-control"
                                                                 placeholder="0.00"
                                                                 style={{ width: '100px' }}
                                                                 maxLength={10}
                                                             />
                                                         </div>
-                                                        {!allowEdit && (
-                                                            <div className="d-flex invalid-feedback">
-                                                                Not Available
-                                                            </div>
-                                                        )}
                                                     </td>
                                                     <td>
                                                         <div className="input-group d-flex mb-3 flex-nowrap">
@@ -171,36 +289,153 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                                             </span>
                                                             <Input
                                                                 type="text"
-                                                                id={pharmacyQtyId}
+                                                                id={quantityId}
                                                                 value={
                                                                     (
                                                                         data[
                                                                             item.id as keyof typeof data
                                                                         ] as any
-                                                                    )?.pharmacy_quantity ?? ''
+                                                                    )?.quantity ?? ''
                                                                 }
-                                                                onChange={(e) => {
-                                                                    allowEdit &&
-                                                                        changePharmacyQty(
-                                                                            item.id,
-                                                                            'pharmacy_quantity',
-                                                                            e.target.value,
-                                                                        );
-                                                                }}
-                                                                className={
-                                                                    'form-control' +
-                                                                    (!allowEdit && ' is-invalid')
+                                                                onChange={(e) =>
+                                                                    computeNettPrice(
+                                                                        item.id,
+                                                                        'quantity',
+                                                                        e.target.value,
+                                                                    )
                                                                 }
+                                                                className="form-control"
                                                                 placeholder="0.00"
                                                                 style={{ width: '100px' }}
                                                                 maxLength={10}
                                                             />
                                                         </div>
-                                                        {!allowEdit && (
-                                                            <div className="d-flex invalid-feedback">
-                                                                Not Available
-                                                            </div>
-                                                        )}
+                                                    </td>
+                                                    <td>
+                                                        <div className="input-group d-flex mb-3 flex-nowrap">
+                                                            <span className="input-group-text">
+                                                                ₱
+                                                            </span>
+                                                            <Input
+                                                                type="text"
+                                                                id={totalPriceId}
+                                                                value={
+                                                                    (
+                                                                        data[
+                                                                            item.id as keyof typeof data
+                                                                        ] as any
+                                                                    )?.total_price ?? ''
+                                                                }
+                                                                className="form-control"
+                                                                placeholder="0.00"
+                                                                style={{ width: '100px' }}
+                                                                maxLength={10}
+                                                                readOnly={true}
+                                                            />
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div className="input-group d-flex mb-3 flex-nowrap">
+                                                            <span className="input-group-text">
+                                                                ₱
+                                                            </span>
+                                                            <Input
+                                                                type="text"
+                                                                id={discountId}
+                                                                value={
+                                                                    (
+                                                                        data[
+                                                                            item.id as keyof typeof data
+                                                                        ] as any
+                                                                    )?.discount ?? ''
+                                                                }
+                                                                onChange={(e) =>
+                                                                    computeNettPrice(
+                                                                        item.id,
+                                                                        'discount',
+                                                                        e.target.value,
+                                                                    )
+                                                                }
+                                                                className="form-control"
+                                                                placeholder="0.00"
+                                                                style={{ width: '100px' }}
+                                                                maxLength={10}
+                                                            />
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <Select
+                                                            id={discountTypeId}
+                                                            value={
+                                                                (
+                                                                    data[
+                                                                        item.id as keyof typeof data
+                                                                    ] as any
+                                                                )?.discount_type_id ?? ''
+                                                            }
+                                                            onChange={(e) =>
+                                                                computeNettPrice(
+                                                                    item.id,
+                                                                    'discount_type_id',
+                                                                    e.target.value,
+                                                                )
+                                                            }
+                                                            type=""
+                                                            style={{ width: '110px' }}
+                                                            options={discountType}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <div className="input-group d-flex mb-3 flex-nowrap">
+                                                            <span className="input-group-text">
+                                                                %
+                                                            </span>
+                                                            <Input
+                                                                type="text"
+                                                                id={taxPercentId}
+                                                                value={
+                                                                    (
+                                                                        data[
+                                                                            item.id as keyof typeof data
+                                                                        ] as any
+                                                                    )?.tax_percent ?? ''
+                                                                }
+                                                                onChange={(e) =>
+                                                                    computeNettPrice(
+                                                                        item.id,
+                                                                        'tax_percent',
+                                                                        e.target.value,
+                                                                    )
+                                                                }
+                                                                className="form-control"
+                                                                placeholder="0.00"
+                                                                style={{ width: '100px' }}
+                                                                maxLength={10}
+                                                            />
+                                                        </div>
+                                                    </td>
+                                                    <td className="sticky-right">
+                                                        <div className="input-group d-flex mb-3 flex-nowrap">
+                                                            <span className="input-group-text">
+                                                                ₱
+                                                            </span>
+                                                            <Input
+                                                                type="text"
+                                                                id={nettPriceId}
+                                                                value={
+                                                                    (
+                                                                        data[
+                                                                            item.id as keyof typeof data
+                                                                        ] as any
+                                                                    )?.nett_price ?? ''
+                                                                }
+                                                                readOnly={true}
+                                                                className="form-control"
+                                                                placeholder="0.00"
+                                                                style={{ width: '100px' }}
+                                                                maxLength={10}
+                                                            />
+                                                        </div>
                                                     </td>
                                                     <td>
                                                         <div className="d-flex align-items-start">
@@ -232,6 +467,40 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                                 </tr>
                                             );
                                         })}
+                                        <tr>
+                                            <td className="sticky-left">
+                                                <h6 className="fs-6 fw-semibold">Total</h6>
+                                            </td>
+                                            <td className="text-center">
+                                                <h6 className="fs-6 fw-semibold">
+                                                    {formatMoney(data.total_cost_price)}
+                                                </h6>
+                                            </td>
+                                            <td className="text-center">
+                                                <h6 className="fs-6 fw-semibold">
+                                                    {data.total_quantity}
+                                                </h6>
+                                            </td>
+                                            <td className="text-center">
+                                                <h6 className="fs-6 fw-semibold">
+                                                    {formatMoney(data.total_price)}
+                                                </h6>
+                                            </td>
+                                            <td className="text-center">
+                                                <h6 className="fs-6 fw-semibold">
+                                                    {formatMoney(data.total_discount)}
+                                                </h6>
+                                            </td>
+                                            <td></td>
+                                            <td></td>
+                                            <td className="sticky-right text-center">
+                                                <h6 className="fs-6 fw-semibold">
+                                                    {formatMoney(data.total_nett_price)}
+                                                </h6>
+                                            </td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
                                     </TableList>
                                 </div>
                             </div>

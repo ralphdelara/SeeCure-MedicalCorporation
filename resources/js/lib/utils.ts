@@ -1,3 +1,10 @@
+import {
+    printBilling,
+    printLaboratory,
+    printPharmacyPickList,
+    printPrescription,
+    printReceipt,
+} from '@/actions/App/Http/Controllers/PrintController';
 import { NormalRangeProps } from '@/pages/laboratory/details/details-test-fields';
 import type { InertiaLinkProps } from '@inertiajs/react';
 import { clsx } from 'clsx';
@@ -141,4 +148,53 @@ export function getNormalRange(field: NormalRangeProps, gender_id: number) {
     } else {
         return parseNormalRange(normalRangeBothMin, normalRangeBothMax);
     }
+}
+
+export function printDocument(type: string, id: string) {
+    if (type === 'prescription') {
+        window.open(printPrescription(id).url);
+    }
+
+    if (type === 'billing') {
+        window.open(printBilling(id).url);
+    }
+
+    if (type === 'laboratory') {
+        window.open(printLaboratory(id).url);
+    }
+
+    if (type === 'receipt') {
+        window.open(printReceipt(id).url);
+    }
+
+    if (type === 'pharmacy') {
+        window.open(printPharmacyPickList(id).url);
+    }
+}
+
+export function addZeroes(number: string | number, maxZero: number) {
+    return String(number).padStart(maxZero, '0');
+}
+
+export function formatReceiptDateTime(str: string) {
+    const cleanedStr = str.replace(',', '').trim();
+    const date = new Date(cleanedStr);
+
+    // Keep month and day as numbers (or unpadded strings) for single digits
+    const month = date.getMonth() + 1; // 1-12
+    const day = date.getDate(); // 1-31
+    const year = date.getFullYear();
+
+    let hours = date.getHours();
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+
+    // Convert 24-hour time to 12-hour AM/PM format
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // The hour '0' should be '12'
+    const strHours = String(hours).padStart(2, '0');
+
+    // Output format: M/d/Y h:i:s A
+    return `${month}/${day}/${year} ${strHours}:${minutes}:${seconds} ${ampm}`;
 }

@@ -23,7 +23,7 @@ interface InertiaProps {
         guardian_contact_number: string;
         guardian_email: string;
         guardian_relationship_id: string;
-        signs_or_symptoms: number[]
+        signs_or_symptoms: number[];
         doctor_id: string;
         created_by: {
             full_name: string;
@@ -37,7 +37,8 @@ interface InertiaProps {
 }
 
 const Details = ({ showTab }: { showTab: boolean }) => {
-    const { consultationDetails, doctors, relationshipOptions } = usePage().props as unknown as InertiaProps;
+    const { consultationDetails, doctors, relationshipOptions } = usePage()
+        .props as unknown as InertiaProps;
 
     const { data, setData, patch, errors, isDirty } = useForm({
         id: consultationDetails.id,
@@ -54,14 +55,16 @@ const Details = ({ showTab }: { showTab: boolean }) => {
         e.preventDefault();
 
         patch(updateDetails().url, formSubmitResponse('Details'));
-    }
+    };
 
     return (
         <>
             <div className={'tab-content mt-3' + (!showTab ? ' hidden' : '')}>
                 <div className="tab-pane fade show active" role="tabpanel" tabIndex={1}>
                     <form onSubmit={submitDetails}>
-                        <div className="me-4"><SaveButton type="Details" isDirty={isDirty}/></div>
+                        <div className="me-4">
+                            <SaveButton type="Details" isDirty={isDirty} />
+                        </div>
                         <div className="row mt-3 w-100">
                             <div className="col-lg-4">
                                 <div className="card border shadow-sm">
@@ -84,7 +87,9 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                                 <h5 className="fw-bolder">Added by</h5>
                                             </Label>
                                             <h5 id="added-by">
-                                                <span className="fw-semibold">{consultationDetails.created_by.full_name}</span>
+                                                <span className="fw-semibold">
+                                                    {consultationDetails.created_by.full_name}
+                                                </span>
                                                 <p>
                                                     <small>{consultationDetails.created_at}</small>
                                                 </p>
@@ -95,7 +100,8 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                                 <h5 className="fw-bolder">Last modified by</h5>
                                             </Label>
                                             <h5 id="last-modified-by">
-                                                {consultationDetails.last_modified_by?.full_name ?? ''}
+                                                {consultationDetails.last_modified_by?.full_name ??
+                                                    ''}
                                                 <p>
                                                     <small>{consultationDetails.updated_at}</small>
                                                 </p>

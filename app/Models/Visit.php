@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\CorrectTimezone;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -48,20 +49,27 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string|null $discharged_at
  * @property bool $is_emergency
  * @property int $visit_status_id
- * @property-read \App\Models\VisitStatus $visitStatus
+ * @property-read VisitStatus $visitStatus
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereAdmittedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereDischargedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereIsEmergency($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit wherePriorityTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereVisitStatusId($value)
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PriorityType> $priorityTypes
+ * @property-read Collection<int, PriorityType> $priorityTypes
  * @property-read int|null $priority_types_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Laboratory> $laboratory
+ * @property-read Collection<int, Laboratory> $laboratory
  * @property-read int|null $laboratory_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Radiology> $radiology
+ * @property-read Collection<int, Radiology> $radiology
  * @property-read int|null $radiology_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Billing> $billing
+ * @property-read Collection<int, Billing> $billing
  * @property-read int|null $billing_count
+ * @property-read Collection<int, Cashier> $cashier
+ * @property-read int|null $cashier_count
+ * @property int $visit_no
+ * @property bool $is_walk_in
+ * @property-read \App\Models\Pharmacy|null $pharmacy
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereIsWalkIn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereVisitNo($value)
  * @mixin \Eloquent
  */
 #[Fillable([
@@ -72,6 +80,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
     'has_laboratory',
     'has_radiology',
     'is_emergency',
+    'is_walk_in',
     'visit_status_id',
     'created_by',
     'last_modified_by',
@@ -123,6 +132,11 @@ class Visit extends Model
     public function cashier(): HasMany
     {
         return $this->hasMany(Cashier::class);
+    }
+
+    public function pharmacy(): HasOne
+    {
+        return $this->hasOne(Pharmacy::class);
     }
 
     public function visitStatus(): BelongsTo

@@ -3,13 +3,19 @@ import { Select } from '@/components/ui/select';
 import { useEffect, useState } from 'react';
 import { useForm, usePage, Link } from '@inertiajs/react';
 import { Options } from '@/types/options';
-import { formatMoney, formSubmitResponse } from '@/lib/utils';
+import { formatMoney, formSubmitResponse, printDocument } from '@/lib/utils';
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import SaveButton from './save-button';
 import { updateDetails } from '@/actions/App/Http/Controllers/BillingController';
 import TableList from '@/components/table';
-import { IconPrinter } from '@tabler/icons-react';
+import {
+    IconBuildingBank,
+    IconListCheck,
+    IconPlus,
+    IconPrescription,
+    IconPrinter,
+} from '@tabler/icons-react';
 import { printPrescription } from '@/actions/App/Http/Controllers/PrintController';
 
 interface InertiaProps {
@@ -22,7 +28,7 @@ interface InertiaProps {
                 name: string;
             };
             billing_type_id: number;
-            price: string | number;
+            cost_price: string | number;
             discount: string | number;
             discount_type_id: string | number;
             tax_percent: string | number;
@@ -50,9 +56,11 @@ interface InertiaProps {
 
 const Details = ({ showTab }: { showTab: boolean }) => {
     const { billingDetails, discountType } = usePage().props as unknown as InertiaProps;
-
+    console.log(billingDetails);
     const { data, setData, patch, isDirty, setDefaults } = useForm({
         id: billingDetails.id,
+        total_cost_price: billingDetails.total_cost_price ?? 0,
+        total_quantity: billingDetails.total_quantity ?? 0,
         total_price: billingDetails.total_price ?? 0,
         total_discount: billingDetails.total_discount ?? 0,
         total_nett_price: billingDetails.total_nett_price ?? 0,
@@ -64,8 +72,7 @@ const Details = ({ showTab }: { showTab: boolean }) => {
         { name: 'Discount', align: 'center' },
         { name: 'Discount Type', align: 'center' },
         { name: 'Tax', align: 'center' },
-        { name: 'Nett Price',
-            className: 'sticky-right', align: 'center' },
+        { name: 'Nett Price', className: 'sticky-right', align: 'center' },
         { name: 'Added By', align: 'left' },
         { name: 'Last Modified By', align: 'left' },
     ];
@@ -79,6 +86,8 @@ const Details = ({ showTab }: { showTab: boolean }) => {
     };
 
     const totalValues = (tmpData: any) => {
+        let totalCostPrice = 0;
+        let totalQuantity = 0;
         let totalPrice = 0;
         let totalDiscount = 0;
         let totalNettPrice = 0;
@@ -91,8 +100,16 @@ const Details = ({ showTab }: { showTab: boolean }) => {
             // Cast 'item' so TypeScript knows it has dynamic string keys
             const product = item as Record<string, any>;
 
-            if (!isNaN(parseFloat(product.price))) {
-                totalPrice += parseFloat(product.price);
+            if (!isNaN(parseFloat(product.cost_price))) {
+                totalCostPrice += parseFloat(product.cost_price);
+            }
+
+            if (!isNaN(parseFloat(product.cost_price))) {
+                totalQuantity += parseFloat(product.quantity);
+            }
+
+            if (!isNaN(parseFloat(product.cost_price))) {
+                totalPrice += parseFloat(product.cost_price);
             }
 
             if (!isNaN(parseFloat(product.discount))) {
@@ -105,6 +122,8 @@ const Details = ({ showTab }: { showTab: boolean }) => {
         });
 
         return {
+            totalCostPrice: totalCostPrice.toFixed(2),
+            totalQuantity: totalQuantity.toFixed(2),
             totalPrice: totalPrice,
             totalDiscount: totalDiscount,
             totalNettPrice: totalNettPrice,
@@ -112,12 +131,14 @@ const Details = ({ showTab }: { showTab: boolean }) => {
     };
 
     const computeNettPrice = (id: string, field: string, value: string) => {
-        const parsedValue = isNaN(parseFloat(value)) ? 0.0 : parseFloat(value);
+        const parsedValue = isNaN(parseFloat(value)) ? 0.0 : value;
 
         setData((prevData: any) => {
             // Get the current item or fallback to empty values if it doesn't exist yet
             const currentItem = prevData[id] || {
-                price: '',
+                cost_price: '',
+                quantity: '',
+                total_price: '',
                 discount: '',
                 discount_type_id: '',
                 tax_percent: '',
@@ -131,14 +152,20 @@ const Details = ({ showTab }: { showTab: boolean }) => {
             };
 
             const allBlank =
-                updatedItem.price === '' &&
+                updatedItem.cost_price === '' &&
+                updatedItem.quantity === '' &&
+                updatedItem.total_price === '' &&
                 updatedItem.discount === '' &&
-                updatedItem.tax_percent === '';
+                updatedItem.tax_percent === '' &&
+                updatedItem.nett_price === '';
 
             // Safely parse all numbers from our updated item copy
-            const price = isNaN(parseFloat(updatedItem.price as string))
+            const cost_price = isNaN(parseFloat(updatedItem.cost_price as string))
                 ? 0.0
-                : parseFloat(updatedItem.price as string);
+                : parseFloat(updatedItem.cost_price as string);
+            const quantity = isNaN(parseFloat(updatedItem.quantity as string))
+                ? 0
+                : parseFloat(updatedItem.quantity as string);
             const discount = isNaN(parseFloat(updatedItem.discount as string))
                 ? 0.0
                 : parseFloat(updatedItem.discount as string);
@@ -146,7 +173,8 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                 ? 0.0
                 : parseFloat(updatedItem.tax_percent as string);
 
-            const basePrice = price - discount;
+            updatedItem.total_price = allBlank ? '' : (cost_price * quantity).toFixed(2);
+            const basePrice = updatedItem.total_price - discount;
             const totalNettPrice = (basePrice * (1 + tax_percent / 100)).toFixed(2);
             updatedItem.nett_price = allBlank ? '' : totalNettPrice;
 
@@ -156,6 +184,8 @@ const Details = ({ showTab }: { showTab: boolean }) => {
             return {
                 ...prevData,
                 [id]: updatedItem,
+                total_cost_price: totals.totalCostPrice,
+                total_quantity: totals.totalQuantity,
                 total_price: totals.totalPrice,
                 total_discount: totals.totalDiscount,
                 total_nett_price: totals.totalNettPrice,
@@ -163,15 +193,13 @@ const Details = ({ showTab }: { showTab: boolean }) => {
         });
     };
 
-    const triggerPrintPrescription = (consultationId: string) => {
-        window.open(printPrescription(consultationId).url, '_blank');
-    };
-
     useEffect(() => {
         const initialFields: Record<string, any> = {};
         billingDetails.details.map((item, index) => {
             initialFields[item.id] = {
-                price: item.price ?? '',
+                cost_price: item.cost_price ?? '',
+                quantity: item.quantity ?? '',
+                total_price: item.total_price ?? '',
                 discount: item.discount ?? '',
                 discount_type_id: item.discount_type_id ?? '',
                 tax_percent: item.tax_percent ?? '',
@@ -191,12 +219,45 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                         <div className="me-4">
                             <SaveButton type="Details" isDirty={isDirty} />
                         </div>
+                        <div className="me-5 text-right">
+                            <Button
+                                size="lg"
+                                type="button"
+                                className="me-2"
+                                onClick={() => printDocument('billing', billingDetails.id)}
+                            >
+                                <IconPlus /> Add Supplies
+                            </Button>
+                            <Button
+                                size="lg"
+                                type="button"
+                                className="me-2"
+                                onClick={() => printDocument('billing', billingDetails.id)}
+                            >
+                                <IconPrinter /> Print Billing Details
+                            </Button>
+                            {billingDetails.visit.consultation && (
+                                <Button
+                                    size="lg"
+                                    type="button"
+                                    onClick={() =>
+                                        printDocument(
+                                            'prescription',
+                                            billingDetails.visit.consultation.id,
+                                        )
+                                    }
+                                >
+                                    <IconPrescription />
+                                    Print Prescription
+                                </Button>
+                            )}
+                        </div>
                         <div className="card border shadow-sm">
                             <div className="card-body">
                                 <div className="row g-3 mb-5 w-100">
                                     <TableList header={header}>
                                         {billingDetails.details.map((item, index) => {
-                                            let priceId = 'price-' + item.id;
+                                            let priceId = 'cost-price-' + item.id;
                                             let discountId = 'discount-' + item.id;
                                             let discountTypeId = 'discount-type-' + item.id;
                                             let taxPercentId = 'tax-percent-' + item.id;
@@ -219,11 +280,17 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                                             <Input
                                                                 type="text"
                                                                 id={priceId}
-                                                                value={(data[item.id as keyof typeof data] as any)?.price ?? ''}
+                                                                value={
+                                                                    (
+                                                                        data[
+                                                                            item.id as keyof typeof data
+                                                                        ] as any
+                                                                    )?.cost_price ?? ''
+                                                                }
                                                                 onChange={(e) =>
                                                                     computeNettPrice(
                                                                         item.id,
-                                                                        'price',
+                                                                        'cost_price',
                                                                         e.target.value,
                                                                     )
                                                                 }
@@ -243,7 +310,11 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                                                 type="text"
                                                                 id={discountId}
                                                                 value={
-                                                                    (data[item.id as keyof typeof data] as any)?.discount ?? ''
+                                                                    (
+                                                                        data[
+                                                                            item.id as keyof typeof data
+                                                                        ] as any
+                                                                    )?.discount ?? ''
                                                                 }
                                                                 onChange={(e) =>
                                                                     computeNettPrice(
@@ -263,8 +334,11 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                                         <Select
                                                             id={discountTypeId}
                                                             value={
-                                                                (data[item.id as keyof typeof data] as any)?.discount_type_id ??
-                                                                ''
+                                                                (
+                                                                    data[
+                                                                        item.id as keyof typeof data
+                                                                    ] as any
+                                                                )?.discount_type_id ?? ''
                                                             }
                                                             onChange={(e) =>
                                                                 computeNettPrice(
@@ -287,7 +361,11 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                                                 type="text"
                                                                 id={taxPercentId}
                                                                 value={
-                                                                    (data[item.id as keyof typeof data] as any)?.tax_percent ?? ''
+                                                                    (
+                                                                        data[
+                                                                            item.id as keyof typeof data
+                                                                        ] as any
+                                                                    )?.tax_percent ?? ''
                                                                 }
                                                                 onChange={(e) =>
                                                                     computeNettPrice(
@@ -312,7 +390,11 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                                                 type="text"
                                                                 id={nettPriceId}
                                                                 value={
-                                                                    (data[item.id as keyof typeof data] as any)?.nett_price ?? ''
+                                                                    (
+                                                                        data[
+                                                                            item.id as keyof typeof data
+                                                                        ] as any
+                                                                    )?.nett_price ?? ''
                                                                 }
                                                                 readOnly={true}
                                                                 className="form-control"

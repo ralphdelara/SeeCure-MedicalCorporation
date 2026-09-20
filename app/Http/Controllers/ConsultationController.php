@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\CallOut;
 use App\Models\InventoryCategory;
 use App\Models\Laboratory;
 use App\Models\PatientVitalSign;
 use App\Models\Prescription;
 use App\Models\Relationship;
 use App\Models\SignsOrSymptom;
+use App\Models\Visit;
 use App\Models\VitalSign;
 use App\Services\ConsultationService;
 use App\Services\DoctorService;
 use App\Services\LaboratoryService;
-use App\Services\PatientService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -46,12 +45,13 @@ class ConsultationController extends Controller
         ));
     }
 
-    public function getConsultationDetails(Request $request, string $consultationId): Response
+    public function getConsultationDetails(string $consultationId): Response
     {
         $consultationDetails = app(ConsultationService::class)->getConsultationDetails($consultationId);
         $signsOrSymptoms = SignsOrSymptom::all();
         $vitalSigns = VitalSign::with('fields')->get();
-        $patientDetails = app(PatientService::class)->getPatientDetails($consultationDetails['patient_id']);
+        $patientDetails = $consultationDetails['visit']['patient'];
+        $laboratory = $consultationDetails['visit']['laboratory'];
         $doctors = app(DoctorService::class)->getDoctorList();
         $relationshipOptions = Relationship::all();
         $inventoryCategories = InventoryCategory::all();
@@ -66,6 +66,7 @@ class ConsultationController extends Controller
             'relationshipOptions',
             'inventoryCategories',
             'laboratoryFormOptions',
+            'laboratory',
         ));
     }
 
@@ -155,8 +156,6 @@ class ConsultationController extends Controller
     public function addLaboratory(Request $request): void
     {
         $laboratoryDetails = $request->only(
-            'consultation_id',
-            'patient_id',
             'visit_id',
             'laboratory_id',
             'laboratory_package_id',
@@ -164,23 +163,13 @@ class ConsultationController extends Controller
         );
 
         // Prevent adding new record if has pending laboratory
-        $pendingLabCount = Laboratory::where('consultation_id', $laboratoryDetails['consultation_id'])
+        $pendingLabCount = Laboratory::where('visit_id', $laboratoryDetails['visit_id'])
             ->where('is_completed', false)->count();
 
         if ($pendingLabCount > 0) {
             return;
         }
 
-        $patientId = $laboratoryDetails['patient_id'];
-        $visitId = $laboratoryDetails['visit_id'];
-        $consultationId = $laboratoryDetails['consultation_id'];
-
-        unset($laboratoryDetails['consultation_id']);
-        unset($laboratoryDetails['patient_id']);
-        unset($laboratoryDetails['visit_id']);
-
-        app(LaboratoryService::class)->storeLaboratory($visitId, $patientId, $consultationId, $laboratoryDetails);
+        app(LaboratoryService::class)->storeLaboratory($laboratoryDetails['visit_id'], $laboratoryDetails);
     }
-
-    public function printPrescription() {}
 }

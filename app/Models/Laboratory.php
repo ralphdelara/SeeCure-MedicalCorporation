@@ -39,19 +39,28 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereVisitId($value)
  * @property bool $is_completed
- * @property-read Collection<int, \App\Models\LaboratoryTestData> $testData
+ * @property-read Collection<int, LaboratoryTestData> $testData
  * @property-read int|null $test_data_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereIsCompleted($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory wherePatientName($value)
- * @property-read Collection<int, \App\Models\LaboratoryTestFieldData> $testFieldData
+ * @property-read Collection<int, LaboratoryTestFieldData> $testFieldData
  * @property-read int|null $test_field_data_count
  * @property string|null $patient_name
+ * @property string|null $performed_by
+ * @property CarbonImmutable|null $date_performed
+ * @property-read User|null $performedBy
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereDateProcessed($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereProcessedBy($value)
+ * @property-read Collection<int, \App\Models\LaboratoryRemark> $remarks
+ * @property-read int|null $remarks_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereDatePerformed($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory wherePerformedBy($value)
  * @mixin \Eloquent
  */
 #[Fillable([
     'visit_id',
-    'patient_id',
-    'consultation_id',
+    'performed_by',
+    'date_performed',
     'is_completed',
     'created_by',
     'last_modified_by',
@@ -65,8 +74,9 @@ class Laboratory extends Model
     protected function casts(): array
     {
         return [
-            'created_at' => 'date:M d, Y h:i a',
-            'updated_at' => 'date:M d, Y h:i a',
+            'created_at'     => 'date:M d, Y h:i a',
+            'updated_at'     => 'date:M d, Y h:i a',
+            'date_performed' => 'date:M d, Y',
         ];
     }
 
@@ -75,14 +85,9 @@ class Laboratory extends Model
         return $this->belongsTo(Visit::class, 'visit_id', 'id');
     }
 
-    public function patient(): BelongsTo
+    public function performedBy(): BelongsTo
     {
-        return $this->belongsTo(Patient::class, 'patient_id', 'id');
-    }
-
-    public function consultation(): BelongsTo
-    {
-        return $this->belongsTo(Consultation::class, 'consultation_id', 'id');
+        return $this->belongsTo(User::class, 'performed_by', 'id');
     }
 
     public function createdBy(): BelongsTo
@@ -93,6 +98,11 @@ class Laboratory extends Model
     public function lastModifiedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'last_modified_by', 'id');
+    }
+
+    public function remarks(): HasMany
+    {
+        return $this->hasMany(LaboratoryRemark::class);
     }
 
     public function testData(): HasMany

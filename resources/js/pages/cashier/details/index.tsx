@@ -1,12 +1,7 @@
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import PatientInfo from '@/pages/patient/info';
-import Details from './details';
 import AuditLog from './audit-log';
-import {
-    IconCash,
-    IconListDetails,
-    IconUserCode,
-} from '@tabler/icons-react';
+import { IconCash, IconListDetails, IconUserCode } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { Head, usePage } from '@inertiajs/react';
 import { PatientDetailsProps } from '@/components/patient/patient-details';
@@ -30,7 +25,7 @@ interface InertiaProps {
                     field_type: string;
                     field: {
                         id: string;
-                    }
+                    };
                     value: string;
                 }[];
             }[];
@@ -41,16 +36,14 @@ interface InertiaProps {
 const CashierDetails = () => {
     const [selectedTab, setSelectedTab] = useState(() => {
         // This reads the parameter immediately on mount before anything else renders
-        return getUrlParams('tab', 'tab-details');
+        return getUrlParams('tab', 'tab-payments');
     });
-    const [selectedTabName, setSelectedTabName] = useState('Details');
-    const [dataFields, setDataFields] = useState({});
+    const [selectedTabName, setSelectedTabName] = useState('Payments');
     const tabs = [
-        { id: 'tab-details', name: 'Details', icon: <IconListDetails /> },
         { id: 'tab-payments', name: 'Payments', icon: <IconCash /> },
         { id: 'tab-audit-log', name: 'Audit Log', icon: <IconUserCode /> },
     ];
-    const { cashierDetails, patientDetails } = usePage().props as unknown as InertiaProps;
+    const { patientDetails } = usePage().props as unknown as InertiaProps;
 
     useEffect(() => {
         const initTab = getUrlParams('tab', 'tab-details');
@@ -104,12 +97,7 @@ const CashierDetails = () => {
                     })}
                 </ul>
             </PatientInfo>
-            <Details
-                showTab={selectedTab === 'tab-details'}
-            />
-            <Payments
-                showTab={selectedTab === 'tab-payments'}
-            />
+            <Payments showTab={selectedTab === 'tab-payments'} />
             {selectedTab === 'tab-audit-log' && <AuditLog />}
         </>
     );

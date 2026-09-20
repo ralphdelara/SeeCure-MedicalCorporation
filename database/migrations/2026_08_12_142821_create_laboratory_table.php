@@ -14,9 +14,6 @@ return new class extends Migration
         Schema::create('laboratory', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('visit_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('patient_id')->constrained()->cascadeOnDelete();
-            // nullOnDelete because the data can still be accessed via patient details
-            $table->foreignUuid('consultation_id')->nullable()->constrained()->nullOnDelete();
 
             $table->boolean('is_completed')->default(false);
 

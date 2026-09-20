@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use App\Traits\CorrectTimezone;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -18,16 +20,16 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string|null $remarks
  * @property string $created_by
  * @property string|null $last_modified_by
- * @property \Carbon\CarbonImmutable|null $created_at
- * @property \Carbon\CarbonImmutable|null $updated_at
- * @property-read \App\Models\User $createdBy
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LaboratoryTestFieldData> $fields
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
+ * @property-read User $createdBy
+ * @property-read Collection<int, LaboratoryTestFieldData> $fields
  * @property-read int|null $fields_count
- * @property-read \App\Models\Laboratory $laboratory
- * @property-read \App\Models\User|null $lastModifiedBy
- * @property-read \App\Models\LaboratoryPackage|null $package
- * @property-read \App\Models\LaboratoryTest $test
- * @property-read \App\Models\LaboratoryType $type
+ * @property-read Laboratory $laboratory
+ * @property-read User|null $lastModifiedBy
+ * @property-read LaboratoryPackage|null $package
+ * @property-read LaboratoryTest $test
+ * @property-read LaboratoryType $type
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestData newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestData newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestData query()
@@ -48,8 +50,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
     'laboratory_package_id',
     'laboratory_type_id',
     'laboratory_test_id',
-    'laboratory_test_field_id',
-    'remarks',
     'created_by',
     'last_modified_by',
 ])]
@@ -58,13 +58,6 @@ class LaboratoryTestData extends Model
     use CorrectTimezone, HasUuids;
 
     public $table = 'laboratory_test_data';
-
-    protected function casts(): array
-    {
-        return [
-            'remarks' => 'encrypted',
-        ];
-    }
 
     public function laboratory(): BelongsTo
     {

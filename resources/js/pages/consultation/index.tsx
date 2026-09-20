@@ -4,16 +4,14 @@ import { Breadcrumbs } from '@/components/breadcrumbs';
 import SearchField from '@/components/search-field';
 import TableList from '@/components/table';
 import type { Pages } from '@/types/pagination';
-import type { ConsultationList } from './types';
 import { Button } from '@/components/ui/button';
 import { Fragment, useState } from 'react';
 import { getPatientDetails } from '@/actions/App/Http/Controllers/PatientController';
-import {
-    getConsultationDetails,
-} from '@/actions/App/Http/Controllers/ConsultationController';
+import { getConsultationDetails } from '@/actions/App/Http/Controllers/ConsultationController';
 import { fetchUrl } from '@/lib/utils';
 import personDefault from '@/assets/images/profile/person-default.png';
 import { callOutPatient } from '@/routes/system';
+import { ConsultationList } from '@/types/consultation';
 
 interface InertiaProps {
     consultationList: {
@@ -95,16 +93,18 @@ export default function Consultation() {
                                             <div className="ms-3">
                                                 <h6 className="fs-4 fw-semibold mb-0">
                                                     <Link
-                                                        href={getPatientDetails(item.patient.id)}
+                                                        href={getPatientDetails(
+                                                            item.visit.patient.id,
+                                                        )}
                                                         className="tooltip-container"
                                                         data-title="Click to View Patient Details"
                                                     >
-                                                        {item.patient.full_name}
+                                                        {item.visit.patient.full_name}
                                                     </Link>
                                                 </h6>
                                                 <span className="fw-normal">
-                                                    {item.patient.gender
-                                                        ? item.patient.gender.name
+                                                    {item.visit.patient.gender
+                                                        ? item.visit.patient.gender.name
                                                         : 'N/A'}
                                                 </span>
                                             </div>
@@ -125,7 +125,7 @@ export default function Consultation() {
                                         <Fragment
                                             key={
                                                 'patient-' +
-                                                item.patient.id +
+                                                item.visit.patient.id +
                                                 '-vitalsign-' +
                                                 item2.id
                                             }
@@ -244,7 +244,7 @@ export default function Consultation() {
                                         className="me-1 mb-1"
                                         title={allowCallPatient ? 'Call Patient' : 'Please wait...'}
                                         disabled={!allowCallPatient}
-                                        onClick={() => callPatient(item.patient.full_name)}
+                                        onClick={() => callPatient(item.visit.patient.full_name)}
                                     >
                                         <i>
                                             {allowCallPatient && <IconVolume size={18} />}

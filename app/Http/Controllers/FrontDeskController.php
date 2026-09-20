@@ -74,24 +74,12 @@ class FrontDeskController extends Controller
 
         $visitId = $this->queueVisit($request, $patientId, $patientDetails['isSenior']);
 
-        $consultationId = null;
-
-        if ($request->has_consultation === 1) {
-            $consultationId = $this->queueConsultation(
-                $request,
-                $patientId,
-                $visitId,
-            );
-        }
-
         $laboratoryId = null;
 
         if ($request->has_laboratory === 1) {
             $laboratoryId = $this->queueLaboratory(
                 $request,
-                $patientId,
                 $visitId,
-                $consultationId,
             );
         }
 
@@ -100,30 +88,16 @@ class FrontDeskController extends Controller
         if ($request->has_radiology === 1) {
             $radiologyId = $this->queueRadiology(
                 $request,
-                $patientId,
                 $visitId,
-                $consultationId,
             );
         }
 
-        // set consultationIdForBilling to null if theres a laboratory or radiology request
-        // because the patient is not yet consulted so there shouldnt be Consultation in billing
-        if (! empty($laboratoryId) || ! empty($radiologyId)) {
-            $consultationIdForBilling = null;
-            // create billing and cashier data if there is a laboratory or radiology
-            // billing id for payment data
-            $billingId = app(BillingService::class)->storeBilling(
-                $patientId,
-                $visitId,
-                $consultationIdForBilling,
-                $laboratoryId,
-                $radiologyId,
-            );
-
-            app(CashierService::class)->storeCashier(
-                $patientId,
-                $visitId,
-                $billingId,
+        // create billing if visit has laboratory or radiology
+        if ($request->has_laboratory === 1 || $request->has_radiology === 1) {
+            app(BillingService::class)->storeBilling(
+                visitId: $visitId,
+                laboratoryId: $laboratoryId,
+                radiologyId: $radiologyId,
             );
 
             broadcast(new NotifyBilling(
@@ -131,34 +105,39 @@ class FrontDeskController extends Controller
                 'Patient has been placed in billing',
                 Visit::where('visit_status_id', VisitStatusEnum::IN_BILLING)->count(),
             ));
-
-            app(VisitService::class)->notifyFrontDesk();
         }
 
+        // create consultation and notify the doctor
         if (
             $request->has_laboratory === 0
             && $request->has_radiology === 0
             && $request->has_consultation === 1
         ) {
+            $consultationId = $this->queueConsultation(
+                $request,
+                $visitId,
+            );
+
+            if (! empty($request->vital_signs)) {
+                app(PatientVitalSignService::class)->storeVitalSigns($patientId, $consultationId, $request->vital_signs);
+            }
+
             broadcast(new NotifyDoctor(
                 'Notification',
                 'Patient has been placed in consultation',
                 Visit::where('visit_status_id', VisitStatusEnum::IN_CONSULTATION)->count(),
             ));
-
-            app(VisitService::class)->notifyFrontDesk();
         }
     }
 
     public function validate(Request $request)
     {
         $request->validate([
-            'patient_id'           => 'required_if:form_type,existing',
-            'last_name'            => 'required_if:form_type,new|max:50',
-            'first_name'           => 'required_if:form_type,new|max:50',
-            'doctor_id'            => 'required_if:has_consultation,1',
-            'signs_or_symptoms_id' => 'required_if:has_consultation,1',
-            'has_consultation'     => [
+            'patient_id'       => 'required_if:form_type,existing',
+            'last_name'        => 'required_if:form_type,new|max:50',
+            'first_name'       => 'required_if:form_type,new|max:50',
+            'doctor_id'        => 'required_if:has_consultation,1',
+            'has_consultation' => [
                 Rule::prohibitedIf(
                     fn () => (int) request('has_consultation') === 0 && (int) request('has_laboratory') === 0,
                 ),
@@ -174,8 +153,7 @@ class FrontDeskController extends Controller
             'first_name.min'         => 'The first name must be at least 3 characters.',
             'first_name.max'         => 'The first name may not be greater than 50 characters.',
 
-            'doctor_id.required_if'         => 'Please select a doctor.',
-            'signs_or_symptoms_id.required' => 'Please select the signs or symptoms.',
+            'doctor_id.required_if' => 'Please select a doctor.',
 
             'has_consultation.prohibited' => 'Please select a medical service.',
 
@@ -246,6 +224,7 @@ class FrontDeskController extends Controller
             'has_laboratory',
             'has_radiology',
             'is_emergency',
+            'is_walk_in',
             'priority_type_ids',
         );
 
@@ -267,7 +246,6 @@ class FrontDeskController extends Controller
 
     public function queueConsultation(
         Request $request,
-        string $patientId,
         string $visitId,
     ): string {
         $consultDetails = $request->only(
@@ -280,20 +258,13 @@ class FrontDeskController extends Controller
             'signs_or_symptoms_id',
             'consult_reason',
         );
-        $vitalSigns = $request->vital_signs;
 
-        $consultationId = app(ConsultationService::class)->storeConsultation($visitId, $patientId, $consultDetails);
-
-        app(PatientVitalSignService::class)->storeVitalSigns($patientId, $consultationId, $vitalSigns);
-
-        return $consultationId;
+        return app(ConsultationService::class)->storeConsultation($visitId, $consultDetails);
     }
 
     public function queueLaboratory(
         Request $request,
-        string $patientId,
         string $visitId,
-        ?string $consultationId,
     ): string {
         $laboratoryDetails = $request->only(
             'laboratory_id',
@@ -301,14 +272,12 @@ class FrontDeskController extends Controller
             'other_test_ids',
         );
 
-        return app(LaboratoryService::class)->storeLaboratory($visitId, $patientId, $consultationId, $laboratoryDetails);
+        return app(LaboratoryService::class)->storeLaboratory($visitId, $laboratoryDetails);
     }
 
     public function queueRadiology(
         Request $request,
-        string $patientId,
         string $visitId,
-        string $consultationId,
     ): string {
         return '';
     }

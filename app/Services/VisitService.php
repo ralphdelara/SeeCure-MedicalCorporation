@@ -23,6 +23,7 @@ class VisitService
             'has_laboratory'   => $visitDetails['has_laboratory'],
             'has_radiology'    => $visitDetails['has_radiology'],
             'is_emergency'     => $visitDetails['is_emergency'],
+            'is_walk_in'     => $visitDetails['is_walk_in'],
             'visit_status_id'  => $visitDetails['visit_status_id'],
             'created_by'       => Auth::id(),
             'last_modified_by' => Auth::id(),
@@ -33,15 +34,21 @@ class VisitService
         return $visit->id;
     }
 
-    public function hasPending(array $arrayData): bool
+    public function getPendingData(array $arrayData): array
     {
         foreach ($arrayData as $data) {
             if (array_key_exists('is_completed', $data) && ! $data['is_completed']) {
-                return true;
+                return [
+                    'id'      => $data['id'],
+                    'pending' => true,
+                ];
             }
         }
 
-        return false;
+        return [
+            'id'      => null,
+            'pending' => false,
+        ];
     }
 
     public function notifyDepartments(Visit $visit): void

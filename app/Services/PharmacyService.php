@@ -11,7 +11,6 @@ use App\Models\Payment;
 use App\Models\Pharmacy;
 use App\Models\PharmacyAudit;
 use App\Models\PharmacyDetail;
-use App\Models\Prescription;
 use App\Models\Visit;
 use Arr;
 use Illuminate\Database\Eloquent\Builder;
@@ -25,13 +24,12 @@ class PharmacyService
         string $path,
     ): array {
         $pharmacyList = Pharmacy::with([
-            'patient' => function ($query) {
+            'visit.patient' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name', 'age', 'gender_id', 'patient_suffix_id');
             },
-            'patient.gender' => function ($query) {
-                $query->select('id', 'name');
-            },
-            'details.prescription',
+            'visit.patient.suffix',
+            'visit.patient.gender',
+            'details',
             'createdBy' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name');
             },
@@ -42,11 +40,10 @@ class PharmacyService
             },
             'lastModifiedBy.professions',
             'lastModifiedBy.specialties',
-            'visit',
         ]);
 
         if (! empty($keyword)) {
-            $pharmacyList = $pharmacyList->whereHas('patient', function ($query) use ($keyword) {
+            $pharmacyList = $pharmacyList->whereHas('visit.patient', function ($query) use ($keyword) {
                 /** @var Builder|Patient $query */
                 $query->whereBlind('last_name_index', 'last_name_index', strtolower($keyword))
                     ->orWhereBlind('first_name_index', 'first_name_index', strtolower($keyword))
@@ -57,10 +54,9 @@ class PharmacyService
         if ($status === 'completed') {
             $pharmacyList = $pharmacyList->where('is_completed', true);
         } else {
-            $pharmacyList = $pharmacyList->whereHas('visit', function ($query) {
-                $query->where('visit_status_id', VisitStatusEnum::IN_PHARMACY)
-                    ->where('is_completed', false);
-            });
+            $pharmacyList = $pharmacyList->where('is_completed', false);
+            // removed ->where('visit_status_id', VisitStatusEnum::IN_PHARMACY)
+            // to show all pending patients, patient can choose not to purchase medicine
         }
 
         $pharmacyList = $pharmacyList->orderBy('created_at')->paginate(50)
@@ -97,14 +93,18 @@ class PharmacyService
         abortIfInvalidUuid($pharmacyId);
 
         $pharmacy = Pharmacy::with([
-            'patient' => function ($query) {
+            'visit',
+            'visit.consultation' => function ($query) {
+                $query->select('id', 'visit_id');
+            },
+            'visit.laboratory',
+            'visit.radiology',
+            'visit.patient' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name', 'age', 'gender_id', 'patient_suffix_id');
             },
-            'patient.gender' => function ($query) {
-                $query->select('id', 'name');
-            },
+            'visit.patient.suffix',
+            'visit.patient.gender',
             'details',
-            'details.prescription',
             'details.createdBy' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name');
             },
@@ -115,14 +115,6 @@ class PharmacyService
             },
             'details.lastModifiedBy.professions',
             'details.lastModifiedBy.specialties',
-            'visit' => function ($query) {
-                $query->select('id');
-            },
-            'visit.consultation' => function ($query) {
-                $query->select('id', 'visit_id');
-            },
-            'visit.laboratory',
-            'visit.radiology',
         ])->orderBy(
             PharmacyDetail::select('created_at')->whereColumn('pharmacy_details.id', 'pharmacy.id'),
         )->find($pharmacyId);
@@ -139,44 +131,90 @@ class PharmacyService
         return $pharmacy;
     }
 
-    public function storePharmacy(
-        string $patientId,
-        string $visitId,
-        string $consultationId,
-        string $billingId,
-    ): string {
+    public function storePharmacy(Visit $visit, array $prescriptions): ?string
+    {
+        if (empty($prescriptions) || isAllNull(array_column($prescriptions, 'inventory_id'))) {
+            return null;
+        }
+
+        if (Pharmacy::where('visit_id', $visit->id)->count() > 0) {
+            abort(409);
+        }
+
         $pharmacy = Pharmacy::create([
-            'patient_id'       => $patientId,
-            'visit_id'         => $visitId,
-            'consultation_id'  => $consultationId,
-            'billing_id'       => $billingId,
+            'visit_id'         => $visit->id,
             'created_by'       => Auth::id(),
             'last_modified_by' => Auth::id(),
         ]);
 
-        $prescriptions = Prescription::with('createdBy', 'lastModifiedBy')
-            ->where('consultation_id', $consultationId)->get();
+        $totalCostPrice = 0;
+        $totalTotalPrice = 0;
+        $totalDiscount = 0;
+        $totalTaxAmount = 0;
+        $totalNettPrice = 0;
+        $totalQuantity = 0;
         $pharmacyDetails = [];
+        $inventoryIds = array_column($prescriptions, 'inventory_id');
+        $inventoryPrices = app(InventoryService::class)->getPrices($inventoryIds);
 
         foreach ($prescriptions as $prescription) {
+            $quantity = $prescription['quantity'];
+
+            $costPrice = $prescription['inventory_id'] ? $inventoryPrices[$prescription['inventory_id']]['selling_price_vat_exclusive'] : 0;
+            $totalPrice = $costPrice * $quantity;
+            $taxPercent = $prescription['inventory_id'] ? $inventoryPrices[$prescription['inventory_id']]['vat_percent'] : 0;
+            $taxAmount = $totalPrice * ($taxPercent / 100);
+            $nettPrice = $totalPrice + $taxAmount;
+
+            // Dont add prescription record if inventory_id is null it means its outside drug
+            if (empty($prescription['inventory_id'])) {
+                continue;
+            }
+
             $pharmacyDetails[] = [
-                'pharmacy_id'           => $pharmacy->id,
-                'prescription_id'       => $prescription->id,
-                'prescription_quantity' => $prescription->quantity,
-                'pharmacy_quantity'     => $prescription->quantity,
-                'created_by'            => $prescription->created_by,
-                'last_modified_by'      => $prescription->last_modified_by,
+                'pharmacy_id'      => $pharmacy->id,
+                'name'             => $prescription['inventory_name'],
+                'cost_price'       => $costPrice,
+                'quantity'         => $quantity,
+                'total_price'      => $totalPrice,
+                'tax_percent'      => $taxPercent,
+                'tax_amount'       => $taxAmount,
+                'nett_price'       => $nettPrice,
+                'created_by'       => Auth::id(),
+                'last_modified_by' => Auth::id(),
             ];
+
+            $totalCostPrice += $costPrice;
+            $totalTotalPrice += $totalPrice;
+            $totalDiscount += 0;
+            $totalTaxAmount += $taxAmount;
+            $totalNettPrice += $nettPrice;
+            $totalQuantity += $quantity;
         }
 
+        $pharmacy->update([
+            'total_cost_price' => $totalCostPrice,
+            'total_quantity'   => $totalQuantity,
+            'total_price'      => $totalTotalPrice,
+            'total_discount'   => $totalDiscount,
+            'total_tax'        => $totalTaxAmount,
+            'total_nett_price' => $totalNettPrice,
+        ]);
+
         PharmacyDetail::fillAndInsert($pharmacyDetails);
+
+        // commented for now to prevent changing visit status to pharmacy
+        /*
+        $visit->update([
+            'visit_status_id' => VisitStatusEnum::IN_PHARMACY,
+        ]);*/
 
         return $pharmacy->id;
     }
 
-    public function completePharmacy(string $id)
+    public function completePharmacy(string $id): void
     {
-        $pharmacy = Pharmacy::with('billing', 'details.prescription')->find($id);
+        $pharmacy = Pharmacy::find($id);
 
         if ($pharmacy->is_completed) {
             abort(404);
@@ -186,22 +224,55 @@ class PharmacyService
             'is_completed' => true,
         ]);
 
-        // move to cashier
-        Visit::find($pharmacy->visit->id)->update([
-            'visit_status_id' => VisitStatusEnum::IN_CASHIER,
-        ]);
-
-        app(CashierService::class)->storeCashierDetails($pharmacy->billing, $pharmacy->details->toArray());
+        // create cashier data for payments
+        app(CashierService::class)->storeCashier(
+            visitId: $pharmacy->visit_id,
+            pharmacyId: $pharmacy->id,
+        );
     }
 
     public function updateDetails(array $details)
     {
-        unset($details['id']);
+        $id = $details['id'];
+        $totalCostPrice = $details['total_cost_price'];
+        $totalQuantity = $details['total_quantity'];
+        $totalPrice = $details['total_price'];
+        $totalDiscount = $details['total_discount'];
+        $totalNettPrice = $details['total_nett_price'];
+
+        unset(
+            $details['id'],
+            $details['total_cost_price'],
+            $details['total_quantity'],
+            $details['total_price'],
+            $details['total_discount'],
+            $details['total_nett_price'],
+        );
+
+        Pharmacy::find($id)->update([
+            'total_cost_price' => $totalCostPrice,
+            'total_quantity'   => $totalQuantity,
+            'total_price'      => $totalPrice,
+            'total_discount'   => $totalDiscount,
+            'total_tax'        => $totalNettPrice - ($totalPrice - $totalDiscount),
+            'total_nett_price' => $totalNettPrice,
+        ]);
 
         foreach ($details as $detailId => $field) {
+
+            $discountTypeId = $field['discount_type_id'] !== 0
+                ? $field['discount_type_id']
+                : null;
+
             PharmacyDetail::find($detailId)->update([
-                'pharmacy_quantity' => $field['pharmacy_quantity'],
-                'last_modified_by'  => Auth::id(),
+                'cost_price'       => $field['cost_price'],
+                'total_price'      => $field['total_price'],
+                'quantity'         => $field['quantity'],
+                'discount'         => $field['discount'],
+                'discount_type_id' => $discountTypeId,
+                'tax_percent'      => $field['tax_percent'],
+                'tax_amount'       => $field['nett_price'] - ($field['total_price'] - $field['discount']),
+                'nett_price'       => $field['nett_price'],
             ]);
         }
     }

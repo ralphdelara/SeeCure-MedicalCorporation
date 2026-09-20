@@ -57,7 +57,6 @@ const NotifyDoctor = () => {
         echo.channel('consultation').listen(
             'NotifyDoctor',
             (e: { name: string; message: string; count: number;}) => {
-                console.log(e.message);
                 // Fire the audio sound effect
                 playSound();
 

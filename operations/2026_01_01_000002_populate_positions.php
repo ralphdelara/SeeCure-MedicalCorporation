@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\PositionEnum;
 use App\Models\Position;
 use TimoKoerber\LaravelOneTimeOperations\OneTimeOperation;
 
@@ -25,31 +26,6 @@ return new class extends OneTimeOperation
      */
     public function process(): void
     {
-        Position::fillAndInsert([
-            // Admin
-            ['name' => 'Head of Admin'],
-            ['name' => 'Admin Aide'],
-
-            // Finance
-            ['name' => 'Head of Finance'],
-            ['name' => 'Accountant'],
-            ['name' => 'Finance Officer'],
-
-            // Inventory
-            ['name' => 'General Practitioner'],
-            ['name' => 'Pharmacist'],
-            ['name' => 'Inventory Assistant'],
-
-            // Laboratory
-            ['name' => 'Head of Laboratory'],
-            ['name' => 'Medical Technologist Supervisor'],
-            ['name' => 'Medical Technologist'],
-            ['name' => 'Laboratory Aide'],
-
-            // IT
-            ['name' => 'IT Software'],
-            ['name' => 'Bot'],
-            ['name' => 'Encoder'],
-        ]);
+        Position::fillAndInsert(PositionEnum::getArrayList());
     }
 };

@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\User;
-use App\Models\UserProfession;
 use TimoKoerber\LaravelOneTimeOperations\OneTimeOperation;
 
 return new class extends OneTimeOperation
@@ -33,7 +32,7 @@ return new class extends OneTimeOperation
             'password'         => Hash::make('system_pass'),
             'gender_id'        => 4, // Unknown
             'status'           => true,
-            'department_id'    => 4, // IT
+            'department_id'    => 1, // Admin
             'position_id'      => 14, // Bot
             'first_name_index' => 'SYSTEM',
             'last_name_index'  => 'USER',
@@ -156,19 +155,19 @@ return new class extends OneTimeOperation
 
         foreach ($firstNames as $key => $data) {
             User::create([
-                'username' => $userNames[$key],
-                'password' => Hash::make($userNames[$key]),
-                'last_name' => $lastNames[$key],
-                'first_name' => $data,
-                'middle_name' => $middleNames[$key],
+                'username'         => $userNames[$key],
+                'password'         => Hash::make($userNames[$key]),
+                'last_name'        => $lastNames[$key],
+                'first_name'       => $data,
+                'middle_name'      => $middleNames[$key],
                 'first_name_index' => $data,
                 'last_name_index'  => $lastNames[$key],
                 'username_index'   => $userNames[$key],
-                'department_id' => 1, // Admin
-                'position_id' => 1,
-            'status'           => true,
-                'created_by' => $user->id, // System User
-                'last_modified_by' => $user->id // System User
+                'department_id'    => 1, // Admin
+                'position_id'      => 1,
+                'status'           => true,
+                'created_by'       => $user->id, // System User
+                'last_modified_by' => $user->id, // System User
             ]);
         }
     }

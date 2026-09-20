@@ -31,7 +31,7 @@ class LogPharmacySave implements ShouldQueue
         }
 
         PharmacyAudit::create([
-            'pharmacy_id' => $pharmacy->id,
+            'pharmacy_id'   => $pharmacy->id,
             'audit_type_id' => $type === 'created' ? AuditTypeEnum::ADD : AuditTypeEnum::UPDATE,
             'data'          => json_encode($data),
             'created_by'    => Auth::id(),
@@ -56,7 +56,7 @@ class LogPharmacySave implements ShouldQueue
         $fields = [];
 
         foreach ($savedFields as $field => $newValue) {
-            $oldValue = $originalFields[$field];
+            $oldValue = $originalFields[$field] ?? '';
 
             if ($pharmacy->hasCast($field, 'encrypted')) {
                 try {

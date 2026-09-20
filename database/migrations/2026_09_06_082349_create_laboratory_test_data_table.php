@@ -17,7 +17,6 @@ return new class extends Migration
             $table->foreignId('laboratory_package_id')->nullable()->constrained();
             $table->foreignId('laboratory_type_id')->constrained();
             $table->foreignId('laboratory_test_id')->constrained();
-            $table->text('remarks')->nullable();
             $table->foreignUuid('created_by')->constrained('users', 'id');
             $table->foreignUuid('last_modified_by')->nullable()->constrained('users', 'id');
             $table->timestamps();

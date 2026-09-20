@@ -1,11 +1,15 @@
 import { Input } from '@/components/ui/input';
 import { Fragment, useEffect, useState } from 'react';
 import { useForm, usePage } from '@inertiajs/react';
-import { formSubmitResponse } from '@/lib/utils';
+import { formSubmitResponse, printDocument } from '@/lib/utils';
 import React from 'react';
 import SaveButton from './save-button';
 import { updateDetails } from '@/actions/App/Http/Controllers/LaboratoryController';
 import DetailsTestFields, { TestFieldProps } from './details-test-fields';
+import { IconFlask } from '@tabler/icons-react';
+import { Button } from '@/components/ui/button';
+import { Select } from '@/components/ui/select';
+import DetailsRemarks from './details-remarks';
 
 interface InertiaProps {
     laboratoryDetails: {
@@ -35,8 +39,14 @@ const Details = ({
     dataFields: object;
     setDataFields: React.Dispatch<React.SetStateAction<{}>>;
 }) => {
-    const { laboratoryDetails } = usePage().props as unknown as InertiaProps;
-    const { patch, setData } = useForm();
+    const { laboratoryDetails, staffOptions } = usePage().props as unknown as InertiaProps;
+    const { data, patch, setData } = useForm({
+        id: laboratoryDetails.id,
+        performed_by: laboratoryDetails.performed_by?.id ?? '',
+        date_performed: new Date(laboratoryDetails.date_performed ?? '').toLocaleDateString(
+            'sv-SE',
+        ),
+    });
 
     const submitDetails = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -46,19 +56,23 @@ const Details = ({
         });
     };
 
-    const changeFieldValue = (value: string, fieldId: string) => {
-        let fields: Record<string, any> = {
-            ...dataFields,
-        };
-        fields[fieldId] = value;
-
-        setDataFields(fields);
-    };
-
     useEffect(() => {
-        setData({ ...dataFields, id: laboratoryDetails.id });
+        // Clean dataFields to turn any accidental 'undefined' into empty strings
+        const cleanFields = Object.fromEntries(
+            Object.entries(dataFields ?? {}).map(([key, val]) => [key, val ?? '']),
+        );
+
+        // Overwrite state, but explicitly preserve and protect your lab details
+        setData({
+            ...cleanFields,
+            id: laboratoryDetails.id ?? '',
+            performed_by: laboratoryDetails.performed_by?.id ?? '',
+            date_performed: laboratoryDetails.date_performed
+                ? new Date(laboratoryDetails.date_performed).toLocaleDateString('sv-SE')
+                : '',
+        });
     }, [dataFields]);
-    console.log(laboratoryDetails.test_data);
+
     return (
         <>
             <div className={'tab-content mt-3' + (!showTab ? ' hidden' : '')}>
@@ -67,8 +81,41 @@ const Details = ({
                         <div className="me-4">
                             <SaveButton type="Details" isDirty={false} />
                         </div>
+                        <div className="me-5 text-right">
+                            <Button
+                                size="lg"
+                                type="button"
+                                onClick={() => printDocument('laboratory', laboratoryDetails.id)}
+                            >
+                                <IconFlask />
+                                Print Laboratory Results
+                            </Button>
+                        </div>
                         <div className="card border shadow-sm">
                             <div className="card-body">
+                                <div className="d-flex justify-content-end">
+                                    <h5 className="me-1 mt-2">Performed By</h5>
+                                    <div className="me-2">
+                                        <Select
+                                            options={staffOptions}
+                                            type=""
+                                            value={data.performed_by}
+                                            onChange={(e) =>
+                                                setData('performed_by', e.target.value)
+                                            }
+                                        />
+                                    </div>
+                                    <h5 className="me-1 mt-2">Date Performed</h5>
+                                    <div className="">
+                                        <Input
+                                            type="date"
+                                            value={data.date_performed}
+                                            onChange={(e) =>
+                                                setData('date_performed', e.target.value)
+                                            }
+                                        />
+                                    </div>
+                                </div>
                                 {laboratoryDetails.test_data.map((item, index) => (
                                     <Fragment key={'type-' + index}>
                                         <h4 className="fw-bolder">{item.type}</h4>
@@ -90,6 +137,21 @@ const Details = ({
                                                                 setDataFields={setDataFields}
                                                             />
                                                             <div className="col-md-12"></div>
+                                                            {item.type_id === 2 &&
+                                                                [
+                                                                    'Urinalysis',
+                                                                    'Fecalysis',
+                                                                ].includes(test.test.name) && (
+                                                                    <DetailsRemarks
+                                                                        typeId={item.type_id}
+                                                                        testId={test.test.id}
+                                                                        fieldName={test.test.name}
+                                                                        dataFields={dataFields}
+                                                                        setDataFields={
+                                                                            setDataFields
+                                                                        }
+                                                                    />
+                                                                )}
                                                         </>
                                                     )}
                                                     {test.fields.length === 1 && (
@@ -115,6 +177,15 @@ const Details = ({
                                                 </Fragment>
                                             ))}
                                         </div>
+                                        {item.type_id !== 2 && (
+                                            <DetailsRemarks
+                                                typeId={item.type_id}
+                                                testId="0"
+                                                fieldName={item.type}
+                                                dataFields={dataFields}
+                                                setDataFields={setDataFields}
+                                            />
+                                        )}
                                     </Fragment>
                                 ))}
                             </div>

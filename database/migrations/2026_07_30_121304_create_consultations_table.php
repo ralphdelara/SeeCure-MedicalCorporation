@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('consultations', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('visit_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('patient_id')->constrained()->cascadeOnDelete();
 
             $table->text('guardian_name')->nullable();
             $table->text('guardian_contact_number')->nullable();

@@ -1,6 +1,8 @@
 <?php
 
+use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Encryption\Encrypter;
 use Illuminate\Support\Str;
 
 if (! function_exists('formatName')) {
@@ -101,11 +103,45 @@ if (! function_exists('getRelatedAuditFields')) {
 
 if (! function_exists('abortIfInvalidUuid')) {
     function abortIfInvalidUuid(
-        string $uuid
+        string $uuid,
     ): void {
         // for postgresql, mysql doesnt need this
         if (! Str::isUuid($uuid)) {
             abort(404);
         }
+    }
+}
+
+if (! function_exists('customEncrypt')) {
+    function customEncrypt(string $string, string $key): string
+    {
+        $encrypter = new Encrypter($key, 'aes-256-cbc');
+
+        // Encrypt without serialization (equivalent to encryptString)
+        return $encrypter->encrypt($string, false);
+    }
+}
+
+if (! function_exists('customDecrypt')) {
+    function customDecrypt(string $string, string $key): string
+    {
+        $cipher = 'AES-256-CBC';
+        $encrypter = new Encrypter($key, config('app.document_validate_cipher'));
+        // Decrypt without serialization (equivalent to decryptString)
+        try {
+            $decrypted = $encrypter->decrypt($string, false);
+
+            return $decrypted;
+        } catch (DecryptException $e) {
+            // Handle the error if the payload was tampered with or the key is wrong
+            abort(404);
+        }
+    }
+}
+
+if (! function_exists('isAllNull')) {
+    function isAllNull(array $array): bool
+    {
+        return count(array_filter($array, fn($value) => $value !== null)) === 0;
     }
 }

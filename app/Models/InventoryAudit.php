@@ -8,6 +8,27 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $id
+ * @property string $inventory_id
+ * @property int $audit_type_id
+ * @property string $data
+ * @property string $created_by
+ * @property CarbonImmutable $created_at
+ * @property-read \App\Models\AuditType $auditType
+ * @property-read \App\Models\User $createdBy
+ * @property-read \App\Models\Inventory $inventory
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryAudit newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryAudit newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryAudit query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryAudit whereAuditTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryAudit whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryAudit whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryAudit whereData($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryAudit whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InventoryAudit whereInventoryId($value)
+ * @mixin \Eloquent
+ */
 #[Fillable([
     'inventory_id',
     'audit_type_id',

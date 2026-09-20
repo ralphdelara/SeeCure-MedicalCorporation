@@ -7,7 +7,6 @@ use App\Models\DiscountType;
 use App\Models\Payment;
 use App\Models\PaymentMethod;
 use App\Services\CashierService;
-use App\Services\PatientService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -31,7 +30,7 @@ class CashierController extends Controller
     public function getCashierDetails(Request $request, string $cashierId): Response
     {
         $cashierDetails = app(CashierService::class)->getCashierDetails($cashierId);
-        $patientDetails = app(PatientService::class)->getPatientDetails($cashierDetails['patient_id']);
+        $patientDetails = $cashierDetails['visit']['patient'];
         $discountType = DiscountType::all();
         $paymentMethodOptions = PaymentMethod::all();
         $paymentDetails = Payment::where('cashier_id', $cashierId)->get()->first();
@@ -43,13 +42,6 @@ class CashierController extends Controller
             'paymentMethodOptions',
             'paymentDetails',
         ));
-    }
-
-    public function updateDetails(Request $request): void
-    {
-        $details = $request->all();
-
-        app(CashierService::class)->updateDetails($details);
     }
 
     public function deleteCashier(string $id): void
@@ -78,12 +70,22 @@ class CashierController extends Controller
 
         // to refresh usePage props
         return back()->with([
-            'paymentDetails' => app(CashierService::class)->addOrUpdatePayment($paymentDetails)
+            'paymentDetails' => app(CashierService::class)->addOrUpdatePayment($paymentDetails),
         ]);
     }
 
     public function getAuditLog(string $id): array
     {
         return app(CashierService::class)->getAuditLog($id);
+    }
+
+    public function sendBackToBilling(string $billingId): void
+    {
+        app(CashierService::class)->sendBackToBilling($billingId);
+    }
+
+    public function sendBackToPharmacy(string $pharmacyId): void
+    {
+        app(CashierService::class)->sendBackToPharmacy($pharmacyId);
     }
 }

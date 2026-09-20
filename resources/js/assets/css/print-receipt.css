@@ -1,0 +1,26 @@
+@import url('@/assets/css/fonts-ocr-b.css');
+
+:root {
+    /* Define your "Office Theme" variables */
+    --ms-theme-headings: 'OCR-B' !important;
+    --ms-theme-body: 'OCR-B' !important;
+    font-family: 'OCR-B' !important;
+}
+
+table tr td {
+    font-family: 'OCR-B';
+    color: #000;
+    font-size: 9px;
+    letter-spacing: -0.2em;
+}
+
+.print-receipt-details tr td {
+    padding: 3px;
+}
+
+@media print {
+    .page-break {
+        break-before: page; /* Modern standard */
+        page-break-before: always; /* Fallback for older browsers */
+    }
+}

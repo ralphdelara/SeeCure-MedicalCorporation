@@ -9,7 +9,12 @@ interface InertiaProps {
     signsOrSymptoms: Options[];
 }
 
-const SignsOrSymptomsForm = ({ data, setData, errors = {}, checkboxDivSize = 4 }: SignsOrSymptomsFormProps) => {
+const SignsOrSymptomsForm = ({
+    data,
+    setData,
+    errors = {},
+    checkboxDivSize = 4,
+}: SignsOrSymptomsFormProps) => {
     const { signsOrSymptoms } = usePage().props as unknown as InertiaProps;
 
     const updateSignsOrSymptoms = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,11 +35,14 @@ const SignsOrSymptomsForm = ({ data, setData, errors = {}, checkboxDivSize = 4 }
         <section role="tabpanel" className="body current">
             <div className="form-group fs-4">
                 <Label htmlFor="signsOrSymptoms" className="form-label">
-                    <h5 className="fw-bolder">Signs / Symptoms *</h5>
+                    <h5 className="fw-bolder">Signs / Symptoms</h5>
                 </Label>
                 <div className="row">
                     {signsOrSymptoms?.map((item, index) => (
-                        <div className={'col-md-' + checkboxDivSize} key={'signsOrSymptoms-' + index}>
+                        <div
+                            className={'col-md-' + checkboxDivSize}
+                            key={'signsOrSymptoms-' + index}
+                        >
                             <div className="form-check form-check-inline">
                                 <input
                                     className="form-check-input success"

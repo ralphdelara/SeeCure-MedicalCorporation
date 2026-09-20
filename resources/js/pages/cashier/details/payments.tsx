@@ -1,23 +1,21 @@
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
-import { useEffect, useState } from 'react';
 import { useForm, usePage } from '@inertiajs/react';
 import { Options } from '@/types/options';
-import { formatMoney, formSubmitResponse } from '@/lib/utils';
+import { addZeroes, formatMoney, formSubmitResponse, printDocument } from '@/lib/utils';
 import React from 'react';
 import SaveButton from './save-button';
-import { updateDetails } from '@/actions/App/Http/Controllers/CashierController';
-import TableList from '@/components/table';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { IconDeviceFloppy, IconPrinter } from '@tabler/icons-react';
+import {
+    IconDeviceFloppy,
+    IconPrinter,
+} from '@tabler/icons-react';
 import { addOrUpdatePayment } from '@/routes/cashier/details';
 import { toast } from 'react-hot-toast';
 
 interface PaymentDetailsProps {
-    id: string;
     cashier_id: string;
-    patient_id: string;
     visit_id: string;
     payment_id: string;
     payment_method_id: string | number;
@@ -25,8 +23,8 @@ interface PaymentDetailsProps {
     total_amount: string;
     amount_received: string;
     amount_change: string;
-    receipt_sequence_header: string;
-    receipt_sequence: string;
+    transaction_header: string;
+    transaction_no: string;
 }
 
 interface InertiaProps {
@@ -78,22 +76,26 @@ interface InertiaProps {
 const Payments = ({ showTab }: { showTab: boolean }) => {
     const { cashierDetails, paymentDetails, paymentMethodOptions } = usePage()
         .props as unknown as InertiaProps;
+    const { pharmacy, billing } = cashierDetails;
+
+    const paymentData = pharmacy ?? billing;
+    const paymentType = pharmacy ? 'Pharmacy' : 'Billing';
+
+    const totalAmount = paymentDetails?.total_amount ?? paymentData.total_nett_price ?? 0;
 
     const { data, setData, post, isDirty, setDefaults } = useForm<PaymentDetailsProps>({
-        id: '',
+        visit_id: cashierDetails.visit_id,
         cashier_id: cashierDetails.id,
-        patient_id: cashierDetails.patient.id,
-        visit_id: cashierDetails.visit.id,
         payment_id: paymentDetails?.id ?? '',
         payment_method_id: paymentDetails?.payment_method_id ?? 1, // Cash
         reference_number: paymentDetails?.reference_number ?? '',
-        total_amount: cashierDetails.total_nett_price ?? 0,
+        total_amount: totalAmount,
         amount_received: paymentDetails?.amount_received ?? 0,
         amount_change: paymentDetails?.amount_change ?? 0,
-        receipt_sequence: paymentDetails?.receipt_sequence ?? '',
-        receipt_sequence_header: paymentDetails?.receipt_sequence_header ?? '',
+        transaction_no: paymentDetails?.transaction_no ?? '',
+        transaction_header: paymentDetails?.transaction_header ?? '',
     });
-
+    console.log(paymentData);
     const submitDetails = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -107,9 +109,7 @@ const Payments = ({ showTab }: { showTab: boolean }) => {
                     };
                     const paymentDetailsResponse = pageProps.paymentDetails as PaymentDetailsProps;
 
-                    setData('id', paymentDetailsResponse.id);
                     setData('cashier_id', paymentDetailsResponse.cashier_id as keyof typeof data);
-                    setData('patient_id', paymentDetailsResponse.patient_id);
                     setData('visit_id', paymentDetailsResponse.visit_id);
                     setData('payment_id', paymentDetailsResponse.id);
                     setData('payment_method_id', paymentDetailsResponse.payment_method_id);
@@ -130,11 +130,9 @@ const Payments = ({ showTab }: { showTab: boolean }) => {
         setData('amount_received', amountReceived);
     };
 
-    const printReceipt = () => {};
-
     const isPaid = () => {
         if (paymentDetails) {
-            return paymentDetails.receipt_sequence !== '';
+            return paymentDetails.transaction_no !== '';
         }
 
         return false;
@@ -149,7 +147,8 @@ const Payments = ({ showTab }: { showTab: boolean }) => {
                             <SaveButton
                                 type="Payments"
                                 isDirty={isDirty}
-                                hideSaveButton={true}
+                                paymentId={paymentData.id}
+                                paymentType={paymentType}
                                 isPaid={isPaid()}
                             />
                         </div>
@@ -158,22 +157,29 @@ const Payments = ({ showTab }: { showTab: boolean }) => {
                                 <div className="card border shadow-sm">
                                     <div className="card-body">
                                         <div className="d-flex justify-content-between">
-                                            {paymentDetails?.receipt_sequence && (
+                                            {paymentDetails?.transaction_no && (
                                                 <>
                                                     <Button
                                                         size="lg"
                                                         type="button"
-                                                        onClick={() => printReceipt()}
+                                                        onClick={() =>
+                                                            printDocument(
+                                                                'receipt',
+                                                                paymentDetails.id,
+                                                            )
+                                                        }
                                                     >
                                                         <IconPrinter /> Print Receipt
                                                     </Button>
                                                     <h5 className="fs-6 fw-bolder mt-3">
                                                         #{' '}
-                                                        {paymentDetails?.receipt_sequence_header ??
+                                                        {paymentDetails?.transaction_header ??
                                                             '••••••••'}
                                                         -
-                                                        {paymentDetails?.receipt_sequence ??
-                                                            '••••••••'}
+                                                        {addZeroes(
+                                                            paymentDetails?.transaction_no,
+                                                            8,
+                                                        ) ?? '••••••••'}
                                                     </h5>
                                                 </>
                                             )}
@@ -190,17 +196,20 @@ const Payments = ({ showTab }: { showTab: boolean }) => {
                                                         </th>
                                                         <th style={{ textAlign: 'right' }}>Qty</th>
                                                         <th style={{ textAlign: 'right' }}>
-                                                            Total
+                                                            Total Price
                                                         </th>
+                                                        <th style={{ textAlign: 'right' }}>
+                                                            Discount
+                                                        </th>
+                                                        <th style={{ textAlign: 'right' }}>Tax</th>
+                                                        <th style={{ textAlign: 'right' }}>Nett</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {cashierDetails.details.map((item, index) => (
+                                                    {paymentData.details.map((item, index) => (
                                                         <tr key={'payment-details-' + index}>
                                                             <td style={{ width: '300px' }}>
                                                                 {item.name}
-                                                                <br />
-                                                                <small>{item.type.name}</small>
                                                             </td>
                                                             <td style={{ textAlign: 'right' }}>
                                                                 {formatMoney(item.cost_price ?? 0)}
@@ -211,43 +220,48 @@ const Payments = ({ showTab }: { showTab: boolean }) => {
                                                             <td style={{ textAlign: 'right' }}>
                                                                 {formatMoney(item.total_price ?? 0)}
                                                             </td>
+                                                            <td style={{ textAlign: 'right' }}>
+                                                                {formatMoney(item.discount ?? 0)}
+                                                            </td>
+                                                            <td style={{ textAlign: 'right' }}>
+                                                                {formatMoney(item.tax_amount ?? 0)}
+                                                            </td>
+                                                            <td style={{ textAlign: 'right' }}>
+                                                                {formatMoney(item.nett_price ?? 0)}
+                                                            </td>
                                                         </tr>
                                                     ))}
                                                     <tr>
-                                                        <td
-                                                            colSpan={3}
-                                                            style={{ textAlign: 'right' }}
-                                                        >
-                                                            Total Price
+                                                        <td style={{ textAlign: 'right' }}>
+                                                            Total
                                                         </td>
                                                         <td style={{ textAlign: 'right' }}>
                                                             {formatMoney(
-                                                                cashierDetails.total_price,
+                                                                paymentData.total_cost_price ?? 0,
                                                             )}
                                                         </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td
-                                                            colSpan={3}
-                                                            style={{ textAlign: 'right' }}
-                                                        >
-                                                            Total Discount
+                                                        <td style={{ textAlign: 'right' }}>
+                                                            {paymentData.total_quantity ?? 0}
                                                         </td>
                                                         <td style={{ textAlign: 'right' }}>
                                                             {formatMoney(
-                                                                cashierDetails.total_discount,
+                                                                paymentData.total_price ?? 0,
                                                             )}
                                                         </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td
-                                                            colSpan={3}
-                                                            style={{ textAlign: 'right' }}
-                                                        >
-                                                            Total Tax
+                                                        <td style={{ textAlign: 'right' }}>
+                                                            {formatMoney(
+                                                                paymentData.total_discount ?? 0,
+                                                            )}
                                                         </td>
                                                         <td style={{ textAlign: 'right' }}>
-                                                            {formatMoney(cashierDetails.total_tax)}
+                                                            {formatMoney(
+                                                                paymentData.total_tax ?? 0,
+                                                            )}
+                                                        </td>
+                                                        <td style={{ textAlign: 'right' }}>
+                                                            {formatMoney(
+                                                                paymentData.total_nett_price ?? 0,
+                                                            )}
                                                         </td>
                                                     </tr>
                                                     <tr
@@ -257,14 +271,14 @@ const Payments = ({ showTab }: { showTab: boolean }) => {
                                                         }}
                                                     >
                                                         <td
-                                                            colSpan={3}
+                                                            colSpan={6}
                                                             style={{ textAlign: 'right' }}
                                                         >
                                                             Pay
                                                         </td>
                                                         <td style={{ textAlign: 'right' }}>
                                                             {formatMoney(
-                                                                cashierDetails.total_nett_price,
+                                                                paymentData.total_nett_price,
                                                             )}
                                                         </td>
                                                     </tr>
@@ -280,7 +294,7 @@ const Payments = ({ showTab }: { showTab: boolean }) => {
                                         <div className="form-group text-center">
                                             <h5 className="fs-7">Total Amount</h5>
                                             <h5 className="fs-11 fw-bolder">
-                                                {formatMoney(cashierDetails.total_nett_price)}
+                                                {formatMoney(data.total_amount)}
                                             </h5>
                                         </div>
                                         <div className="form-group text-center">
@@ -312,7 +326,7 @@ const Payments = ({ showTab }: { showTab: boolean }) => {
                                                         </span>
                                                         <Input
                                                             name="amount_received"
-                                                            type="number"
+                                                            type="text"
                                                             value={data.amount_received}
                                                             onChange={(e) =>
                                                                 computeChange(e.target.value)

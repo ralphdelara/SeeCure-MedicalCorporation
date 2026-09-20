@@ -1,0 +1,7 @@
+@font-face {
+  font-family: 'OCR-B';
+  src: url('@/assets/fonts/ocr-b/OCR-B.otf') format('opentype'),
+       url('@/assets/fonts/ocr-b/OCR-B.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}

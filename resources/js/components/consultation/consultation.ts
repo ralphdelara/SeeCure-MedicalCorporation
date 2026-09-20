@@ -1,4 +1,4 @@
-import { SignsOrSymptomsDetailsFormProps, SignsOrSymptomsFormProps } from "./signs-or-symptoms";
+import { SignsOrSymptomsDetailsFormProps, SignsOrSymptomsFormProps } from './signs-or-symptoms';
 
 export interface ConsultationDetailsFormProps extends SignsOrSymptomsDetailsFormProps {
     guardian_name: string;

@@ -13,10 +13,14 @@ return new class extends Migration
     {
         Schema::create('pharmacy', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('patient_id')->constrained()->cascadeOnDelete();
             $table->foreignUuid('visit_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('consultation_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('billing_id')->constrained('billing', 'id')->cascadeOnDelete();
+
+            $table->decimal('total_cost_price', 12, 2)->nullable();
+            $table->decimal('total_quantity', 12)->nullable();
+            $table->decimal('total_price', 12, 2)->nullable();
+            $table->decimal('total_discount', 12, 2)->nullable();
+            $table->decimal('total_tax', 12, 2)->nullable();
+            $table->decimal('total_nett_price', 12, 2)->nullable();
 
             $table->boolean('is_completed')->default(false);
 

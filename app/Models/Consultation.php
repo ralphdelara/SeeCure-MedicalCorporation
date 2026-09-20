@@ -66,11 +66,13 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereFollowUpDate($value)
  * @property bool $is_completed
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereIsCompleted($value)
+ * @property string|null $consult_reason
+ * @property-read int|null $laboratory_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereConsultReason($value)
  * @mixin \Eloquent
  */
 #[Fillable([
     'visit_id',
-    'patient_id',
     'guardian_name',
     'guardian_contact_number',
     'guardian_email',
@@ -99,11 +101,6 @@ class Consultation extends Model
     public function visit(): BelongsTo
     {
         return $this->belongsTo(Visit::class, 'visit_id', 'id');
-    }
-
-    public function patient(): BelongsTo
-    {
-        return $this->belongsTo(Patient::class, 'patient_id', 'id');
     }
 
     public function patientVitalSign(): HasMany
@@ -143,7 +140,7 @@ class Consultation extends Model
 
     public function diagnosis(): HasOne
     {
-        return $this->hasOne(ConsultationDiagnosis::class);
+        return $this->hasOne(Diagnosis::class);
     }
 
     public function prescriptions(): HasMany

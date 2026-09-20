@@ -2,8 +2,6 @@
 
 namespace App\Services;
 
-use App\Enums\BillingTypeEnum;
-use App\Enums\CashierTypeEnum;
 use App\Enums\PaymentMethodEnum;
 use App\Enums\PaymentStatusEnum;
 use App\Enums\VisitStatusEnum;
@@ -11,16 +9,12 @@ use App\Events\CashierViewed;
 use App\Models\Billing;
 use App\Models\Cashier;
 use App\Models\CashierAudit;
-use App\Models\CashierDetail;
-use App\Models\Inventory;
 use App\Models\Patient;
 use App\Models\Payment;
 use App\Models\Pharmacy;
-use App\Models\PharmacyDetail;
 use App\Models\Visit;
 use Arr;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 
 class CashierService
@@ -31,13 +25,13 @@ class CashierService
         string $path,
     ): array {
         $cashierList = Cashier::with([
-            'patient' => function ($query) {
+            'visit.patient' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name', 'age', 'gender_id', 'patient_suffix_id');
             },
-            'patient.gender' => function ($query) {
-                $query->select('id', 'name');
-            },
-            'details',
+            'visit.patient.suffix',
+            'visit.patient.gender',
+            'billing',
+            'pharmacy',
             'createdBy' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name');
             },
@@ -48,11 +42,10 @@ class CashierService
             },
             'lastModifiedBy.professions',
             'lastModifiedBy.specialties',
-            'visit',
         ]);
 
         if (! empty($keyword)) {
-            $cashierList = $cashierList->whereHas('patient', function ($query) use ($keyword) {
+            $cashierList = $cashierList->whereHas('visit.patient', function ($query) use ($keyword) {
                 /** @var Builder|Patient $query */
                 $query->whereBlind('last_name_index', 'last_name_index', strtolower($keyword))
                     ->orWhereBlind('first_name_index', 'first_name_index', strtolower($keyword))
@@ -84,147 +77,23 @@ class CashierService
     }
 
     public function storeCashier(
-        string $patientId,
         string $visitId,
-        ?string $billingId,
+        ?string $billingId = null,
+        ?string $pharmacyId = null,
     ): string {
         $cashier = Cashier::create([
-            'patient_id'       => $patientId,
             'visit_id'         => $visitId,
             'billing_id'       => $billingId,
+            'pharmacy_id'      => $pharmacyId,
             'created_by'       => Auth::id(),
             'last_modified_by' => Auth::id(),
         ]);
 
-        return $cashier->id;
-    }
-
-    public function storeCashierDetails(Billing $billing, ?array $pharmacyDetails = null): void
-    {
-        $pharmacyQuantity = [];
-
-        if (!empty($pharmacyDetails)) {
-            $prescriptionIds = array_column(array_column($pharmacyDetails, 'prescription'), 'id');
-            $pharmacyQuantity = array_column($pharmacyDetails, 'pharmacy_quantity');
-            $pharmacyQuantity = array_combine($prescriptionIds, $pharmacyQuantity);
-        }
-
-        // to prevent cashier details duplicate
-        if (! empty($billing->cashier?->details->toArray())) {
-            return;
-        }
-
-        $totalCostPrice = 0;
-        $totalTotalPrice = 0;
-        $totalDiscount = 0;
-        $totalTaxAmount = 0;
-        $totalNettPrice = 0;
-
-        $consultation = $billing->visit->consultation;
-
-        if (! empty($consultation)) {
-            $consultation->consultationId;
-
-            $prescriptions = $consultation->prescriptions;
-            $inventoryIds = $prescriptions->pluck('inventory_id')->toArray();
-            $inventoryPrices = array_column(Inventory::select(
-                'id',
-                'selling_price_vat_exclusive',
-                'selling_price_vat_inclusive',
-                'vat_amount',
-                'vat_percent',
-            )->whereIn('id', $inventoryIds)->get()->toArray(), null, 'id');
-
-            $prescriptionData = [];
-
-            foreach ($prescriptions as $prescription) {
-                $quantity = $prescription->quantity;
-
-                if (array_key_exists($prescription->id, $pharmacyQuantity)) {
-                    // use the quantity defined by pharmacy
-                    $quantity = $pharmacyQuantity[$prescription->id];
-                }
-
-                $costPrice = $prescription->inventory_id ? $inventoryPrices[$prescription->inventory_id]['selling_price_vat_exclusive'] : 0;
-                $totalPrice = $costPrice * $quantity;
-                $taxPercent = $prescription->inventory_id ? $inventoryPrices[$prescription->inventory_id]['vat_percent'] : 0;
-                $taxAmount = $totalPrice * ($taxPercent / 100);
-                $nettPrice = $totalPrice + $taxAmount;
-
-                if (empty($prescription->inventory_id)) {
-                    continue;
-                }
-
-                $prescriptionData[] = [
-                    'cashier_id'       => $billing->cashier->id,
-                    'cashier_type_id'  => CashierTypeEnum::PRESCRIPTION,
-                    'name'             => $prescription->inventory_name,
-                    'cost_price'       => $costPrice,
-                    'quantity'         => $quantity,
-                    'total_price'      => $totalPrice,
-                    'tax_percent'      => $taxPercent,
-                    'tax_amount'       => $taxAmount,
-                    'nett_price'       => $nettPrice,
-                    'created_by'       => Auth::id(),
-                    'last_modified_by' => Auth::id(),
-                ];
-
-                $totalCostPrice += $costPrice;
-                $totalTotalPrice += $totalPrice;
-                $totalDiscount += 0;
-                $totalTaxAmount += $taxAmount;
-                $totalNettPrice += $nettPrice;
-            }
-
-            CashierDetail::fillAndInsert($prescriptionData);
-        }
-
-        if (! empty($billing)) {
-            $billingDetails = $billing->details;
-            $billingDetailsData = [];
-
-            foreach ($billingDetails as $detail) {
-                $cashierType = match (BillingTypeEnum::tryFrom($detail->billing_type_id)) {
-                    BillingTypeEnum::CONSULTATION => CashierTypeEnum::CONSULTATION,
-                    BillingTypeEnum::LABORATORY   => CashierTypeEnum::LABORATORY,
-                    BillingTypeEnum::RADIOLOGY    => CashierTypeEnum::RADIOLOGY,
-                };
-
-                $billingDetailsData[] = [
-                    'cashier_id'       => $billing->cashier->id,
-                    'cashier_type_id'  => $cashierType,
-                    'name'             => $detail->name,
-                    'cost_price'       => $detail->price,
-                    'quantity'         => 1,
-                    'total_price'      => $detail->price,
-                    'discount'         => $detail->discount,
-                    'discount_type_id' => $detail->discount_type_id,
-                    'tax_percent'      => $detail->tax_percent,
-                    'tax_amount'       => $detail->tax_amount,
-                    'nett_price'       => $detail->nett_price,
-                    'created_by'       => Auth::id(),
-                    'last_modified_by' => Auth::id(),
-                ];
-
-                $totalCostPrice += $detail->price;
-                $totalTotalPrice += $detail->price;
-                $totalDiscount += $detail->discount;
-                $totalTaxAmount += $detail->tax_amount;
-                $totalNettPrice += $detail->nett_price;
-            }
-
-            CashierDetail::fillAndInsert($billingDetailsData);
-        }
-
-        // update total price in cashier table
-        Cashier::find($billing->cashier->id)->update([
-            'total_cost_price' => $totalCostPrice,
-            'total_price'      => $totalTotalPrice,
-            'total_discount'   => $totalDiscount,
-            'total_tax'        => $totalTaxAmount,
-            'total_nett_price' => $totalNettPrice,
+        Visit::find($visitId)->update([
+            'visit_status_id' => VisitStatusEnum::IN_CASHIER,
         ]);
 
+        return $cashier->id;
     }
 
     public function getSmallPendingCashierList(): array
@@ -248,35 +117,17 @@ class CashierService
         abortIfInvalidUuid($cashierId);
 
         $cashier = Cashier::with([
-            'patient' => function ($query) {
+            'payment',
+            'visit.patient' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name', 'age', 'gender_id', 'patient_suffix_id');
             },
-            'patient.gender' => function ($query) {
-                $query->select('id', 'name');
-            },
-            'details',
-            'details.type',
-            'details.createdBy' => function ($query) {
-                $query->select('id', 'first_name', 'middle_name', 'last_name');
-            },
-            'details.createdBy.professions',
-            'details.createdBy.specialties',
-            'details.lastModifiedBy' => function ($query) {
-                $query->select('id', 'first_name', 'middle_name', 'last_name');
-            },
-            'details.lastModifiedBy.professions',
-            'details.lastModifiedBy.specialties',
-            'visit' => function ($query) {
-                $query->select('id');
-            },
-            'visit.consultation' => function ($query) {
-                $query->select('id', 'visit_id');
-            },
+            'visit.patient.suffix',
+            'visit.patient.gender',
             'visit.laboratory',
             'visit.radiology',
-        ])->orderBy(
-            CashierDetail::select('created_at')->whereColumn('cashier_details.id', 'cashier.id'),
-        )->find($cashierId);
+            'billing.details',
+            'pharmacy.details',
+        ])->find($cashierId);
 
         if (empty($cashier)) {
             abort(404);
@@ -284,11 +135,16 @@ class CashierService
 
         CashierViewed::dispatch($cashier);
 
+        $lab = app(VisitService::class)->getPendingData($cashier->visit->laboratory?->toArray() ?? []);
+        $radio = app(VisitService::class)->getPendingData($cashier->visit->radiology?->toArray() ?? []);
+
         $moveToText = 'Completed';
 
-        if (app(VisitService::class)->hasPending($cashier->visit->laboratory?->toArray() ?? [])) {
+        if ($lab['pending']) {
+            // move to lab if has pending laboratory
             $moveToText = 'Laboratory';
-        } elseif (app(VisitService::class)->hasPending($cashier->visit->radiology?->toArray() ?? [])) {
+        } elseif ($radio['pending']) {
+            // move to radio if has pending radiology
             $moveToText = 'Radiology';
         }
 
@@ -311,17 +167,16 @@ class CashierService
             abort(404);
         }
 
-        $cashier->update([
-            'is_completed' => true,
-        ]);
+        $lab = app(VisitService::class)->getPendingData($cashier->visit->laboratory?->toArray() ?? []);
+        $radio = app(VisitService::class)->getPendingData($cashier->radiology?->toArray() ?? []);
 
-        if (app(VisitService::class)->hasPending($cashier->visit->laboratory?->toArray() ?? [])) {
-            // move to laboratory
+        if ($lab['pending']) {
+            // move to lab if has pending lab requests
             Visit::find($cashier->visit->id)->update([
                 'visit_status_id' => VisitStatusEnum::IN_LABORATORY,
             ]);
-        } elseif (app(VisitService::class)->hasPending($cashier->visit->radiology?->toArray() ?? [])) {
-            // move to radiology
+        } elseif ($radio['pending']) {
+            // move to radio if has pending radio requests
             Visit::find($cashier->visit->id)->update([
                 'visit_status_id' => VisitStatusEnum::IN_RADIOLOGY,
             ]);
@@ -331,44 +186,10 @@ class CashierService
                 'visit_status_id' => VisitStatusEnum::COMPLETED,
             ]);
         }
-    }
 
-    public function updateDetails(array $details)
-    {
-        $id = $details['id'];
-        $totalCostPrice = $details['total_cost_price'];
-        $totalPrice = $details['total_price'];
-        $totalDiscount = $details['total_discount'];
-        $totalNettPrice = $details['total_nett_price'];
-
-        unset(
-            $details['id'],
-            $details['total_cost_price'],
-            $details['total_price'],
-            $details['total_discount'],
-            $details['total_nett_price'],
-        );
-
-        Cashier::find($id)->update([
-            'total_cost_price' => $totalCostPrice,
-            'total_price'      => $totalPrice,
-            'total_discount'   => $totalDiscount,
-            'total_tax_amount' => $totalNettPrice - ($totalPrice - $totalDiscount),
-            'total_nett_price' => $totalNettPrice,
+        $cashier->update([
+            'is_completed' => true,
         ]);
-
-        foreach ($details as $detailId => $field) {
-            CashierDetail::find($detailId)->update([
-                'cost_price'       => $field['cost_price'],
-                'quantity'         => $field['quantity'],
-                'total_price'      => $field['total_price'],
-                'discount'         => $field['discount'],
-                'discount_type_id' => $field['discount_type_id'],
-                'tax_percent'      => $field['tax_percent'],
-                'tax_amount'       => $field['nett_price'] - ($field['total_price'] - $field['discount']),
-                'nett_price'       => $field['nett_price'],
-            ]);
-        }
     }
 
     public function addOrUpdatePayment(array $paymentDetails): array
@@ -384,7 +205,7 @@ class CashierService
         unset($paymentDetails['id']);
 
         if (empty($paymentId)) {
-            $paymentDetails['receipt_sequence_header'] = now()->format('Ymd');
+            $paymentDetails['transaction_header'] = now()->format('Ymd');
             $paymentDetails['payment_status_id'] = PaymentStatusEnum::SUCCESS;
             $paymentDetails['created_by'] = Auth::id();
         } else {
@@ -397,7 +218,7 @@ class CashierService
 
         $paymentDetails['amount_paid'] = $amountReceived > $totalAmount
             ? $totalAmount
-            : $amountReceived - $totalAmount;
+            : $amountReceived;
 
         if ($paymentDetails['payment_method_id'] === PaymentMethodEnum::CASH->value) {
             unset($paymentDetails['reference_number']);
@@ -431,5 +252,41 @@ class CashierService
             ->where('cashier_id', $cashierId)
             ->orderBy('created_at', 'desc')
             ->get()->toArray();
+    }
+
+    public function sendBackToBilling(string $billingId): void
+    {
+        $billing = Billing::with('visit')->find($billingId);
+
+        // move back to billing
+        Visit::find($billing->visit->id)->update([
+            'visit_status_id' => VisitStatusEnum::IN_BILLING,
+        ]);
+
+        // update billing is_completed status to false
+        $billing->update([
+            'is_completed' => false,
+        ]);
+
+        // delete Cashier Details
+        Cashier::whereBillingId($billingId)->delete();
+    }
+
+    public function sendBackToPharmacy(string $pharmacyId): void
+    {
+        $pharmacy = Pharmacy::with('visit')->find($pharmacyId);
+
+        // move back to pharmacy
+        Visit::find($pharmacy->visit->id)->update([
+            'visit_status_id' => VisitStatusEnum::IN_PHARMACY,
+        ]);
+
+        // update pharmacy is_completed status to false
+        $pharmacy->update([
+            'is_completed' => false,
+        ]);
+
+        // delete Cashier Details
+        Cashier::wherePharmacyId($pharmacyId)->delete();
     }
 }

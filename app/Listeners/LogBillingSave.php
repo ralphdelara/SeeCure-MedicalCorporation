@@ -31,7 +31,7 @@ class LogBillingSave implements ShouldQueue
         }
 
         BillingAudit::create([
-            'billing_id' => $billing->id,
+            'billing_id'    => $billing->id,
             'audit_type_id' => $type === 'created' ? AuditTypeEnum::ADD : AuditTypeEnum::UPDATE,
             'data'          => json_encode($data),
             'created_by'    => Auth::id(),
@@ -56,7 +56,7 @@ class LogBillingSave implements ShouldQueue
         $fields = [];
 
         foreach ($savedFields as $field => $newValue) {
-            $oldValue = $originalFields[$field];
+            $oldValue = $originalFields[$field] ?? null;
 
             if ($billing->hasCast($field, 'encrypted')) {
                 try {
