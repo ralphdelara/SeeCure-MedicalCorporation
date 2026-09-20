@@ -83,6 +83,8 @@ class Payment extends Model
 {
     use CorrectTimezone, HasUuids;
 
+    protected $appends = ['created_date'];
+
     protected function casts(): array
     {
         return [
@@ -115,5 +117,10 @@ class Payment extends Model
     public function lastModifiedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'last_modified_by', 'id');
+    }
+
+    public function getCreatedDateAttribute(): string
+    {
+        return $this->created_at->format('m/d/Y');
     }
 }

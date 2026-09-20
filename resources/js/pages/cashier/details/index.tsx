@@ -43,7 +43,7 @@ const CashierDetails = () => {
         { id: 'tab-payments', name: 'Payments', icon: <IconCash /> },
         { id: 'tab-audit-log', name: 'Audit Log', icon: <IconUserCode /> },
     ];
-    const { cashierDetails, patientDetails } = usePage().props as unknown as InertiaProps;
+    const { patientDetails } = usePage().props as unknown as InertiaProps;
 
     useEffect(() => {
         const initTab = getUrlParams('tab', 'tab-details');

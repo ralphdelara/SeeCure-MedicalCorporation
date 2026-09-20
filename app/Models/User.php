@@ -78,6 +78,7 @@ use Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted;
  * @property-read Province|null $province
  * @property-read Collection<int, UserSpecialty> $specialties
  * @property-read int|null $specialties_count
+ *
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()
@@ -116,10 +117,13 @@ use Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereStreet($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUsername($value)
+ *
  * @property string|null $username_index
  * @property-read string|null $age_computed
  * @property-read string|null $full_address
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUsernameIndex($value)
+ *
  * @mixin \Eloquent
  */
 #[Fillable([
@@ -168,7 +172,7 @@ class User extends Authenticatable implements CipherSweetEncrypted
     /** @use HasFactory<UserFactory> */
     use CorrectTimezone, HasFactory, HasUuids, Notifiable, PersonDetails, UsesCipherSweet;
 
-    protected $appends = ['full_name', 'full_address', 'age_computed'];
+    protected $appends = ['full_name', 'full_address', 'age_computed', 'full_name_receipt'];
 
     /**
      * Get the attributes that should be cast.
@@ -207,6 +211,22 @@ class User extends Authenticatable implements CipherSweetEncrypted
     {
         //  Get the base name
         $fullName = $this->last_name.', '.$this->first_name.($this->middle_name ? ' '.$this->middle_name : '');
+
+        // 2. Check if professions are eager-loaded, then extract the names
+        if ($this->relationLoaded('professions')) {
+            $prefix = $this->professions->pluck('prefix')->filter()->implode(', ');
+            $suffix = $this->professions->pluck('suffix')->filter()->implode(', ');
+
+            return $prefix.$fullName.($suffix ? ' '.$suffix : '');
+        }
+
+        return $fullName;
+    }
+
+    public function getFullNameReceiptAttribute(): string
+    {
+        //  Get the base name
+        $fullName = $this->first_name.' '.($this->middle_name ? $this->middle_name.' ' : '').$this->last_name;
 
         // 2. Check if professions are eager-loaded, then extract the names
         if ($this->relationLoaded('professions')) {

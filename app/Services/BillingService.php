@@ -85,7 +85,7 @@ class BillingService
     ): string {
         $billing = Billing::create([
             'visit_id'         => $visitId,
-            'control_header'   => Carbon::now()->format('Ymd'),
+            'transaction_header'   => Carbon::now()->format('Ymd'),
             'created_by'       => Auth::id(),
             'last_modified_by' => Auth::id(),
         ]);

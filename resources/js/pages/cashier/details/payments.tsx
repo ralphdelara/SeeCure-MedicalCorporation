@@ -1,16 +1,16 @@
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
-import { useEffect, useState } from 'react';
 import { useForm, usePage } from '@inertiajs/react';
 import { Options } from '@/types/options';
 import { addZeroes, formatMoney, formSubmitResponse, printDocument } from '@/lib/utils';
 import React from 'react';
 import SaveButton from './save-button';
-import { updateDetails } from '@/actions/App/Http/Controllers/CashierController';
-import TableList from '@/components/table';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { IconDeviceFloppy, IconPrinter } from '@tabler/icons-react';
+import {
+    IconDeviceFloppy,
+    IconPrinter,
+} from '@tabler/icons-react';
 import { addOrUpdatePayment } from '@/routes/cashier/details';
 import { toast } from 'react-hot-toast';
 
@@ -79,6 +79,7 @@ const Payments = ({ showTab }: { showTab: boolean }) => {
     const { pharmacy, billing } = cashierDetails;
 
     const paymentData = pharmacy ?? billing;
+    const paymentType = pharmacy ? 'Pharmacy' : 'Billing';
 
     const totalAmount = paymentDetails?.total_amount ?? paymentData.total_nett_price ?? 0;
 
@@ -146,7 +147,8 @@ const Payments = ({ showTab }: { showTab: boolean }) => {
                             <SaveButton
                                 type="Payments"
                                 isDirty={isDirty}
-                                hideSaveButton={true}
+                                paymentId={paymentData.id}
+                                paymentType={paymentType}
                                 isPaid={isPaid()}
                             />
                         </div>

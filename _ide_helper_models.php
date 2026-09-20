@@ -55,15 +55,15 @@ namespace App\Models{
  * @property numeric|null $total_nett_price
  * @property string $created_by
  * @property string|null $last_modified_by
- * @property \Carbon\CarbonImmutable|null $created_at
- * @property \Carbon\CarbonImmutable|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BillingAudit> $audits
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
+ * @property-read Collection<int, BillingAudit> $audits
  * @property-read int|null $audits_count
- * @property-read \App\Models\User $createdBy
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BillingDetail> $details
+ * @property-read User $createdBy
+ * @property-read Collection<int, BillingDetail> $details
  * @property-read int|null $details_count
- * @property-read \App\Models\User|null $lastModifiedBy
- * @property-read \App\Models\Visit|null $visit
+ * @property-read User|null $lastModifiedBy
+ * @property-read Visit|null $visit
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Billing newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Billing newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Billing query()
@@ -79,15 +79,21 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Billing whereVisitId($value)
  * @property string $patient_id
  * @property bool $is_completed
- * @property-read \App\Models\Patient $patient
+ * @property-read Patient $patient
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Billing whereIsCompleted($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Billing wherePatientId($value)
- * @property-read \App\Models\Cashier|null $cashier
- * @property string $control_header
- * @property int $control_no
+ * @property-read Cashier|null $cashier
+ * @property string $transaction_header
+ * @property int $transaction_no
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Billing whereControlHeader($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Billing whereControlNo($value)
+ * @property numeric|null $total_cost_price
+ * @property numeric|null $total_quantity
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Billing whereTotalCostPrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Billing whereTotalQuantity($value)
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Billing whereTransactionHeader($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Billing whereTransactionNo($value)
  */
 	class Billing extends \Eloquent {}
 }
@@ -156,6 +162,14 @@ namespace App\Models{
  * @property numeric|null $tax_amount
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail whereTaxAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail whereTaxPercent($value)
+ * @property numeric|null $cost_price
+ * @property int $quantity
+ * @property numeric|null $total_price
+ * @property int $order_no
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail whereCostPrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail whereOrderNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail whereQuantity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail whereTotalPrice($value)
  * @mixin \Eloquent
  */
 	class BillingDetail extends \Eloquent {}
@@ -189,18 +203,18 @@ namespace App\Models{
  * @property bool $is_completed
  * @property string $created_by
  * @property string|null $last_modified_by
- * @property \Carbon\CarbonImmutable|null $created_at
- * @property \Carbon\CarbonImmutable|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CashierAudit> $audits
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
+ * @property-read Collection<int, CashierAudit> $audits
  * @property-read int|null $audits_count
- * @property-read \App\Models\Billing $billing
- * @property-read \App\Models\User $createdBy
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CashierDetail> $details
+ * @property-read Billing $billing
+ * @property-read User $createdBy
+ * @property-read Collection<int, CashierDetail> $details
  * @property-read int|null $details_count
- * @property-read \App\Models\User|null $lastModifiedBy
- * @property-read \App\Models\Patient $patient
- * @property-read \App\Models\Payment|null $payment
- * @property-read \App\Models\Visit $visit
+ * @property-read User|null $lastModifiedBy
+ * @property-read Patient $patient
+ * @property-read Payment|null $payment
+ * @property-read Visit $visit
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cashier newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cashier newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cashier query()
@@ -218,6 +232,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cashier whereTotalTax($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cashier whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cashier whereVisitId($value)
+ * @property string|null $pharmacy_id
+ * @property-read \App\Models\Pharmacy|null $pharmacy
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cashier wherePharmacyId($value)
  * @mixin \Eloquent
  */
 	class Cashier extends \Eloquent {}
@@ -338,7 +355,7 @@ namespace App\Models{
  * @property-read Patient|null $patient
  * @property-read Collection<int, PatientVitalSign> $patientVitalSign
  * @property-read int|null $patient_vital_sign_count
- * @property-read Collection<int, ConsultationConsultationSignsOrSymptom> $signsOrSymptoms
+ * @property-read Collection<int, ConsultationSignsOrSymptom> $signsOrSymptoms
  * @property-read int|null $signs_or_symptoms_count
  * @property-read Visit $visit
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation newModelQuery()
@@ -408,16 +425,16 @@ namespace App\Models{
  * @property string $consultation_id
  * @property int $signs_or_symptom_id
  * @property-read Consultation $consultation
- * @property-read ConsultationSignsOrSymptom $signsOrSymptom
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationConsultationSignsOrSymptom newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationConsultationSignsOrSymptom newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationConsultationSignsOrSymptom query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationConsultationSignsOrSymptom whereConsultationId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationConsultationSignsOrSymptom whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationConsultationSignsOrSymptom whereConsultationSignsOrSymptomId($value)
+ * @property-read SignsOrSymptom $signsOrSymptom
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationSignsOrSymptom newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationSignsOrSymptom newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationSignsOrSymptom query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationSignsOrSymptom whereConsultationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationSignsOrSymptom whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationSignsOrSymptom whereSignsOrSymptomId($value)
  * @mixin \Eloquent
  */
-	class ConsultationConsultationSignsOrSymptom extends \Eloquent {}
+	class ConsultationSignsOrSymptom extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -1144,6 +1161,10 @@ namespace App\Models{
  * @property string|null $senior_citizen_id
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereSeniorCitizenId($value)
  * @property-read bool $is_senior
+ * @property-read Collection<int, \App\Models\Visit> $visits
+ * @property-read int|null $visits_count
+ * @property-read Collection<int, \App\Models\PatientVitalSign> $vitalSigns
+ * @property-read int|null $vital_signs_count
  * @mixin \Eloquent
  */
 	class Patient extends \Eloquent implements \Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted {}
@@ -1151,26 +1172,24 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * @property string $id
+ * @property int $id
  * @property string $patient_id
  * @property int $audit_type_id
- * @property array<array-key, mixed> $action
+ * @property string $data
  * @property string $created_by
- * @property CarbonImmutable|null $created_at
- * @property CarbonImmutable|null $updated_at
- * @property-read User $createdBy
- * @property-read Patient|null $patient
- * @property-read AuditType|null $type
+ * @property \Carbon\CarbonImmutable $created_at
+ * @property-read \App\Models\AuditType $auditType
+ * @property-read \App\Models\Patient $patient
+ * @property-read \App\Models\User $createdBy
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit whereAction($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit whereAuditTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit wherePatientId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit whereData($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit wherePatientId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientAudit whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 	class PatientAudit extends \Eloquent {}
@@ -1669,14 +1688,14 @@ namespace App\Models{
 /**
  * @property int $id
  * @property string $name
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationSignsOrSymptom newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationSignsOrSymptom newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationSignsOrSymptom query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationSignsOrSymptom whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ConsultationSignsOrSymptom whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SignsOrSymptom newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SignsOrSymptom newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SignsOrSymptom query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SignsOrSymptom whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SignsOrSymptom whereName($value)
  * @mixin \Eloquent
  */
-	class ConsultationSignsOrSymptom extends \Eloquent {}
+	class SignsOrSymptom extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -1918,22 +1937,27 @@ namespace App\Models{
  * @property string|null $discharged_at
  * @property bool $is_emergency
  * @property int $visit_status_id
- * @property-read \App\Models\VisitStatus $visitStatus
+ * @property-read VisitStatus $visitStatus
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereAdmittedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereDischargedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereIsEmergency($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit wherePriorityTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereVisitStatusId($value)
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PriorityType> $priorityTypes
+ * @property-read Collection<int, PriorityType> $priorityTypes
  * @property-read int|null $priority_types_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Laboratory> $laboratory
+ * @property-read Collection<int, Laboratory> $laboratory
  * @property-read int|null $laboratory_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Radiology> $radiology
+ * @property-read Collection<int, Radiology> $radiology
  * @property-read int|null $radiology_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Billing> $billing
+ * @property-read Collection<int, Billing> $billing
  * @property-read int|null $billing_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Cashier> $cashier
+ * @property-read Collection<int, Cashier> $cashier
  * @property-read int|null $cashier_count
+ * @property int $visit_no
+ * @property bool $is_walk_in
+ * @property-read \App\Models\Pharmacy|null $pharmacy
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereIsWalkIn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereVisitNo($value)
  * @mixin \Eloquent
  */
 	class Visit extends \Eloquent {}

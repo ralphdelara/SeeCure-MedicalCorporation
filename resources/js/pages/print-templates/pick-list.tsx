@@ -6,8 +6,9 @@ import '@/assets/css/print-receipt.css';
 import { addZeroes, formatReceiptDateTime } from '@/lib/utils';
 
 const PickList = () => {
-    const { pickListDetails } = usePage().props as unknown as {
+    const { pickListDetails, pickListData } = usePage().props as unknown as {
         pickListDetails: any;
+        pickListData: any;
     };
 
     useEffect(() => {
@@ -33,7 +34,7 @@ const PickList = () => {
                     </tr>
                     <tr>
                         <td className="text-center" colSpan={2} style={{ fontSize: '12px' }}>
-                            {addZeroes(pickListDetails.transaction_no, 5)}
+                            {pickListData.transaction_no}
                         </td>
                     </tr>
                     <tr>

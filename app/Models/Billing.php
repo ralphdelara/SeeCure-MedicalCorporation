@@ -50,14 +50,16 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Billing whereIsCompleted($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Billing wherePatientId($value)
  * @property-read Cashier|null $cashier
- * @property string $control_header
- * @property int $control_no
+ * @property string $transaction_header
+ * @property int $transaction_no
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Billing whereControlHeader($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Billing whereControlNo($value)
  * @property numeric|null $total_cost_price
  * @property numeric|null $total_quantity
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Billing whereTotalCostPrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Billing whereTotalQuantity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Billing whereTransactionHeader($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Billing whereTransactionNo($value)
  * @mixin \Eloquent
  */
 // Guarded blocks specified fields from being added/updated via ::create and ::update
@@ -73,7 +75,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
     'total_tax',
     'total_nett_price',
     'is_completed',
-    'control_header',
+    'transaction_header',
     'created_by',
     'last_modified_by',
 ])]

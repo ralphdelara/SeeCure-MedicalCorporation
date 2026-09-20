@@ -44,13 +44,6 @@ class CashierController extends Controller
         ));
     }
 
-    public function updateDetails(Request $request): void
-    {
-        $details = $request->all();
-
-        app(CashierService::class)->updateDetails($details);
-    }
-
     public function deleteCashier(string $id): void
     {
         Cashier::destroy($id);
@@ -89,5 +82,10 @@ class CashierController extends Controller
     public function sendBackToBilling(string $billingId): void
     {
         app(CashierService::class)->sendBackToBilling($billingId);
+    }
+
+    public function sendBackToPharmacy(string $pharmacyId): void
+    {
+        app(CashierService::class)->sendBackToPharmacy($pharmacyId);
     }
 }

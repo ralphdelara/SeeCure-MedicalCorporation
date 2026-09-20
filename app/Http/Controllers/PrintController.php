@@ -11,6 +11,7 @@ use App\Models\LaboratoryTestData;
 use App\Models\Payment;
 use App\Models\Pharmacy;
 use App\Models\Prescription;
+use App\Services\PrintService;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -187,23 +188,42 @@ class PrintController extends Controller
     {
         abortIfInvalidUuid($receiptId);
 
-        $receiptData = Payment::with('cashier.billing.details', 'cashier.pharmacy.details')->find($receiptId);
+        $receiptData = Payment::with([
+            'cashier.billing.details', 'cashier.pharmacy.details', 'method',
+            'createdBy' => function ($query) {
+                $query->select('id', 'first_name', 'middle_name', 'last_name');
+            },
+            'createdBy.professions',
+            'createdBy.specialties',
+        ])->find($receiptId);
         $company = CompanyProfile::find(1);
-        $billing = $receiptData['cashier']['billing'];
-        $pharmacy = $receiptData['cashier']['pharmacy'];
-
-        $itemData = $billing ?? $pharmacy;
 
         if (empty($receiptData)) {
             abort(404);
         }
 
-        return Inertia::render('print-templates/receipt', compact('receiptData', 'itemData', 'company'));
+        $billing = $receiptData['cashier']['billing'];
+        $pharmacy = $receiptData['cashier']['pharmacy'];
+
+        $itemData = $billing ?? $pharmacy;
+        $transactionNo = $itemData->transaction_no;
+
+        $companyDetails = config('company');
+
+        return Inertia::render('print-templates/receipt', compact(
+            'receiptData',
+            'itemData',
+            'company',
+            'transactionNo',
+            'companyDetails',
+        ));
     }
 
     public function printPharmacyPickList(string $pharmacyId)
     {
         abortIfInvalidUuid($pharmacyId);
+
+        $pickListData = app(PrintService::class)->generatePickList($pharmacyId);
 
         $pickListDetails = Pharmacy::with('details')->find($pharmacyId);
 
@@ -211,6 +231,6 @@ class PrintController extends Controller
             abort(404);
         }
 
-        return Inertia::render('print-templates/pick-list', compact('pickListDetails'));
+        return Inertia::render('print-templates/pick-list', compact('pickListDetails', 'pickListData'));
     }
 }

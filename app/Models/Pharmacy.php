@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @property string $id
@@ -49,7 +50,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property numeric|null $total_discount
  * @property numeric|null $total_tax
  * @property numeric|null $total_nett_price
- * @property int $transaction_no
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy whereTotalCostPrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy whereTotalDiscount($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy whereTotalNettPrice($value)
@@ -57,6 +57,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy whereTotalQuantity($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy whereTotalTax($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy whereTransactionNo($value)
+ * @property-read \App\Models\PharmacyPickList|null $pickList
  * @mixin \Eloquent
  */
 #[Fillable([
@@ -93,6 +94,11 @@ class Pharmacy extends Model
     public function details(): HasMany
     {
         return $this->hasMany(PharmacyDetail::class);
+    }
+
+    public function pickList(): HasOne
+    {
+        return $this->hasOne(PharmacyPickList::class);
     }
 
     public function createdBy(): BelongsTo

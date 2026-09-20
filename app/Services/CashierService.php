@@ -11,6 +11,7 @@ use App\Models\Cashier;
 use App\Models\CashierAudit;
 use App\Models\Patient;
 use App\Models\Payment;
+use App\Models\Pharmacy;
 use App\Models\Visit;
 use Arr;
 use Illuminate\Database\Eloquent\Builder;
@@ -269,5 +270,23 @@ class CashierService
 
         // delete Cashier Details
         Cashier::whereBillingId($billingId)->delete();
+    }
+
+    public function sendBackToPharmacy(string $pharmacyId): void
+    {
+        $pharmacy = Pharmacy::with('visit')->find($pharmacyId);
+
+        // move back to pharmacy
+        Visit::find($pharmacy->visit->id)->update([
+            'visit_status_id' => VisitStatusEnum::IN_PHARMACY,
+        ]);
+
+        // update pharmacy is_completed status to false
+        $pharmacy->update([
+            'is_completed' => false,
+        ]);
+
+        // delete Cashier Details
+        Cashier::wherePharmacyId($pharmacyId)->delete();
     }
 }

@@ -23,7 +23,6 @@ return new class extends Migration
             $table->decimal('total_nett_price', 12, 2)->nullable();
 
             $table->boolean('is_completed')->default(false);
-            $table->unsignedBigInteger('transaction_no')->autoIncrement();
 
             $table->foreignUuid('created_by')->constrained('users', 'id');
             $table->foreignUuid('last_modified_by')->nullable()->constrained('users', 'id');

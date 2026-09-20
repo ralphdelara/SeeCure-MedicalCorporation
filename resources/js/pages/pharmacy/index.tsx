@@ -6,13 +6,17 @@ import type { Pages } from '@/types/pagination';
 import type { PharmacyTableList } from '@/components/pharmacy/list';
 import { IconReceipt, IconVolume, IconVolumeOff } from '@tabler/icons-react';
 import { Button } from '@/components/ui/button';
-import { getPharmacyDetails } from '@/actions/App/Http/Controllers/PharmacyController';
+import {
+    deletePharmacy,
+    getPharmacyDetails,
+} from '@/actions/App/Http/Controllers/PharmacyController';
 import { getPatientDetails } from '@/actions/App/Http/Controllers/PatientController';
 import { Options } from '@/types/options';
 import personDefault from '@/assets/images/profile/person-default.png';
 import { Fragment, useState } from 'react';
 import { fetchUrl } from '@/lib/utils';
 import { callOutPatient } from '@/routes/system';
+import DeleteButton from '@/components/delete-button';
 
 interface InertiaProps {
     pharmacyList: {
@@ -186,6 +190,11 @@ export default function Pharmacy() {
                                                     </i>
                                                 </Button>
                                             </Link>
+
+                                            <DeleteButton
+                                                url={deletePharmacy(item.id).url}
+                                                msg="pharmacy"
+                                            />
                                         </td>
                                     </tr>
                                 ))}
