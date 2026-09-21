@@ -108,11 +108,7 @@ class FrontDeskController extends Controller
         }
 
         // create consultation and notify the doctor
-        if (
-            $request->has_laboratory === 0
-            && $request->has_radiology === 0
-            && $request->has_consultation === 1
-        ) {
+        if ($request->has_consultation === 1) {
             $consultationId = $this->queueConsultation(
                 $request,
                 $visitId,
@@ -122,11 +118,16 @@ class FrontDeskController extends Controller
                 app(PatientVitalSignService::class)->storeVitalSigns($patientId, $consultationId, $request->vital_signs);
             }
 
-            broadcast(new NotifyDoctor(
-                'Notification',
-                'Patient has been placed in consultation',
-                Visit::where('visit_status_id', VisitStatusEnum::IN_CONSULTATION)->count(),
-            ));
+            if (
+                $request->has_laboratory === 0
+                && $request->has_radiology === 0
+            ) {
+                broadcast(new NotifyDoctor(
+                    'Notification',
+                    'Patient has been placed in consultation',
+                    Visit::where('visit_status_id', VisitStatusEnum::IN_CONSULTATION)->count(),
+                ));
+            }
         }
     }
 

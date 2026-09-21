@@ -82,10 +82,10 @@ const VisitDetailsModal = ({ visit }) => {
                             })}
                         </ul>
                         {selectedTab === 'tab-consultation' && (
-                            <VisitDetailsConsultation consultation={visit.consultation} />
+                            <VisitDetailsConsultation consultation={visit.consultation ?? []} />
                         )}
                         {selectedTab === 'tab-laboratory' && (
-                            <VisitDetailsLaboratory laboratory={visit.laboratory} />
+                            <VisitDetailsLaboratory laboratory={visit.laboratory ?? []} />
                         )}
                         {selectedTab === 'tab-radiology' && <VisitDetailsRadiology visit={visit} />}
                     </div>

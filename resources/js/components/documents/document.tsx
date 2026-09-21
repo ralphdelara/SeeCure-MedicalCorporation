@@ -1,6 +1,14 @@
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import TableList from '@/components/table';
-import { IconDownload, IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
+import {
+    IconDownload,
+    IconEdit,
+    IconFileTypeDocx,
+    IconFileTypePdf,
+    IconFileTypeXls,
+    IconPlus,
+    IconTrash,
+} from '@tabler/icons-react';
 import { Button } from '@/components/ui/button';
 import DocumentModal from './document-modal';
 import { useState } from 'react';
@@ -60,7 +68,7 @@ const Documents = ({ details, department }: InertiaProps) => {
         laboratory_id: department === 'laboratory' ? details.id : null,
         radiology_id: department === 'radiology' ? details.id : null,
         document_id: '',
-        document_type_id: '3',
+        document_type_id: '4',
         data: [],
     };
     const [formShow, setFormShow] = useState(false);
@@ -104,56 +112,71 @@ const Documents = ({ details, department }: InertiaProps) => {
                                             <td>{index + 1}</td>
                                             <td>{item.type.name}</td>
                                             <td>
-                                                {item.document_type_id === 3 && (
-                                                    <table>
-                                                        <tbody>
-                                                            {item.files.map((file, fileIndex) => {
-                                                                let url = downloadDocument({
-                                                                    departmentId: details.id,
-                                                                    fileName: file.file_name,
-                                                                    department: department,
-                                                                }).url;
-                                                                return (
-                                                                    <tr
-                                                                        key={
-                                                                            'file-' +
-                                                                            index +
-                                                                            '-' +
-                                                                            fileIndex
-                                                                        }
-                                                                    >
-                                                                        <td>
-                                                                            {isImage(
+                                                {[3, 4].includes(item.document_type_id) && (
+                                                    <div className="row">
+                                                        {item.files.map((file, fileIndex) => {
+                                                            let url = downloadDocument({
+                                                                departmentId: details.id,
+                                                                fileName: file.file_name,
+                                                                department: department,
+                                                            }).url;
+                                                            return (
+                                                                <div
+                                                                    className="col-md-4"
+                                                                    key={
+                                                                        'file-' +
+                                                                        index +
+                                                                        '-' +
+                                                                        fileIndex
+                                                                    }
+                                                                >
+                                                                    {isImage(file.file_ext) && (
+                                                                        <ImageView url={url} />
+                                                                    )}
+                                                                    {!isImage(file.file_ext) && (
+                                                                        <Link
+                                                                            href="#"
+                                                                            className="flex items-center"
+                                                                            onClick={(e) => {
+                                                                                e.preventDefault();
+                                                                                handleOpenNewTab(
+                                                                                    url,
+                                                                                );
+                                                                            }}
+                                                                        >
+                                                                            {[
+                                                                                'xls',
+                                                                                'xlsx',
+                                                                            ].includes(
                                                                                 file.file_ext,
                                                                             ) && (
-                                                                                <ImageView
-                                                                                    url={url}
+                                                                                <IconFileTypeXls
+                                                                                    size={100}
                                                                                 />
                                                                             )}
-                                                                            {!isImage(
+                                                                            {['pdf'].includes(
                                                                                 file.file_ext,
                                                                             ) && (
-                                                                                <Link
-                                                                                    href="#"
-                                                                                    className="flex items-center"
-                                                                                    onClick={(
-                                                                                        e,
-                                                                                    ) => {
-                                                                                        e.preventDefault();
-                                                                                        handleOpenNewTab(
-                                                                                            url,
-                                                                                        );
-                                                                                    }}
-                                                                                >
-                                                                                    {file.file_name}
-                                                                                </Link>
+                                                                                <IconFileTypePdf
+                                                                                    size={100}
+                                                                                />
                                                                             )}
-                                                                        </td>
-                                                                    </tr>
-                                                                );
-                                                            })}
-                                                        </tbody>
-                                                    </table>
+                                                                            {[
+                                                                                'doc',
+                                                                                'docx',
+                                                                            ].includes(
+                                                                                file.file_ext,
+                                                                            ) && (
+                                                                                <IconFileTypeDocx
+                                                                                    size={100}
+                                                                                />
+                                                                            )}
+                                                                        </Link>
+                                                                    )}
+                                                                </div>
+                                                            );
+                                                        })}
+                                                    </div>
                                                 )}
                                             </td>
                                             <td>

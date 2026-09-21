@@ -36,7 +36,7 @@ const Default = () => {
     useEffect(() => {
         setTimeout(() => {
             window.print();
-        }, 500);
+        }, 1000);
     }, []);
     return (
         <div
@@ -156,7 +156,7 @@ const Default = () => {
                         <td style={{ padding: '20px' }}>
                             {rightFullName && (
                                 <>
-                                    <div className="text-center">
+                                    <div className="text-center text-nowrap">
                                         {rightFullName && (
                                             <p
                                                 style={{

@@ -2,13 +2,24 @@ import { addOrUpdateUser } from '@/actions/App/Http/Controllers/UserController';
 import { AddOrUpdateUserDetailsFormProps } from '@/components/user/new-user';
 import NewUserForm from '@/components/user/new-user-form';
 import { Button } from '@/components/ui/button';
-import { useForm } from '@inertiajs/react';
+import { useForm, usePage } from '@inertiajs/react';
 import { IconPlus } from '@tabler/icons-react';
 import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import toast, { Toaster } from 'react-hot-toast';
 
+interface User {
+    id: string;
+    full_name: string;
+    is_admin: boolean;
+}
+
+interface InertiaProps {
+    auth: { user: User; professions: string[]; specialties: string[] };
+}
+
 const NewUser = () => {
+    const { auth } = usePage().props as unknown as InertiaProps;
     const { data, setData, post, processing, errors, reset } =
         useForm<AddOrUpdateUserDetailsFormProps>({
             user_id: '',
@@ -59,10 +70,12 @@ const NewUser = () => {
 
     return (
         <>
-            <Button onClick={() => setShowModal(true)} hasIcon={true}>
-                <IconPlus className="me-1" size={18} />
-                Add User
-            </Button>
+            {auth.user.is_admin && (
+                <Button onClick={() => setShowModal(true)} hasIcon={true}>
+                    <IconPlus className="me-1" size={18} />
+                    Add User
+                </Button>
+            )}
             <Toaster position="top-center" reverseOrder={false} />
             <Modal show={showModal} size="lg" onHide={() => setShowModal(false)}>
                 <form onSubmit={submitQueue}>
