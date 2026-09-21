@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\UserViewed;
 use App\Models\Barangay;
 use App\Models\City;
 use App\Models\Department;
@@ -12,6 +13,7 @@ use App\Models\Profession;
 use App\Models\Province;
 use App\Models\Specialty;
 use App\Models\User;
+use App\Models\UserAudit;
 use App\Models\UserProfession;
 use App\Models\UserSpecialty;
 use Arr;
@@ -205,11 +207,29 @@ class UserService
             abort(404);
         }
 
+        UserViewed::dispatch($user);
+
         $user = $user->toArray();
 
         $user['professions'] = array_column($user['professions'], 'id');
         $user['specialties'] = array_column($user['specialties'], 'id');
 
         return $user;
+    }
+
+    public function getAuditLog(string $userId): array
+    {
+        return UserAudit::with([
+            'createdBy' => function ($query) {
+                $query->select('id', 'first_name', 'middle_name', 'last_name');
+            },
+            'createdBy.professions',
+            'createdBy.specialties',
+            'auditType',
+        ])
+            ->select('audit_type_id', 'data', 'created_by', 'created_at')
+            ->where('user_id', $userId)
+            ->orderBy('created_at', 'desc')
+            ->get()->toArray();
     }
 }
