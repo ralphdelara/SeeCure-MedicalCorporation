@@ -163,6 +163,19 @@ class ConsultationService
             },
             'visit.laboratory.testData.fields.lastModifiedBy.professions',
             'visit.laboratory.testData.fields.lastModifiedBy.specialties',
+            'documents',
+            'documents.type',
+            'documents.files',
+            'documents.createdBy' => function ($query) {
+                $query->select('id', 'first_name', 'middle_name', 'last_name');
+            },
+            'documents.createdBy.professions',
+            'documents.createdBy.specialties',
+            'documents.lastModifiedBy' => function ($query) {
+                $query->select('id', 'first_name', 'middle_name', 'last_name');
+            },
+            'documents.lastModifiedBy.professions',
+            'documents.lastModifiedBy.specialties',
         ])->find($consultationId);
 
         if (empty($consultation)) {

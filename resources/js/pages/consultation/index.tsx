@@ -67,7 +67,6 @@ export default function Consultation() {
             }, 10000);
         }
     };
-    console.log(consultationList);
 
     return (
         <>
@@ -283,11 +282,6 @@ export default function Consultation() {
                                             </i>
                                         </Button>
                                     </Link>
-                                    <Button variant="danger" rounded={true} className="mb-1">
-                                        <i>
-                                            <IconTrash size={18} />
-                                        </i>
-                                    </Button>
                                 </td>
                             </tr>
                         ))}

@@ -9,9 +9,6 @@ const PickList = () => {
         receiptData: any;
     };
 
-    console.log(itemData);
-    console.log(company);
-
     useEffect(() => {
         document.body.style.margin = '0';
         //window.print();

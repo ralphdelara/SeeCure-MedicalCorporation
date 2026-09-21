@@ -63,7 +63,7 @@ const VitalSigns = ({ showTab }: { showTab: boolean }) => {
             formData: formData ?? modalDetails.formData,
         });
     };
-    console.log(vital_signs);
+
     return (
         <>
             <div className={'tab-content mt-3' + (!showTab ? ' hidden' : '')}>

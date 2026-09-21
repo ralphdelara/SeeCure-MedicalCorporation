@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\CompanyProfile;
 use App\Models\User;
 use TimoKoerber\LaravelOneTimeOperations\OneTimeOperation;
 
@@ -26,7 +25,7 @@ return new class extends OneTimeOperation
      */
     public function process(): void
     {
-        CompanyProfile::create([
+        DB::table('company')->insert([
             'company_name'     => 'See Cure Medical Corporation',
             'company_reg_no'   => '',
             'bir_no'           => '',

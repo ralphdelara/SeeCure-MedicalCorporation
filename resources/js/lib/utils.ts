@@ -198,3 +198,7 @@ export function formatReceiptDateTime(str: string) {
     // Output format: M/d/Y h:i:s A
     return `${month}/${day}/${year} ${strHours}:${minutes}:${seconds} ${ampm}`;
 }
+
+export function isImage(ext: string) {
+    return ['png', 'jpg', 'jpeg', 'gif', 'bmp'].includes(ext);
+}

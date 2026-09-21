@@ -95,7 +95,7 @@ const Payments = ({ showTab }: { showTab: boolean }) => {
         transaction_no: paymentDetails?.transaction_no ?? '',
         transaction_header: paymentDetails?.transaction_header ?? '',
     });
-    console.log(paymentData);
+
     const submitDetails = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
 

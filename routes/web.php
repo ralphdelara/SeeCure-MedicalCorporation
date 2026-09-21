@@ -5,6 +5,7 @@ use App\Http\Controllers\BillingController;
 use App\Http\Controllers\CashierController;
 use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\FrontDeskController;
 use App\Http\Controllers\Icd10CodeController;
 use App\Http\Controllers\InventoryController;
@@ -156,6 +157,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/receipt/{receiptNo}', [PrintController::class, 'printReceipt'])->name('print.receipt');
         Route::get('/laboratory/{laboratoryId}', [PrintController::class, 'printLaboratory'])->name('print.laboratory');
         Route::get('/pharmacy/pick-list/{pharmacyId}', [PrintController::class, 'printPharmacyPickList'])->name('print.pharmacy-pick-list');
+    });
+
+    Route::prefix('documents')->group(function () {
+        Route::post('/addOrUpdate', [DocumentController::class, 'addOrUpdateDocument'])->name('documents.add-or-update');
+        Route::get('/download/{departmentId}/{fileName}/{department}', [DocumentController::class, 'downloadDocument'])->name('documents.download');
+        Route::delete('/delete/{documentId}/{departmentId}/{department}', [DocumentController::class, 'deleteDocument'])->name('documents.delete');
     });
 });
 

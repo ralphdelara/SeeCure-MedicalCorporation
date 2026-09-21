@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DocumentType;
 use App\Models\InventoryCategory;
 use App\Models\Laboratory;
 use App\Models\PatientVitalSign;
@@ -56,6 +57,7 @@ class ConsultationController extends Controller
         $relationshipOptions = Relationship::all();
         $inventoryCategories = InventoryCategory::all();
         $laboratoryFormOptions = app(LaboratoryService::class)->getLaboratoryFormOptions();
+        $documentTypeOptions = DocumentType::all();
 
         return Inertia::render('consultation/details/index', compact(
             'consultationDetails',
@@ -64,6 +66,7 @@ class ConsultationController extends Controller
             'patientDetails',
             'doctors',
             'relationshipOptions',
+            'documentTypeOptions',
             'inventoryCategories',
             'laboratoryFormOptions',
             'laboratory',

@@ -17,19 +17,42 @@ import Details from './details';
 import Diagnosis from './diagnosis';
 import Prescription from './prescription';
 import AuditLog from './audit-log';
-import Documents from './documents';
 import VitalSigns from './vital-signs';
 import Radiology from './radiology';
 import Laboratory from './laboratory';
 import { Head, usePage } from '@inertiajs/react';
 import { PatientDetailsProps } from '@/components/patient/patient-details';
 import { getUrlParams } from '@/lib/utils';
+import Documents from '@/components/documents/document';
 
 interface InertiaProps {
     patientDetails: PatientDetailsProps;
+    consultationDetails: {
+        id: string;
+        visit: {
+            patient_id: string;
+        };
+        documents: {
+            id: string;
+            document_type_id: number;
+            type: { name: string };
+            files: {
+                file_name: string;
+            }[];
+            created_by: {
+                full_name: string;
+            };
+            created_at: string;
+            last_modified_by: {
+                full_name: string;
+            };
+            updated_at: string;
+        }[];
+    };
 }
 
 const ConsultationDetails = () => {
+    const { consultationDetails, patientDetails } = usePage().props as unknown as InertiaProps;
     const [selectedTab, setSelectedTab] = useState(() => {
         // This reads the parameter immediately on mount before anything else renders
         return getUrlParams('tab', 'tab-details');
@@ -46,7 +69,6 @@ const ConsultationDetails = () => {
         { id: 'tab-documents', name: 'Documents', icon: <IconFiles /> },
         { id: 'tab-audit-log', name: 'Audit Log', icon: <IconUserCode /> },
     ];
-    const { patientDetails } = usePage().props as unknown as InertiaProps;
 
     useEffect(() => {
         const initTab = getUrlParams('tab', 'tab-details');
@@ -107,7 +129,9 @@ const ConsultationDetails = () => {
             <Laboratory showTab={selectedTab === 'tab-laboratory'} />
             <Radiology showTab={selectedTab === 'tab-radiology'} />
             <VitalSigns showTab={selectedTab === 'tab-vital-signs'} />
-            {selectedTab === 'tab-documents' && <Documents />}
+            {selectedTab === 'tab-documents' && (
+                <Documents details={consultationDetails} department="consultation" />
+            )}
             {selectedTab === 'tab-audit-log' && <AuditLog />}
         </>
     );
