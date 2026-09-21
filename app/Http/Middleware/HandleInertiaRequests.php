@@ -65,10 +65,12 @@ class HandleInertiaRequests extends Middleware
         $user = $request->user();
         $professions = '';
         $specialties = '';
+        $departments = '';
 
         if ($user) {
             // Eager load to prevent N+1
-            $user = $user->loadMissing(['professions', 'specialties', 'department']);
+            $user = $user->loadMissing(['professions', 'specialties', 'departments']);
+            $departments = $user->departments->pluck('name')->implode(', ');
             $professions = $user->professions->pluck('name')->implode(', ');
             $specialties = $user->specialties->pluck('name')->implode(', ');
         }
@@ -81,10 +83,11 @@ class HandleInertiaRequests extends Middleware
             'name' => config('app.name'),
             'auth' => [
                 'user'        => $user,
+                'departments' => $departments,
                 'professions' => $professions,
                 'specialties' => $specialties,
             ],
-            'company' => CompanyProfile::find(1),
+            'company'     => CompanyProfile::find(1),
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'breadcrumbs' => $breadcrumbs,
         ];

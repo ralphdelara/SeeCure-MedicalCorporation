@@ -35,6 +35,7 @@ use App\Observers\VisitObserver;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\Grammars\PostgresGrammar;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
@@ -57,6 +58,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Auth::macro('systemUser', function () {
+            // If a user is logged in, return that user instance
+            if (Auth::check()) {
+                return Auth::user();
+            }
+
+            // Using ->first() directly avoids loading ALL users into memory via ::all()
+            return User::first();
+        });
+
         date_default_timezone_set('Asia/Manila');
 
         // citext for case insensitive - only for postgresql

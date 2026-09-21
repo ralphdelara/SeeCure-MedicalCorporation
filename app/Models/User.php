@@ -5,6 +5,8 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use App\Casts\EncryptedDate;
+use App\Enums\DepartmentEnum;
+use App\Enums\PositionEnum;
 use App\Traits\CorrectTimezone;
 use App\Traits\PersonDetails;
 use Carbon\CarbonImmutable;
@@ -50,8 +52,6 @@ use Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted;
  * @property string|null $date_resigned
  * @property bool $status
  * @property string|null $remember_token
- * @property int $department_id
- * @property int $position_id
  * @property string|null $photo
  * @property string|null $last_name_index
  * @property string|null $first_name_index
@@ -72,12 +72,12 @@ use Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted;
  * @property-read User|null $lastModifiedBy
  * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
- * @property-read Position $position
  * @property-read Collection<int, UserProfession> $professions
  * @property-read int|null $professions_count
  * @property-read Province|null $province
  * @property-read Collection<int, UserSpecialty> $specialties
  * @property-read int|null $specialties_count
+ *
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()
@@ -116,11 +116,15 @@ use Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereStreet($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUsername($value)
+ *
  * @property string|null $username_index
  * @property-read string|null $age_computed
  * @property-read string|null $full_address
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUsernameIndex($value)
+ *
  * @property-read string $full_name_receipt
+ *
  * @mixin \Eloquent
  */
 #[Fillable([
@@ -146,8 +150,6 @@ use Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted;
     'date_hired',
     'date_resigned',
     'status',
-    'department_id',
-    'position_id',
 
     'username_index',
     'first_name_index',
@@ -169,7 +171,7 @@ class User extends Authenticatable implements CipherSweetEncrypted
     /** @use HasFactory<UserFactory> */
     use CorrectTimezone, HasFactory, HasUuids, Notifiable, PersonDetails, UsesCipherSweet;
 
-    protected $appends = ['full_name', 'full_address', 'age_computed', 'full_name_receipt'];
+    protected $appends = ['full_name', 'full_address', 'age_computed', 'full_name_receipt', 'is_bot', 'is_admin'];
 
     /**
      * Get the attributes that should be cast.
@@ -236,11 +238,6 @@ class User extends Authenticatable implements CipherSweetEncrypted
         return $fullName;
     }
 
-    public function position(): BelongsTo
-    {
-        return $this->belongsTo(Position::class);
-    }
-
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by', 'id');
@@ -251,9 +248,14 @@ class User extends Authenticatable implements CipherSweetEncrypted
         return $this->belongsTo(User::class, 'last_modified_by', 'id');
     }
 
-    public function department(): BelongsTo
+    public function departments(): BelongsToMany
     {
-        return $this->belongsTo(Department::class, 'department_id', 'id');
+        return $this->belongsToMany(Department::class, 'user_departments', 'user_id', 'department_id');
+    }
+
+    public function positions(): BelongsToMany
+    {
+        return $this->belongsToMany(Position::class, 'user_positions', 'user_id', 'position_id');
     }
 
     public function professions(): BelongsToMany
@@ -269,6 +271,28 @@ class User extends Authenticatable implements CipherSweetEncrypted
     public function audits(): HasMany
     {
         return $this->hasMany(UserAudit::class);
+    }
+
+    public function getIsBotAttribute(): bool
+    {
+        foreach ($this->positions as $position) {
+            if (PositionEnum::tryFrom($position->id) === PositionEnum::BOT) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function getIsAdminAttribute(): bool
+    {
+        foreach ($this->departments as $department) {
+            if (DepartmentEnum::tryFrom($department->id) === DepartmentEnum::ADMINISTRATOR) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

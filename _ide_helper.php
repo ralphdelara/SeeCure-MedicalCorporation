@@ -2975,6 +2975,15 @@ namespace Illuminate\Support\Facades {
             \Illuminate\Auth\SessionGuard::flushMacros();
         }
 
+        /**
+         * @see \App\Providers\AppServiceProvider::boot()
+         * @static
+         */
+        public static function systemUser()
+        {
+            return \Illuminate\Auth\SessionGuard::systemUser();
+        }
+
             }
     /**
      * @see \Illuminate\View\Compilers\BladeCompiler
@@ -24951,10 +24960,26 @@ namespace Illuminate\Validation {
             }
     }
 
-namespace Illuminate\Database\Schema\Grammars {
+namespace Illuminate\Auth {
     /**
      */
-    class PostgresGrammar extends \Illuminate\Database\Schema\Grammars\Grammar {
+    class SessionGuard {
+        /**
+         * @see \App\Providers\AppServiceProvider::boot()
+         * @static
+         */
+        public static function systemUser()
+        {
+            return \Illuminate\Auth\SessionGuard::systemUser();
+        }
+
+            }
+    }
+
+namespace Illuminate\Database\Query\Grammars {
+    /**
+     */
+    class PostgresGrammar extends \Illuminate\Database\Query\Grammars\Grammar {
             }
     /**
      */
@@ -24979,6 +25004,17 @@ namespace Illuminate\Database {
             }
     }
 
+namespace Illuminate\Database\Schema\Grammars {
+    /**
+     */
+    class PostgresGrammar extends \Illuminate\Database\Schema\Grammars\Grammar {
+            }
+    /**
+     */
+    class Grammar extends \Illuminate\Database\Grammar {
+            }
+    }
+
 namespace Illuminate\Database\Schema {
     /**
      */
@@ -24993,17 +25029,6 @@ namespace Illuminate\Database\Schema {
             return \Illuminate\Database\Schema\Blueprint::citext($column);
         }
 
-            }
-    }
-
-namespace Illuminate\Database\Query\Grammars {
-    /**
-     */
-    class PostgresGrammar extends \Illuminate\Database\Query\Grammars\Grammar {
-            }
-    /**
-     */
-    class Grammar extends \Illuminate\Database\Grammar {
             }
     }
 

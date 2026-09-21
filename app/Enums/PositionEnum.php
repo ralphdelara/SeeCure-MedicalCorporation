@@ -20,9 +20,11 @@ enum PositionEnum: int
     case MEDICAL_TECHNOLOGIST_SUPERVISOR = 10;
     case MEDICAL_TECHNOLOGIST = 11;
     case LABORATORY_AIDE = 12;
-    case IT_SOFTWARE = 13;
+    case SOFTWARE_ENGINEER = 13;
     case BOT = 14;
     case ENCODER = 15;
+    case STAFF = 16;
+    case NURSE = 17;
 
     public function description(): string
     {
@@ -39,9 +41,11 @@ enum PositionEnum: int
             self::MEDICAL_TECHNOLOGIST_SUPERVISOR => 'Medical Technologist Supervisor',
             self::MEDICAL_TECHNOLOGIST            => 'Medical Technologist',
             self::LABORATORY_AIDE                 => 'Laboratory Aide',
-            self::IT_SOFTWARE                     => 'It Software',
+            self::SOFTWARE_ENGINEER               => 'Software Engineer',
             self::BOT                             => 'Bot',
             self::ENCODER                         => 'Encoder',
+            self::STAFF                           => 'Staff',
+            self::NURSE                           => 'Nurse',
         };
     }
 }

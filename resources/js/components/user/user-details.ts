@@ -1,4 +1,4 @@
-import { AddOrUpdateUserDetailsFormProps } from "./new-user";
+import { AddOrUpdateUserDetailsFormProps } from './new-user';
 
 export interface UserDetailsProps {
     id: string;
@@ -15,6 +15,8 @@ export interface UserDetailsProps {
 export interface UserDetailsTabProps {
     userDetails: AddOrUpdateUserDetailsFormProps & {
         id: string;
+        departments: number[];
+        positions: number[];
         professions: number[];
         specialties: number[];
     };

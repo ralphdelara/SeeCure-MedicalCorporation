@@ -29,6 +29,10 @@ class UserController extends Controller
 
     public function getUserDetails(string $id): Response
     {
+        if (! Auth::user()->is_admin && Auth::id() !== $id) {
+            abort(403);
+        }
+
         $userDetails = app(UserService::class)->getUserDetails($id);
         $formOptions = app(UserService::class)->getUserFormOptions($userDetails);
 
@@ -61,12 +65,17 @@ class UserController extends Controller
             'date_hired',
             'date_resigned',
             'status',
-            'department_id',
-            'position_id',
+            'department_ids',
+            'position_ids',
             'profession_ids',
             'specialty_ids',
             'photo',
         );
+
+        if (empty($userDetails['user_id']) && ! Auth::user()->is_admin) {
+            // prevents non admin users from adding new users
+            abort(403);
+        }
 
         if (! empty($userDetails['user_id']) && empty($userDetails['password'])) {
             unset($userDetails['password']);
@@ -74,13 +83,21 @@ class UserController extends Controller
 
         if (! empty($userDetails['user_id'])) {
             if (
-                $userDetails['user_id'] !== Auth::id()
-                && Auth::user()->department_id !== DepartmentEnum::ADMINISTRATOR->value
+                (int) $userDetails['user_id'] !== Auth::id()
+                && ! Auth::user()->is_admin
             ) {
-                // temporarily prevent user from updating other users information
-                // except admin
+                // prevent non admin users from updating other users information
                 abort(403);
             }
+        }
+
+        if (
+            ! Auth::user()->is_admin
+            && in_array(DepartmentEnum::ADMINISTRATOR->value, $userDetails['department_ids'])
+        ) {
+            // prevent non admin users from adding new admins or
+            // set themselves as administrator
+            abort(403);
         }
 
         app(UserService::class)->addOrUpdateUser($userDetails);

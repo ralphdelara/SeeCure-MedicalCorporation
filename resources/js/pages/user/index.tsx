@@ -10,12 +10,20 @@ import { Button } from '@/components/ui/button';
 import NewUser from './new-user-modal';
 import DeleteButton from '@/components/delete-button';
 import personDefault from '@/assets/images/profile/person-default.png';
+import user from '@/routes/user';
+
+interface User {
+    id: string;
+    full_name: string;
+    is_admin: boolean;
+}
 
 interface InertiaProps {
     userList: {
         tableData: UserTableList[];
         pageData: Pages;
     };
+    auth: { user: User; professions: string[]; specialties: string[] };
 }
 
 export default function UserList() {
@@ -23,7 +31,7 @@ export default function UserList() {
         options: [],
         type: 'All Status',
     };
-    const { userList } = usePage().props as unknown as InertiaProps;
+    const { userList, auth } = usePage().props as unknown as InertiaProps;
     const { tableData, pageData } = userList;
 
     const header =
@@ -51,7 +59,7 @@ export default function UserList() {
                   { name: 'User • Gender', className: 'sticky-left', align: 'left' },
                   { name: '', className: 'sticky-right', align: 'right' },
               ];
-
+    console.log(tableData);
     return (
         <>
             <Head title="User List" />
@@ -82,13 +90,18 @@ export default function UserList() {
                                                     </div>
                                                     <div className="ms-3">
                                                         <h6 className="fs-4 fw-semibold mb-0">
-                                                            <Link
-                                                                href={getUserDetails(item.id)}
-                                                                className="tooltip-container"
-                                                                data-title="Click to View User Details"
-                                                            >
-                                                                {item.full_name}
-                                                            </Link>
+                                                            {(auth.user.is_admin && !item.is_bot) ||
+                                                            auth.user.id === item.id ? (
+                                                                <Link
+                                                                    href={getUserDetails(item.id)}
+                                                                    className="tooltip-container"
+                                                                    data-title="Click to View User Details"
+                                                                >
+                                                                    {item.full_name}
+                                                                </Link>
+                                                            ) : (
+                                                                <>{item.full_name}</>
+                                                            )}
                                                         </h6>
                                                         <span className="fw-normal">
                                                             {item.gender ? item.gender.name : 'N/A'}
@@ -97,8 +110,27 @@ export default function UserList() {
                                                 </div>
                                             </div>
                                         </td>
-                                        <td>{item.department?.name}</td>
-                                        <td>{item.position?.name ?? 'N/A'}</td>
+                                        <td>
+                                            {item.departments?.map((department) => (
+                                                <h6
+                                                    key={
+                                                        'department-' +
+                                                        department.id +
+                                                        '-' +
+                                                        item.id
+                                                    }
+                                                >
+                                                    {department.name}
+                                                </h6>
+                                            )) ?? <h6>N/A</h6>}
+                                        </td>
+                                        <td>
+                                            {item.positions?.map((position) => (
+                                                <h6 key={'position-' + position.id + '-' + item.id}>
+                                                    {position.name}
+                                                </h6>
+                                            )) ?? <h6>N/A</h6>}
+                                        </td>
                                         <td>
                                             {item.professions?.map((profession) => (
                                                 <h6
@@ -190,22 +222,27 @@ export default function UserList() {
                                             </div>
                                         </td>
                                         <td className="sticky-right">
-                                            <Link href={getUserDetails(item.id)}>
-                                                <Button
-                                                    rounded={true}
-                                                    className="me-1"
-                                                    title="User Details"
-                                                >
-                                                    <i>
-                                                        <IconUserEdit size={18} />
-                                                    </i>
-                                                </Button>
-                                            </Link>
+                                            {((auth.user.is_admin && !item.is_bot) ||
+                                                auth.user.id === item.id) && (
+                                                <>
+                                                    <Link href={getUserDetails(item.id)}>
+                                                        <Button
+                                                            rounded={true}
+                                                            className="me-1"
+                                                            title="User Details"
+                                                        >
+                                                            <i>
+                                                                <IconUserEdit size={18} />
+                                                            </i>
+                                                        </Button>
+                                                    </Link>
 
-                                            <DeleteButton
-                                                url={deleteUser(item.id).url}
-                                                msg={'user <b>' + item.full_name + '</b>.'}
-                                            />
+                                                    <DeleteButton
+                                                        url={deleteUser(item.id).url}
+                                                        msg={'user <b>' + item.full_name + '</b>.'}
+                                                    />
+                                                </>
+                                            )}
                                         </td>
                                     </tr>
                                 ))}

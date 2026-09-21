@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { usePage, Link } from '@inertiajs/react';
 import { getPatientDetails } from '@/actions/App/Http/Controllers/PatientController';
-import { getUserDetails } from '@/actions/App/Http/Controllers/UserController';
 import TableList from '@/components/table';
 import DeleteButton from '@/components/delete-button';
 import { deleteQueue } from '@/actions/App/Http/Controllers/FrontDeskController';

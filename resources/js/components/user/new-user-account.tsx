@@ -5,8 +5,15 @@ import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
 import type { Options } from '@/types/options';
 import { AddOrUpdateUserFormProps } from './new-user';
+import { Fragment } from 'react';
+interface User {
+    id: string;
+    full_name: string;
+    is_admin: boolean;
+}
 
 interface InertiaProps {
+    auth: { user: User; professions: string[]; specialties: string[] };
     formOptions: {
         departmentOptions: Options[];
         professionOptions: Options[];
@@ -16,10 +23,29 @@ interface InertiaProps {
 }
 
 const Account = ({ data, setData, errors = {} }: AddOrUpdateUserFormProps) => {
-    const { formOptions } = usePage().props as unknown as InertiaProps;
-    const { departmentOptions, professionOptions, specialtyOptions, positionOptions } =
-        formOptions;
+    const { formOptions, auth } = usePage().props as unknown as InertiaProps;
+    const { departmentOptions, professionOptions, specialtyOptions, positionOptions } = formOptions;
 
+    const updateDepartment = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.checked) {
+            setData('department_ids', [...data.department_ids, parseInt(e.target.value)]);
+        } else {
+            setData(
+                'department_ids',
+                data.department_ids.filter((item) => item !== parseInt(e.target.value)),
+            );
+        }
+    };
+    const updatePosition = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.checked) {
+            setData('position_ids', [...data.position_ids, parseInt(e.target.value)]);
+        } else {
+            setData(
+                'position_ids',
+                data.position_ids.filter((item) => item !== parseInt(e.target.value)),
+            );
+        }
+    };
     const updateProfession = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.checked) {
             setData('profession_ids', [...data.profession_ids, parseInt(e.target.value)]);
@@ -84,38 +110,87 @@ const Account = ({ data, setData, errors = {} }: AddOrUpdateUserFormProps) => {
                         <InputError message={errors.password} className="mt-2" />
                     </div>
                 </div>
-                <div className="col-md-6">
+                <div className="col-md-12">
                     <div className="form-group">
                         <label className="form-label" htmlFor="department_ids">
                             Department
                         </label>
 
                         <div className="row">
-                            <Select
-                                value={data.department_id}
-                                onChange={(e) => setData('department_id', parseInt(e.target.value))}
-                                options={departmentOptions}
-                                type="Department"
-                                required={true}
-                            />
-
-                            <InputError message={errors.department_id} className="mt-2" />
+                            {departmentOptions?.map((item, index) => (
+                                <Fragment key={'department-' + index}>
+                                    {
+                                        /*hides Administrator checkbox in non admin users*/
+                                        (auth.user.is_admin ||
+                                            (item.id !== 1 && !auth.user.is_admin)) && (
+                                            <div className="col-md-4">
+                                                <div className="form-check form-check-inline">
+                                                    <input
+                                                        className="form-check-input success"
+                                                        type="checkbox"
+                                                        id={'department-' + index}
+                                                        value={item.id}
+                                                        onChange={(e) => updateDepartment(e)}
+                                                        name="department"
+                                                        checked={data.department_ids?.includes(
+                                                            item.id,
+                                                        )}
+                                                    />
+                                                    <label
+                                                        className="form-check-label"
+                                                        htmlFor={'department-' + index}
+                                                    >
+                                                        {item.name}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        )
+                                    }
+                                </Fragment>
+                            ))}
+                            <InputError message={errors.department_ids} className="mt-2" />
                         </div>
                     </div>
                 </div>
-                <div className="col-md-6">
+                <div className="col-md-12">
                     <div className="form-group">
-                        <label className="form-label" htmlFor="position">
-                            Position *
+                        <label className="form-label" htmlFor="position_ids">
+                            Position
                         </label>
 
-                        <Select
-                            value={data.position_id}
-                            onChange={(e) => setData('position_id', parseInt(e.target.value))}
-                            options={positionOptions}
-                            type="Position"
-                            required={true}
-                        />
+                        <div className="row">
+                            {positionOptions?.map((item, index) => (
+                                <Fragment key={'position-' + index}>
+                                    {
+                                        /*hides Bot checkbox*/
+                                        item.id !== 14 && (
+                                            <div className="col-md-4">
+                                                <div className="form-check form-check-inline">
+                                                    <input
+                                                        className="form-check-input success"
+                                                        type="checkbox"
+                                                        id={'position-' + index}
+                                                        value={item.id}
+                                                        onChange={(e) => updatePosition(e)}
+                                                        name="position"
+                                                        checked={data.position_ids?.includes(
+                                                            item.id,
+                                                        )}
+                                                    />
+                                                    <label
+                                                        className="form-check-label"
+                                                        htmlFor={'position-' + index}
+                                                    >
+                                                        {item.name}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        )
+                                    }
+                                </Fragment>
+                            ))}
+                            <InputError message={errors.position_ids} className="mt-2" />
+                        </div>
                     </div>
                 </div>
                 <div className="col-md-12">

@@ -556,32 +556,77 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * @property-read \App\Models\DocumentFile|null $file
+ * @property string $id
+ * @property string $patient_id
+ * @property string|null $consultation_id
+ * @property string|null $laboratory_id
+ * @property string|null $radiology_id
+ * @property int $document_type_id
+ * @property string $created_by
+ * @property string|null $last_modified_by
+ * @property \Carbon\CarbonImmutable|null $created_at
+ * @property \Carbon\CarbonImmutable|null $updated_at
+ * @property-read \App\Models\Consultation|null $consultation
+ * @property-read \App\Models\User $createdBy
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\DocumentFile> $files
+ * @property-read int|null $files_count
+ * @property-read \App\Models\Laboratory|null $laboratory
+ * @property-read \App\Models\User|null $lastModifiedBy
  * @property-read \App\Models\MedicalCertificate|null $medicalCertificate
- * @property-read \App\Models\Patient|null $patient
+ * @property-read \App\Models\Patient $patient
+ * @property-read \App\Models\Radiology|null $radiology
  * @property-read \App\Models\ReferralLetter|null $referralLetter
- * @property-read \App\Models\DocumentType|null $type
+ * @property-read \App\Models\DocumentType $type
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Document newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Document newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Document query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Document whereConsultationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Document whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Document whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Document whereDocumentTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Document whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Document whereLaboratoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Document whereLastModifiedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Document wherePatientId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Document whereRadiologyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Document whereUpdatedAt($value)
  */
 	class Document extends \Eloquent {}
 }
 
 namespace App\Models{
 /**
+ * @property int $id
+ * @property string $document_id
+ * @property string $file_path
+ * @property string $file_name
+ * @property string $file_size
+ * @property string $file_mime_type
+ * @property string $file_ext
+ * @property-read \App\Models\Document $document
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DocumentFile newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DocumentFile newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DocumentFile query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DocumentFile whereDocumentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DocumentFile whereFileExt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DocumentFile whereFileMimeType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DocumentFile whereFileName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DocumentFile whereFilePath($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DocumentFile whereFileSize($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DocumentFile whereId($value)
  */
 	class DocumentFile extends \Eloquent {}
 }
 
 namespace App\Models{
 /**
+ * @property int $id
+ * @property string $name
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DocumentType newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DocumentType newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DocumentType query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DocumentType whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DocumentType whereName($value)
  */
 	class DocumentType extends \Eloquent {}
 }
@@ -803,6 +848,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereVisitId($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Document> $documents
+ * @property-read int|null $documents_count
  */
 	class Laboratory extends \Eloquent {}
 }
@@ -1067,9 +1114,16 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * @property int $id
+ * @property string $document_id
+ * @property string $data
+ * @property-read \App\Models\Document $document
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MedicalCertificate newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MedicalCertificate newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MedicalCertificate query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|MedicalCertificate whereData($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|MedicalCertificate whereDocumentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|MedicalCertificate whereId($value)
  */
 	class MedicalCertificate extends \Eloquent {}
 }
@@ -1182,11 +1236,13 @@ namespace App\Models{
  * @property string|null $senior_citizen_id
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereSeniorCitizenId($value)
  * @property-read bool $is_senior
- * @property-read Collection<int, \App\Models\Visit> $visits
+ * @property-read Collection<int, Visit> $visits
  * @property-read int|null $visits_count
- * @property-read Collection<int, \App\Models\PatientVitalSign> $vitalSigns
+ * @property-read Collection<int, PatientVitalSign> $vitalSigns
  * @property-read int|null $vital_signs_count
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Document> $documents
+ * @property-read int|null $documents_count
  */
 	class Patient extends \Eloquent implements \Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted {}
 }
@@ -1723,9 +1779,16 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * @property int $id
+ * @property string $document_id
+ * @property string $data
+ * @property-read \App\Models\Document $document
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ReferralLetter newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ReferralLetter newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ReferralLetter query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ReferralLetter whereData($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ReferralLetter whereDocumentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ReferralLetter whereId($value)
  */
 	class ReferralLetter extends \Eloquent {}
 }
@@ -1901,28 +1964,35 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * @property string $id
+ * @property int $id
  * @property string $user_id
  * @property int $audit_type_id
- * @property array<array-key, mixed> $action
+ * @property string $data
  * @property string $created_by
- * @property CarbonImmutable $created_at
- * @property-read User $createdBy
- * @property-read User|null $lastModifiedBy
- * @property-read AuditType|null $type
- * @property-read User $user
+ * @property \Carbon\CarbonImmutable $created_at
+ * @property-read \App\Models\AuditType $auditType
+ * @property-read \App\Models\User $createdBy
+ * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserAudit newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserAudit newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserAudit query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserAudit whereAction($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserAudit whereAuditTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserAudit whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserAudit whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserAudit whereData($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserAudit whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserAudit whereUserId($value)
- * @mixin \Eloquent
  */
 	class UserAudit extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserDepartment newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserDepartment newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserDepartment query()
+ */
+	class UserDepartment extends \Eloquent {}
 }
 
 namespace App\Models{

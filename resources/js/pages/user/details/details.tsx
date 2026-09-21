@@ -18,7 +18,9 @@ const Details = () => {
             last_name: userDetails.last_name,
             first_name: userDetails.first_name,
             middle_name: userDetails.middle_name ?? '',
-            date_of_birth: userDetails.date_of_birth ? (new Date(userDetails.date_of_birth)).toLocaleDateString('sv-SE') : '',
+            date_of_birth: userDetails.date_of_birth
+                ? new Date(userDetails.date_of_birth).toLocaleDateString('sv-SE')
+                : '',
             contact_number: userDetails.contact_number ?? '',
             email: userDetails.email ?? '',
 
@@ -31,14 +33,18 @@ const Details = () => {
             province_id: userDetails.province_id ?? 1,
 
             photo: userDetails.photo ?? '',
-            department_id: userDetails.department_id ?? '',
+            department_ids: userDetails.departments ?? [],
             profession_ids: userDetails.professions ?? [],
             specialty_ids: userDetails.specialties ?? [],
-            position_id: userDetails.position_id ?? '',
+            position_ids: userDetails.positions ?? [],
             license_no: userDetails.license_no ?? '',
             ptr_no: userDetails.ptr_no ?? '',
-            date_hired: userDetails.date_hired ? (new Date(userDetails.date_hired)).toLocaleDateString('sv-SE') : '',
-            date_resigned: userDetails.date_resigned ? (new Date(userDetails.date_resigned)).toLocaleDateString('sv-SE') : '',
+            date_hired: userDetails.date_hired
+                ? new Date(userDetails.date_hired).toLocaleDateString('sv-SE')
+                : '',
+            date_resigned: userDetails.date_resigned
+                ? new Date(userDetails.date_resigned).toLocaleDateString('sv-SE')
+                : '',
             status: userDetails.status,
         });
 
@@ -53,7 +59,7 @@ const Details = () => {
                 toast.error('Failed to update user.');
             },
         });
-    }
+    };
 
     return (
         <>

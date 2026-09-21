@@ -38,8 +38,6 @@ return new class extends Migration
             $table->string('date_resigned')->nullable();
             $table->boolean('status');
             $table->rememberToken();
-            $table->foreignId('department_id')->constrained();
-            $table->foreignId('position_id')->constrained();
             $table->text('photo')->nullable();
 
             $table->text('username_index')->nullable()->index();
