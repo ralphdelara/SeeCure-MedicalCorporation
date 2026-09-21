@@ -1,17 +1,24 @@
-import { Head } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import TableList from '@/components/table';
-import { Fragment } from 'react';
-import TableAccordion from '@/components/table-accordion';
+import { PatientDetailsProps } from '@/components/patient/patient-details';
+import VisitDetailsModal from './visit-details-modal';
+
+interface InertiaProps {
+    patientDetails: PatientDetailsProps;
+}
 
 const Visits = () => {
     const header = [
-        { name: '#', width: '5%', align: 'right' },
-        { name: 'Visit DateTime', width: '30%', align: 'left' },
-        { name: 'Services', width: '30%', align: 'left' },
-        { name: 'Added By', width: '30%', align: 'left' },
+        { name: '#', align: 'right' },
+        { name: 'Added By', align: 'left' },
+        { name: 'Emergency', align: 'left' },
+        { name: 'Priority', align: 'left' },
+        { name: 'Services', align: 'left' },
+        { name: 'Status', align: 'left' },
+        { name: '', align: 'left' },
     ];
-
-    const tableData = [];
+    const { patientDetails } = usePage().props as unknown as InertiaProps;
+    const { visits } = patientDetails;
 
     return (
         <>
@@ -25,34 +32,91 @@ const Visits = () => {
                                     <h4 className="fw-bolder">Visits</h4>
                                 </div>
                                 <TableList header={header} hasPage={false}>
-                                    <Fragment key={''}>
-                                        <tr>
-                                            <td className="fs-5 text-right">1</td>
-                                            <td className="fs-5">
-                                                <small>Jul 30, 2020 09:30am</small>
+                                    {visits.map((item, index) => (
+                                        <tr key={'visit-tr-' + index}>
+                                            <td className="text-right">
+                                                <h5>{index + 1}</h5>
                                             </td>
-                                            <td className="fs-5">
-                                                <span className="badge text-bg-secondary">
-                                                    Consultation
-                                                </span>
+                                            <td>
+                                                <div className="d-flex align-items-start">
+                                                    <div>
+                                                        <h6 className="fs-4 fw-semibold">
+                                                            {item.created_by.full_name}
+                                                        </h6>
+                                                        <h6 className="fs-4 fw-normal">
+                                                            {item.created_at}
+                                                        </h6>
+                                                    </div>
+                                                </div>
                                             </td>
-                                            <td className="fs-5 align-top">
-                                                <b>Encoder Name</b>
+                                            <td>
+                                                {item.is_emergency && (
+                                                    <span className="badge bg-success">Yes</span>
+                                                )}
+                                                {!item.is_emergency && (
+                                                    <span className="badge bg-danger">No</span>
+                                                )}
+                                            </td>
+
+                                            <td>
+                                                {item.priority_types.map(
+                                                    (priority, priorityIndex) => (
+                                                        <>
+                                                            {priorityIndex > 0 && <br />}
+                                                            <span
+                                                                className={
+                                                                    'badge bg-info' +
+                                                                    (priorityIndex > 0
+                                                                        ? ' mt-1'
+                                                                        : '')
+                                                                }
+                                                            >
+                                                                {priority.name}
+                                                            </span>
+                                                        </>
+                                                    ),
+                                                )}
+                                                {item.priority_types.length === 0 && (
+                                                    <span className="badge bg-danger">None</span>
+                                                )}
+                                            </td>
+                                            <td>
+                                                {item.has_consultation && (
+                                                    <p className="mt-1 mb-0">
+                                                        <span className="badge bg-success">
+                                                            Consultation
+                                                        </span>
+                                                    </p>
+                                                )}
+                                                {item.has_laboratory && (
+                                                    <p className="mt-1 mb-0">
+                                                        <span className="badge bg-success">
+                                                            Laboratory
+                                                        </span>
+                                                    </p>
+                                                )}
+                                                {item.has_radiology && (
+                                                    <p className="mt-1 mb-0">
+                                                        <span className="badge bg-success">
+                                                            Radiology
+                                                        </span>
+                                                    </p>
+                                                )}
+                                            </td>
+                                            <td>
+                                                <h5>{item.status.name}</h5>
+                                            </td>
+                                            <td>
+                                                <VisitDetailsModal visit={item} />
                                             </td>
                                         </tr>
-                                        <TableAccordion uuid={'cons'} label="Consultation" cols={8}>
-                                            <span className="fs-4 text-center text-danger">No Consultation record</span>
-                                        </TableAccordion>
-                                        <TableAccordion uuid={'lab'} label="Laboratory" cols={8}>
-                                            <span className="fs-4 text-center text-danger">No Laboratory record</span>
-                                        </TableAccordion>
-                                        <TableAccordion uuid={'rad'} label="Radiology" cols={8}>
-                                            <span className="fs-4 text-center text-danger">No Radiology record</span>
-                                        </TableAccordion>
-                                    </Fragment>
-                                    {tableData.length === 0 && (
+                                    ))}
+                                    {visits.length === 0 && (
                                         <tr>
-                                            <td colSpan={4} className="fs-5 text-center text-danger">
+                                            <td
+                                                colSpan={7}
+                                                className="fs-5 text-danger text-center"
+                                            >
                                                 No record
                                             </td>
                                         </tr>

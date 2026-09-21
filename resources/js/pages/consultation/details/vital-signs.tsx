@@ -7,6 +7,7 @@ import { useState } from 'react';
 import DeleteButton from '@/components/delete-button';
 import { deleteVitalSigns } from '@/actions/App/Http/Controllers/ConsultationController';
 import SaveConsultation from './complete-consultation';
+import TableCounter from '@/components/table-counter';
 
 interface InertiaProps {
     consultationDetails: {
@@ -31,14 +32,11 @@ interface InertiaProps {
 
 const VitalSigns = ({ showTab }: { showTab: boolean }) => {
     const { consultationDetails, vitalSigns } = usePage().props as unknown as InertiaProps;
-    const { patient_vital_sign } = consultationDetails;
+    const { vital_signs } = consultationDetails;
     const [formShow, setFormShow] = useState(false);
     const defaultData = {
-        id: '',
         consultation_id: consultationDetails.id,
-        vital_sign_id: '',
-        vital_sign_field_id: '',
-        value: '',
+        patient_id: consultationDetails.patient_id,
     };
     const [modalDetails, setModalDetails] = useState({
         formType: 'Add',
@@ -65,7 +63,7 @@ const VitalSigns = ({ showTab }: { showTab: boolean }) => {
             formData: formData ?? modalDetails.formData,
         });
     };
-
+    console.log(vital_signs);
     return (
         <>
             <div className={'tab-content mt-3' + (!showTab ? ' hidden' : '')}>
@@ -91,87 +89,89 @@ const VitalSigns = ({ showTab }: { showTab: boolean }) => {
                                         Add Vital Signs
                                     </Button>
                                 </div>
-                                <div className="col-lg-12">
-                                    <h4 className="fw-bolder">Vital Signs (under maintenance)</h4>
-                                </div>
+                                <TableCounter table={vital_signs} tableTitle="Vital Signs" />
                                 <TableList header={header} hasPage={false}>
-                                    {patient_vital_sign.map((item, index) => (
-                                        <tr key={'vitalSigns-' + item.id}>
-                                            <td className="text-right">{index + 1}</td>
-                                            <td>
-                                                {item.vital_sign_field.name}
-                                                <br />
-                                                {item.vital_sign.name}
-                                            </td>
-                                            <td>{item.value}</td>
-                                            <td>{item.vital_sign_field.unit}</td>
-                                            <td>
-                                                <div className="d-flex align-items-start">
-                                                    <div>
-                                                        <h6 className="fs-4 fw-semibold">
-                                                            {item.created_by?.full_name ?? ''}
-                                                        </h6>
-                                                        <h6 className="fs-4 fw-normal">
-                                                            {item.created_at}
-                                                        </h6>
+                                    {vital_signs.map((item, index) => {
+                                        return (
+                                            <tr key={'vitalSigns-' + item.id}>
+                                                <td className="text-right">{index + 1}</td>
+                                                <td>
+                                                    <div className="d-flex align-items-start">
+                                                        <div>
+                                                            <h6 className="fs-4 fw-semibold">
+                                                                {item.vital_sign_field.name}
+                                                            </h6>
+                                                            <h6 className="fs-4 fw-normal">
+                                                                {item.vital_sign.name}
+                                                            </h6>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-start">
-                                                    <div>
-                                                        <h6 className="fs-4 fw-semibold">
-                                                            {item.last_modified_by?.full_name ?? ''}
-                                                        </h6>
-                                                        <h6 className="fs-4 fw-normal">
-                                                            {item.updated_at}
-                                                        </h6>
+                                                </td>
+                                                <td>{item.value}</td>
+                                                <td>{item.vital_sign_field.unit}</td>
+                                                <td>
+                                                    <div className="d-flex align-items-start">
+                                                        <div>
+                                                            <h6 className="fs-4 fw-semibold">
+                                                                {item.created_by?.full_name ?? ''}
+                                                            </h6>
+                                                            <h6 className="fs-4 fw-normal">
+                                                                {item.created_at}
+                                                            </h6>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <Button
-                                                    rounded={true}
-                                                    title="Edit"
-                                                    className="me-2"
-                                                    onClick={() =>
-                                                        toggleModal('Update', {
-                                                            id: item.id,
-                                                            consultation_id: consultationDetails.id,
-                                                            vital_sign_id: item.vital_sign_id,
-                                                            vital_sign_field_id:
-                                                                item.vital_sign_field_id,
-                                                            value: item.value,
-                                                            vital_sign_name: item.vital_sign.name,
-                                                            vital_sign_field_name:
-                                                                item.vital_sign_field.name,
-                                                            unit: item.vital_sign_field.unit,
-                                                        })
-                                                    }
-                                                >
-                                                    <i>
-                                                        <IconEdit size={18} />
-                                                    </i>
-                                                </Button>
+                                                </td>
+                                                <td>
+                                                    <div className="d-flex align-items-start">
+                                                        <div>
+                                                            <h6 className="fs-4 fw-semibold">
+                                                                {item.last_modified_by?.full_name ??
+                                                                    ''}
+                                                            </h6>
+                                                            <h6 className="fs-4 fw-normal">
+                                                                {item.updated_at}
+                                                            </h6>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <Button
+                                                        rounded={true}
+                                                        title="Edit"
+                                                        className="me-2"
+                                                        onClick={() =>
+                                                            toggleModal('Update', {
+                                                                id: item.id,
+                                                                vital_sign_id: item.vital_sign_id,
+                                                                field_id: item.vital_sign_field_id,
+                                                                value: item.value,
+                                                            })
+                                                        }
+                                                    >
+                                                        <i>
+                                                            <IconEdit size={18} />
+                                                        </i>
+                                                    </Button>
 
-                                                <DeleteButton
-                                                    url={deleteVitalSigns(item.id).url}
-                                                    msg={
-                                                        '<b>' +
-                                                        item.vital_sign.name +
-                                                        ' ' +
-                                                        item.vital_sign_field.name +
-                                                        '</b>'
-                                                    }
-                                                    successUrl={
-                                                        window.location.pathname +
-                                                        window.location.search
-                                                    }
-                                                />
-                                            </td>
-                                        </tr>
-                                    ))}
-                                    {patient_vital_sign.length === 0 && (
+                                                    <DeleteButton
+                                                        url={deleteVitalSigns(item.id).url}
+                                                        msg={
+                                                            '<b>' +
+                                                            item.vital_sign.name +
+                                                            ' ' +
+                                                            item.vital_sign_field.name +
+                                                            '</b>'
+                                                        }
+                                                        successUrl={
+                                                            window.location.pathname +
+                                                            window.location.search
+                                                        }
+                                                    />
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                    {vital_signs.length === 0 && (
                                         <tr>
                                             <td
                                                 colSpan={7}
@@ -182,6 +182,7 @@ const VitalSigns = ({ showTab }: { showTab: boolean }) => {
                                         </tr>
                                     )}
                                 </TableList>
+                                <TableCounter table={vital_signs} tableTitle="Vital Signs" />
                             </div>
                         </div>
                     </div>

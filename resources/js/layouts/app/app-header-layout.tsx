@@ -3,8 +3,6 @@ import { IconBellRinging, IconDots, IconLogout, IconMenu2, IconSearch } from '@t
 import { useEffect, useState } from 'react';
 import logoText from '@/assets/images/logos/logo_text.png';
 import { announcements, calendar, frontDesk, logout, notes, reminders } from '@/routes';
-import { Button } from '@/components/ui/button';
-import { fetchUrl } from '@/lib/utils';
 import NotifyDoctor from '@/pages/notifications/notify-doctor';
 import personDefault from '@/assets/images/profile/person-default.png';
 import NotifyBilling from '@/pages/notifications/notify-billing';

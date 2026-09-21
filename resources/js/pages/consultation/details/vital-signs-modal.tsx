@@ -36,54 +36,62 @@ export interface ModalFormProps {
     dosage: string;
 }
 
-interface InventoryListProps {
-    id: string;
-    name: string;
-    unit: Options;
-    stock: number;
-    category: Options;
-}
-
 const VitalSignsModal = ({ formShow, setFormShow, formType, formData }: ModalProps) => {
     const { consultationDetails, vitalSigns } = usePage().props as unknown as PageProps;
     const [fields, setFields] = useState([]);
+
+    const dataFields = {
+        consultation_id: consultationDetails.id,
+        patient_id: consultationDetails.visit.patient_id,
+    };
 
     const { data, setData, post, processing, errors } = useForm<ModalFormProps>(formData);
 
     const submitVitalSigns = (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
-/*
+
         post(addOrUpdateVitalSigns().url, {
             ...formSubmitResponse('VitalSigns'),
             onFinish: () => {
                 setFormShow(false);
             },
-        });*/
+        });
     };
 
     const toggleVitalSign = (id: string) => {
-        setData('vital_sign_id', id);
-
         if (id === '') {
             setFields([]);
         }
 
         vitalSigns.map((item, index) => {
             if (item.id === parseInt(id)) {
-                setFields(item.fields);
+                const allowedFields = [];
+                item.fields.map((field, fieldIndex) => {
+                    if ((dataFields?.id ?? '') !== '') {
+                        if (Object.hasOwn(dataFields, 'field_id_' + field.id)) {
+                            allowedFields.push(field);
+                        }
+                    } else {
+                        allowedFields.push(field);
+                        dataFields['field_id_' + field.id] = '';
+                    }
+                });
+                setFields(allowedFields);
+                dataFields['vital_sign_id'] = item.id;
             }
         });
+
+        setData(dataFields);
     };
 
     useEffect(() => {
+        dataFields['id'] = formData.id;
+        dataFields['vital_sign_id'] = formData.vital_sign_id;
+        dataFields['field_id_' + formData.field_id] = formData.value;
+
         toggleVitalSign(formData?.vital_sign_id ?? '');
-        setData('patient_vital_sign_id', formData.patient_vital_sign_id);
-        setData('consultation_id', formData.consultation_id);
-        setData('vital_sign_id', formData.vital_sign_id);
-        setData('vital_sign_field_ids', formData.vital_sign_field_ids);
-        setData('vital_sign_field_values', formData.vital_sign_field_values);
-        setData('vital_sign_name', formData.vital_sign_name);
-        setData('unit', formData.unit);
+
+        setData(dataFields);
     }, [formData]);
 
     return (
@@ -110,27 +118,24 @@ const VitalSignsModal = ({ formShow, setFormShow, formType, formData }: ModalPro
                                             options={vitalSigns}
                                         />
                                         <InputError
-                                            message={errors.inventory_name}
+                                            message={errors.vital_sign_id}
                                             className="mt-2"
                                         />
                                     </div>
                                 </div>
                                 {fields.map((field, fieldIndex) => (
-                                    <div className="col-md-12">
+                                    <div className="col-md-12" key={'vitalsigns-' + fieldIndex}>
                                         <div className="form-group">
                                             <label className="form-label" htmlFor="dosage">
                                                 {field.name} ({field.unit})
                                             </label>
 
                                             <Input
-                                                value={data['vital_sign_field_id_' + field.id]}
+                                                value={data['field_id_' + field.id]}
                                                 onChange={(e) =>
-                                                    setData(
-                                                        'vital_sign_field_id_' + field.id,
-                                                        e.target.value,
-                                                    )
+                                                    setData('field_id_' + field.id, e.target.value)
                                                 }
-                                                id="value"
+                                                id={'field_id_' + field.id}
                                                 type="number"
                                                 className="form-control"
                                                 placeholder="ex. 24"

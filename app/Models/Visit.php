@@ -27,6 +27,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read User|null $createdBy
  * @property-read User|null $lastModifiedBy
  * @property-read Patient|null $patient
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit query()
@@ -39,22 +40,27 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereLastModifiedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit wherePatientId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereUpdatedAt($value)
+ *
  * @property bool $consultation_completed
  * @property bool $lab_completed
  * @property bool $radiology_completed
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereConsultationCompleted($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereLabCompleted($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereRadiologyCompleted($value)
+ *
  * @property string|null $admitted_at
  * @property string|null $discharged_at
  * @property bool $is_emergency
  * @property int $visit_status_id
  * @property-read VisitStatus $visitStatus
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereAdmittedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereDischargedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereIsEmergency($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit wherePriorityTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereVisitStatusId($value)
+ *
  * @property-read Collection<int, PriorityType> $priorityTypes
  * @property-read int|null $priority_types_count
  * @property-read Collection<int, Laboratory> $laboratory
@@ -67,9 +73,11 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read int|null $cashier_count
  * @property int $visit_no
  * @property bool $is_walk_in
- * @property-read \App\Models\Pharmacy|null $pharmacy
+ * @property-read Pharmacy|null $pharmacy
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereIsWalkIn($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereVisitNo($value)
+ *
  * @mixin \Eloquent
  */
 #[Fillable([
@@ -89,6 +97,13 @@ class Visit extends Model
 {
     use CorrectTimezone, HasUuids;
 
+    protected function casts(): array
+    {
+        return [
+            'created_at' => 'date:M d, Y h:i:s a',
+        ];
+    }
+
     public function patient(): BelongsTo
     {
         return $this->belongsTo(Patient::class, 'patient_id', 'id');
@@ -96,12 +111,12 @@ class Visit extends Model
 
     public function createdBy(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(User::class, 'created_by', 'id');
     }
 
     public function lastModifiedBy(): ?BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(User::class, 'last_modified_by', 'id');
     }
 
     public function priorityTypes(): BelongsToMany
@@ -139,7 +154,7 @@ class Visit extends Model
         return $this->hasOne(Pharmacy::class);
     }
 
-    public function visitStatus(): BelongsTo
+    public function status(): BelongsTo
     {
         return $this->belongsTo(VisitStatus::class, 'visit_status_id', 'id');
     }

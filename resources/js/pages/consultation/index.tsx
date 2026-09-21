@@ -28,9 +28,11 @@ export default function Consultation() {
     const header = [
         { name: '#', align: 'right' },
         { name: 'Patient', className: 'sticky-left', align: 'left' },
+        { name: 'Emergency', align: 'left' },
+        { name: 'Priority', align: 'left' },
+        { name: 'Attending Doctor', align: 'left' },
         { name: 'Symptoms', align: 'left' },
         { name: 'Vital Signs', align: 'left' },
-        { name: 'Attending Doctor', align: 'left' },
         { name: 'Guardian', align: 'left' },
         { name: 'Status', align: 'left' },
         { name: 'Added By', align: 'left' },
@@ -65,6 +67,7 @@ export default function Consultation() {
             }, 10000);
         }
     };
+    console.log(consultationList);
 
     return (
         <>
@@ -81,7 +84,7 @@ export default function Consultation() {
                                 </td>
                                 <td className="sticky-left">
                                     <div className="d-block">
-                                        <div className="d-flex align-items-center">
+                                        <div className="d-flex align-items-top">
                                             <div style={{ width: '40px' }}>
                                                 <img
                                                     className="rounded-circle"
@@ -106,6 +109,57 @@ export default function Consultation() {
                                                     {item.visit.patient.gender
                                                         ? item.visit.patient.gender.name
                                                         : 'N/A'}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    {item.visit.is_emergency && (
+                                        <span className="badge bg-success">Yes</span>
+                                    )}
+                                    {!item.visit.is_emergency && (
+                                        <span className="badge bg-danger">No</span>
+                                    )}
+                                </td>
+                                <td>
+                                    {item.visit.priority_types.map((priority, priorityIndex) => (
+                                        <>
+                                            {priorityIndex > 0 && <br />}
+                                            <span
+                                                className={
+                                                    'badge bg-info' +
+                                                    (priorityIndex > 0 ? ' mt-1' : '')
+                                                }
+                                            >
+                                                {priority.name}
+                                            </span>
+                                        </>
+                                    ))}
+                                    {item.visit.priority_types.length === 0 && (
+                                        <span className="badge bg-danger">None</span>
+                                    )}
+                                </td>
+                                <td>
+                                    <div className="d-block">
+                                        <div className="d-flex align-items-center">
+                                            <div>
+                                                <h6 className="fs-4 fw-semibold mb-0">
+                                                    {item.doctor.full_name}
+                                                </h6>
+                                                <span className="fw-normal">
+                                                    {item.doctor.specialties.map(
+                                                        (item2, index2) => (
+                                                            <span
+                                                                key={'prof-' + index + '-' + index2}
+                                                                className="me-2"
+                                                            >
+                                                                {item2.name}
+                                                            </span>
+                                                        ),
+                                                    )}
+                                                    {item.doctor.specialties.length === 0 &&
+                                                        'General Practicioner'}
                                                 </span>
                                             </div>
                                         </div>
@@ -148,39 +202,6 @@ export default function Consultation() {
                                             </span>
                                         </Fragment>
                                     )) ?? 'N/A'}
-                                </td>
-                                <td>
-                                    <div className="d-block">
-                                        <div className="d-flex align-items-center">
-                                            <div style={{ width: '40px' }}>
-                                                <img
-                                                    className="rounded-circle"
-                                                    width="40"
-                                                    height="40"
-                                                    src={personDefault}
-                                                />
-                                            </div>
-                                            <div className="ms-3">
-                                                <h6 className="fs-4 fw-semibold mb-0">
-                                                    {item.doctor.full_name}
-                                                </h6>
-                                                <span className="fw-normal">
-                                                    {item.doctor.specialties.map(
-                                                        (item2, index2) => (
-                                                            <span
-                                                                key={'prof-' + index + '-' + index2}
-                                                                className="me-2"
-                                                            >
-                                                                {item2.name}
-                                                            </span>
-                                                        ),
-                                                    )}
-                                                    {item.doctor.specialties.length === 0 &&
-                                                        'General Practicioner'}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </td>
                                 <td>
                                     <div className="d-flex align-items-center">

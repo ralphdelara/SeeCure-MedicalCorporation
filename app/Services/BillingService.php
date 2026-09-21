@@ -31,6 +31,7 @@ class BillingService
             },
             'visit.patient.suffix',
             'visit.patient.gender',
+            'visit.priorityTypes',
             'details',
             'details.type',
             'createdBy' => function ($query) {
@@ -84,10 +85,10 @@ class BillingService
         ?string $consultationId = null,
     ): string {
         $billing = Billing::create([
-            'visit_id'         => $visitId,
-            'transaction_header'   => Carbon::now()->format('Ymd'),
-            'created_by'       => Auth::id(),
-            'last_modified_by' => Auth::id(),
+            'visit_id'           => $visitId,
+            'transaction_header' => Carbon::now()->format('Ymd'),
+            'created_by'         => Auth::id(),
+            'last_modified_by'   => Auth::id(),
         ]);
 
         $totalPrice = 0;

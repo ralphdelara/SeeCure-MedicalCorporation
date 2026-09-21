@@ -115,22 +115,20 @@ class ConsultationController extends Controller
     public function addOrUpdateVitalSigns(Request $request): void
     {
         $request->validate([
-            'patient_vital_sign_id' => 'required',
-            'consultation_id'       => 'required',
-            'vital_sign_id'         => 'required',
-            'vital_sign_field_id'   => 'required',
-            'value'                 => 'required',
+            'consultation_id' => 'required',
+            'patient_id'      => 'required',
+            'vital_sign_id'   => 'required',
         ]);
 
-        $vitalSignDetails = $request->only(
-            'patient_vital_sign_id',
-            'consultation_id',
-            'vital_sign_id',
-            'vital_sign_field_id',
-            'value',
-        );
+        $fields = $request->collect()
+            ->filter(function ($value, $key) {
+                return str_starts_with($key, 'field_id_');
+            })
+            ->all();
 
-        app(ConsultationService::class)->addOrUpdateVitalSigns($vitalSignDetails);
+        $vitalSignDetails = $request->only('id', 'consultation_id', 'patient_id', 'vital_sign_id');
+
+        app(ConsultationService::class)->addOrUpdateVitalSigns($vitalSignDetails, $fields);
     }
 
     public function deletePrescription(string $id): void
@@ -169,6 +167,11 @@ class ConsultationController extends Controller
         if ($pendingLabCount > 0) {
             return;
         }
+
+        // sets has_laboratory to true because the visit record will now have a laboratory record
+        Visit::find($laboratoryDetails['visit_id'])->update([
+            'has_laboratory' => true,
+        ]);
 
         app(LaboratoryService::class)->storeLaboratory($laboratoryDetails['visit_id'], $laboratoryDetails);
     }

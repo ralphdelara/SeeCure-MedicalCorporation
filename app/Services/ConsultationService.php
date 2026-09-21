@@ -22,6 +22,7 @@ use App\Models\Visit;
 use Arr;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Stevebauman\Purify\Facades\Purify;
 
 class ConsultationService
 {
@@ -36,6 +37,7 @@ class ConsultationService
             },
             'visit.patient.suffix',
             'visit.patient.gender',
+            'visit.priorityTypes',
             'createdBy' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name');
             },
@@ -64,7 +66,6 @@ class ConsultationService
             'signsOrSymptoms',
             'doctor.professions',
             'doctor.specialties',
-            'visit',
         ]);
 
         if (! empty($keyword)) {
@@ -122,21 +123,19 @@ class ConsultationService
             'guardianRelationship' => function ($query) {
                 $query->select('id', 'name');
             },
-            'patientVitalSign' => function ($query) {
-                $query->select('id', 'consultation_id', 'vital_sign_id', 'vital_sign_field_id', 'value');
+            'vitalSigns',
+            'vitalSigns.vitalSign',
+            'vitalSigns.vitalSignField',
+            'vitalSigns.createdBy' => function ($query) {
+                $query->select('id', 'first_name', 'middle_name', 'last_name');
             },
-            'patientVitalSign.vitalSign' => function ($query) {
-                $query->select('id', 'name');
+            'vitalSigns.createdBy.professions',
+            'vitalSigns.createdBy.specialties',
+            'vitalSigns.lastModifiedBy' => function ($query) {
+                $query->select('id', 'first_name', 'middle_name', 'last_name');
             },
-            'patientVitalSign.vitalSignField' => function ($query) {
-                $query->select('id', 'name', 'unit');
-            },
-            'patientVitalSign.createdBy',
-            'patientVitalSign.createdBy.professions',
-            'patientVitalSign.createdBy.specialties',
-            'patientVitalSign.lastModifiedBy',
-            'patientVitalSign.lastModifiedBy.professions',
-            'patientVitalSign.lastModifiedBy.specialties',
+            'vitalSigns.lastModifiedBy.professions',
+            'vitalSigns.lastModifiedBy.specialties',
             'doctor' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name');
             },
@@ -249,11 +248,15 @@ class ConsultationService
     {
         $id = $soapDetails['id'];
 
+        $soapDetails['subjective'] = Purify::clean($soapDetails['subjective'] ?? '');
+        $soapDetails['assessment'] = Purify::clean($soapDetails['assessment'] ?? '');
+        $soapDetails['plan'] = Purify::clean($soapDetails['plan'] ?? '');
+
         unset($soapDetails['id']);
 
         $soapDetails['last_modified_by'] = Auth::id();
 
-        ConsultationSoap::find($id)->update($soapDetails);
+        ConsultationSoap::findOrFail($id)->update($soapDetails);
     }
 
     public function updateDiagnosis(array $diagnosisDetails): void
@@ -264,6 +267,8 @@ class ConsultationService
 
         unset($diagnosisDetails['id']);
         unset($diagnosisDetails['icd10Ids']);
+
+        $diagnosisDetails['diagnosis'] = Purify::clean($diagnosisDetails['diagnosis'] ?? '');
 
         $diagnosisDetails['last_modified_by'] = Auth::id();
 
@@ -292,18 +297,34 @@ class ConsultationService
         );
     }
 
-    public function addOrUpdateVitalSigns(array $vitalSignDetails): void
+    public function addOrUpdateVitalSigns(array $vitalSignDetails, array $fields): void
     {
-        if (empty($vitalSignDetails['patient_vital_sign_id'])) {
+        $id = $vitalSignDetails['id'] ?? null;
+        unset($vitalSignDetails['id']);
+
+        if (empty($id)) {
             $vitalSignDetails['created_by'] = Auth::id();
+        } else {
+            unset($vitalSignDetails['consultation_id']);
+            unset($vitalSignDetails['patient_id']);
+            unset($vitalSignDetails['vital_sign_id']);
+            unset($vitalSignDetails['vital_sign_field_id']);
         }
 
         $vitalSignDetails['last_modified_by'] = Auth::id();
 
-        PatientVitalSign::updateOrCreate(
-            ['id' => $vitalSignDetails['patient_vital_sign_id']],
-            $vitalSignDetails,
-        );
+        foreach ($fields as $field => $value) {
+            if (empty($id)) {
+                $vitalSignDetails['vital_sign_field_id'] = str_replace('field_id_', '', $field);
+            }
+
+            $vitalSignDetails['value'] = $value;
+
+            PatientVitalSign::updateOrCreate(
+                ['id' => $id],
+                $vitalSignDetails,
+            );
+        }
     }
 
     public function getAuditLog(string $consultationId): array

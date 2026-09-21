@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\CorrectTimezone;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -25,6 +26,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read Patient|null $patient
  * @property-read VitalSign $vitalSign
  * @property-read VitalSignField $vitalSignField
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientVitalSign newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientVitalSign newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientVitalSign query()
@@ -38,6 +40,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientVitalSign whereValue($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientVitalSign whereVitalSignFieldId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PatientVitalSign whereVitalSignId($value)
+ *
  * @mixin \Eloquent
  */
 #[Fillable([
@@ -51,7 +54,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 ])]
 class PatientVitalSign extends Model
 {
-    use HasUuids;
+    use CorrectTimezone, HasUuids;
+
+    protected function casts(): array
+    {
+        return [
+            'created_at' => 'date:M d, Y h:i:s a',
+            'updated_at' => 'date:M d, Y h:i:s a',
+        ];
+    }
 
     public function patient(): BelongsTo
     {

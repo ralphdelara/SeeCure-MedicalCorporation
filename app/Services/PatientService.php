@@ -175,6 +175,59 @@ class PatientService
             'civilStatus',
             'nationality',
             'visits',
+            // consultation
+            'visits.consultation',
+            'visits.consultation.soap',
+            'visits.consultation.diagnosis',
+            'visits.consultation.diagnosis.icd10Codes.icd10Code',
+            'visits.consultation.prescriptions',
+            'visits.consultation.doctor.professions',
+            'visits.consultation.doctor.specialties',
+            'visits.consultation.signsOrSymptoms',
+            'visits.consultation.guardianRelationship',
+            'visits.consultation.vitalSigns.vitalSign',
+            'visits.consultation.vitalSigns.vitalSignField',
+            'visits.consultation.vitalSigns.createdBy' => function ($query) {
+                $query->select('id', 'first_name', 'middle_name', 'last_name');
+            },
+            'visits.consultation.vitalSigns.createdBy.professions',
+            'visits.consultation.vitalSigns.createdBy.specialties',
+            'visits.consultation.vitalSigns.lastModifiedBy' => function ($query) {
+                $query->select('id', 'first_name', 'middle_name', 'last_name');
+            },
+            'visits.consultation.vitalSigns.lastModifiedBy.professions',
+            'visits.consultation.vitalSigns.lastModifiedBy.specialties',
+            // laboratory
+            'visits.laboratory.remarks',
+            'visits.laboratory.testData',
+            'visits.laboratory.testData.type',
+            'visits.laboratory.testData.test',
+            'visits.laboratory.testData.fields' => function ($query) {
+                $query->orderBy('id');
+            },
+            'visits.laboratory.testData.fields.field',
+            'visits.laboratory.performedBy' => function ($query) {
+                $query->select('id', 'first_name', 'middle_name', 'last_name');
+            },
+            'visits.laboratory.performedBy.professions',
+            'visits.laboratory.performedBy.specialties',
+            'visits.laboratory.createdBy' => function ($query) {
+                $query->select('id', 'first_name', 'middle_name', 'last_name');
+            },
+            'visits.laboratory.createdBy.professions',
+            'visits.laboratory.createdBy.specialties',
+            'visits.laboratory.lastModifiedBy' => function ($query) {
+                $query->select('id', 'first_name', 'middle_name', 'last_name');
+            },
+            'visits.laboratory.lastModifiedBy.professions',
+            'visits.laboratory.lastModifiedBy.specialties',
+            // radiology
+            'visits.radiology',
+            'visits.createdBy',
+            'visits.createdBy.professions',
+            'visits.createdBy.specialties',
+            'visits.priorityTypes',
+            'visits.status',
             'vitalSigns',
             'audits',
         ])->find($id);

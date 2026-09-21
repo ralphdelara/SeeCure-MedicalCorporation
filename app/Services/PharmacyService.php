@@ -29,6 +29,7 @@ class PharmacyService
             },
             'visit.patient.suffix',
             'visit.patient.gender',
+            'visit.priorityTypes',
             'details',
             'createdBy' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name');
