@@ -25,7 +25,7 @@ return new class extends OneTimeOperation
      */
     public function process(): void
     {
-        DB::table('company')->insert([
+        DB::table('company_profile')->insert([
             'company_name'     => 'See Cure Medical Corporation',
             'company_reg_no'   => '',
             'bir_no'           => '',

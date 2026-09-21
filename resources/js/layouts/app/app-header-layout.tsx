@@ -1,6 +1,6 @@
 import { Link, usePage } from '@inertiajs/react';
 import { IconBellRinging, IconDots, IconLogout, IconMenu2, IconSearch } from '@tabler/icons-react';
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import logoText from '@/assets/images/logos/logo_text.png';
 import { announcements, calendar, frontDesk, logout, notes, reminders } from '@/routes';
 import NotifyDoctor from '@/pages/notifications/notify-doctor';
@@ -18,9 +18,9 @@ type NavHeaderProps = {
 
 interface User {
     full_name: string;
-    department: {
+    departments: {
         name: string;
-    };
+    }[];
 }
 
 export default function NavHeader({ toggleSidebar }: NavHeaderProps) {
@@ -438,15 +438,18 @@ export default function NavHeader({ toggleSidebar }: NavHeaderProps) {
                     </nav>
                 </div>
             </header>
-            {user.department.name === 'Consultation' && <NotifyDoctor />}
-            {user.department.name === 'Billing' && <NotifyBilling />}
-            {user.department.name === 'Pharmacy' && <NotifyPharmacy />}
-            {user.department.name === 'Cashier' && <NotifyCashier />}
-            {user.department.name === 'Laboratory' && <NotifyLaboratory />}
-            {user.department.name === 'Radiology' && <NotifyRadiology />}
-            {user.department.name === 'FrontDesk' && <NotifyRadiology />}
+            {user.departments.map((item, index) => (
+                <Fragment key={'dept-notify-' + index}>
+                    {item.name === 'Consultation' && <NotifyDoctor />}
+                    {item.name === 'Billing' && <NotifyBilling />}
+                    {item.name === 'Pharmacy' && <NotifyPharmacy />}
+                    {item.name === 'Cashier' && <NotifyCashier />}
+                    {item.name === 'Laboratory' && <NotifyLaboratory />}
+                    {item.name === 'Radiology' && <NotifyRadiology />}
+                </Fragment>
+            ))}
 
-            {url.includes(frontDesk().url) && <NotifyFrontDesk/>}
+            {url.includes(frontDesk().url) && <NotifyFrontDesk />}
         </>
     );
 }

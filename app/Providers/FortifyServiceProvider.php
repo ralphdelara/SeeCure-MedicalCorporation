@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Actions\Fortify\ResetUserPassword;
+use App\Enums\AuditTypeEnum;
 use App\Models\User;
+use App\Models\UserAudit;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -80,7 +82,22 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::authenticateUsing(function (Request $request) {
             $user = User::whereBlind('username_index', 'username_index', $request->username)->first();
 
+            // prevents the bot account login
+            if ($user->is_bot) {
+                return null;
+            }
+
             if ($user && Hash::check($request->password, $user->password)) {
+                UserAudit::create([
+                    'user_id'       => $user->id,
+                    'audit_type_id' => AuditTypeEnum::UPDATE,
+                    'data'          => json_encode([
+                        'title'  => 'User has logged in to system.',
+                        'fields' => [],
+                    ]),
+                    'created_by' => $user->id,
+                ]);
+
                 return $user;
             }
 

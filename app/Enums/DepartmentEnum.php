@@ -16,18 +16,22 @@ enum DepartmentEnum: int
     case LABORATORY = 6;
     case RADIOLOGY = 7;
     case PHARMACY = 8;
+    case INFORMATION_TECHNOLOGY = 9;
+    case FINANCE = 10;
 
     public function description(): string
     {
         return match ($this) {
-            self::ADMINISTRATOR => 'Administrator',
-            self::BILLING       => 'Billing',
-            self::CASHIER       => 'Cashier',
-            self::CONSULTATION  => 'Consultation',
-            self::FRONT_DESK    => 'Front Desk',
-            self::LABORATORY    => 'Laboratory',
-            self::RADIOLOGY     => 'Radiology',
-            self::PHARMACY      => 'Pharmacy',
+            self::ADMINISTRATOR          => 'Administrator',
+            self::BILLING                => 'Billing',
+            self::CASHIER                => 'Cashier',
+            self::CONSULTATION           => 'Consultation',
+            self::FRONT_DESK             => 'Front Desk',
+            self::LABORATORY             => 'Laboratory',
+            self::RADIOLOGY              => 'Radiology',
+            self::PHARMACY               => 'Pharmacy',
+            self::INFORMATION_TECHNOLOGY => 'Information Technology',
+            self::FINANCE                => 'Finance',
         };
     }
 }

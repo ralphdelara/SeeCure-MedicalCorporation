@@ -1,13 +1,13 @@
-import { AddressDetailsFormProps } from "../address/types";
+import { AddressDetailsFormProps } from '../address/types';
 
 export interface AddOrUpdateUserDetailsFormProps extends AddressDetailsFormProps {
     user_id: number | string;
     username: string;
     password: string;
-    department_id: number | string;
+    department_ids: number[];
     profession_ids: number[];
     specialty_ids: number[];
-    position_id: number | string;
+    position_ids: number[];
     license_no: string;
     ptr_no: string;
     date_hired: string;

@@ -14,8 +14,6 @@ use App\Models\Province;
 use App\Models\Specialty;
 use App\Models\User;
 use App\Models\UserAudit;
-use App\Models\UserProfession;
-use App\Models\UserSpecialty;
 use Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -33,8 +31,8 @@ class UserService
             'province',
             'city',
             'barangay',
-            'department',
-            'position',
+            'departments',
+            'positions',
             'professions',
             'specialties',
             'audits',
@@ -94,25 +92,17 @@ class UserService
             $userDetails,
         );
 
-        // add or update profession data
-        updateRelatedData(
-            new UserProfession,
-            $user->professions->pluck('id')->toArray(),
-            $userDetails['profession_ids'],
-            $userId,
-            'user_id',
-            'profession_id',
-        );
+        // add or update department data
+        $user->departments()->sync($userDetails['department_ids']);
 
-        // add or update specialty data
-        updateRelatedData(
-            new UserSpecialty,
-            $user->specialties->pluck('id')->toArray(),
-            $userDetails['specialty_ids'],
-            $userId,
-            'user_id',
-            'specialty_id',
-        );
+        // add or update position data
+        $user->positions()->sync($userDetails['position_ids']);
+
+        // add or update profession data
+        $user->professions()->sync($userDetails['profession_ids']);
+
+        // add or update specialties
+        $user->specialties()->sync($userDetails['specialty_ids']);
 
         $this->updateUserOrder();
 
@@ -196,8 +186,8 @@ class UserService
             'province',
             'city',
             'barangay',
-            'department',
-            'position',
+            'departments',
+            'positions',
             'professions',
             'specialties',
             'audits',
@@ -211,6 +201,8 @@ class UserService
 
         $user = $user->toArray();
 
+        $user['departments'] = array_column($user['departments'], 'id');
+        $user['positions'] = array_column($user['positions'], 'id');
         $user['professions'] = array_column($user['professions'], 'id');
         $user['specialties'] = array_column($user['specialties'], 'id');
 
