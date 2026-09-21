@@ -15,6 +15,7 @@ use App\Models\Payment;
 use App\Models\Pharmacy;
 use App\Models\PharmacyDetail;
 use App\Models\Prescription;
+use App\Models\User;
 use App\Models\Visit;
 use App\Observers\BillingDetailObserver;
 use App\Observers\BillingObserver;
@@ -29,6 +30,7 @@ use App\Observers\PaymentObserver;
 use App\Observers\PharmacyDetailObserver;
 use App\Observers\PharmacyObserver;
 use App\Observers\PrescriptionObserver;
+use App\Observers\UserObserver;
 use App\Observers\VisitObserver;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Schema\Blueprint;
@@ -84,6 +86,7 @@ class AppServiceProvider extends ServiceProvider
         PharmacyDetail::observe(PharmacyDetailObserver::class);
         Payment::observe(PaymentObserver::class);
         Patient::observe(PatientObserver::class);
+        User::observe(UserObserver::class);
     }
 
     /**

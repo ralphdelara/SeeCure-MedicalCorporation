@@ -128,6 +128,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::match(['post', 'put'], '/', [UserController::class, 'addOrUpdateUser'])->name('user.add-or-update');
         Route::delete('/{id}', [UserController::class, 'deleteUser'])->name('user.delete');
         Route::get('/{id}', [UserController::class, 'getUserDetails'])->name('user.details');
+        Route::get('/{id}/audit-log', [UserController::class, 'getAuditLog'])->name('user.details.audit-log');
+
     });
 
     Route::prefix('system')->group(function () {

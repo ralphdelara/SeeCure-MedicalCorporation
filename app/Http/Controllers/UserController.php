@@ -90,4 +90,9 @@ class UserController extends Controller
     {
         User::destroy($userId);
     }
+
+    public function getAuditLog(string $id): array
+    {
+        return app(UserService::class)->getAuditLog($id);
+    }
 }
