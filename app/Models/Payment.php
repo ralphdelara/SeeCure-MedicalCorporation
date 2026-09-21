@@ -60,6 +60,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $transaction_no
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment whereTransactionHeader($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment whereTransactionNo($value)
+ * @property-read string $created_date
  * @mixin \Eloquent
  */
 #[Guarded([

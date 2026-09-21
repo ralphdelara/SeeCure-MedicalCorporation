@@ -30,6 +30,7 @@ class CashierService
             },
             'visit.patient.suffix',
             'visit.patient.gender',
+            'visit.priorityTypes',
             'billing',
             'pharmacy',
             'createdBy' => function ($query) {

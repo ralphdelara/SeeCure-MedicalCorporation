@@ -25,4 +25,15 @@ trait EnumTraits
 
         return $list;
     }
+
+    public static function arrayValues(): array
+    {
+        $list = [];
+
+        foreach (self::cases() as $case) {
+            $list[] = $case->value;
+        }
+
+        return $list;
+    }
 }

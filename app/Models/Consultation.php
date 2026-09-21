@@ -37,6 +37,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read Collection<int, ConsultationSignsOrSymptom> $signsOrSymptoms
  * @property-read int|null $signs_or_symptoms_count
  * @property-read Visit $visit
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation query()
@@ -53,6 +54,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation wherePatientId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereVisitId($value)
+ *
  * @property string|null $follow_up_date
  * @property-read Collection<int, ConsultationAudit> $audits
  * @property-read int|null $audits_count
@@ -63,12 +65,18 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read int|null $prescriptions_count
  * @property-read Radiology|null $radiology
  * @property-read ConsultationSoap|null $soap
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereFollowUpDate($value)
+ *
  * @property bool $is_completed
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereIsCompleted($value)
+ *
  * @property string|null $consult_reason
  * @property-read int|null $laboratory_count
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereConsultReason($value)
+ *
  * @mixin \Eloquent
  */
 #[Fillable([
@@ -148,14 +156,14 @@ class Consultation extends Model
         return $this->hasMany(Prescription::class);
     }
 
-    public function laboratory(): HasMany
-    {
-        return $this->hasMany(Laboratory::class);
-    }
-
     public function radiology(): HasOne
     {
         return $this->hasOne(Radiology::class);
+    }
+
+    public function vitalSigns(): HasMany
+    {
+        return $this->hasMany(PatientVitalSign::class);
     }
 
     public function documents(): HasMany

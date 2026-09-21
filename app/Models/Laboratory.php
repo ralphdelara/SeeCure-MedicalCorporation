@@ -14,47 +14,37 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * @property string $id
  * @property string $visit_id
- * @property string $patient_id
- * @property string|null $consultation_id
+ * @property bool $is_completed
  * @property string $created_by
  * @property string|null $last_modified_by
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
- * @property-read Consultation|null $consultation
+ * @property string|null $performed_by
+ * @property CarbonImmutable|null $date_performed
  * @property-read User $createdBy
  * @property-read User|null $lastModifiedBy
- * @property-read Patient|null $patient
- * @property-read Collection<int, LaboratoryTest> $tests
- * @property-read int|null $tests_count
+ * @property-read User|null $performedBy
+ * @property-read Collection<int, LaboratoryRemark> $remarks
+ * @property-read int|null $remarks_count
+ * @property-read Collection<int, LaboratoryTestData> $testData
+ * @property-read int|null $test_data_count
+ * @property-read Collection<int, LaboratoryTestFieldData> $testFieldData
+ * @property-read int|null $test_field_data_count
  * @property-read Visit $visit
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereConsultationId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereDatePerformed($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereIsCompleted($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereLastModifiedBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory wherePatientId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory wherePerformedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereVisitId($value)
- * @property bool $is_completed
- * @property-read Collection<int, LaboratoryTestData> $testData
- * @property-read int|null $test_data_count
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereIsCompleted($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory wherePatientName($value)
- * @property-read Collection<int, LaboratoryTestFieldData> $testFieldData
- * @property-read int|null $test_field_data_count
- * @property string|null $patient_name
- * @property string|null $performed_by
- * @property CarbonImmutable|null $date_performed
- * @property-read User|null $performedBy
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereDateProcessed($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereProcessedBy($value)
- * @property-read Collection<int, \App\Models\LaboratoryRemark> $remarks
- * @property-read int|null $remarks_count
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereDatePerformed($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory wherePerformedBy($value)
+ *
  * @mixin \Eloquent
  */
 #[Fillable([

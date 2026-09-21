@@ -31,6 +31,8 @@ export default function Pharmacy() {
         { name: '#', align: 'right' },
         { name: 'Patient • Gender', className: 'sticky-left', align: 'left' },
         { name: 'Detail', align: 'left' },
+        { name: 'Emergency', align: 'left' },
+        { name: 'Priority', align: 'left' },
         { name: 'Status', align: 'left' },
         { name: 'Added By', align: 'left' },
         { name: 'Last Modified By', align: 'left' },
@@ -121,6 +123,34 @@ export default function Pharmacy() {
                                                     </h6>
                                                 </Fragment>
                                             ))}
+                                        </td>
+                                        <td>
+                                            {item.visit.is_emergency && (
+                                                <span className="badge bg-success">Yes</span>
+                                            )}
+                                            {!item.visit.is_emergency && (
+                                                <span className="badge bg-danger">No</span>
+                                            )}
+                                        </td>
+                                        <td>
+                                            {item.visit.priority_types.map(
+                                                (priority, priorityIndex) => (
+                                                    <>
+                                                        {priorityIndex > 0 && <br />}
+                                                        <span
+                                                            className={
+                                                                'badge bg-info' +
+                                                                (priorityIndex > 0 ? ' mt-1' : '')
+                                                            }
+                                                        >
+                                                            {priority.name}
+                                                        </span>
+                                                    </>
+                                                ),
+                                            )}
+                                            {item.visit.priority_types.length === 0 && (
+                                                <span className="badge bg-danger">None</span>
+                                            )}
                                         </td>
                                         <td>
                                             {item.is_completed ? (

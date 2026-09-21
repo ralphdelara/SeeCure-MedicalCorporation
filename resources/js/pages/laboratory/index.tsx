@@ -30,7 +30,8 @@ export default function LaboratoryList() {
     const header = [
         { name: '#', width: '5%', align: 'right' },
         { name: 'Patient • Gender', className: 'sticky-left', align: 'left' },
-        { name: 'Link', align: 'left' },
+        { name: 'Emergency', align: 'left' },
+        { name: 'Priority', align: 'left' },
         { name: 'Tests', align: 'left' },
         { name: 'Status', align: 'left' },
         { name: 'Added By', align: 'left' },
@@ -118,22 +119,31 @@ export default function LaboratoryList() {
                                             </div>
                                         </td>
                                         <td>
-                                            {item.consultation_id && (
-                                                <Link
-                                                    href={getConsultationDetails(
-                                                        item.consultation_id,
-                                                    )}
-                                                >
-                                                    <Button
-                                                        rounded={true}
-                                                        className="me-1"
-                                                        title="Consultation Details"
-                                                    >
-                                                        <i>
-                                                            <IconStethoscope size={18} />
-                                                        </i>
-                                                    </Button>
-                                                </Link>
+                                            {item.visit.is_emergency && (
+                                                <span className="badge bg-success">Yes</span>
+                                            )}
+                                            {!item.visit.is_emergency && (
+                                                <span className="badge bg-danger">No</span>
+                                            )}
+                                        </td>
+                                        <td>
+                                            {item.visit.priority_types.map(
+                                                (priority, priorityIndex) => (
+                                                    <>
+                                                        {priorityIndex > 0 && <br />}
+                                                        <span
+                                                            className={
+                                                                'badge bg-info' +
+                                                                (priorityIndex > 0 ? ' mt-1' : '')
+                                                            }
+                                                        >
+                                                            {priority.name}
+                                                        </span>
+                                                    </>
+                                                ),
+                                            )}
+                                            {item.visit.priority_types.length === 0 && (
+                                                <span className="badge bg-danger">None</span>
                                             )}
                                         </td>
                                         <td>
@@ -203,7 +213,9 @@ export default function LaboratoryList() {
                                                         : 'Please wait...'
                                                 }
                                                 disabled={!allowCallPatient}
-                                                onClick={() => callPatient(item.visit.patient.full_name)}
+                                                onClick={() =>
+                                                    callPatient(item.visit.patient.full_name)
+                                                }
                                             >
                                                 <i>
                                                     {allowCallPatient && <IconVolume size={18} />}

@@ -16,6 +16,7 @@ import { deletePrescription } from '@/actions/App/Http/Controllers/ConsultationC
 import Pagination from '@/components/pagination';
 import SaveConsultation from './complete-consultation';
 import { printDocument } from '@/lib/utils';
+import TableCounter from '@/components/table-counter';
 
 interface InertiaProps {
     consultationDetails: {
@@ -118,8 +119,8 @@ const Prescription = ({ showTab }: { showTab: boolean }) => {
                                             Print Prescription
                                         </Button>
                                     </div>
-                                    <h4 className="fw-bolder">Prescription</h4>
                                 </div>
+                                <TableCounter table={prescriptions} tableTitle="Prescription" />
                                 <TableList header={header} hasPage={false}>
                                     {prescriptions.map((item, index) => (
                                         <tr key={'prescription-' + item.id}>
@@ -194,6 +195,7 @@ const Prescription = ({ showTab }: { showTab: boolean }) => {
                                         </tr>
                                     )}
                                 </TableList>
+                                <TableCounter table={prescriptions} tableTitle="Prescription" />
                             </div>
                         </div>
                     </div>

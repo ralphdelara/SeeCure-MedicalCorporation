@@ -60,18 +60,18 @@ class PrintController extends Controller
         $printData = [];
 
         $laboratory = Laboratory::with(
-            'patient',
-            'patient.barangay',
-            'patient.city',
-            'patient.province',
-            'patient.gender',
-            'patient.civilStatus',
+            'visit.patient',
+            'visit.patient.barangay',
+            'visit.patient.city',
+            'visit.patient.province',
+            'visit.patient.gender',
+            'visit.patient.civilStatus',
             'performedBy.professions',
             'performedBy.specialties',
             'remarks',
         )->find($laboratoryId);
 
-        $patient = $laboratory?->patient;
+        $patient = $laboratory?->visit->patient;
 
         // Clinical Chemistry
         $clinicalChemistry = LaboratoryTestData::with([

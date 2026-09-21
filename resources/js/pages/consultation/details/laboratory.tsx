@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import LaboratoryResultsModal from './laboratory-results-modal';
 import SaveConsultation from './complete-consultation';
+import TableCounter from '@/components/table-counter';
 
 interface InertiaProps {
     consultationDetails: {
@@ -101,9 +102,7 @@ const Laboratory = ({ showTab }: { showTab: boolean }) => {
                                         Add Laboratory Request
                                     </Button>
                                 </div>
-                                <div className="col-lg-12">
-                                    <h4 className="fw-bolder">Laboratory</h4>
-                                </div>
+                                <TableCounter table={laboratory} tableTitle="Laboratory" />
                                 <TableList header={header} hasPage={false}>
                                     {laboratory.map((item, index) => {
                                         if (!item.is_completed) {
@@ -170,6 +169,7 @@ const Laboratory = ({ showTab }: { showTab: boolean }) => {
                                         </tr>
                                     )}
                                 </TableList>
+                                <TableCounter table={laboratory} tableTitle="Laboratory" />
                             </div>
                         </div>
                     </div>

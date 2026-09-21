@@ -39,6 +39,7 @@ class LaboratoryService
             },
             'visit.patient.suffix',
             'visit.patient.gender',
+            'visit.priorityTypes',
             'testData',
             'testData.package',
             'testData.type',

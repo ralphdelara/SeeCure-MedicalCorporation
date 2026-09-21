@@ -21,6 +21,7 @@
         "laravel/wayfinder": "^0.1.14",
         "pusher/pusher-php-server": "^7.3",
         "spatie/laravel-ciphersweet": "^1.8",
+        "stevebauman/purify": "^6.3",
         "timokoerber/laravel-one-time-operations": "^1.4"
     },
     "require-dev": {
