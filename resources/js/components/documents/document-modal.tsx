@@ -9,6 +9,7 @@ import { addOrUpdateDocument } from '@/actions/App/Http/Controllers/DocumentCont
 import { Select } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import DragAndDropUpload from '@/components/drag-and-drop-upload';
+import { WebcamCapture } from '../webcam-capture';
 
 interface InertiaProps {
     documentTypeOptions: Options[];
@@ -24,6 +25,7 @@ interface ModalProps {
 const DocumentModal = ({ formShow, setFormShow, formType, formData }: ModalProps) => {
     const { documentTypeOptions } = usePage().props as unknown as InertiaProps;
     const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+    const [imageData, setImageData] = useState<string | null>(null);
 
     const { data, setData, post, processing, errors } = useForm(formData);
 
@@ -46,10 +48,18 @@ const DocumentModal = ({ formShow, setFormShow, formType, formData }: ModalProps
         setData('data', uploadedFiles);
     }, [uploadedFiles]);
 
+    useEffect(() => {
+        setData('data', imageData);
+    }, [imageData]);
+
     return (
         <>
             <Toaster position="top-center" reverseOrder={false} />
-            <Modal show={formShow} onHide={() => setFormShow(false)}>
+            <Modal
+                show={formShow}
+                size={data.document_type_id === '4' ? 'xl' : undefined}
+                onHide={() => setFormShow(false)}
+            >
                 <form onSubmit={submitDocument}>
                     <Modal.Header closeButton>
                         <Modal.Title>{formType} Document</Modal.Title>
@@ -70,6 +80,9 @@ const DocumentModal = ({ formShow, setFormShow, formType, formData }: ModalProps
                                     files={uploadedFiles}
                                     onFilesChange={setUploadedFiles}
                                 />
+                            )}
+                            {data.document_type_id === '4' && (
+                                <WebcamCapture setImageData={setImageData} />
                             )}
                         </div>
                     </Modal.Body>

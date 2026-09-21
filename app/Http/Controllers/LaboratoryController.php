@@ -39,14 +39,14 @@ class LaboratoryController extends Controller
         $laboratoryDetails = app(LaboratoryService::class)->getLaboratoryDetails($id);
         $patientDetails = $laboratoryDetails['visit']['patient'];
 
-        $staffOptionsArr = User::with('professions', 'specialties')->whereIn(
-            'position_id',
-            [
-                PositionEnum::HEAD_OF_LABORATORY,
-                PositionEnum::MEDICAL_TECHNOLOGIST,
-                PositionEnum::MEDICAL_TECHNOLOGIST_SUPERVISOR,
-            ],
-        )->get()->toArray();
+        $staffOptionsArr = User::with('professions', 'specialties')
+            ->whereHas('positions', function ($query) {
+                $query->whereIn('position_id', [
+                    PositionEnum::HEAD_OF_LABORATORY,
+                    PositionEnum::MEDICAL_TECHNOLOGIST,
+                    PositionEnum::MEDICAL_TECHNOLOGIST_SUPERVISOR,
+                ]);
+            })->get()->toArray();
 
         $staffOptions = array_map(fn ($item) => [
             'id'   => $item['id'],

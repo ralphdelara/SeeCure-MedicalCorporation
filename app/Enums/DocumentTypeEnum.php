@@ -11,6 +11,7 @@ enum DocumentTypeEnum: int
     case MEDICAL_CERTIFICATE = 1;
     case REFERRAL_LETTER = 2;
     case FILE = 3;
+    case WEBCAM = 4;
 
     public function description(): string
     {
@@ -18,6 +19,7 @@ enum DocumentTypeEnum: int
             self::MEDICAL_CERTIFICATE => 'Medical Certificate',
             self::REFERRAL_LETTER     => 'Referral Letter',
             self::FILE                => 'File',
+            self::WEBCAM              => 'Webcam',
         };
     }
 }

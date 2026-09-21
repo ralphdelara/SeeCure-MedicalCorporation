@@ -13,7 +13,9 @@ const PickList = () => {
 
     useEffect(() => {
         document.body.style.margin = '0';
-        //window.print();
+        setTimeout(() => {
+            window.print();
+        }, 1000);
     }, []);
     return (
         <>

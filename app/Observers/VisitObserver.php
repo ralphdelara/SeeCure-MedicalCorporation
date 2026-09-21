@@ -27,8 +27,11 @@ class VisitObserver
         $changedFields = $visit->getChanges();
         $originalFields = $visit->getOriginal();
 
-        if ($changedFields['visit_status_id']->value !== $originalFields['visit_status_id']) {
-            app(VisitService::class)->notifyDepartments($visit);
+        // the condition below resolves errors about Visit model updates without changing VisitStatus
+        if (! empty($changedFields['visit_status_id'])) {
+            if ($changedFields['visit_status_id']->value !== $originalFields['visit_status_id']) {
+                app(VisitService::class)->notifyDepartments($visit);
+            }
         }
     }
 
