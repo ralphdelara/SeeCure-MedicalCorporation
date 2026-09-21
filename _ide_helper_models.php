@@ -91,9 +91,9 @@ namespace App\Models{
  * @property numeric|null $total_quantity
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Billing whereTotalCostPrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Billing whereTotalQuantity($value)
- * @mixin \Eloquent
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Billing whereTransactionHeader($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Billing whereTransactionNo($value)
+ * @mixin \Eloquent
  */
 	class Billing extends \Eloquent {}
 }
@@ -391,6 +391,8 @@ namespace App\Models{
  * @property-read int|null $laboratory_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereConsultReason($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PatientVitalSign> $vitalSigns
+ * @property-read int|null $vital_signs_count
  */
 	class Consultation extends \Eloquent {}
 }
@@ -554,12 +556,34 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * @property-read \App\Models\DocumentFile|null $file
+ * @property-read \App\Models\MedicalCertificate|null $medicalCertificate
+ * @property-read \App\Models\Patient|null $patient
+ * @property-read \App\Models\ReferralLetter|null $referralLetter
+ * @property-read \App\Models\DocumentType|null $type
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Document newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Document newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Document query()
- * @mixin \Eloquent
  */
 	class Document extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DocumentFile newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DocumentFile newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DocumentFile query()
+ */
+	class DocumentFile extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DocumentType newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DocumentType newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DocumentType query()
+ */
+	class DocumentType extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -749,47 +773,35 @@ namespace App\Models{
 /**
  * @property string $id
  * @property string $visit_id
- * @property string $patient_id
- * @property string|null $consultation_id
+ * @property bool $is_completed
  * @property string $created_by
  * @property string|null $last_modified_by
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
- * @property-read Consultation|null $consultation
+ * @property string|null $performed_by
+ * @property CarbonImmutable|null $date_performed
  * @property-read User $createdBy
  * @property-read User|null $lastModifiedBy
- * @property-read Patient|null $patient
- * @property-read Collection<int, LaboratoryTest> $tests
- * @property-read int|null $tests_count
+ * @property-read User|null $performedBy
+ * @property-read Collection<int, LaboratoryRemark> $remarks
+ * @property-read int|null $remarks_count
+ * @property-read Collection<int, LaboratoryTestData> $testData
+ * @property-read int|null $test_data_count
+ * @property-read Collection<int, LaboratoryTestFieldData> $testFieldData
+ * @property-read int|null $test_field_data_count
  * @property-read Visit $visit
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereConsultationId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereDatePerformed($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereIsCompleted($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereLastModifiedBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory wherePatientId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory wherePerformedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereVisitId($value)
- * @property bool $is_completed
- * @property-read Collection<int, LaboratoryTestData> $testData
- * @property-read int|null $test_data_count
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereIsCompleted($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory wherePatientName($value)
- * @property-read Collection<int, LaboratoryTestFieldData> $testFieldData
- * @property-read int|null $test_field_data_count
- * @property string|null $patient_name
- * @property string|null $performed_by
- * @property CarbonImmutable|null $date_performed
- * @property-read User|null $performedBy
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereDateProcessed($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereProcessedBy($value)
- * @property-read Collection<int, \App\Models\LaboratoryRemark> $remarks
- * @property-read int|null $remarks_count
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory whereDatePerformed($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Laboratory wherePerformedBy($value)
  * @mixin \Eloquent
  */
 	class Laboratory extends \Eloquent {}
@@ -1055,6 +1067,15 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|MedicalCertificate newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|MedicalCertificate newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|MedicalCertificate query()
+ */
+	class MedicalCertificate extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
  * @property int $id
  * @property string $name
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Nationality newModelQuery()
@@ -1309,6 +1330,7 @@ namespace App\Models{
  * @property int $transaction_no
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment whereTransactionHeader($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment whereTransactionNo($value)
+ * @property-read string $created_date
  * @mixin \Eloquent
  */
 	class Payment extends \Eloquent {}
@@ -1406,7 +1428,6 @@ namespace App\Models{
  * @property numeric|null $total_discount
  * @property numeric|null $total_tax
  * @property numeric|null $total_nett_price
- * @property int $transaction_no
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy whereTotalCostPrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy whereTotalDiscount($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy whereTotalNettPrice($value)
@@ -1414,6 +1435,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy whereTotalQuantity($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy whereTotalTax($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Pharmacy whereTransactionNo($value)
+ * @property-read \App\Models\PharmacyPickList|null $pickList
  * @mixin \Eloquent
  */
 	class Pharmacy extends \Eloquent {}
@@ -1546,6 +1568,26 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * @property int $transaction_no
+ * @property string $pharmacy_id
+ * @property string $created_by
+ * @property \Carbon\CarbonImmutable $created_at
+ * @property-read \App\Models\User $createdBy
+ * @property-read \App\Models\Pharmacy $pharmacy
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyPickList newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyPickList newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyPickList query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyPickList whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyPickList whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyPickList wherePharmacyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyPickList whereTransactionNo($value)
+ * @mixin \Eloquent
+ */
+	class PharmacyPickList extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
  * @property int $id
  * @property string $name
  * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
@@ -1668,6 +1710,24 @@ namespace App\Models{
  * @mixin \Eloquent
  */
 	class Radiology extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Referral newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Referral newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Referral query()
+ */
+	class Referral extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ReferralLetter newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ReferralLetter newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ReferralLetter query()
+ */
+	class ReferralLetter extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -1833,6 +1893,7 @@ namespace App\Models{
  * @property-read string|null $age_computed
  * @property-read string|null $full_address
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUsernameIndex($value)
+ * @property-read string $full_name_receipt
  * @mixin \Eloquent
  */
 	class User extends \Eloquent implements \Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted {}
@@ -1955,10 +2016,11 @@ namespace App\Models{
  * @property-read int|null $cashier_count
  * @property int $visit_no
  * @property bool $is_walk_in
- * @property-read \App\Models\Pharmacy|null $pharmacy
+ * @property-read Pharmacy|null $pharmacy
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereIsWalkIn($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereVisitNo($value)
  * @mixin \Eloquent
+ * @property-read \App\Models\VisitStatus $status
  */
 	class Visit extends \Eloquent {}
 }

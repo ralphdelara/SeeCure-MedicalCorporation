@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DocumentType;
 use App\Models\Patient;
 use App\Models\VitalSign;
 use App\Services\PatientService;
@@ -31,11 +32,13 @@ class PatientController extends Controller
         $formOptions = app(PatientService::class)->getPatientFormOptions();
         $patientDetails = app(PatientService::class)->getPatientDetails($id);
         $vitalSigns = VitalSign::with('fields')->get();
+        $documentTypeOptions = DocumentType::all();
 
         return Inertia::render('patient/details/index', compact(
             'formOptions',
             'patientDetails',
             'vitalSigns',
+            'documentTypeOptions',
         ));
     }
 

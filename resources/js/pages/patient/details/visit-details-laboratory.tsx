@@ -9,7 +9,7 @@ import { getNormalRange } from '@/lib/utils';
 
 const VisitDetailsLaboratory = ({ laboratory }) => {
     const { patientDetails } = usePage().props;
-    console.log(laboratory);
+
     return (
         <>
             <div className="d-flex justify-content-between">

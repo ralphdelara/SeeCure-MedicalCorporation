@@ -104,4 +104,9 @@ class Laboratory extends Model
     {
         return $this->hasMany(LaboratoryTestFieldData::class);
     }
+
+    public function documents(): HasMany
+    {
+        return $this->hasMany(Document::class);
+    }
 }

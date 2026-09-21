@@ -5,10 +5,10 @@ import { useEffect, useState } from 'react';
 import { IconCalendarUser, IconFiles, IconListDetails, IconUserCode } from '@tabler/icons-react';
 import { PatientDetailsProps } from '@/components/patient/patient-details';
 import Details from './details';
-import Documents from './documents';
 import AuditLog from './audit-log';
 import Visits from './visits';
 import { getUrlParams } from '@/lib/utils';
+import Documents from '@/components/documents/document';
 
 interface InertiaProps {
     patientDetails: PatientDetailsProps;
@@ -82,7 +82,9 @@ export default function PatientDetails() {
             </PatientInfo>
             {selectedTab === 'tab-details' && <Details />}
             {selectedTab === 'tab-visits' && <Visits />}
-            {selectedTab === 'tab-documents' && <Documents />}
+            {selectedTab === 'tab-documents' && (
+                <Documents details={patientDetails} department="patient" />
+            )}
             {selectedTab === 'tab-audit-log' && <AuditLog />}
         </>
     );

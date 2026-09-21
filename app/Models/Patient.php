@@ -72,6 +72,7 @@ use Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted;
  * @property-read Province|null $province
  * @property-read PatientStatus $status
  * @property-read PatientSuffix|null $suffix
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient orWhereBlind(string $column, string $indexName, array|string $value)
@@ -107,16 +108,22 @@ use Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereStatusId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereStreet($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereUpdatedAt($value)
+ *
  * @property-read string|null $age_computed
  * @property-read string|null $full_address
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient wherePriorityTypeId($value)
+ *
  * @property string|null $senior_citizen_id
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereSeniorCitizenId($value)
+ *
  * @property-read bool $is_senior
- * @property-read Collection<int, \App\Models\Visit> $visits
+ * @property-read Collection<int, Visit> $visits
  * @property-read int|null $visits_count
- * @property-read Collection<int, \App\Models\PatientVitalSign> $vitalSigns
+ * @property-read Collection<int, PatientVitalSign> $vitalSigns
  * @property-read int|null $vital_signs_count
+ *
  * @mixin \Eloquent
  */
 // Guarded blocks specified fields from being added/updated via ::create and ::update
@@ -236,6 +243,11 @@ class Patient extends Model implements CipherSweetEncrypted
     public function visits(): HasMany
     {
         return $this->hasMany(Visit::class);
+    }
+
+    public function documents(): HasMany
+    {
+        return $this->hasMany(Document::class);
     }
 
     public function audits(): HasMany

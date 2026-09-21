@@ -56,7 +56,7 @@ interface InertiaProps {
 
 const Details = ({ showTab }: { showTab: boolean }) => {
     const { billingDetails, discountType } = usePage().props as unknown as InertiaProps;
-    console.log(billingDetails);
+
     const { data, setData, patch, isDirty, setDefaults } = useForm({
         id: billingDetails.id,
         total_cost_price: billingDetails.total_cost_price ?? 0,
