@@ -21,10 +21,10 @@ return [
     'manifest' => [
         'name'             => 'See Cure Medical Corporation',
         'short_name'       => 'See Cure',
-        'background_color' => '#6df395',
-        'display'          => 'fullscreen',
-        'description'      => 'A system designed to manage patient easier',
-        'theme_color'      => '#6df395',
+        'background_color' => '#e6fffa',
+        'display'          => 'standalone',
+        'description'      => 'A hospital information system designed to easily manage patient details and hospital data.',
+        'theme_color'      => '#e6fffa',
         'icons'            => [
             [
                 'src'     => '/icons/icon-192.png',
@@ -33,7 +33,7 @@ return [
                 'purpose' => 'any',
             ],
             [
-                'src'     => '/icons/icon-512.png',
+                'src'     => '/logo.png',
                 'sizes'   => '512x512',
                 'type'    => 'image/png',
                 'purpose' => 'any maskable',
