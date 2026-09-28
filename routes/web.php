@@ -91,6 +91,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::patch('/', [BillingController::class, 'updateDetails'])->name('billing.details.update');
             Route::patch('/complete/{id}', [BillingController::class, 'completeBilling'])->name('billing.completed');
         });
+        Route::post('/supplies', [])->name('supplies');
         Route::delete('/{id}', [BillingController::class, 'deleteBilling'])->name('billing.delete');
     });
 

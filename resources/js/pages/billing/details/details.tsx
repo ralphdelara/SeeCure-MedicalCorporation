@@ -17,6 +17,7 @@ import {
     IconPrinter,
 } from '@tabler/icons-react';
 import { printPrescription } from '@/actions/App/Http/Controllers/PrintController';
+import SuppliesModal from './supplies-modal';
 
 interface InertiaProps {
     billingDetails: {
@@ -220,12 +221,7 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                             <SaveButton type="Details" isDirty={isDirty} />
                         </div>
                         <div className="me-5 text-right">
-                            <Button
-                                size="lg"
-                                type="button"
-                                className="me-2"
-                                onClick={() => printDocument('billing', billingDetails.id)}
-                            >
+                            <Button size="lg" type="button" className="me-2" onClick={() => {}}>
                                 <IconPlus /> Add Supplies
                             </Button>
                             <Button

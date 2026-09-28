@@ -3,7 +3,15 @@ import { IconDeviceFloppy, IconExclamationCircleFilled } from '@tabler/icons-rea
 import ConfirmBilling from './complete-billing';
 import { usePage } from '@inertiajs/react';
 
-const SaveButton = ({ type, isDirty }: { type: string; isDirty: boolean }) => {
+const SaveButton = ({
+    type,
+    isDirty,
+    hideSaveButton = false,
+}: {
+    type: string;
+    isDirty: boolean;
+    hideSaveButton?: boolean;
+}) => {
     const { billingDetails } = usePage().props as unknown as {
         billingDetails: { is_completed: boolean };
     };
@@ -37,12 +45,14 @@ const SaveButton = ({ type, isDirty }: { type: string; isDirty: boolean }) => {
                     </>
                 )}
             </h5>
-            <Button size="lg" className="ms-3">
-                <i>
-                    <IconDeviceFloppy className="me-1" />
-                </i>
-                Save {type}
-            </Button>
+            {!hideSaveButton && (
+                <Button size="lg" className="ms-3">
+                    <i>
+                        <IconDeviceFloppy className="me-1" />
+                    </i>
+                    Save {type}
+                </Button>
+            )}
         </div>
     );
 };

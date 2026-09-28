@@ -59,6 +59,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 #[Fillable([
     'billing_id',
+    'billing_supplies_id',
     'billing_type_id',
     'name',
 
@@ -90,6 +91,11 @@ class BillingDetail extends Model
     public function billing(): BelongsTo
     {
         return $this->belongsTo(Billing::class, 'billing_id', 'id');
+    }
+
+    public function supply(): BelongsTo
+    {
+        return $this->belongsTo(BillingSupplies::class, 'billing_supplies_id', 'id');
     }
 
     public function type(): BelongsTo

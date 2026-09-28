@@ -171,6 +171,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail whereQuantity($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail whereTotalPrice($value)
  * @mixin \Eloquent
+ * @property int|null $billing_supplies_id
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail whereBillingSuppliesId($value)
  */
 	class BillingDetail extends \Eloquent {}
 }
