@@ -6,6 +6,7 @@ import {
     printReceipt,
 } from '@/actions/App/Http/Controllers/PrintController';
 import { NormalRangeProps } from '@/pages/laboratory/details/details-test-fields';
+import { callOutPatient } from '@/routes/system';
 import type { InertiaLinkProps } from '@inertiajs/react';
 import { clsx } from 'clsx';
 import type { ClassValue } from 'clsx';
@@ -76,6 +77,11 @@ export async function fetchUrl(url: string, method: string, data: object) {
 
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        // this fixes the js errors if theres no content response
+        if (url === callOutPatient().url && [200, 204].includes(response.status)) {
+            return null;
         }
 
         return await response.json();

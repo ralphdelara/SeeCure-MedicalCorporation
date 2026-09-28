@@ -19,7 +19,6 @@ const ExistingPatientForm = ({ data, setData, errors = {} }: QueuePatientFormPro
         const response = await fetchUrl(getSmallPatientList().url, 'GET', {
             keyword: keyword,
         });
-
         setPatientList(response);
     };
 

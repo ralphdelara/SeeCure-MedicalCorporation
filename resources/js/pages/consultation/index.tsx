@@ -123,7 +123,7 @@ export default function Consultation() {
                                 </td>
                                 <td>
                                     {item.visit.priority_types.map((priority, priorityIndex) => (
-                                        <>
+                                        <Fragment key={'prio-' + priorityIndex}>
                                             {priorityIndex > 0 && <br />}
                                             <span
                                                 className={
@@ -133,7 +133,7 @@ export default function Consultation() {
                                             >
                                                 {priority.name}
                                             </span>
-                                        </>
+                                        </Fragment>
                                     ))}
                                     {item.visit.priority_types.length === 0 && (
                                         <span className="badge bg-danger">None</span>
