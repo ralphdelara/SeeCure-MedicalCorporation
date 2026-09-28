@@ -1,6 +1,7 @@
 import { Head, Link } from '@inertiajs/react';
 import logo from '@/assets/images/logos/logo_text.png';
 import { useEffect, useRef, useState } from 'react';
+import { Button } from '@/components/ui/button';
 import {
     IconArrowsMaximize,
     IconArrowsMinimize,
@@ -9,6 +10,7 @@ import {
     IconPrescription,
     IconReportMoney,
     IconScan,
+    IconSpeakerphone,
     IconStethoscope,
 } from '@tabler/icons-react';
 import '@/assets/css/call-out.css';
@@ -16,12 +18,17 @@ import { echo } from '@/components/echo';
 import notificationSound from '@/assets/sounds/ding-dong.mp3';
 import { useSpeech } from 'react-text-to-speech';
 import { dashboard } from '@/routes';
+import { Modal } from 'react-bootstrap';
+import { Select } from '@/components/ui/select';
 
 export default function CallOut() {
     const [speechText, setSpeechText] = useState('');
     const [maximize, setMaximize] = useState(false);
     const startButtonRef = useRef<HTMLButtonElement>(null);
     const [blinkText, setBlinkText] = useState('blink');
+    const [voiceList, setVoiceList] = useState([]);
+    const [showSpeakerModal, setShowSpeakerModal] = useState(false);
+    const [selectedSpeaker, setSelectedSpeaker] = useState('');
 
     const { Text, speechStatus, start, pause, stop } = useSpeech({
         text: speechText.split('|')[0],
@@ -29,7 +36,7 @@ export default function CallOut() {
         rate: 0.9,
         volume: 1,
         lang: 'en-US',
-        voiceURI: 'Google US English',
+        voiceURI: selectedSpeaker,
         autoPlay: false,
         highlightText: true,
         showOnlyHighlightedText: false,
@@ -124,6 +131,28 @@ export default function CallOut() {
         return () => clearInterval(timer);
     }, []);
 
+    useEffect(() => {
+        if (typeof window !== 'undefined' && window.speechSynthesis) {
+            const updateVoices = () => {
+                setVoiceList(window.speechSynthesis.getVoices() as any);
+            };
+
+            // Get initial voices
+            updateVoices();
+
+            // Browsers load voices asynchronously, so listen for changes
+            window.speechSynthesis.onvoiceschanged = updateVoices;
+
+            return () => {
+                window.speechSynthesis.onvoiceschanged = null;
+            };
+        }
+    }, []);
+
+    useEffect(() => {
+        setSelectedSpeaker(localStorage.getItem('speaker') ?? ('' as any));
+    }, [localStorage]);
+
     const playSound = async () => {
         const audio = new Audio(notificationSound);
         try {
@@ -176,7 +205,7 @@ export default function CallOut() {
             if (startButtonRef.current) {
                 startButtonRef.current?.click();
             }
-        }, 1500);
+        }, 2000);
     }, [speechText]);
 
     const toggleMaximize = async (isMaximize: boolean) => {
@@ -201,6 +230,11 @@ export default function CallOut() {
             // Rollback state if the browser blocked the action
             setMaximize(false);
         }
+    };
+
+    const updateSpeaker = (e: any) => {
+        localStorage.setItem('speaker', e.target.options[e.target.selectedIndex].text);
+        setSelectedSpeaker(e.target.options[e.target.selectedIndex].text);
     };
 
     return (
@@ -232,6 +266,11 @@ export default function CallOut() {
                                     className="cursor-pointer"
                                 />
                             )}
+                            <IconSpeakerphone
+                                size={30}
+                                className="cursor-pointer"
+                                onClick={() => setShowSpeakerModal(true)}
+                            />
                         </div>
                         <div className="clock">
                             <div className="time" id="clock">
@@ -261,7 +300,10 @@ export default function CallOut() {
                                         {calledDepartment.patientName}
                                     </h2>
                                     <p className="proceed fs-9">
-                                        Please proceed to <span className="fw-bolder fs-10">{calledDepartment.department}</span>
+                                        Please proceed to{' '}
+                                        <span className="fw-bolder fs-10">
+                                            {calledDepartment.department}
+                                        </span>
                                     </p>
                                 </>
                             )}
@@ -303,6 +345,33 @@ export default function CallOut() {
                         ))}
                     </div>
                 </div>
+
+                <Modal show={showSpeakerModal} size="sm" onHide={() => setShowSpeakerModal(false)}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Speaker</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div className="wizard clearfix px-4" role="application">
+                            <h5>{selectedSpeaker}</h5>
+                            <div className="form-group">
+                                <Select
+                                    onChange={(e) => updateSpeaker(e)}
+                                    options={voiceList}
+                                    required={true}
+                                />
+                            </div>
+                        </div>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button
+                            variant="light"
+                            type="button"
+                            onClick={() => setShowSpeakerModal(false)}
+                        >
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
             </section>
         </>
     );
