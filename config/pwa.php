@@ -22,7 +22,7 @@ return [
         'name'             => 'See Cure Medical Corporation',
         'short_name'       => 'See Cure',
         'background_color' => '#e6fffa',
-        'display'          => 'standalone',
+        'display'          => 'fullscreen',
         'description'      => 'A hospital information system designed to easily manage patient details and hospital data.',
         'theme_color'      => '#e6fffa',
         'icons'            => [
