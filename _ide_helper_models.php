@@ -171,8 +171,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail whereQuantity($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail whereTotalPrice($value)
  * @mixin \Eloquent
- * @property int|null $billing_supplies_id
- * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail whereBillingSuppliesId($value)
  */
 	class BillingDetail extends \Eloquent {}
 }
@@ -393,8 +391,10 @@ namespace App\Models{
  * @property-read int|null $laboratory_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereConsultReason($value)
  * @mixin \Eloquent
+ * @property string|null $prescription_remarks
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PatientVitalSign> $vitalSigns
  * @property-read int|null $vital_signs_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation wherePrescriptionRemarks($value)
  */
 	class Consultation extends \Eloquent {}
 }
@@ -1244,7 +1244,7 @@ namespace App\Models{
  * @property-read int|null $vital_signs_count
  * @mixin \Eloquent
  * @property string|null $old_patient_id
- * @property int $control_no
+ * @property int|null $control_no
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Document> $documents
  * @property-read int|null $documents_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereControlNo($value)
@@ -1857,6 +1857,29 @@ namespace App\Models{
  * @mixin \Eloquent
  */
 	class StockMovementType extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property string $title
+ * @property string $description
+ * @property string $created_by
+ * @property string|null $last_modified_by
+ * @property \Carbon\CarbonImmutable|null $created_at
+ * @property \Carbon\CarbonImmutable|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SystemUpdate newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SystemUpdate newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SystemUpdate query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SystemUpdate whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SystemUpdate whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SystemUpdate whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SystemUpdate whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SystemUpdate whereLastModifiedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SystemUpdate whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SystemUpdate whereUpdatedAt($value)
+ */
+	class SystemUpdate extends \Eloquent {}
 }
 
 namespace App\Models{

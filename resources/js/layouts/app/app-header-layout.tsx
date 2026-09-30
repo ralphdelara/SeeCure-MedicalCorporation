@@ -1,15 +1,8 @@
 import { Link, usePage } from '@inertiajs/react';
-import {
-    IconBellRinging,
-    IconDots,
-    IconLoader,
-    IconLogout,
-    IconMenu2,
-    IconSearch,
-} from '@tabler/icons-react';
+import { IconBellRinging, IconDots, IconLogout, IconMenu2, IconSearch } from '@tabler/icons-react';
 import { Fragment, useEffect, useState } from 'react';
 import logoText from '@/assets/images/logos/logo_text.png';
-import { announcements, calendar, frontDesk, logout, notes, reminders } from '@/routes';
+import { calendar, frontDesk, logout, notes, reminders, guide } from '@/routes';
 import NotifyDoctor from '@/pages/notifications/notify-doctor';
 import personDefault from '@/assets/images/profile/person-default.png';
 import NotifyBilling from '@/pages/notifications/notify-billing';
@@ -43,7 +36,7 @@ export default function NavHeader({ toggleSidebar }: NavHeaderProps) {
     const { user, professions, specialties } = auth;
     const { full_name } = user;
     const routes = [
-        { url: announcements(), name: 'Announcements' },
+        { url: guide(), name: 'Guide' },
         { url: notes(), name: 'Notes' },
         { url: reminders(), name: 'Reminders' },
         { url: calendar(), name: 'Calendar' },
@@ -75,7 +68,6 @@ export default function NavHeader({ toggleSidebar }: NavHeaderProps) {
                                     className="nav-link sidebartoggler"
                                     id="headerCollapse"
                                 >
-                                    <i className="ti ti-menu-2"></i>
                                     <IconMenu2 />
                                 </button>
                             </li>
@@ -205,94 +197,6 @@ export default function NavHeader({ toggleSidebar }: NavHeaderProps) {
                                                         </h6>
                                                         <span className="fs-2 d-block text-body-secondary">
                                                             Salma sent you new message
-                                                        </span>
-                                                    </div>
-                                                </a>
-                                                <a
-                                                    href="javascript:void(0)"
-                                                    className="d-flex align-items-center dropdown-item px-7 py-6"
-                                                >
-                                                    <span className="me-3">
-                                                        <img
-                                                            src={personDefault}
-                                                            alt="user"
-                                                            className="rounded-circle"
-                                                            width="48"
-                                                            height="48"
-                                                        />
-                                                    </span>
-                                                    <div className="w-100">
-                                                        <h6 className="fw-semibold lh-base mb-1">
-                                                            Bianca sent payment
-                                                        </h6>
-                                                        <span className="fs-2 d-block text-body-secondary">
-                                                            Check your earnings
-                                                        </span>
-                                                    </div>
-                                                </a>
-                                                <a
-                                                    href="javascript:void(0)"
-                                                    className="d-flex align-items-center dropdown-item px-7 py-6"
-                                                >
-                                                    <span className="me-3">
-                                                        <img
-                                                            src={personDefault}
-                                                            alt="user"
-                                                            className="rounded-circle"
-                                                            width="48"
-                                                            height="48"
-                                                        />
-                                                    </span>
-                                                    <div className="w-100">
-                                                        <h6 className="fw-semibold lh-base mb-1">
-                                                            Jolly completed tasks
-                                                        </h6>
-                                                        <span className="fs-2 d-block text-body-secondary">
-                                                            Assign her new tasks
-                                                        </span>
-                                                    </div>
-                                                </a>
-                                                <a
-                                                    href="javascript:void(0)"
-                                                    className="d-flex align-items-center dropdown-item px-7 py-6"
-                                                >
-                                                    <span className="me-3">
-                                                        <img
-                                                            src={personDefault}
-                                                            alt="user"
-                                                            className="rounded-circle"
-                                                            width="48"
-                                                            height="48"
-                                                        />
-                                                    </span>
-                                                    <div className="w-100">
-                                                        <h6 className="fw-semibold lh-base mb-1">
-                                                            John received payment
-                                                        </h6>
-                                                        <span className="fs-2 d-block text-body-secondary">
-                                                            $230 deducted from account
-                                                        </span>
-                                                    </div>
-                                                </a>
-                                                <a
-                                                    href="javascript:void(0)"
-                                                    className="d-flex align-items-center dropdown-item px-7 py-6"
-                                                >
-                                                    <span className="me-3">
-                                                        <img
-                                                            src={personDefault}
-                                                            alt="user"
-                                                            className="rounded-circle"
-                                                            width="48"
-                                                            height="48"
-                                                        />
-                                                    </span>
-                                                    <div className="w-100">
-                                                        <h6 className="fw-semibold lh-base mb-1">
-                                                            Roman Joined the Team!
-                                                        </h6>
-                                                        <span className="fs-2 d-block text-body-secondary">
-                                                            Congratulate him
                                                         </span>
                                                     </div>
                                                 </a>
