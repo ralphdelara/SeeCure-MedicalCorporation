@@ -83,7 +83,7 @@ class FortifyServiceProvider extends ServiceProvider
             $user = User::whereBlind('username_index', 'username_index', $request->username)->first();
 
             // prevents the bot account login
-            if ($user->is_bot) {
+            if ($user?->is_bot) {
                 return null;
             }
 

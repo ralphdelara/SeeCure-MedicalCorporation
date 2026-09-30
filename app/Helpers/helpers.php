@@ -4,6 +4,8 @@ use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Support\Str;
+use ParagonIE\CipherSweet\CipherSweet;
+use ParagonIE\CipherSweet\EncryptedField;
 
 if (! function_exists('formatName')) {
     function formatName(string $name)
@@ -142,6 +144,39 @@ if (! function_exists('customDecrypt')) {
 if (! function_exists('isAllNull')) {
     function isAllNull(array $array): bool
     {
-        return count(array_filter($array, fn($value) => $value !== null)) === 0;
+        return count(array_filter($array, fn ($value) => $value !== null)) === 0;
+    }
+}
+
+if (! function_exists('cipherSweetEncrypt')) {
+    /**
+     * Manually encrypt a single string using your CipherSweet config.
+     */
+    function cipherSweetEncrypt(string $value, string $table, string $column): string
+    {
+        // Resolve CipherSweet engine from the Laravel Container
+        $engine = app(CipherSweet::class);
+
+        // Provide a generic table and column name context for the key-splitting logic
+        $field = new EncryptedField($engine, $table, $column);
+
+        // Encrypt the raw string
+        return $field->encryptValue($value);
+    }
+}
+
+/**
+ * Manually decrypt the cipher text back to raw string.
+ */
+if (! function_exists('cipherSweetDecrypt')) {
+    function cipherSweetDecrypt(string $cipherText, string $table, string $column): string
+    {
+        $engine = app(CipherSweet::class);
+
+        // Use the exact same context names ('manual_encryption', 'secret_value')
+        $field = new EncryptedField($engine, $table, $column);
+
+        // Decrypt the ciphertext
+        return $field->decryptValue($cipherText);
     }
 }

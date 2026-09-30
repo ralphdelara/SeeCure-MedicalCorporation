@@ -29,6 +29,7 @@ export default function PatientList() {
     const header = [
         { name: '#', width: '5%', align: 'right' },
         { name: 'Patient • Gender', className: 'sticky-left', align: 'left' },
+        { name: 'Control No', align: 'left' },
         { name: 'Date of Birth • Age', align: 'left' },
         { name: 'Contact', align: 'left' },
         { name: 'Status', align: 'left' },
@@ -94,6 +95,9 @@ export default function PatientList() {
                                                     </div>
                                                 </div>
                                             </div>
+                                        </td>
+                                        <td className="text-right">
+                                            <h5>{item.control_no}</h5>
                                         </td>
                                         <td>
                                             <div className="d-flex align-items-start">
@@ -201,7 +205,7 @@ export default function PatientList() {
                                 ))}
                                 {tableData.length === 0 && (
                                     <tr>
-                                        <td colSpan={13} className="text-danger fs-7 text-center">
+                                        <td colSpan={14} className="text-danger fs-7 text-center">
                                             No records
                                         </td>
                                     </tr>

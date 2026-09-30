@@ -5,6 +5,7 @@ import QRCodeGenerator from '@/components/qr-generator';
 import { usePage } from '@inertiajs/react';
 import '@/assets/css/print.css';
 import RxIcon from '@/assets/images/prescription/rx-icon.png';
+import PrescriptionHeader from './prescription-header';
 
 const Default = () => {
     const { prescription } = usePage().props as unknown as {
@@ -14,16 +15,25 @@ const Default = () => {
             dosage: string;
         }[];
     };
-    const { leftFullName, leftPtrNo, leftLicNo, rightFullName, rightPtrNo, rightLicNo, controlNo } =
-        usePage().props as unknown as {
-            leftFullName: string;
-            leftPtrNo: string;
-            leftLicNo: string;
-            rightFullName: string;
-            rightPtrNo: string;
-            rightLicNo: string;
-            controlNo: string;
-        };
+    const {
+        prescriptionRemarks,
+        leftFullName,
+        leftPtrNo,
+        leftLicNo,
+        rightFullName,
+        rightPtrNo,
+        rightLicNo,
+        controlNo,
+    } = usePage().props as unknown as {
+        prescriptionRemarks: string;
+        leftFullName: string;
+        leftPtrNo: string;
+        leftLicNo: string;
+        rightFullName: string;
+        rightPtrNo: string;
+        rightLicNo: string;
+        controlNo: string;
+    };
     const { company, qrUrl } = usePage().props as unknown as {
         company: {
             company_name: string;
@@ -53,7 +63,7 @@ const Default = () => {
                             <img
                                 src={appLogo}
                                 style={{
-                                    height: '80px',
+                                    height: '110px',
                                 }}
                             />
                         </td>
@@ -88,11 +98,30 @@ const Default = () => {
                             >
                                 Tel. No. {company.tel_no}
                             </span>
+                            <br />
+                            <span
+                                style={{
+                                    fontSize: '13px',
+                                    color: '#000',
+                                    padding: 0,
+                                }}
+                            >
+                                Clinic Hours:{' '}
+                            </span>
+                            <span
+                                style={{
+                                    fontSize: '13px',
+                                    color: '#000',
+                                    padding: 0,
+                                }}
+                            >
+                                {company.clinic_hours}
+                            </span>
                         </td>
                     </tr>
                 </tbody>
             </table>
-
+            <PrescriptionHeader />
             <table
                 style={{
                     width: '450px',
@@ -149,7 +178,35 @@ const Default = () => {
                     </tr>
                 </tbody>
             </table>
-            <table style={{ width: '450px', position: 'absolute', bottom: '0' }}>
+            <table style={{ width: '450px' }}>
+                <tbody>
+                    <tr>
+                        <td colSpan={2}>
+                            <div className="d-flex">
+                                <p
+                                    style={{
+                                        fontSize: '15px',
+                                        color: '#000',
+                                        padding: 0,
+                                        margin: 0,
+                                    }}
+                                    className="fw-bolder"
+                                >
+                                    Sig:
+                                </p>
+                                <div style={{ marginLeft: '10px', width: '70%' }}>
+                                    {prescriptionRemarks}
+                                    <hr
+                                        className="border-dark"
+                                        style={{ margin: '0', width: '100%' }}
+                                    />
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <table style={{ width: '450px', marginTop: '30px' }}>
                 <tbody>
                     <tr>
                         <td width="40%"></td>

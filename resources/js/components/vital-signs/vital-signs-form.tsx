@@ -60,6 +60,7 @@ const VitalSignsForm = ({ data, setData }: VitalSignsFormProps) => {
                                                     setVitalSignData(e, item.id, itemField.id)
                                                 }
                                                 value={vitalSignData}
+                                                step="0.001"
                                             />
                                         );
                                     })}

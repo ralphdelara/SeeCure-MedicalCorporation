@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\GenderEnum;
 use App\Models\Gender;
 use TimoKoerber\LaravelOneTimeOperations\OneTimeOperation;
 
@@ -25,11 +26,6 @@ return new class extends OneTimeOperation
      */
     public function process(): void
     {
-        Gender::fillAndInsert([
-            ['name' => 'Female'],
-            ['name' => 'Male'],
-            ['name' => 'Others'],
-            ['name' => 'Unknown'],
-        ]);
+        Gender::fillAndInsert(GenderEnum::getArrayList());
     }
 };

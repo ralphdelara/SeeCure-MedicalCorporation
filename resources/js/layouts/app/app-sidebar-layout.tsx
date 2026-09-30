@@ -3,9 +3,11 @@ import {
     IconBuildingBank,
     IconCashRegister,
     IconChartLine,
+    IconCircle,
     IconDeviceDesktop,
     IconDots,
     IconFlask,
+    IconListCheck,
     IconLockCog,
     IconPill,
     IconPrescription,
@@ -56,68 +58,92 @@ export default function NavSidebar({ toggleSidebar }: NavSidebarProps) {
             name: 'Dashboard',
             icon: IconChartLine,
             active: url.includes(dashboard().url),
+            childNav: [
+                {
+                    url: dashboard(),
+                    name: 'Overview',
+                    icon: IconListCheck,
+                    active: url.includes(dashboard().url),
+                },
+            ],
         },
         {
             url: frontDesk(),
             name: 'Front Desk',
             icon: IconDeviceDesktop,
             active: url.includes(frontDesk().url),
+            childNav: [],
         },
         {
             url: patients(),
-            name: 'Patient List',
+            name: 'Patients',
             icon: IconUser,
             active: url.includes(patients().url.slice(0, -1)),
+            childNav: [],
         },
         {
             url: consultations(),
             name: 'Consultation',
             icon: IconStethoscope,
             active: url.includes(consultations().url.slice(0, -1)),
+            childNav: [],
         },
         {
             url: laboratory(),
             name: 'Laboratory',
             icon: IconFlask,
             active: url.includes(laboratory().url),
+            childNav: [],
         },
         {
             url: radiology(),
             name: 'Radiology',
             icon: IconScan,
             active: url.includes(radiology().url),
+            childNav: [],
         },
         {
             url: inventory(),
             name: 'Inventory',
             icon: IconPill,
             active: url.includes(inventory().url),
+            childNav: [],
         },
         {
             url: pharmacy(),
             name: 'Pharmacy',
             icon: IconPrescription,
             active: url.includes(pharmacy().url),
+            childNav: [],
         },
         {
             url: billing(),
             name: 'Billing',
             icon: IconBuildingBank,
             active: url.includes(billing().url),
+            childNav: [],
         },
         {
             url: cashier(),
             name: 'Cashier',
             icon: IconCashRegister,
             active: url.includes(cashier().url),
+            childNav: [],
         },
         {
             url: users(),
             name: 'Users',
             icon: IconUserCog,
             active: url.includes(users().url.slice(0, -1)),
+            childNav: [],
         },
-        { url: system(), name: 'System', icon: IconLockCog, active: url.includes(system().url) },
+        {
+            url: system(),
+            name: 'System',
+            icon: IconLockCog,
+            active: url.includes(system().url),
+            childNav: [],
+        },
     ];
 
     const clickLink = () => {
@@ -145,20 +171,52 @@ export default function NavSidebar({ toggleSidebar }: NavSidebarProps) {
                     <ul id="sidebarnav">
                         <li className="nav-small-cap">
                             <IconDots className="nav-small-cap-icon" size={16} />
-                            <span className="hide-menu">Modules</span>
+                            <span>Modules</span>
                         </li>
                         {routes.map((item, index) => (
                             <li className="sidebar-item" key={'sidebar-' + index}>
                                 <Link
                                     onClick={() => clickLink()}
-                                    className={'sidebar-link' + (item.active ? ' active' : '')}
+                                    className={
+                                        'sidebar-link' +
+                                        (item.active ? ' active' : '') +
+                                        (item.childNav.length > 0 ? ' has-arrow' : '')
+                                    }
                                     href={item.url}
                                 >
                                     <span>
                                         <item.icon size={21} />
                                     </span>
-                                    <span className="hide-menu">{item.name}</span>
+                                    <span>{item.name}</span>
                                 </Link>
+                                {item.childNav.length > 0 && (
+                                    <ul
+                                        aria-expanded="false"
+                                        className={
+                                            'first-level' + (item.active ? ' in' : ' collapse')
+                                        }
+                                    >
+                                        {item.childNav.map((childItem, childIndex) => (
+                                            <li
+                                                className="sidebar-item"
+                                                key={'child-nav-' + index + '-' + childIndex}
+                                            >
+                                                <Link
+                                                    href={childItem.url}
+                                                    className={
+                                                        'sidebar-link' +
+                                                        (childItem.active ? ' active' : '')
+                                                    }
+                                                >
+                                                    <div className="round-16 d-flex align-items-center justify-content-center">
+                                                        <IconCircle size={10} />
+                                                    </div>
+                                                    <span>{childItem.name}</span>
+                                                </Link>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
                             </li>
                         ))}
                     </ul>

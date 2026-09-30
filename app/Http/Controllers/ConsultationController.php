@@ -75,7 +75,7 @@ class ConsultationController extends Controller
 
     public function updateDetails(Request $request): void
     {
-        $details = $request->only('id', 'guardian_name', 'guardian_contact_number', 'guardian_email', 'guardian_relationship_id', 'signs_or_symptoms_id', 'doctor_id', 'consult_reason');
+        $details = $request->only('id', 'prescription_remarks', 'guardian_name', 'guardian_contact_number', 'guardian_email', 'guardian_relationship_id', 'signs_or_symptoms_id', 'doctor_id', 'consult_reason');
 
         app(ConsultationService::class)->updateDetails($details);
     }

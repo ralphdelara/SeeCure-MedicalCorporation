@@ -58,7 +58,7 @@ class InventoryController extends Controller
         app(InventoryService::class)->addOrUpdateInventory($request->all());
     }
 
-    public function deleteInventory(int $id): void
+    public function deleteInventory(string $id): void
     {
         Inventory::destroy($id);
     }

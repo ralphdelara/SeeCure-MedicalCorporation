@@ -23,6 +23,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('dashboard')->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     });
+    Route::prefix('reports')->group(function () {
+        Route::get('/', [DashboardController::class, 'index'])->name('reports');
+    });
     Route::prefix('front-desk')->group(function () {
         Route::get('/', [FrontDeskController::class, 'index'])->name('front-desk');
         Route::post('/', [FrontDeskController::class, 'queue'])->name('front-desk.queue');
