@@ -59,6 +59,7 @@ export default function NavSidebar({ toggleSidebar }: NavSidebarProps) {
         auth: { user: User };
         navCounts: {
             visitsCount: number;
+            visitsPendingCount: number;
             patientCount: number;
             consultationCount: number;
             consultationPendingCount: number;
@@ -136,7 +137,7 @@ export default function NavSidebar({ toggleSidebar }: NavSidebarProps) {
                     url: patients(),
                     name: 'Listing',
                     active: url === patients().url,
-                    count: 0,
+                    count: navCounts.patientCount,
                 },
             ],
         },
