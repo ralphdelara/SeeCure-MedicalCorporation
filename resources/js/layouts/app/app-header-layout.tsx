@@ -1,5 +1,12 @@
 import { Link, usePage } from '@inertiajs/react';
-import { IconBellRinging, IconDots, IconLogout, IconMenu2, IconSearch } from '@tabler/icons-react';
+import {
+    IconBellRinging,
+    IconDots,
+    IconLoader,
+    IconLogout,
+    IconMenu2,
+    IconSearch,
+} from '@tabler/icons-react';
 import { Fragment, useEffect, useState } from 'react';
 import logoText from '@/assets/images/logos/logo_text.png';
 import { announcements, calendar, frontDesk, logout, notes, reminders } from '@/routes';
@@ -26,8 +33,12 @@ interface User {
 export default function NavHeader({ toggleSidebar }: NavHeaderProps) {
     const { url } = usePage();
     const [showTopNav, setShowTopNav] = useState(false);
-    const { auth } = usePage().props as unknown as {
+    const { auth, warning } = usePage().props as unknown as {
         auth: { user: User; professions: string[]; specialties: string[] };
+        warning: {
+            title: string;
+            msg: string;
+        };
     };
     const { user, professions, specialties } = auth;
     const { full_name } = user;
@@ -448,8 +459,36 @@ export default function NavHeader({ toggleSidebar }: NavHeaderProps) {
                     {item.name === 'Radiology' && <NotifyRadiology />}
                 </Fragment>
             ))}
-
             {url.includes(frontDesk().url) && <NotifyFrontDesk />}
+
+            {(warning?.title ?? '') !== '' && (
+                <div
+                    className="badge bg-warning system-warning"
+                    style={{
+                        zIndex: '99999',
+                        position: 'fixed',
+                        bottom: '0',
+                        right: '0',
+                        marginBottom: '20px',
+                        marginRight: '20px',
+                        color: '#000',
+                        textAlign: 'left',
+                    }}
+                >
+                    <div className="d-flex p-3">
+                        <div>
+                            <div className="system-warning-icon" />
+                        </div>
+                        <div>
+                            <h4 className="fw-bolder">
+                                {warning.title} - <b>{warning.current}</b> out of{' '}
+                                <b>{warning.total}</b> records
+                            </h4>
+                            <h5>{warning.msg}</h5>
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     );
 }

@@ -74,7 +74,9 @@ const Default = () => {
                                         {item.name}
                                     </td>
                                     <td width="10%" className="mt-2 ps-2 text-right" valign="top">
-                                        {item.price ? formatMoney(item.price) : formatMoney('0.00')}
+                                        {item.cost_price
+                                            ? formatMoney(item.cost_price)
+                                            : formatMoney('0.00')}
                                     </td>
                                     <td
                                         width="10%"

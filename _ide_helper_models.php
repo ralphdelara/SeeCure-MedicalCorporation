@@ -171,6 +171,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail whereQuantity($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail whereTotalPrice($value)
  * @mixin \Eloquent
+ * @property int|null $billing_supplies_id
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail whereBillingSuppliesId($value)
  */
 	class BillingDetail extends \Eloquent {}
 }
@@ -1241,8 +1243,12 @@ namespace App\Models{
  * @property-read Collection<int, PatientVitalSign> $vitalSigns
  * @property-read int|null $vital_signs_count
  * @mixin \Eloquent
+ * @property string|null $old_patient_id
+ * @property int $control_no
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Document> $documents
  * @property-read int|null $documents_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereControlNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereOldPatientId($value)
  */
 	class Patient extends \Eloquent implements \Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted {}
 }
@@ -1886,8 +1892,6 @@ namespace App\Models{
  * @property string|null $date_resigned
  * @property bool $status
  * @property string|null $remember_token
- * @property int $department_id
- * @property int $position_id
  * @property string|null $photo
  * @property string|null $last_name_index
  * @property string|null $first_name_index
@@ -1908,7 +1912,6 @@ namespace App\Models{
  * @property-read User|null $lastModifiedBy
  * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
- * @property-read Position $position
  * @property-read Collection<int, UserProfession> $professions
  * @property-read int|null $professions_count
  * @property-read Province|null $province
@@ -1958,6 +1961,12 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUsernameIndex($value)
  * @property-read string $full_name_receipt
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Department> $departments
+ * @property-read int|null $departments_count
+ * @property-read bool $is_admin
+ * @property-read bool $is_bot
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Position> $positions
+ * @property-read int|null $positions_count
  */
 	class User extends \Eloquent implements \Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted {}
 }
@@ -1988,11 +1997,36 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * @property int $id
+ * @property string $user_id
+ * @property int $department_id
+ * @property-read \App\Models\Department $department
+ * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserDepartment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserDepartment newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserDepartment query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserDepartment whereDepartmentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserDepartment whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserDepartment whereUserId($value)
  */
 	class UserDepartment extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property string $user_id
+ * @property int $position_id
+ * @property-read \App\Models\Position $position
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserPosition newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserPosition newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserPosition query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserPosition whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserPosition wherePositionId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserPosition whereUserId($value)
+ */
+	class UserPosition extends \Eloquent {}
 }
 
 namespace App\Models{

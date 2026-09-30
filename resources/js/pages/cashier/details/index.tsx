@@ -46,7 +46,7 @@ const CashierDetails = () => {
     const { patientDetails } = usePage().props as unknown as InertiaProps;
 
     useEffect(() => {
-        const initTab = getUrlParams('tab', 'tab-details');
+        const initTab = getUrlParams('tab', 'tab-payments');
         setSelectedTab(initTab);
     }, []);
 

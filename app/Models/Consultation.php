@@ -81,6 +81,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  */
 #[Fillable([
     'visit_id',
+    'prescription_remarks',
     'guardian_name',
     'guardian_contact_number',
     'guardian_email',

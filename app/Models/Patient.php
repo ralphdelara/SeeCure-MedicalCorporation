@@ -131,6 +131,8 @@ use Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted;
     'id',
 ])]
 #[Fillable([
+    'old_patient_id',
+    'control_no',
     'last_name',
     'first_name',
     'middle_name',

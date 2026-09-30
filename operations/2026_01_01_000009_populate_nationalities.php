@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\NationalityEnum;
 use App\Models\Nationality;
 use TimoKoerber\LaravelOneTimeOperations\OneTimeOperation;
 
@@ -25,8 +26,6 @@ return new class extends OneTimeOperation
      */
     public function process(): void
     {
-        Nationality::fillAndInsert([
-            ['name' => 'Filipino'],
-        ]);
+        Nationality::fillAndInsert(NationalityEnum::getArrayList());
     }
 };

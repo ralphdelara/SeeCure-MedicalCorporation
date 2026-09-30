@@ -1,4 +1,4 @@
-import { Head, usePage } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import TableList from '@/components/table';
 import {
     IconEdit,
@@ -12,11 +12,15 @@ import { Button } from '@/components/ui/button';
 import PrescriptionModal, { ModalFormProps } from './prescription-modal';
 import { useState } from 'react';
 import DeleteButton from '@/components/delete-button';
-import { deletePrescription } from '@/actions/App/Http/Controllers/ConsultationController';
+import {
+    deletePrescription,
+    updateDetails,
+} from '@/actions/App/Http/Controllers/ConsultationController';
 import Pagination from '@/components/pagination';
 import SaveConsultation from './complete-consultation';
 import { printDocument } from '@/lib/utils';
 import TableCounter from '@/components/table-counter';
+import { Input } from '@/components/ui/input';
 
 interface InertiaProps {
     consultationDetails: {
@@ -55,6 +59,10 @@ const Prescription = ({ showTab }: { showTab: boolean }) => {
         formType: 'Add',
         formData: { ...defaultData },
     });
+    const { data, setData, patch } = useForm({
+        id: consultationDetails.id,
+        prescription_remarks: consultationDetails.prescription_remarks ?? '',
+    });
 
     const header = [
         { name: '#', align: 'right' },
@@ -76,6 +84,12 @@ const Prescription = ({ showTab }: { showTab: boolean }) => {
             formType: formType,
             formData: formData ?? modalDetails.formData,
         });
+    };
+
+    const submitPrescriptionRemarks = (e) => {
+        e.preventDefault();
+
+        patch(updateDetails().url);
     };
 
     return (
@@ -197,6 +211,18 @@ const Prescription = ({ showTab }: { showTab: boolean }) => {
                                 </TableList>
                                 <TableCounter table={prescriptions} tableTitle="Prescription" />
                             </div>
+                            <form onSubmit={submitPrescriptionRemarks}>
+                                <h5>Sig</h5>
+                                <Input
+                                    value={data.prescription_remarks}
+                                    onChange={(e) =>
+                                        setData('prescription_remarks', e.target.value)
+                                    }
+                                />
+                                <Button size="lg" className="mt-2">
+                                    <IconPlus /> Save Sig
+                                </Button>
+                            </form>
                         </div>
                     </div>
                 </div>

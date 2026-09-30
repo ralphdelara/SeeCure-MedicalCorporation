@@ -6,11 +6,11 @@ use App\Enums\LaboratoryTestEnum;
 use App\Enums\LaboratoryTypeEnum;
 use App\Models\Billing;
 use App\Models\CompanyProfile;
+use App\Models\Consultation;
 use App\Models\Laboratory;
 use App\Models\LaboratoryTestData;
 use App\Models\Payment;
 use App\Models\Pharmacy;
-use App\Models\Prescription;
 use App\Services\PrintService;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -21,24 +21,31 @@ class PrintController extends Controller
 
     public function printPrescription(string $consultationId): Response
     {
-        $prescription = Prescription::with(
-            'consultation',
-            'consultation.doctor.professions',
-            'consultation.doctor.specialties',
-        )->where('consultation_id', $consultationId)->get();
+        $consultation = Consultation::with(
+            'prescriptions',
+            'doctor.professions',
+            'doctor.specialties',
+            'visit.patient.gender',
+        )->findOrFail($consultationId);
 
         $printTitle = 'PRESCRIPTION';
-        $consultation = $prescription?->first()?->consultation;
-        $rightFullName = $consultation?->doctor->full_name;
-        $rightLicNo = $consultation?->doctor->license_no;
-        $rightPtrNo = $consultation?->doctor->ptr_no;
+        $prescription = $consultation->prescriptions ?? [];
+        $patient = $consultation->visit->patient;
+        $rightFullName = $consultation->doctor->full_name;
+        $rightLicNo = $consultation->doctor->license_no;
+        $rightPtrNo = $consultation->doctor->ptr_no;
+        $prescriptionRemarks = $consultation->prescription_remarks;
+        $consultDate = $consultation->created_at->format('m/d/Y');
 
         return Inertia::render('print-templates/prescription', compact(
             'printTitle',
+            'patient',
+            'consultDate',
             'rightFullName',
             'rightLicNo',
             'rightPtrNo',
             'prescription',
+            'prescriptionRemarks',
         ));
     }
 

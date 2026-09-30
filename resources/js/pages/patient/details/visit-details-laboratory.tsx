@@ -42,12 +42,12 @@ const VisitDetailsLaboratory = ({ laboratory }) => {
                                                     <td>{field.value}</td>
                                                     <td>
                                                         <h6 className="fw-normal">
-                                                            {item.performed_by.full_name ?? ''}
+                                                            {testItem.performed_by?.full_name ?? ''}
                                                         </h6>
                                                     </td>
                                                     <td>
                                                         <h6 className="fw-normal">
-                                                            {item.date_performed ?? ''}
+                                                            {testItem.date_performed ?? ''}
                                                         </h6>
                                                     </td>
                                                 </tr>
@@ -68,12 +68,12 @@ const VisitDetailsLaboratory = ({ laboratory }) => {
                                             </td>
                                             <td>
                                                 <h6 className="fw-normal">
-                                                    {item.performed_by.full_name ?? ''}
+                                                    {testItem.performed_by?.full_name ?? ''}
                                                 </h6>
                                             </td>
                                             <td>
                                                 <h6 className="fw-normal">
-                                                    {item.date_performed ?? ''}
+                                                    {testItem.date_performed ?? ''}
                                                 </h6>
                                             </td>
                                         </tr>

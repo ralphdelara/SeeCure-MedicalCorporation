@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\CivilStatusEnum;
 use App\Models\CivilStatus;
 use TimoKoerber\LaravelOneTimeOperations\OneTimeOperation;
 
@@ -25,17 +26,6 @@ return new class extends OneTimeOperation
      */
     public function process(): void
     {
-        CivilStatus::fillAndInsert([
-            ['name' => 'Single'],
-            ['name' => 'Married'],
-            ['name' => 'Widowed'],
-            ['name' => 'Divorced'],
-            ['name' => 'Separated'],
-            ['name' => 'Anulled'],
-            ['name' => 'Cohabiting/Common-law'],
-            ['name' => 'Registered Partnership'],
-            ['name' => 'Newborn'],
-            ['name' => 'Child'],
-        ]);
+        CivilStatus::fillAndInsert(CivilStatusEnum::getArrayList());
     }
 };

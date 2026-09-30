@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Models\CompanyProfile;
 use Diglactic\Breadcrumbs\Breadcrumbs;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -78,6 +79,8 @@ class HandleInertiaRequests extends Middleware
         $user = $user?->toArray();
         unset($user['user_profession'], $user['user_specialty'], $user['user_department']);
 
+        $warning = Cache::get('warning') ?? [];
+
         return [
             ...parent::share($request),
             'name' => config('app.name'),
@@ -90,6 +93,7 @@ class HandleInertiaRequests extends Middleware
             'company'     => CompanyProfile::find(1),
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'breadcrumbs' => $breadcrumbs,
+            'warning'     => $warning,
         ];
     }
 }

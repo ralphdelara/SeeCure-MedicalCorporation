@@ -63,6 +63,7 @@ class InventoryService
         if (! empty($inventoryDetails['id'])) {
             $inventoryDetails['last_modified_by'] = Auth::id();
         } else {
+            $inventoryDetails['id'] = null;
             $inventoryDetails['stock'] = 0;
             $inventoryDetails['created_by'] = Auth::id();
         }

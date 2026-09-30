@@ -246,13 +246,16 @@ class ConsultationService
     public function updateDetails(array $details): void
     {
         $id = $details['id'];
-
         unset($details['id']);
 
         $details['last_modified_by'] = Auth::id();
 
         $consultation = Consultation::find($id);
         $consultation->update($details);
+
+        if (empty($details['signs_or_symptoms_id'])) {
+            return;
+        }
 
         $this->updateSignsOrSymptoms($consultation, $details['signs_or_symptoms_id']);
     }

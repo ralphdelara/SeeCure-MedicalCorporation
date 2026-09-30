@@ -141,6 +141,7 @@ const VitalSignsModal = ({ formShow, setFormShow, formType, formData }: ModalPro
                                                 placeholder="ex. 24"
                                                 maxLength={100}
                                                 required={true}
+                                                step="0.0001"
                                             />
                                         </div>
                                     </div>

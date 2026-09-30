@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\PatientStatusEnum;
 use App\Models\PatientStatus;
 use TimoKoerber\LaravelOneTimeOperations\OneTimeOperation;
 
@@ -25,12 +26,6 @@ return new class extends OneTimeOperation
      */
     public function process(): void
     {
-        PatientStatus::fillAndInsert([
-            ['name' => 'Inactive'],
-            ['name' => 'Admitted'],
-            ['name' => 'Referred'],
-            ['name' => 'For Discharge'],
-            ['name' => 'Discharged'],
-        ]);
+        PatientStatus::fillAndInsert(PatientStatusEnum::getArrayList());
     }
 };

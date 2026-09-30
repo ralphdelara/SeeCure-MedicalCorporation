@@ -90,6 +90,16 @@ return new class extends OneTimeOperation
                 'professions' => [ProfessionEnum::STAFF],
             ],
             [
+                'first_name'  => 'Tweenny',
+                'middle_name' => 'Reyes',
+                'last_name'   => 'Arboleda',
+                'username'    => 'tweenny',
+                'password'    => 'tweenny',
+                'departments' => [DepartmentEnum::ADMINISTRATOR, DepartmentEnum::CONSULTATION],
+                'positions'   => [PositionEnum::GENERAL_PRACTITIONER],
+                'professions' => [ProfessionEnum::DOCTOR],
+            ],
+            [
                 'first_name'  => 'Lyka Loraine',
                 'middle_name' => 'Nedic',
                 'last_name'   => 'Zulueta',
