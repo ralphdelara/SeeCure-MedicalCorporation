@@ -109,16 +109,19 @@ export default function NavSidebar({ toggleSidebar }: NavSidebarProps) {
             name: 'Front Desk',
             icon: IconDeviceDesktop,
             active: url.includes(frontDesk().url),
+            count: navCounts.visitsPendingCount,
             childNav: [
                 {
                     url: frontDesk(),
                     name: 'Overview',
                     active: url === frontDesk().url,
+                    count: navCounts.visitsPendingCount,
                 },
                 {
                     url: visits(),
                     name: 'Visits',
                     active: url === visits().url,
+                    count: navCounts.visitsCount,
                 },
             ],
         },
