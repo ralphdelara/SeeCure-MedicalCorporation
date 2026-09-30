@@ -22,12 +22,12 @@ Route::permanentRedirect('/', '/login');
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('dashboard')->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/reports', [DashboardController::class, 'index'])->name('reports');
     });
-    Route::prefix('reports')->group(function () {
-        Route::get('/', [DashboardController::class, 'index'])->name('reports');
-    });
+
     Route::prefix('front-desk')->group(function () {
         Route::get('/', [FrontDeskController::class, 'index'])->name('front-desk');
+        Route::get('/visits', [FrontDeskController::class, 'index'])->name('visits');
         Route::post('/', [FrontDeskController::class, 'queue'])->name('front-desk.queue');
         Route::delete('/{id}', [FrontDeskController::class, 'deleteQueue'])->name('front-desk.delete');
     });
@@ -39,6 +39,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/{id}', [PatientController::class, 'deletePatient'])->name('patient.delete');
         Route::get('/{id}', [PatientController::class, 'getPatientDetails'])->name('patient.details');
         Route::get('/{id}/audit-log', [PatientController::class, 'getAuditLog'])->name('patient.details.audit-log');
+    });
+
+    Route::prefix('/admissions')->group(function () {
+        Route::get('/', [DashboardController::class, 'index'])->name('admissions');
+        Route::get('/admitted', [DashboardController::class, 'index'])->name('admitted');
+        Route::get('/discharged', [DashboardController::class, 'index'])->name('discharged');
+        Route::get('/transfer', [DashboardController::class, 'index'])->name('transfer');
+        Route::get('/wards', [DashboardController::class, 'index'])->name('wards');
     });
 
     Route::prefix('/consultations')->group(function () {
@@ -114,6 +122,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('radiology/{radiologyId?}', 'radiology')->name('radiology');
     Route::prefix('inventory')->group(function () {
         Route::get('/', [InventoryController::class, 'index'])->name('inventory');
+        Route::get('/stock-movement', [InventoryController::class, 'index'])->name('stock-movement');
+        Route::get('/expiring-soon', [InventoryController::class, 'index'])->name('expiring-soon');
         Route::prefix('details')->group(function () {
             Route::get('/{inventoryId}', [InventoryController::class, 'getInventoryDetails'])->name('inventory.details');
             Route::post('/{inventoryId}/stock-movement', [InventoryController::class, 'addOrUpdateStockMovement'])->name('inventory.stock-movement.add-or-update');
@@ -128,6 +138,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/users', [UserController::class, 'index'])->name('users');
     Route::prefix('user')->group(function () {
+        Route::get('/profile', [UserController::class, 'index'])->name('user.profile');
+        Route::get('/departments', [UserController::class, 'index'])->name('user.departments');
         Route::match(['post', 'put'], '/', [UserController::class, 'addOrUpdateUser'])->name('user.add-or-update');
         Route::delete('/{id}', [UserController::class, 'deleteUser'])->name('user.delete');
         Route::get('/{id}', [UserController::class, 'getUserDetails'])->name('user.details');
@@ -142,7 +154,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/call-out', [SystemController::class, 'callOutPatient'])->name('system.call-out-patient');
     });
 
-    Route::inertia('announcements', 'announcements')->name('announcements');
+    Route::inertia('guide', 'guide')->name('guide');
     Route::inertia('notes', 'notes')->name('notes');
     Route::inertia('reminders', 'reminders')->name('reminders');
     Route::inertia('calendar', 'calendar')->name('calendar');

@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\CompanyProfile;
+use App\Services\NavService;
 use Diglactic\Breadcrumbs\Breadcrumbs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -93,6 +94,7 @@ class HandleInertiaRequests extends Middleware
             'company'     => CompanyProfile::find(1),
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'breadcrumbs' => $breadcrumbs,
+            'navCounts'   => app(NavService::class)->getCount(),
             'warning'     => $warning,
         ];
     }
