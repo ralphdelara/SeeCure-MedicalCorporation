@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\VisitStatusEnum;
 use App\Models\Billing;
 use App\Models\Cashier;
 use App\Models\Consultation;
@@ -17,25 +18,31 @@ class NavService
     public function getCount(): array
     {
         return [
-            'visitsCount' => Visit::count(),
-            'patientCount' => Patient::count(),
-            'consultationCount' => Consultation::count(),
-            'consultationPendingCount' => Consultation::where('is_completed', false)->count(),
+            'visitsPendingCount' => Visit::whereNotIn('visit_status_id', [
+                VisitStatusEnum::ADMITTED,
+                VisitStatusEnum::DISCHARGED,
+                VisitStatusEnum::COMPLETED,
+                VisitStatusEnum::CANCELLED,
+            ])->count(),
+            'visitsCount'                => Visit::count(),
+            'patientCount'               => Patient::count(),
+            'consultationCount'          => Consultation::count(),
+            'consultationPendingCount'   => Consultation::where('is_completed', false)->count(),
             'consultationCompletedCount' => Consultation::where('is_completed', true)->count(),
-            'laboratoryCount' => Laboratory::count(),
-            'laboratoryPendingCount' => Laboratory::where('is_completed', false)->count(),
-            'laboratoryCompletedCount' => Laboratory::where('is_completed', true)->count(),
-            'inventoryCount' => Inventory::count(),
-            'pharmacyCount' => Pharmacy::count(),
-            'pharmacyPendingCount' => Pharmacy::where('is_completed', false)->count(),
-            'pharmacyCompletedCount' => Pharmacy::where('is_completed', true)->count(),
-            'billingCount' => Billing::count(),
-            'billingPendingCount' => Billing::where('is_completed', false)->count(),
-            'billingCompletedCount' => Billing::where('is_completed', true)->count(),
-            'cashierCount' => Cashier::count(),
-            'cashierPendingCount' => Cashier::where('is_completed', false)->count(),
-            'cashierCompletedCount' => Cashier::where('is_completed', true)->count(),
-            'usersCount' => User::count(),
+            'laboratoryCount'            => Laboratory::count(),
+            'laboratoryPendingCount'     => Laboratory::where('is_completed', false)->count(),
+            'laboratoryCompletedCount'   => Laboratory::where('is_completed', true)->count(),
+            'inventoryCount'             => Inventory::count(),
+            'pharmacyCount'              => Pharmacy::count(),
+            'pharmacyPendingCount'       => Pharmacy::where('is_completed', false)->count(),
+            'pharmacyCompletedCount'     => Pharmacy::where('is_completed', true)->count(),
+            'billingCount'               => Billing::count(),
+            'billingPendingCount'        => Billing::where('is_completed', false)->count(),
+            'billingCompletedCount'      => Billing::where('is_completed', true)->count(),
+            'cashierCount'               => Cashier::count(),
+            'cashierPendingCount'        => Cashier::where('is_completed', false)->count(),
+            'cashierCompletedCount'      => Cashier::where('is_completed', true)->count(),
+            'usersCount'                 => User::count(),
         ];
     }
 }
