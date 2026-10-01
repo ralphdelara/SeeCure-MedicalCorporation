@@ -93,22 +93,32 @@ export default function Pharmacy() {
                                                         />
                                                     </div>
                                                     <div className="ms-3">
-                                                        <h6 className="fs-4 fw-semibold mb-0">
-                                                            <Link
-                                                                href={getPatientDetails(
-                                                                    item.visit.patient.id,
-                                                                )}
-                                                                className="tooltip-container"
-                                                                data-title="Click to View Patient Details"
-                                                            >
-                                                                {item.visit.patient.full_name}
-                                                            </Link>
-                                                        </h6>
-                                                        <span className="fw-normal">
-                                                            {item.visit.patient.gender
-                                                                ? item.visit.patient.gender.name
-                                                                : 'N/A'}
-                                                        </span>
+                                                        {item.visit.patient ? (
+                                                            <>
+                                                                <h6 className="fs-4 fw-semibold mb-0">
+                                                                    <Link
+                                                                        href={getPatientDetails(
+                                                                            item.visit.patient.id,
+                                                                        )}
+                                                                        className="tooltip-container"
+                                                                        data-title="Click to View Patient Details"
+                                                                    >
+                                                                        {
+                                                                            item.visit.patient
+                                                                                .full_name
+                                                                        }
+                                                                    </Link>
+                                                                </h6>
+                                                                <span className="fw-normal">
+                                                                    {item.visit.patient.gender
+                                                                        ? item.visit.patient.gender
+                                                                              .name
+                                                                        : 'N/A'}
+                                                                </span>
+                                                            </>
+                                                        ) : (
+                                                            <h5>WALK IN</h5>
+                                                        )}
                                                     </div>
                                                 </div>
                                             </div>
