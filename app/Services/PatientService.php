@@ -48,7 +48,8 @@ class PatientService
         if (! empty($keyword)) {
             $patientList = $patientList->whereBlind('last_name_index', 'last_name_index', strtolower($keyword))
                 ->orWhereBlind('first_name_index', 'first_name_index', strtolower($keyword))
-                ->orWhereBlind('middle_name_index', 'middle_name_index', strtolower($keyword));
+                ->orWhereBlind('middle_name_index', 'middle_name_index', strtolower($keyword))
+                ->orWhere('control_no', $keyword);
         }
 
         $patientList = $patientList->orderBy('batch')
