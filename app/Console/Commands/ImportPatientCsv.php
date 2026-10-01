@@ -49,6 +49,9 @@ class ImportPatientCsv extends Command
         Cache::put('warning', $warning);
 
         foreach ($csvArray as $key => $row) {
+            if ($row[14] < 8375) {
+                continue;
+            }
             DB::transaction(function () use ($row, $bar) {
                 $gender = match ($row[7]) {
                     '0'     => GenderEnum::MALE,
