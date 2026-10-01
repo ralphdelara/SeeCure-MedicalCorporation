@@ -33,7 +33,7 @@ const PrescriptionHeader = () => {
                         </td>
                         <td style={{ width: '10%' }}>Date:</td>
                         <td className="fw-bolder pe-3 text-center" style={{ width: '20%' }}>
-                            {consultDate}
+                            {consultDate ?? <>&nbsp;</>}
                             <hr
                                 className="border-dark"
                                 style={{
@@ -45,7 +45,7 @@ const PrescriptionHeader = () => {
                     <tr>
                         <td>Address:</td>
                         <td colSpan={3} className="fw-bolder pe-3 text-center">
-                            {patient?.full_address ?? ''}
+                            {patient?.full_address ?? <>&nbsp;</>}
                             <hr
                                 className="border-dark"
                                 style={{

@@ -48,8 +48,19 @@ class PatientService
         if (! empty($keyword)) {
             $patientList = $patientList->whereBlind('last_name_index', 'last_name_index', strtolower($keyword))
                 ->orWhereBlind('first_name_index', 'first_name_index', strtolower($keyword))
-                ->orWhereBlind('middle_name_index', 'middle_name_index', strtolower($keyword))
-                ->orWhere('control_no', $keyword);
+                ->orWhereBlind('middle_name_index', 'middle_name_index', strtolower($keyword));
+
+            if ($keyword === 'empty_control_no') {
+                $keyword = null;
+            }
+
+            if (is_numeric($keyword)) {
+                $keyword = (int)$keyword;
+            }
+
+            if (is_numeric($keyword) || is_null($keyword)) {
+                $patientList = $patientList->orWhere('control_no', $keyword);
+            }
         }
 
         $patientList = $patientList->orderBy('batch')

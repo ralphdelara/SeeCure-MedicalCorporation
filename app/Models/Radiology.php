@@ -37,8 +37,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 #[Fillable([
     'visit_id',
-    'patient_id',
-    'consultation_id',
     'is_completed',
     'created_by',
     'last_modified_by',
