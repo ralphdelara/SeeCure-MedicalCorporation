@@ -1861,29 +1861,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * @property int $id
- * @property string $title
- * @property string $description
- * @property string $created_by
- * @property string|null $last_modified_by
- * @property \Carbon\CarbonImmutable|null $created_at
- * @property \Carbon\CarbonImmutable|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder<static>|SystemUpdate newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|SystemUpdate newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|SystemUpdate query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|SystemUpdate whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|SystemUpdate whereCreatedBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|SystemUpdate whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|SystemUpdate whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|SystemUpdate whereLastModifiedBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|SystemUpdate whereTitle($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|SystemUpdate whereUpdatedAt($value)
- */
-	class SystemUpdate extends \Eloquent {}
-}
-
-namespace App\Models{
-/**
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction query()

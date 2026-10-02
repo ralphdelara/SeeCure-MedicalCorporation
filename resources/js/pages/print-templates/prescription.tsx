@@ -195,7 +195,7 @@ const Default = () => {
                                     Sig:
                                 </p>
                                 <div style={{ marginLeft: '10px', width: '70%' }}>
-                                    {prescriptionRemarks}
+                                    {prescriptionRemarks ?? <>&nbsp;</>}
                                     <hr
                                         className="border-dark"
                                         style={{ margin: '0', width: '100%' }}
