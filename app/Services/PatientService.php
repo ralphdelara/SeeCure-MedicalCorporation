@@ -55,7 +55,7 @@ class PatientService
             }
 
             if (is_numeric($keyword)) {
-                $keyword = (int)$keyword;
+                $keyword = (int) $keyword;
             }
 
             if (is_numeric($keyword) || is_null($keyword)) {
@@ -276,12 +276,24 @@ class PatientService
             'barangay',
             'civilStatus',
         ])
-            ->select('id', 'first_name', 'middle_name', 'last_name', 'patient_suffix_id', 'gender_id', 'barangay_id', 'city_id', 'province_id');
+            ->select('id', 'first_name', 'middle_name', 'last_name', 'patient_suffix_id', 'gender_id', 'barangay_id', 'city_id', 'province_id', 'control_no');
 
         if (! empty($keyword)) {
             $patient = $patient->whereBlind('last_name_index', 'last_name_index', strtolower($keyword))
                 ->orWhereBlind('first_name_index', 'first_name_index', strtolower($keyword))
                 ->orWhereBlind('middle_name_index', 'middle_name_index', strtolower($keyword));
+
+            if ($keyword === 'empty_control_no') {
+                $keyword = null;
+            }
+
+            if (is_numeric($keyword)) {
+                $keyword = (int) $keyword;
+            }
+
+            if (is_numeric($keyword) || is_null($keyword)) {
+                $patient = $patient->orWhere('control_no', $keyword);
+            }
         }
 
         $patient = $patient
