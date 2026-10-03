@@ -1606,6 +1606,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetail whereTaxPercent($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetail whereTotalPrice($value)
  * @mixin \Eloquent
+ * @property string|null $inventory_id
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetail whereInventoryId($value)
  */
 	class PharmacyDetail extends \Eloquent {}
 }
@@ -1654,6 +1656,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetails whereTaxPercent($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetails whereTotalPrice($value)
  * @mixin \Eloquent
+ * @property string|null $inventory_id
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetails whereInventoryId($value)
  */
 	class PharmacyDetails extends \Eloquent {}
 }

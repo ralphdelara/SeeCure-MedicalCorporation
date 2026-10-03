@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Billing;
 use App\Models\BillingDetail;
+use App\Models\BillingSupplies;
 use App\Models\DiscountType;
 use App\Services\BillingService;
 use Illuminate\Http\Request;
@@ -64,7 +65,17 @@ class BillingController extends Controller
     {
         $billingDetail = BillingDetail::find($id);
         $billingId = $billingDetail->billing_id;
+        $billingSuppliesId = $billingDetail->billing_supplies_id;
+        $billingSuppliesQty = $billingDetail->quantity;
         $billingDetail->delete();
+
+        // return back the stock
+        if (! empty($billingSuppliesId)) {
+            $billingSupplies = BillingSupplies::find($billingSuppliesId);
+            $billingSupplies->update([
+                'stock' => $billingSupplies->stock + $billingSuppliesQty,
+            ]);
+        }
 
         app(BillingService::class)->recomputeBillingTotals($billingId);
     }

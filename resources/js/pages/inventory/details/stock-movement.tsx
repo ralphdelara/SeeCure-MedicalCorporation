@@ -157,7 +157,8 @@ const StockMovement = ({ showTab }: { showTab: boolean }) => {
                                                 <div className="d-flex align-items-start">
                                                     <div>
                                                         <h6 className="fs-4 fw-semibold">
-                                                            {item.last_modified_by.full_name}
+                                                            {item.last_modified_by?.full_name ??
+                                                                'N/A'}
                                                         </h6>
                                                         <h6 className="fs-4 fw-normal">
                                                             {item.updated_at}
@@ -202,10 +203,13 @@ const StockMovement = ({ showTab }: { showTab: boolean }) => {
                                                         </Button>
 
                                                         <DeleteButton
-                                                            url={deleteStockMovement({
-                                                                inventoryId: inventoryDetails.id,
-                                                                stockMovementId: item.id
-                                                            }).url}
+                                                            url={
+                                                                deleteStockMovement({
+                                                                    inventoryId:
+                                                                        inventoryDetails.id,
+                                                                    stockMovementId: item.id,
+                                                                }).url
+                                                            }
                                                             msg={'<b>record</b>'}
                                                             successUrl={
                                                                 window.location.pathname +
