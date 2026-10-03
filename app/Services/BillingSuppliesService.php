@@ -29,15 +29,22 @@ class BillingSuppliesService
     public function addBillingSuppliesItem(array $billingSuppliesItems): void
     {
         BillingDetail::create([
-            'billing_id'       => $billingSuppliesItems['billing_id'],
-            'billing_type_id'  => BillingTypeEnum::SUPPLIES,
-            'name'             => $billingSuppliesItems['name'],
-            'cost_price'       => $billingSuppliesItems['cost_price'],
-            'quantity'         => $billingSuppliesItems['quantity'],
-            'total_price'      => $billingSuppliesItems['total_price'],
-            'nett_price'       => $billingSuppliesItems['total_price'],
-            'created_by'       => Auth::id(),
-            'last_modified_by' => Auth::id(),
+            'billing_id'          => $billingSuppliesItems['billing_id'],
+            'billing_supplies_id' => $billingSuppliesItems['billing_supplies_id'],
+            'billing_type_id'     => BillingTypeEnum::SUPPLIES,
+            'name'                => $billingSuppliesItems['name'],
+            'cost_price'          => $billingSuppliesItems['cost_price'],
+            'quantity'            => $billingSuppliesItems['quantity'],
+            'total_price'         => $billingSuppliesItems['total_price'],
+            'nett_price'          => $billingSuppliesItems['total_price'],
+            'created_by'          => Auth::id(),
+            'last_modified_by'    => Auth::id(),
+        ]);
+
+        // Reduce stock based on quantity
+        $billingSupplies = BillingSupplies::find($billingSuppliesItems['billing_supplies_id']);
+        $billingSupplies->update([
+            'stock' => $billingSupplies->stock - $billingSuppliesItems['quantity'],
         ]);
 
         app(BillingService::class)->recomputeBillingTotals($billingSuppliesItems['billing_id']);

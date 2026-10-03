@@ -313,14 +313,27 @@ class BillingService
                 ? $field['discount_type_id']
                 : null;
 
-            BillingDetail::find($detailId)->update([
+            $billingDetail = BillingDetail::find($detailId);
+            $billingSuppliesId = $billingDetail->billing_supplies_id;
+            $billingDetailQuantity = $billingDetail->quantity;
+            $billingDetail->update([
                 'cost_price'       => $field['cost_price'],
+                'quantity'         => $field['quantity'],
+                'total_price'      => $field['total_price'],
                 'discount'         => $field['discount'],
                 'discount_type_id' => $discountTypeId,
                 'tax_percent'      => $field['tax_percent'],
                 'tax_amount'       => $field['nett_price'] - ($field['cost_price'] - $field['discount']),
                 'nett_price'       => $field['nett_price'],
             ]);
+
+            // update billing supplies stock
+            if (! empty($billingSuppliesId)) {
+                $billingSupplies = BillingSupplies::find($billingSuppliesId);
+                $billingSupplies->update([
+                    'stock' => ($billingSupplies->stock + $billingDetailQuantity) - $field['quantity'],
+                ]);
+            }
         }
     }
 

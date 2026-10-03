@@ -16,7 +16,7 @@ class BillingSuppliesController extends Controller
 
     public function addBillingSuppliesItem(Request $request): void
     {
-        $billingSuppliesItems = $request->only('id', 'billing_id', 'name', 'cost_price', 'quantity', 'total_price');
+        $billingSuppliesItems = $request->only('id', 'billing_id', 'billing_supplies_id', 'name', 'cost_price', 'quantity', 'total_price');
 
         app(BillingSuppliesService::class)->addBillingSuppliesItem($billingSuppliesItems);
     }

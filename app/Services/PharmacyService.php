@@ -4,8 +4,11 @@ namespace App\Services;
 
 use App\Enums\PaymentMethodEnum;
 use App\Enums\PaymentStatusEnum;
+use App\Enums\StockMovementTypeEnum;
 use App\Enums\VisitStatusEnum;
 use App\Events\PharmacyViewed;
+use App\Models\Inventory;
+use App\Models\InventoryStockMovement;
 use App\Models\Patient;
 use App\Models\Payment;
 use App\Models\Pharmacy;
@@ -174,6 +177,7 @@ class PharmacyService
 
             $pharmacyDetails[] = [
                 'pharmacy_id'      => $pharmacy->id,
+                'inventory_id'     => $prescription['inventory_id'],
                 'name'             => $prescription['inventory_name'],
                 'cost_price'       => $costPrice,
                 'quantity'         => $quantity,
@@ -215,7 +219,7 @@ class PharmacyService
 
     public function completePharmacy(string $id): void
     {
-        $pharmacy = Pharmacy::find($id);
+        $pharmacy = Pharmacy::with('details', 'details.inventory')->find($id);
 
         if ($pharmacy->is_completed) {
             abort(404);
@@ -224,6 +228,27 @@ class PharmacyService
         $pharmacy->update([
             'is_completed' => true,
         ]);
+
+        foreach ($pharmacy->details as $details) {
+            // Add Stock movement record
+            $newStock = $details->inventory->stock - $details->quantity;
+            InventoryStockMovement::create([
+                'inventory_id'           => $details->inventory->id,
+                'stock_movement_type_id' => StockMovementTypeEnum::STOCK_OUT_PRESCRIPTION,
+                'cost_price'             => $details->cost_price,
+                'current_stock'          => $details->inventory->stock,
+                'quantity'               => $details->quantity,
+                'new_stock'              => $newStock,
+                'total_price'            => $details->total_price,
+                'created_by'             => Auth::id(),
+            ]);
+
+            // update inventory stock
+            $inventory = Inventory::find($details->inventory->id);
+            $inventory->update([
+                'stock' => $newStock,
+            ]);
+        }
 
         // create cashier data for payments
         app(CashierService::class)->storeCashier(
