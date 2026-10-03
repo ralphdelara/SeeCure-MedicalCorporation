@@ -45,6 +45,14 @@
         z-index: 5;
         box-shadow: inset 1px 0px 0px 0px var(--bs-table-border-color) !important;
     }
+
+    .sticky-right-2 {
+        background: #fff;
+        position: sticky;
+        right: 58px;
+        z-index: 5;
+        box-shadow: inset 1px 0px 0px 0px var(--bs-table-border-color) !important;
+    }
 }
 
 .table.table-select tbody tr {

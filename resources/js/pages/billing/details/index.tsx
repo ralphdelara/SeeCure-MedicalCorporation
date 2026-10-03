@@ -4,12 +4,14 @@ import Details from './details';
 import AuditLog from './audit-log';
 import {
     IconListDetails,
+    IconTemplate,
     IconUserCode,
 } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { Head, usePage } from '@inertiajs/react';
 import { PatientDetailsProps } from '@/components/patient/patient-details';
 import { getUrlParams } from '@/lib/utils';
+import Supplies from './supplies';
 
 interface InertiaProps {
     patientDetails: PatientDetailsProps;
@@ -45,6 +47,7 @@ const BillingDetails = () => {
     const [dataFields, setDataFields] = useState({});
     const tabs = [
         { id: 'tab-details', name: 'Details', icon: <IconListDetails /> },
+        { id: 'tab-supplies', name: 'Supplies', icon: <IconTemplate /> },
         { id: 'tab-audit-log', name: 'Audit Log', icon: <IconUserCode /> },
     ];
     const { patientDetails } = usePage().props as unknown as InertiaProps;
@@ -103,6 +106,9 @@ const BillingDetails = () => {
             </PatientInfo>
             <Details
                 showTab={selectedTab === 'tab-details'}
+            />
+            <Supplies
+                showTab={selectedTab === 'tab-supplies'}
             />
             {selectedTab === 'tab-audit-log' && <AuditLog />}
         </>

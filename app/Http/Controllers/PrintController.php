@@ -12,6 +12,7 @@ use App\Models\LaboratoryTestData;
 use App\Models\Payment;
 use App\Models\Pharmacy;
 use App\Services\PrintService;
+use Auth;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -54,11 +55,13 @@ class PrintController extends Controller
         $printTitle = 'BILLING';
         $billing = Billing::with('details', 'visit.patient.suffix')->find($billingId);
         $qrUrl = $this->qrUrl.('Billing|'.$billing->visit->patient->full_name.'||Billing Details|'.$billing->created_at);
+        $printedBy = Auth::user()->full_name;
 
         return Inertia::render('print-templates/billing', compact(
             'printTitle',
             'billing',
             'qrUrl',
+            'printedBy',
         ));
     }
 

@@ -9,6 +9,7 @@ use App\Events\BillingViewed;
 use App\Models\Billing;
 use App\Models\BillingAudit;
 use App\Models\BillingDetail;
+use App\Models\BillingSupplies;
 use App\Models\Laboratory;
 use App\Models\Patient;
 use App\Models\Visit;
@@ -212,6 +213,7 @@ class BillingService
                 $query->select('id', 'visit_id');
             },
             'details',
+            'details.supply',
             'details.type',
             'details.createdBy' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name');
@@ -235,6 +237,19 @@ class BillingService
 
         $billing = $billing->toArray();
         $billing['moveToText'] = $moveToText;
+
+        $billing['supplies'] = BillingSupplies::with([
+            'createdBy' => function ($query) {
+                $query->select('id', 'first_name', 'middle_name', 'last_name');
+            },
+            'createdBy.professions',
+            'createdBy.specialties',
+            'lastModifiedBy' => function ($query) {
+                $query->select('id', 'first_name', 'middle_name', 'last_name');
+            },
+            'lastModifiedBy.professions',
+            'lastModifiedBy.specialties',
+        ])->orderBy('id')->get();
 
         return $billing;
     }
@@ -323,5 +338,35 @@ class BillingService
             ->where('billing_id', $billingId)
             ->orderBy('created_at', 'desc')
             ->get()->toArray();
+    }
+
+    public function recomputeBillingTotals(string $billingId): void
+    {
+        $billingDetails = BillingDetail::where('billing_id', $billingId)->get();
+
+        $totalCostPrice = 0;
+        $totalQuantity = 0;
+        $totalPrice = 0;
+        $totalDiscount = 0;
+        $totalTax = 0;
+        $totalNettPrice = 0;
+
+        foreach ($billingDetails as $billingDetail) {
+            $totalCostPrice += $billingDetail->cost_price;
+            $totalQuantity += $billingDetail->quantity;
+            $totalPrice += $billingDetail->total_price;
+            $totalDiscount += $billingDetail->discount;
+            $totalTax += $billingDetail->tax_amount;
+            $totalNettPrice += $billingDetail->nett_price;
+        }
+
+        Billing::where('id', $billingId)->update([
+            'total_cost_price' => $totalCostPrice,
+            'total_quantity'   => $totalQuantity,
+            'total_price'      => $totalPrice,
+            'total_discount'   => $totalDiscount,
+            'total_tax'        => $totalTax,
+            'total_nett_price' => $totalNettPrice,
+        ]);
     }
 }

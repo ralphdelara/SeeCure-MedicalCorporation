@@ -8,9 +8,9 @@ enum BillingTypeEnum: int
 {
     use EnumTraits;
 
-    case CONSULTATION = 1; // Billing personel will print prescription and doctor fee
-    case LABORATORY = 2; // Billing personel will print laboratory billing
-    case RADIOLOGY = 3; // Billing personel will print radiology billing
+    case CONSULTATION = 1;
+    case LABORATORY = 2;
+    case RADIOLOGY = 3;
     case SUPPLIES = 4;
 
     public function description(): string

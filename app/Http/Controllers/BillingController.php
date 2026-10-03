@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Billing;
+use App\Models\BillingDetail;
 use App\Models\DiscountType;
 use App\Services\BillingService;
 use Illuminate\Http\Request;
@@ -57,5 +58,14 @@ class BillingController extends Controller
     public function getAuditLog(string $id): array
     {
         return app(BillingService::class)->getAuditLog($id);
+    }
+
+    public function deleteBillingDetail(string $id): void
+    {
+        $billingDetail = BillingDetail::find($id);
+        $billingId = $billingDetail->billing_id;
+        $billingDetail->delete();
+
+        app(BillingService::class)->recomputeBillingTotals($billingId);
     }
 }
