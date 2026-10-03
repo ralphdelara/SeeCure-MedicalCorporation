@@ -7,6 +7,25 @@ const PickList = () => {
     const { receiptData, company, itemData, transactionNo, companyDetails } = usePage()
         .props as unknown as {
         receiptData: any;
+        company: any;
+        itemData: {
+            details: {
+                name: string;
+                cost_price: string;
+                quantity: string;
+                price: string;
+                nett_price: string;
+                discount: string;
+            }[];
+            total_quantity: string;
+            total_nett_price: string;
+        };
+        transactionNo: string;
+        companyDetails: {
+            nonVatTin: string;
+            sn: string;
+            min: string;
+        };
     };
 
     useEffect(() => {

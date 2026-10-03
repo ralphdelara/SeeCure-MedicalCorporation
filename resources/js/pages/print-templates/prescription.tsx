@@ -1,11 +1,9 @@
 import { Fragment, useEffect } from 'react';
-import Footer from './footer';
-import appLogo from '@/assets/images/logos/logo.png';
-import QRCodeGenerator from '@/components/qr-generator';
 import { usePage } from '@inertiajs/react';
 import '@/assets/css/print.css';
 import RxIcon from '@/assets/images/prescription/rx-icon.png';
 import PrescriptionHeader from './prescription-header';
+import PrintHeader from './print-header';
 
 const Default = () => {
     const { prescription } = usePage().props as unknown as {
@@ -15,16 +13,8 @@ const Default = () => {
             dosage: string;
         }[];
     };
-    const {
-        prescriptionRemarks,
-        leftFullName,
-        leftPtrNo,
-        leftLicNo,
-        rightFullName,
-        rightPtrNo,
-        rightLicNo,
-        controlNo,
-    } = usePage().props as unknown as {
+    const { prescriptionRemarks, rightFullName, rightPtrNo, rightLicNo } = usePage()
+        .props as unknown as {
         prescriptionRemarks: string;
         leftFullName: string;
         leftPtrNo: string;
@@ -33,14 +23,6 @@ const Default = () => {
         rightPtrNo: string;
         rightLicNo: string;
         controlNo: string;
-    };
-    const { company, qrUrl } = usePage().props as unknown as {
-        company: {
-            company_name: string;
-            tel_no: string;
-            address: string;
-        };
-        qrUrl: string;
     };
 
     useEffect(() => {
@@ -56,71 +38,7 @@ const Default = () => {
                 height: '500px',
             }}
         >
-            <table style={{ width: '450px' }}>
-                <tbody>
-                    <tr>
-                        <td>
-                            <img
-                                src={appLogo}
-                                style={{
-                                    height: '110px',
-                                }}
-                            />
-                        </td>
-                        <td>
-                            <span
-                                style={{
-                                    fontSize: '22px',
-                                    color: '#000',
-                                    padding: 0,
-                                }}
-                                className="fw-semibold"
-                            >
-                                {company.company_name}
-                            </span>
-                            <br />
-                            <span
-                                style={{
-                                    fontSize: '13px',
-                                    color: '#000',
-                                    padding: 0,
-                                }}
-                            >
-                                {company.address}
-                            </span>
-                            <br />
-                            <span
-                                style={{
-                                    fontSize: '13px',
-                                    color: '#000',
-                                    padding: 0,
-                                }}
-                            >
-                                Tel. No. {company.tel_no}
-                            </span>
-                            <br />
-                            <span
-                                style={{
-                                    fontSize: '13px',
-                                    color: '#000',
-                                    padding: 0,
-                                }}
-                            >
-                                Clinic Hours:{' '}
-                            </span>
-                            <span
-                                style={{
-                                    fontSize: '13px',
-                                    color: '#000',
-                                    padding: 0,
-                                }}
-                            >
-                                {company.clinic_hours}
-                            </span>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <PrintHeader />
             <PrescriptionHeader />
             <table
                 style={{

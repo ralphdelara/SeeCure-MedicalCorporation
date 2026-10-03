@@ -1,25 +1,12 @@
 import { useForm, usePage } from '@inertiajs/react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Modal } from 'react-bootstrap';
-import { toast, Toaster } from 'react-hot-toast';
-import { getSmallInventoryList } from '@/actions/App/Http/Controllers/InventoryController';
-import InputError from '@/components/input-error';
+import { Toaster } from 'react-hot-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Select } from '@/components/ui/select';
 import type { Options } from '@/types/options';
-import { IconPlus } from '@tabler/icons-react';
-import TableList from '@/components/table';
-import { fetchUrl, formSubmitResponse } from '@/lib/utils';
-import { addOrUpdatePrescription } from '@/actions/App/Http/Controllers/ConsultationController';
-import { Label } from '@/components/ui/label';
-
-interface PageProps {
-    consultationDetails: {
-        id: string;
-    };
-    inventoryCategories: Options[];
-}
+import { formSubmitResponse } from '@/lib/utils';
+import { addOrUpdateBillingSupplies } from '@/actions/App/Http/Controllers/BillingSuppliesController';
 
 interface ModalProps {
     formType: string;
@@ -34,14 +21,13 @@ export interface ModalFormProps {
 }
 
 const SuppliesModal = ({ formShow, setFormShow, formType, formData }: ModalProps) => {
-    const { consultationDetails, inventoryCategories } = usePage().props as unknown as PageProps;
-    const { data, setData, post, processing, errors } = useForm<ModalFormProps>(formData);
+    const { data, setData, post, processing } = useForm<ModalFormProps>(formData);
 
     const submitSupplies = (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        post(addOrUpdatePrescription().url, {
-            ...formSubmitResponse('Prescription'),
+        post(addOrUpdateBillingSupplies().url, {
+            ...formSubmitResponse('Billing Supplies'),
             onFinish: () => {
                 setFormShow(false);
             },
@@ -88,13 +74,13 @@ const SuppliesModal = ({ formShow, setFormShow, formType, formData }: ModalProps
                                 />
                             </div>
                             <div className="form-group col-md-12">
-                                <label className="form-label" htmlFor="quantity">
-                                    Quantity
+                                <label className="form-label" htmlFor="stock">
+                                    Stock
                                 </label>
                                 <Input
-                                    id="quantity"
-                                    value={data.quantity}
-                                    onChange={(e) => setData('quantity', e.target.value)}
+                                    id="stock"
+                                    value={data.stock}
+                                    onChange={(e) => setData('stock', e.target.value)}
                                     placeholder="ex. 0.00"
                                 />
                             </div>

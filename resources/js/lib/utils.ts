@@ -182,7 +182,7 @@ export function addZeroes(number: string | number, maxZero: number) {
     return String(number).padStart(maxZero, '0');
 }
 
-export function formatReceiptDateTime(str: string) {
+export function formatReceiptDateTime(str: string, type?: string | null) {
     const cleanedStr = str.replace(',', '').trim();
     const date = new Date(cleanedStr);
 
@@ -202,6 +202,10 @@ export function formatReceiptDateTime(str: string) {
     const strHours = String(hours).padStart(2, '0');
 
     // Output format: M/d/Y h:i:s A
+    if (type === 'dateOnly') {
+        return `${month}/${day}/${year}`;
+    }
+
     return `${month}/${day}/${year} ${strHours}:${minutes}:${seconds} ${ampm}`;
 }
 

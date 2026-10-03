@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\BillingController;
+use App\Http\Controllers\BillingSuppliesController;
 use App\Http\Controllers\CashierController;
 use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\DashboardController;
@@ -90,8 +91,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/{id}/audit-log', [BillingController::class, 'getAuditLog'])->name('billing.details.audit-log');
             Route::patch('/', [BillingController::class, 'updateDetails'])->name('billing.details.update');
             Route::patch('/complete/{id}', [BillingController::class, 'completeBilling'])->name('billing.completed');
+            Route::delete('{id}', [BillingController::class, 'deleteBillingDetail'])->name('billing.details.delete');
         });
-        Route::post('/supplies', [])->name('supplies');
+        Route::post('/billing-supplies', [BillingSuppliesController::class, 'addOrUpdateBillingSupplies'])->name('billing-supplies');
+        Route::delete('/billing-supplies/{id}', [BillingSuppliesController::class, 'deleteBillingSupply'])->name('billing-supplies.delete');
+        Route::post('/billing-supplies/item', [BillingSuppliesController::class, 'addBillingSuppliesItem'])->name('billing-supplies.item');
         Route::delete('/{id}', [BillingController::class, 'deleteBilling'])->name('billing.delete');
     });
 

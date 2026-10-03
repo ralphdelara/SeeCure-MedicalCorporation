@@ -172,9 +172,37 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail whereTotalPrice($value)
  * @mixin \Eloquent
  * @property int|null $billing_supplies_id
+ * @property-read \App\Models\BillingSupplies|null $supply
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail whereBillingSuppliesId($value)
  */
 	class BillingDetail extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property string $name
+ * @property numeric|null $cost_price
+ * @property int $stock
+ * @property string $created_by
+ * @property string|null $last_modified_by
+ * @property \Carbon\CarbonImmutable|null $created_at
+ * @property \Carbon\CarbonImmutable|null $updated_at
+ * @property-read \App\Models\User $createdBy
+ * @property-read \App\Models\User|null $lastModifiedBy
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingSupplies newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingSupplies newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingSupplies query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingSupplies whereCostPrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingSupplies whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingSupplies whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingSupplies whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingSupplies whereLastModifiedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingSupplies whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingSupplies whereStock($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingSupplies whereUpdatedAt($value)
+ */
+	class BillingSupplies extends \Eloquent {}
 }
 
 namespace App\Models{

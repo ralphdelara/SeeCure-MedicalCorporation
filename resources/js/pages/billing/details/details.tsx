@@ -7,7 +7,10 @@ import { formatMoney, formSubmitResponse, printDocument } from '@/lib/utils';
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import SaveButton from './save-button';
-import { updateDetails } from '@/actions/App/Http/Controllers/BillingController';
+import {
+    deleteBillingDetail,
+    updateDetails,
+} from '@/actions/App/Http/Controllers/BillingController';
 import TableList from '@/components/table';
 import {
     IconBuildingBank,
@@ -18,6 +21,8 @@ import {
 } from '@tabler/icons-react';
 import { printPrescription } from '@/actions/App/Http/Controllers/PrintController';
 import SuppliesModal from './supplies-modal';
+import BillingSuppliesModal from './billing-supplies-item-modal';
+import DeleteButton from '@/components/delete-button';
 
 interface InertiaProps {
     billingDetails: {
@@ -70,12 +75,15 @@ const Details = ({ showTab }: { showTab: boolean }) => {
     const header = [
         { name: 'Description', className: 'sticky-left', align: 'left' },
         { name: 'Price', align: 'center' },
+        { name: 'Quantity', align: 'center' },
+        { name: 'Total Price', align: 'center' },
         { name: 'Discount', align: 'center' },
         { name: 'Discount Type', align: 'center' },
         { name: 'Tax', align: 'center' },
-        { name: 'Nett Price', className: 'sticky-right', align: 'center' },
+        { name: 'Nett Price', className: 'sticky-right-2', align: 'center' },
         { name: 'Added By', align: 'left' },
         { name: 'Last Modified By', align: 'left' },
+        { name: '', className: 'sticky-right', align: 'left' },
     ];
 
     const submitDetails = async (e: React.SubmitEvent<HTMLFormElement>) => {
@@ -110,7 +118,7 @@ const Details = ({ showTab }: { showTab: boolean }) => {
             }
 
             if (!isNaN(parseFloat(product.cost_price))) {
-                totalPrice += parseFloat(product.cost_price);
+                totalPrice += parseFloat(product.cost_price) * parseFloat(product.quantity);
             }
 
             if (!isNaN(parseFloat(product.discount))) {
@@ -212,17 +220,58 @@ const Details = ({ showTab }: { showTab: boolean }) => {
         setDefaults({ ...data, ...initialFields });
     }, [billingDetails.details]);
 
+    useEffect(() => {
+        setData('total_cost_price', billingDetails.total_cost_price);
+        setData('total_quantity', billingDetails.total_quantity);
+        setData('total_price', billingDetails.total_price);
+        setData('total_discount', billingDetails.total_discount);
+        setData('total_nett_price', billingDetails.total_nett_price);
+    }, [billingDetails]);
+
+    const defaultBillingSuppliesItemData = {
+        id: '',
+        billing_id: billingDetails.id,
+        billing_supplies_id: '',
+        name: '',
+        cost_price: '',
+        quantity: '',
+        total_price: '',
+    };
+    const [formShow, setFormShow] = useState(false);
+    const [modalDetails, setModalDetails] = useState({
+        formType: 'Add',
+        formData: { ...defaultBillingSuppliesItemData },
+    });
+    const toggleModal = (formType: string, formData: ModalFormProps | null) => {
+        setFormShow(true);
+        setModalDetails({
+            formType: formType,
+            formData: formData ?? modalDetails.formData,
+        });
+    };
+
     return (
         <>
             <div className={'tab-content mt-3' + (!showTab ? ' hidden' : '')}>
                 <div className="tab-pane fade show active" role="tabpanel" tabIndex={1}>
+                    <BillingSuppliesModal
+                        formShow={formShow}
+                        setFormShow={setFormShow}
+                        formType={modalDetails.formType}
+                        formData={modalDetails.formData}
+                    />
                     <form onSubmit={submitDetails}>
                         <div className="me-4">
                             <SaveButton type="Details" isDirty={isDirty} />
                         </div>
                         <div className="me-5 text-right">
-                            <Button size="lg" type="button" className="me-2" onClick={() => {}}>
-                                <IconPlus /> Add Supplies
+                            <Button
+                                size="lg"
+                                type="button"
+                                className="me-2"
+                                onClick={() => toggleModal('Add', defaultBillingSuppliesItemData)}
+                            >
+                                <IconPlus /> Add Billing Supplies
                             </Button>
                             <Button
                                 size="lg"
@@ -254,6 +303,8 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                     <TableList header={header}>
                                         {billingDetails.details.map((item, index) => {
                                             let priceId = 'cost-price-' + item.id;
+                                            let quantityId = 'quantity-' + item.id;
+                                            let totalPriceId = 'total-price-' + item.id;
                                             let discountId = 'discount-' + item.id;
                                             let discountTypeId = 'discount-type-' + item.id;
                                             let taxPercentId = 'tax-percent-' + item.id;
@@ -287,6 +338,64 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                                                     computeNettPrice(
                                                                         item.id,
                                                                         'cost_price',
+                                                                        e.target.value,
+                                                                    )
+                                                                }
+                                                                className="form-control"
+                                                                placeholder="0.00"
+                                                                style={{ width: '100px' }}
+                                                                maxLength={10}
+                                                            />
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div className="input-group d-flex mb-3 flex-nowrap">
+                                                            <span className="input-group-text">
+                                                                #
+                                                            </span>
+                                                            <Input
+                                                                type="text"
+                                                                id={quantityId}
+                                                                value={
+                                                                    (
+                                                                        data[
+                                                                            item.id as keyof typeof data
+                                                                        ] as any
+                                                                    )?.quantity ?? ''
+                                                                }
+                                                                onChange={(e) =>
+                                                                    computeNettPrice(
+                                                                        item.id,
+                                                                        'quantity',
+                                                                        e.target.value,
+                                                                    )
+                                                                }
+                                                                className="form-control"
+                                                                placeholder="0.00"
+                                                                style={{ width: '100px' }}
+                                                                maxLength={10}
+                                                            />
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div className="input-group d-flex mb-3 flex-nowrap">
+                                                            <span className="input-group-text">
+                                                                ₱
+                                                            </span>
+                                                            <Input
+                                                                type="text"
+                                                                id={totalPriceId}
+                                                                value={
+                                                                    (
+                                                                        data[
+                                                                            item.id as keyof typeof data
+                                                                        ] as any
+                                                                    )?.total_price ?? ''
+                                                                }
+                                                                onChange={(e) =>
+                                                                    computeNettPrice(
+                                                                        item.id,
+                                                                        'total_price',
                                                                         e.target.value,
                                                                     )
                                                                 }
@@ -377,7 +486,7 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                                             />
                                                         </div>
                                                     </td>
-                                                    <td>
+                                                    <td className="sticky-right-2">
                                                         <div className="input-group d-flex mb-3 flex-nowrap">
                                                             <span className="input-group-text">
                                                                 ₱
@@ -427,12 +536,28 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                                             </div>
                                                         </div>
                                                     </td>
+                                                    <td className="sticky-right">
+                                                        <DeleteButton
+                                                            url={deleteBillingDetail(item.id).url}
+                                                            msg={'item <b>' + item.name + '</b>.'}
+                                                        />
+                                                    </td>
                                                 </tr>
                                             );
                                         })}
                                         <tr>
                                             <td className="sticky-left">
                                                 <h6 className="fs-6 fw-semibold">Total</h6>
+                                            </td>
+                                            <td className="text-center">
+                                                <h6 className="fs-6 fw-semibold">
+                                                    {formatMoney(data.total_cost_price)}
+                                                </h6>
+                                            </td>
+                                            <td className="text-center">
+                                                <h6 className="fs-6 fw-semibold">
+                                                    {data.total_quantity}
+                                                </h6>
                                             </td>
                                             <td className="text-center">
                                                 <h6 className="fs-6 fw-semibold">
@@ -446,11 +571,12 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                             </td>
                                             <td></td>
                                             <td></td>
-                                            <td className="text-center">
+                                            <td className="sticky-right-2 text-center">
                                                 <h6 className="fs-6 fw-semibold">
                                                     {formatMoney(data.total_nett_price)}
                                                 </h6>
                                             </td>
+                                            <td></td>
                                             <td></td>
                                             <td></td>
                                             <td></td>
