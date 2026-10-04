@@ -7,10 +7,7 @@ import React from 'react';
 import SaveButton from './save-button';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import {
-    IconDeviceFloppy,
-    IconPrinter,
-} from '@tabler/icons-react';
+import { IconDeviceFloppy, IconPrinter } from '@tabler/icons-react';
 import { addOrUpdatePayment } from '@/routes/cashier/details';
 import { toast } from 'react-hot-toast';
 
@@ -74,7 +71,7 @@ interface InertiaProps {
 }
 
 const Payments = ({ showTab }: { showTab: boolean }) => {
-    const { cashierDetails, paymentDetails, paymentMethodOptions } = usePage()
+    const { cashierDetails, paymentDetails, paymentMethodOptions, discountType } = usePage()
         .props as unknown as InertiaProps;
     const { pharmacy, billing } = cashierDetails;
 
@@ -82,7 +79,7 @@ const Payments = ({ showTab }: { showTab: boolean }) => {
     const paymentType = pharmacy ? 'Pharmacy' : 'Billing';
 
     const totalAmount = paymentDetails?.total_amount ?? paymentData.total_nett_price ?? 0;
-
+    console.log(cashierDetails);
     const { data, setData, post, isDirty, setDefaults } = useForm<PaymentDetailsProps>({
         visit_id: cashierDetails.visit_id,
         cashier_id: cashierDetails.id,
@@ -94,6 +91,12 @@ const Payments = ({ showTab }: { showTab: boolean }) => {
         amount_change: paymentDetails?.amount_change ?? 0,
         transaction_no: paymentDetails?.transaction_no ?? '',
         transaction_header: paymentDetails?.transaction_header ?? '',
+        customer_name:
+            paymentDetails?.customer_name ?? cashierDetails.visit?.patient?.full_name ?? '',
+        customer_address:
+            paymentDetails?.customer_address ?? cashierDetails.visit?.patient?.full_address ?? '',
+        discount_type_id: paymentDetails?.discount_type_id ?? '',
+        id_no: paymentDetails?.id_no ?? '',
     });
 
     const submitDetails = async (e: React.SubmitEvent<HTMLFormElement>) => {
@@ -152,8 +155,154 @@ const Payments = ({ showTab }: { showTab: boolean }) => {
                                 isPaid={isPaid()}
                             />
                         </div>
-                        <div className="row g-3 mb-5 w-100">
-                            <div className="col-md-8">
+                        <div className="row mb-5 w-100">
+                            <div className="col-md-6">
+                                <div className="card border shadow-sm">
+                                    <div className="card-body">
+                                        <div className="form-group text-center">
+                                            <h5 className="fs-7">Customer Information</h5>
+                                        </div>
+                                        <div className="form-group text-center">
+                                            <h5 className="fs-7">Name</h5>
+
+                                            <Input
+                                                name="customer_name"
+                                                value={data.customer_name}
+                                                className="form-control fs-10 fw-bolder p-1 text-center"
+                                                onChange={(e) =>
+                                                    setData('customer_name', e.target.value)
+                                                }
+                                            />
+                                        </div>
+                                        <div className="form-group text-center">
+                                            <h5 className="fs-7">Address</h5>
+                                            <Input
+                                                name="customer_address"
+                                                value={data.customer_address}
+                                                className="form-control fs-10 fw-bolder p-1 text-center"
+                                                onChange={(e) =>
+                                                    setData('customer_address', e.target.value)
+                                                }
+                                            />
+                                        </div>
+                                        <div className="form-group text-center">
+                                            <h5 className="fs-7">ID No.</h5>
+
+                                            <Input
+                                                name="id_no"
+                                                value={data.id_no}
+                                                className="form-control fs-10 fw-bolder p-1 text-center"
+                                                onChange={(e) => setData('id_no', e.target.value)}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-md-6">
+                                <div className="card border shadow-sm">
+                                    <div className="card-body">
+                                        <div className="form-group text-center">
+                                            <h5 className="fs-7">Total Amount</h5>
+                                            <h5 className="fs-11 fw-bolder">
+                                                {formatMoney(data.total_amount)}
+                                            </h5>
+                                        </div>
+                                        <div className="form-group text-center">
+                                            <Select
+                                                value={data.payment_method_id}
+                                                onChange={(e) =>
+                                                    setData(
+                                                        'payment_method_id',
+                                                        parseInt(e.target.value),
+                                                    )
+                                                }
+                                                className="fs-7 fw-bolder text-center"
+                                                options={paymentMethodOptions}
+                                                type="Payment Method"
+                                            />
+                                        </div>
+                                        {data.payment_method_id === 1 && (
+                                            <>
+                                                <div className="form-group text-center">
+                                                    <Label
+                                                        htmlFor="amount_received"
+                                                        className="fs-7"
+                                                    >
+                                                        Received
+                                                    </Label>
+                                                    <div className="input-group d-flex flex-nowrap">
+                                                        <span className="input-group-text fs-7 fw-bolder">
+                                                            ₱
+                                                        </span>
+                                                        <Input
+                                                            name="amount_received"
+                                                            type="text"
+                                                            value={data.amount_received}
+                                                            onChange={(e) =>
+                                                                computeChange(e.target.value)
+                                                            }
+                                                            className="form-control fs-10 fw-bolder p-1 text-center"
+                                                            placeholder="0.00"
+                                                            step="0.01"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="form-group text-center">
+                                                    <h5 className="fs-7">Change</h5>
+                                                    <div className="input-group d-flex flex-nowrap">
+                                                        <span className="input-group-text fs-7 fw-bolder">
+                                                            ₱
+                                                        </span>
+
+                                                        <Input
+                                                            name="amount_change"
+                                                            value={data.amount_change}
+                                                            className="form-control fs-10 fw-bolder p-1 text-center"
+                                                            placeholder="0.00"
+                                                            readOnly={true}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </>
+                                        )}
+                                        {data.payment_method_id !== 1 && (
+                                            <div className="form-group text-center">
+                                                <Label htmlFor="reference_number" className="fs-7">
+                                                    Reference Number
+                                                </Label>
+                                                <div className="input-group d-flex flex-nowrap">
+                                                    <span className="input-group-text fs-7 fw-bolder">
+                                                        #
+                                                    </span>
+                                                    <Input
+                                                        name="reference_number"
+                                                        type="text"
+                                                        value={data.reference_number}
+                                                        onChange={(e) =>
+                                                            setData(
+                                                                'reference_number',
+                                                                e.target.value,
+                                                            )
+                                                        }
+                                                        className="form-control form-control-lg fs-10 fw-bolder text-center"
+                                                        placeholder="••••••••"
+                                                        maxLength={50}
+                                                    />
+                                                </div>
+                                            </div>
+                                        )}
+                                        <div className="form-group text-center">
+                                            <Button size="lg" className="ms-3">
+                                                <i>
+                                                    <IconDeviceFloppy className="me-1" />
+                                                </i>
+                                                Save Payment
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-md-12">
                                 <div className="card border shadow-sm">
                                     <div className="card-body">
                                         <div className="d-flex justify-content-between">
@@ -284,110 +433,6 @@ const Payments = ({ showTab }: { showTab: boolean }) => {
                                                     </tr>
                                                 </tbody>
                                             </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-md-4">
-                                <div className="card border shadow-sm">
-                                    <div className="card-body">
-                                        <div className="form-group text-center">
-                                            <h5 className="fs-7">Total Amount</h5>
-                                            <h5 className="fs-11 fw-bolder">
-                                                {formatMoney(data.total_amount)}
-                                            </h5>
-                                        </div>
-                                        <div className="form-group text-center">
-                                            <Select
-                                                value={data.payment_method_id}
-                                                onChange={(e) =>
-                                                    setData(
-                                                        'payment_method_id',
-                                                        parseInt(e.target.value),
-                                                    )
-                                                }
-                                                className="fs-7 fw-bolder text-center"
-                                                options={paymentMethodOptions}
-                                                type="Payment Method"
-                                            />
-                                        </div>
-                                        {data.payment_method_id === 1 && (
-                                            <>
-                                                <div className="form-group text-center">
-                                                    <Label
-                                                        htmlFor="amount_received"
-                                                        className="fs-7"
-                                                    >
-                                                        Received
-                                                    </Label>
-                                                    <div className="input-group d-flex flex-nowrap">
-                                                        <span className="input-group-text fs-7 fw-bolder">
-                                                            ₱
-                                                        </span>
-                                                        <Input
-                                                            name="amount_received"
-                                                            type="text"
-                                                            value={data.amount_received}
-                                                            onChange={(e) =>
-                                                                computeChange(e.target.value)
-                                                            }
-                                                            className="form-control fs-10 fw-bolder p-1 text-center"
-                                                            placeholder="0.00"
-                                                            step="0.01"
-                                                        />
-                                                    </div>
-                                                </div>
-                                                <div className="form-group text-center">
-                                                    <h5 className="fs-7">Change</h5>
-                                                    <div className="input-group d-flex flex-nowrap">
-                                                        <span className="input-group-text fs-7 fw-bolder">
-                                                            ₱
-                                                        </span>
-
-                                                        <Input
-                                                            name="amount_change"
-                                                            value={data.amount_change}
-                                                            className="form-control fs-10 fw-bolder p-1 text-center"
-                                                            placeholder="0.00"
-                                                            readOnly={true}
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </>
-                                        )}
-                                        {data.payment_method_id !== 1 && (
-                                            <div className="form-group text-center">
-                                                <Label htmlFor="reference_number" className="fs-7">
-                                                    Reference Number
-                                                </Label>
-                                                <div className="input-group d-flex flex-nowrap">
-                                                    <span className="input-group-text fs-7 fw-bolder">
-                                                        #
-                                                    </span>
-                                                    <Input
-                                                        name="reference_number"
-                                                        type="text"
-                                                        value={data.reference_number}
-                                                        onChange={(e) =>
-                                                            setData(
-                                                                'reference_number',
-                                                                e.target.value,
-                                                            )
-                                                        }
-                                                        className="form-control form-control-lg fs-10 fw-bolder text-center"
-                                                        placeholder="••••••••"
-                                                        maxLength={50}
-                                                    />
-                                                </div>
-                                            </div>
-                                        )}
-                                        <div className="form-group text-center">
-                                            <Button size="lg" className="ms-3">
-                                                <i>
-                                                    <IconDeviceFloppy className="me-1" />
-                                                </i>
-                                                Save Payment
-                                            </Button>
                                         </div>
                                     </div>
                                 </div>

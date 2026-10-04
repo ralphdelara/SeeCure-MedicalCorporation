@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Attributes\Table;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
 
 /**
  * @property int $id
@@ -20,7 +20,8 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
  * @property string|null $landmark
  * @property string $last_modified_by
  * @property string $updated_at
- * @property-read \App\Models\User $lastModifiedBy
+ * @property-read User $lastModifiedBy
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyProfile newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyProfile newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyProfile query()
@@ -36,12 +37,20 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyProfile wherePhoneNo($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyProfile whereTelNo($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyProfile whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 #[Table('company_profile', key: 'id', keyType: 'int', incrementing: false)]
 #[Fillable([
     'company_name',
     'company_reg_no',
+    'non_vat_tin',
+    'min',
+    'sn',
+    'accreditation_no',
+    'accreditation_date_issued',
+    'ptu_no',
+    'ptu_date_issued',
     'bir_no',
     'tel_no',
     'phone_no',
@@ -57,8 +66,6 @@ class CompanyProfile extends Model
 
     /**
      * Get the user who last modified the company profile.
-     *
-     * @return BelongsTo
      */
     public function lastModifiedBy(): BelongsTo
     {

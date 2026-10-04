@@ -59,7 +59,7 @@ const AddOrUpdateModal = ({ showModal, setShowModal, modalData }: ModalProps) =>
     return (
         <>
             <Toaster position="top-center" reverseOrder={false} />
-            <Modal show={showModal} size="lg" onHide={() => setShowModal(false)}>
+            <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <form onSubmit={submitInventory}>
                     <Modal.Header closeButton>
                         <Modal.Title>{formType} Inventory</Modal.Title>

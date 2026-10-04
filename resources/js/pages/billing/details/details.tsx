@@ -236,6 +236,11 @@ const Details = ({ showTab }: { showTab: boolean }) => {
         cost_price: '',
         quantity: '',
         total_price: '',
+        discount: '',
+        discount_type_id: '',
+        tax_percent: '',
+        tax_amount: '',
+        nett_price: '',
     };
     const [formShow, setFormShow] = useState(false);
     const [modalDetails, setModalDetails] = useState({

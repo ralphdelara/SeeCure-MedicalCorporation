@@ -66,6 +66,10 @@ class CashierController extends Controller
             'total_amount',
             'amount_received',
             'amount_change',
+            'customer_name',
+            'customer_address',
+            'discount_type_id',
+            'id_no',
         );
 
         // to refresh usePage props

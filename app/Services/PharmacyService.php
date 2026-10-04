@@ -225,11 +225,11 @@ class PharmacyService
             abort(404);
         }
 
-        $pharmacy->update([
-            'is_completed' => true,
-        ]);
-
         foreach ($pharmacy->details as $details) {
+            if (is_null($details->inventory)) {
+                continue;
+            }
+
             // Add Stock movement record
             $newStock = $details->inventory->stock - $details->quantity;
             InventoryStockMovement::create([
@@ -249,6 +249,10 @@ class PharmacyService
                 'stock' => $newStock,
             ]);
         }
+
+        $pharmacy->update([
+            'is_completed' => true,
+        ]);
 
         // create cashier data for payments
         app(CashierService::class)->storeCashier(
@@ -347,6 +351,55 @@ class PharmacyService
         );
 
         return $payment->toArray();
+    }
+
+    public function addItem(array $pharmacyItemDetails): void
+    {
+        $id = $pharmacyItemDetails['id'];
+
+        if (empty($id)) {
+            unset($pharmacyItemDetails['id']);
+            $pharmacyItemDetails['created_by'] = Auth::id();
+        }
+
+        $pharmacyItemDetails['last_modified_by'] = Auth::id();
+
+        PharmacyDetail::updateOrCreate(
+            ['id' => $id],
+            $pharmacyItemDetails,
+        );
+
+        $this->recomputePharmacyTotals($pharmacyItemDetails['pharmacy_id']);
+    }
+
+    public function recomputePharmacyTotals(string $pharmacyId): void
+    {
+        $pharmacyDetails = PharmacyDetail::where('pharmacy_id', $pharmacyId)->get();
+
+        $totalCostPrice = 0;
+        $totalQuantity = 0;
+        $totalPrice = 0;
+        $totalDiscount = 0;
+        $totalTax = 0;
+        $totalNettPrice = 0;
+
+        foreach ($pharmacyDetails as $pharmacyDetail) {
+            $totalCostPrice += $pharmacyDetail->cost_price;
+            $totalQuantity += $pharmacyDetail->quantity;
+            $totalPrice += $pharmacyDetail->total_price;
+            $totalDiscount += $pharmacyDetail->discount;
+            $totalTax += $pharmacyDetail->tax_amount;
+            $totalNettPrice += $pharmacyDetail->nett_price;
+        }
+
+        Pharmacy::where('id', $pharmacyId)->update([
+            'total_cost_price' => $totalCostPrice,
+            'total_quantity'   => $totalQuantity,
+            'total_price'      => $totalPrice,
+            'total_discount'   => $totalDiscount,
+            'total_tax'        => $totalTax,
+            'total_nett_price' => $totalNettPrice,
+        ]);
     }
 
     public function getAuditLog(string $pharmacyId): array

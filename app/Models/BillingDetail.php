@@ -103,6 +103,11 @@ class BillingDetail extends Model
         return $this->belongsTo(BillingType::class, 'billing_type_id', 'id');
     }
 
+    public function discountType(): BelongsTo
+    {
+        return $this->belongsTo(DiscountType::class, 'discount_type_id', 'id');
+    }
+
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by', 'id');

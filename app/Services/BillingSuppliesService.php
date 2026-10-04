@@ -36,7 +36,11 @@ class BillingSuppliesService
             'cost_price'          => $billingSuppliesItems['cost_price'],
             'quantity'            => $billingSuppliesItems['quantity'],
             'total_price'         => $billingSuppliesItems['total_price'],
-            'nett_price'          => $billingSuppliesItems['total_price'],
+            'discount'            => $billingSuppliesItems['discount'],
+            'discount_type_id'    => $billingSuppliesItems['discount_type_id'],
+            'tax_percent'          => $billingSuppliesItems['tax_percent'],
+            'tax_amount'          => $billingSuppliesItems['tax_amount'],
+            'nett_price'          => $billingSuppliesItems['nett_price'],
             'created_by'          => Auth::id(),
             'last_modified_by'    => Auth::id(),
         ]);

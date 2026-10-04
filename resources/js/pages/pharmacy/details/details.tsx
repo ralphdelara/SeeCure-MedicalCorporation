@@ -1,16 +1,25 @@
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, usePage } from '@inertiajs/react';
 import { Options } from '@/types/options';
-import { formatMoney, formSubmitResponse, printDocument } from '@/lib/utils';
+import {
+    computeNettPriceDetails,
+    formatMoney,
+    formSubmitResponse,
+    printDocument,
+} from '@/lib/utils';
 import React from 'react';
 import SaveButton from './save-button';
-import { updateDetails } from '@/actions/App/Http/Controllers/PharmacyController';
+import {
+    deletePharmacyDetail,
+    updateDetails,
+} from '@/actions/App/Http/Controllers/PharmacyController';
 import TableList from '@/components/table';
 import { Button } from '@/components/ui/button';
-import { IconPrinter } from '@tabler/icons-react';
-import { printPrescription } from '@/actions/App/Http/Controllers/PrintController';
+import { IconPlus, IconPrinter } from '@tabler/icons-react';
+import PharmacyItemModal from './item-modal';
+import DeleteButton from '@/components/delete-button';
 
 interface InertiaProps {
     pharmacyDetails: {
@@ -22,8 +31,13 @@ interface InertiaProps {
                 inventory_id: null | string;
                 inventory_name: string;
             };
-            prescription_quantity: string;
-            pharmacy_quantity: string;
+            cost_price: string;
+            quantity: string;
+            total_price: string;
+            discount: string;
+            discount_type_id: string;
+            tax_percent: string;
+            nett_price: string;
             created_by: {
                 full_name: string;
             };
@@ -33,6 +47,11 @@ interface InertiaProps {
             created_at: string;
             updated_at: string;
         }[];
+        total_cost_price: string;
+        total_quantity: string;
+        total_price: string;
+        total_discount: string;
+        total_nett_price: string;
     };
     discountType: Options[];
 }
@@ -56,9 +75,10 @@ const Details = ({ showTab }: { showTab: boolean }) => {
         { name: 'Discount', align: 'center' },
         { name: 'Discount Type', align: 'center' },
         { name: 'Tax %', align: 'center' },
-        { name: 'Nett Price', className: 'sticky-right', align: 'center' },
+        { name: 'Nett Price', className: 'sticky-right-2', align: 'center' },
         { name: 'Added By', align: 'left' },
         { name: 'Last Modified By', align: 'left' },
+        { name: '', className: 'sticky-right', align: 'left' },
     ];
 
     const submitDetails = async (e: React.SubmitEvent<HTMLFormElement>) => {
@@ -87,127 +107,64 @@ const Details = ({ showTab }: { showTab: boolean }) => {
         setDefaults({ ...data, ...initialFields });
     }, [pharmacyDetails.details]);
 
-    const totalValues = (tmpData: any) => {
-        let totalCostPrice = 0;
-        let totalQuantity = 0;
-        let totalPrice = 0;
-        let totalDiscount = 0;
-        let totalNettPrice = 0;
-
-        Object.values(tmpData).forEach((item) => {
-            if (typeof item !== 'object' || item === null) {
-                return;
-            }
-
-            // Cast 'item' so TypeScript knows it has dynamic string keys
-            const product = item as Record<string, any>;
-
-            if (!isNaN(parseFloat(product.cost_price))) {
-                totalCostPrice += parseFloat(product.cost_price);
-            }
-
-            if (!isNaN(parseFloat(product.cost_price))) {
-                totalQuantity += parseFloat(product.quantity);
-            }
-
-            if (!isNaN(parseFloat(product.cost_price))) {
-                totalPrice += parseFloat(product.cost_price) * parseFloat(product.quantity);
-            }
-
-            if (!isNaN(parseFloat(product.discount))) {
-                totalDiscount += parseFloat(product.discount);
-            }
-
-            if (!isNaN(parseFloat(product.nett_price))) {
-                totalNettPrice += parseFloat(product.nett_price);
-            }
-        });
-
-        return {
-            totalCostPrice: totalCostPrice.toFixed(2),
-            totalQuantity: totalQuantity.toFixed(2),
-            totalPrice: totalPrice.toFixed(2),
-            totalDiscount: totalDiscount.toFixed(2),
-            totalNettPrice: totalNettPrice.toFixed(2),
-        };
+    const defaultItem = {
+        id: '',
+        pharmacy_id: pharmacyDetails.id,
+        inventory_id: '',
+        name: '',
+        cost_price: '',
+        quantity: '',
+        total_price: '',
+        discount: '',
+        discount_type_id: '',
+        tax_percent: '',
+        tax_amount: '',
+        nett_price: '',
     };
-
-    const computeNettPrice = (id: string, field: string, value: string) => {
-        const parsedValue = isNaN(parseFloat(value)) ? 0.0 : value;
-
-        setData((prevData: any) => {
-            // Get the current item or fallback to empty values if it doesn't exist yet
-            const currentItem = prevData[id] || {
-                cost_price: '',
-                quantity: '',
-                total_price: '',
-                discount: '',
-                discount_type_id: '',
-                tax_percent: '',
-                nett_price: '',
-            };
-
-            // Create a fresh copy of the item and apply the new dynamic field value
-            const updatedItem = {
-                ...currentItem,
-                [field]: parsedValue,
-            };
-
-            const allBlank =
-                updatedItem.cost_price === '' &&
-                updatedItem.quantity === '' &&
-                updatedItem.total_price === '' &&
-                updatedItem.discount === '' &&
-                updatedItem.tax_percent === '' &&
-                updatedItem.nett_price === '';
-
-            // Safely parse all numbers from our updated item copy
-            const cost_price = isNaN(parseFloat(updatedItem.cost_price as string))
-                ? 0.0
-                : parseFloat(updatedItem.cost_price as string);
-            const quantity = isNaN(parseFloat(updatedItem.quantity as string))
-                ? 0
-                : parseFloat(updatedItem.quantity as string);
-            const discount = isNaN(parseFloat(updatedItem.discount as string))
-                ? 0.0
-                : parseFloat(updatedItem.discount as string);
-            const tax_percent = isNaN(parseFloat(updatedItem.tax_percent as string))
-                ? 0.0
-                : parseFloat(updatedItem.tax_percent as string);
-
-            updatedItem.total_price = allBlank ? '' : (cost_price * quantity).toFixed(2);
-            const basePrice = updatedItem.total_price - discount;
-            const totalNettPrice = (basePrice * (1 + tax_percent / 100)).toFixed(2);
-            updatedItem.nett_price = allBlank ? '' : totalNettPrice;
-
-            let totals = totalValues({ ...prevData, [id]: updatedItem });
-
-            // Return a completely fresh state object
-            return {
-                ...prevData,
-                [id]: updatedItem,
-                total_cost_price: totals.totalCostPrice,
-                total_quantity: totals.totalQuantity,
-                total_price: totals.totalPrice,
-                total_discount: totals.totalDiscount,
-                total_nett_price: totals.totalNettPrice,
-            };
+    const [formShow, setFormShow] = useState(false);
+    const [modalDetails, setModalDetails] = useState({
+        formType: 'Add',
+        formData: { ...defaultItem },
+    });
+    const toggleModal = (formType: string, formData: ModalFormProps | null) => {
+        setFormShow(true);
+        setModalDetails({
+            formType: formType,
+            formData: formData ?? modalDetails.formData,
         });
     };
 
-    const triggerPrintPrescription = (consultationId: string) => {
-        window.open(printPrescription(consultationId).url);
-    };
+    useEffect(() => {
+        setData('total_cost_price', pharmacyDetails.total_cost_price);
+        setData('total_quantity', pharmacyDetails.total_quantity);
+        setData('total_price', pharmacyDetails.total_price);
+        setData('total_discount', pharmacyDetails.total_discount);
+        setData('total_nett_price', pharmacyDetails.total_nett_price);
+    }, [pharmacyDetails]);
 
     return (
         <>
             <div className={'tab-content mt-3' + (!showTab ? ' hidden' : '')}>
                 <div className="tab-pane fade show active" role="tabpanel" tabIndex={1}>
+                    <PharmacyItemModal
+                        formShow={formShow}
+                        setFormShow={setFormShow}
+                        formType={modalDetails.formType}
+                        formData={modalDetails.formData}
+                    />
                     <form onSubmit={submitDetails}>
                         <div className="me-4">
                             <SaveButton type="Details" isDirty={isDirty} />
                         </div>
                         <div className="d-flex justify-content-end me-5">
+                            <Button
+                                size="lg"
+                                type="button"
+                                className="me-2"
+                                onClick={() => toggleModal('Add', defaultItem)}
+                            >
+                                <IconPlus /> Add Item
+                            </Button>
                             <Button
                                 size="lg"
                                 type="button"
@@ -269,7 +226,8 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                                                     )?.cost_price ?? ''
                                                                 }
                                                                 onChange={(e) =>
-                                                                    computeNettPrice(
+                                                                    computeNettPriceDetails(
+                                                                        setData,
                                                                         item.id,
                                                                         'cost_price',
                                                                         e.target.value,
@@ -298,7 +256,8 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                                                     )?.quantity ?? ''
                                                                 }
                                                                 onChange={(e) =>
-                                                                    computeNettPrice(
+                                                                    computeNettPriceDetails(
+                                                                        setData,
                                                                         item.id,
                                                                         'quantity',
                                                                         e.target.value,
@@ -350,7 +309,8 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                                                     )?.discount ?? ''
                                                                 }
                                                                 onChange={(e) =>
-                                                                    computeNettPrice(
+                                                                    computeNettPriceDetails(
+                                                                        setData,
                                                                         item.id,
                                                                         'discount',
                                                                         e.target.value,
@@ -374,7 +334,8 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                                                 )?.discount_type_id ?? ''
                                                             }
                                                             onChange={(e) =>
-                                                                computeNettPrice(
+                                                                computeNettPriceDetails(
+                                                                    setData,
                                                                     item.id,
                                                                     'discount_type_id',
                                                                     e.target.value,
@@ -401,7 +362,8 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                                                     )?.tax_percent ?? ''
                                                                 }
                                                                 onChange={(e) =>
-                                                                    computeNettPrice(
+                                                                    computeNettPriceDetails(
+                                                                        setData,
                                                                         item.id,
                                                                         'tax_percent',
                                                                         e.target.value,
@@ -414,7 +376,7 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                                             />
                                                         </div>
                                                     </td>
-                                                    <td className="sticky-right">
+                                                    <td className="sticky-right-2">
                                                         <div className="input-group d-flex mb-3 flex-nowrap">
                                                             <span className="input-group-text">
                                                                 ₱
@@ -464,6 +426,12 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                                             </div>
                                                         </div>
                                                     </td>
+                                                    <td className="sticky-right">
+                                                        <DeleteButton
+                                                            url={deletePharmacyDetail(item.id).url}
+                                                            msg={'item <b>' + item.name + '</b>.'}
+                                                        />
+                                                    </td>
                                                 </tr>
                                             );
                                         })}
@@ -473,31 +441,32 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                             </td>
                                             <td className="text-center">
                                                 <h6 className="fs-6 fw-semibold">
-                                                    {formatMoney(data.total_cost_price)}
+                                                    {formatMoney(data.total_cost_price ?? '0')}
                                                 </h6>
                                             </td>
                                             <td className="text-center">
                                                 <h6 className="fs-6 fw-semibold">
-                                                    {data.total_quantity}
+                                                    {data.total_quantity ?? '0'}
                                                 </h6>
                                             </td>
                                             <td className="text-center">
                                                 <h6 className="fs-6 fw-semibold">
-                                                    {formatMoney(data.total_price)}
+                                                    {formatMoney(data.total_price ?? '0')}
                                                 </h6>
                                             </td>
                                             <td className="text-center">
                                                 <h6 className="fs-6 fw-semibold">
-                                                    {formatMoney(data.total_discount)}
+                                                    {formatMoney(data.total_discount ?? '0')}
                                                 </h6>
                                             </td>
                                             <td></td>
                                             <td></td>
-                                            <td className="sticky-right text-center">
+                                            <td className="sticky-right-2 text-center">
                                                 <h6 className="fs-6 fw-semibold">
-                                                    {formatMoney(data.total_nett_price)}
+                                                    {formatMoney(data.total_nett_price ?? '0')}
                                                 </h6>
                                             </td>
+                                            <td></td>
                                             <td></td>
                                             <td></td>
                                         </tr>

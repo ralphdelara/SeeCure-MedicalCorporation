@@ -36,6 +36,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read Patient $patient
  * @property-read PaymentStatus $status
  * @property-read Visit $visit
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment query()
@@ -56,11 +57,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment whereTotalAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment whereVisitId($value)
+ *
  * @property string $transaction_header
  * @property int $transaction_no
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment whereTransactionHeader($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment whereTransactionNo($value)
+ *
  * @property-read string $created_date
+ *
  * @mixin \Eloquent
  */
 #[Guarded([
@@ -77,6 +82,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'amount_received',
     'amount_paid',
     'amount_change',
+    'customer_name',
+    'customer_address',
+    'discount_type_id',
+    'id_no',
     'created_by',
     'last_modified_by',
 ])]
@@ -90,6 +99,8 @@ class Payment extends Model
     {
         return [
             'reference_number' => 'encrypted',
+            'customer_name'    => 'encrypted',
+            'customer_address' => 'encrypted',
             'created_at'       => 'date:M d, Y h:i a',
             'updated_at'       => 'date:M d, Y h:i a',
         ];
@@ -98,6 +109,11 @@ class Payment extends Model
     public function cashier(): BelongsTo
     {
         return $this->belongsTo(Cashier::class, 'cashier_id', 'id');
+    }
+
+    public function discountType(): BelongsTo
+    {
+        return $this->belongsTo(DiscountType::class, 'discount_type_id', 'id');
     }
 
     public function method(): BelongsTo
