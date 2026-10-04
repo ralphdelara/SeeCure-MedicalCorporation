@@ -212,3 +212,158 @@ export function formatReceiptDateTime(str: string, type?: string | null) {
 export function isImage(ext: string) {
     return ['png', 'jpg', 'jpeg', 'gif', 'bmp'].includes(ext);
 }
+
+export function computeNettPrice(setData: any, data: any, field: string, value: string) {
+    setData(field, value);
+
+    // Safely parse all numbers from our updated item copy
+    let cost_price = isNaN(parseFloat(data.cost_price as string))
+        ? 0.0
+        : parseFloat(data.cost_price as string);
+    let quantity = isNaN(parseFloat(data.quantity as string))
+        ? 0
+        : parseFloat(data.quantity as string);
+    let discount = isNaN(parseFloat(data.discount as string))
+        ? 0.0
+        : parseFloat(data.discount as string);
+    let tax_percent = isNaN(parseFloat(data.tax_percent as string))
+        ? 0.0
+        : parseFloat(data.tax_percent as string);
+
+    if (field === 'cost_price') {
+        cost_price = parseFloat(value);
+        cost_price = isNaN(cost_price) ? 0.0 : cost_price;
+    }
+
+    if (field === 'quantity') {
+        quantity = parseFloat(value);
+        quantity = isNaN(quantity) ? 0.0 : quantity;
+    }
+
+    if (field === 'discount') {
+        discount = parseFloat(value);
+        discount = isNaN(discount) ? 0.0 : discount;
+    }
+
+    if (field === 'tax_percent') {
+        tax_percent = parseFloat(value);
+        tax_percent = isNaN(tax_percent) ? 0.0 : tax_percent;
+    }
+
+    const total_price = (cost_price * quantity).toFixed(2);
+    const basePrice = parseFloat(total_price) - discount;
+    const tax_amount = (basePrice * (tax_percent / 100)).toFixed(2);
+    const nett_price = (basePrice + parseFloat(tax_amount)).toFixed(2);
+
+    setData('total_price', total_price);
+    setData('tax_amount', tax_amount);
+    setData('nett_price', nett_price);
+}
+
+export function computeNettPriceDetails(setData: any, id: string, field: string, value: string) {
+    const parsedValue = isNaN(parseFloat(value)) ? 0.0 : value;
+
+    setData((prevData: any) => {
+        // Get the current item or fallback to empty values if it doesn't exist yet
+        const currentItem = prevData[id] || {
+            cost_price: '',
+            quantity: '',
+            total_price: '',
+            discount: '',
+            discount_type_id: '',
+            tax_percent: '',
+            nett_price: '',
+        };
+
+        // Create a fresh copy of the item and apply the new dynamic field value
+        const updatedItem = {
+            ...currentItem,
+            [field]: parsedValue,
+        };
+
+        const allBlank =
+            updatedItem.cost_price === '' &&
+            updatedItem.quantity === '' &&
+            updatedItem.total_price === '' &&
+            updatedItem.discount === '' &&
+            updatedItem.tax_percent === '' &&
+            updatedItem.nett_price === '';
+
+        // Safely parse all numbers from our updated item copy
+        const cost_price = isNaN(parseFloat(updatedItem.cost_price as string))
+            ? 0.0
+            : parseFloat(updatedItem.cost_price as string);
+        const quantity = isNaN(parseFloat(updatedItem.quantity as string))
+            ? 0
+            : parseFloat(updatedItem.quantity as string);
+        const discount = isNaN(parseFloat(updatedItem.discount as string))
+            ? 0.0
+            : parseFloat(updatedItem.discount as string);
+        const tax_percent = isNaN(parseFloat(updatedItem.tax_percent as string))
+            ? 0.0
+            : parseFloat(updatedItem.tax_percent as string);
+
+        updatedItem.total_price = allBlank ? '' : (cost_price * quantity).toFixed(2);
+        const basePrice = updatedItem.total_price - discount;
+        const totalNettPrice = (basePrice * (1 + tax_percent / 100)).toFixed(2);
+        updatedItem.nett_price = allBlank ? '' : totalNettPrice;
+
+        let totals = totalValues({ ...prevData, [id]: updatedItem });
+
+        // Return a completely fresh state object
+        return {
+            ...prevData,
+            [id]: updatedItem,
+            total_cost_price: totals.totalCostPrice,
+            total_quantity: totals.totalQuantity,
+            total_price: totals.totalPrice,
+            total_discount: totals.totalDiscount,
+            total_nett_price: totals.totalNettPrice,
+        };
+    });
+}
+
+const totalValues = (tmpData: any) => {
+    let totalCostPrice = 0;
+    let totalQuantity = 0;
+    let totalPrice = 0;
+    let totalDiscount = 0;
+    let totalNettPrice = 0;
+
+    Object.values(tmpData).forEach((item) => {
+        if (typeof item !== 'object' || item === null) {
+            return;
+        }
+
+        // Cast 'item' so TypeScript knows it has dynamic string keys
+        const product = item as Record<string, any>;
+
+        if (!isNaN(parseFloat(product.cost_price))) {
+            totalCostPrice += parseFloat(product.cost_price);
+        }
+
+        if (!isNaN(parseFloat(product.cost_price))) {
+            totalQuantity += parseFloat(product.quantity);
+        }
+
+        if (!isNaN(parseFloat(product.cost_price))) {
+            totalPrice += parseFloat(product.cost_price) * parseFloat(product.quantity);
+        }
+
+        if (!isNaN(parseFloat(product.discount))) {
+            totalDiscount += parseFloat(product.discount);
+        }
+
+        if (!isNaN(parseFloat(product.nett_price))) {
+            totalNettPrice += parseFloat(product.nett_price);
+        }
+    });
+
+    return {
+        totalCostPrice: totalCostPrice.toFixed(2),
+        totalQuantity: totalQuantity.toFixed(2),
+        totalPrice: totalPrice.toFixed(2),
+        totalDiscount: totalDiscount.toFixed(2),
+        totalNettPrice: totalNettPrice.toFixed(2),
+    };
+};

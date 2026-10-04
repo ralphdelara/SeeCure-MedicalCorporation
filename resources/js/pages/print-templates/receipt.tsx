@@ -4,10 +4,13 @@ import '@/assets/css/print-receipt.css';
 import { addZeroes, formatReceiptDateTime } from '@/lib/utils';
 
 const PickList = () => {
-    const { receiptData, company, itemData, transactionNo, companyDetails } = usePage()
-        .props as unknown as {
+    const {
+        receiptData,
+        itemData,
+        transactionNo,
+        companyProfile,
+    } = usePage().props as unknown as {
         receiptData: any;
-        company: any;
         itemData: {
             details: {
                 name: string;
@@ -21,10 +24,16 @@ const PickList = () => {
             total_nett_price: string;
         };
         transactionNo: string;
-        companyDetails: {
-            nonVatTin: string;
+        companyProfile: {
+            company_name: string;
+            address: string;
+            non_vat_tin: string;
             sn: string;
             min: string;
+            accreditation_no: string;
+            accreditation_date_issued: string;
+            ptu_no: string;
+            ptu_date_issued: string;
         };
     };
 
@@ -40,14 +49,14 @@ const PickList = () => {
                 <tbody>
                     <tr>
                         <td className="text-center" colSpan={2} style={{ fontSize: '15px' }}>
-                            {company.company_name.toUpperCase()}
+                            {companyProfile.company_name.toUpperCase()}
                         </td>
                     </tr>
                     <tr>
                         <td className="text-center" colSpan={2} style={{ fontSize: '11px' }}>
                             <center>
                                 <div style={{ width: '200px', textAlign: 'center' }}>
-                                    {company.address}
+                                    {companyProfile.address}
                                 </div>
                             </center>
                         </td>
@@ -58,7 +67,7 @@ const PickList = () => {
                             colSpan={2}
                             style={{ fontSize: '11px', width: '100px' }}
                         >
-                            NON-VAT TIN : {companyDetails.nonVatTin}
+                            NON-VAT TIN : {companyProfile.non_vat_tin}
                         </td>
                     </tr>
                     <tr>
@@ -67,7 +76,7 @@ const PickList = () => {
                             colSpan={2}
                             style={{ fontSize: '11px', width: '100px' }}
                         >
-                            MIN : {companyDetails.min}
+                            MIN : {companyProfile.min}
                         </td>
                     </tr>
                     <tr>
@@ -76,7 +85,7 @@ const PickList = () => {
                             colSpan={2}
                             style={{ fontSize: '11px', width: '100px' }}
                         >
-                            S/N : {companyDetails.sn}
+                            S/N : {companyProfile.sn}
                         </td>
                     </tr>
                     <tr>
@@ -103,7 +112,7 @@ const PickList = () => {
                     </tr>
                     <tr>
                         <td>TRANS. #:</td>
-                        <td className="text-right">{transactionNo}</td>
+                        <td className="text-right">{transactionNo ?? '-'}</td>
                     </tr>
                     <tr>
                         <td>DATE:</td>
@@ -111,7 +120,9 @@ const PickList = () => {
                     </tr>
                     <tr>
                         <td>CASHIER:</td>
-                        <td className="text-right">{receiptData.created_by.full_name_receipt}</td>
+                        <td className="text-right">
+                            {receiptData.created_by.full_name_receipt.toUpperCase()}
+                        </td>
                     </tr>
                     <tr>
                         <td colSpan={2}>--------------------------------------------------</td>
@@ -138,13 +149,19 @@ const PickList = () => {
                                                 {item.quantity}
                                             </td>
                                             <td style={{ verticalAlign: 'top' }}>
-                                                {item.name} @{item.cost_price}
+                                                {item.name} @{item.cost_price ?? '0.00'}
                                             </td>
                                             <td
                                                 className="text-right"
                                                 style={{ verticalAlign: 'top' }}
                                             >
-                                                {item.nett_price}
+                                                {parseFloat(item.nett_price ?? '0').toLocaleString(
+                                                    'en-US',
+                                                    {
+                                                        minimumFractionDigits: 2,
+                                                        maximumFractionDigits: 2,
+                                                    },
+                                                )}
                                             </td>
                                         </tr>
                                     ))}
@@ -160,7 +177,10 @@ const PickList = () => {
                     <tr>
                         <td style={{ fontSize: '12px' }}>TOTAL SALES:</td>
                         <td style={{ fontSize: '12px' }} className="text-right">
-                            {itemData.total_nett_price}
+                            {parseFloat(itemData.total_nett_price).toLocaleString('en-US', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                            })}
                         </td>
                     </tr>
                     <tr>
@@ -169,7 +189,10 @@ const PickList = () => {
                     <tr>
                         <td style={{ fontSize: '13px' }}>TOTAL AMOUNT DUE:</td>
                         <td style={{ fontSize: '13px' }} className="text-right">
-                            {itemData.total_nett_price}
+                            {parseFloat(itemData.total_nett_price).toLocaleString('en-US', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                            })}
                         </td>
                     </tr>
                     <tr>
@@ -184,7 +207,10 @@ const PickList = () => {
                             )}
                         </td>
                         <td style={{ fontSize: '10px' }} className="text-right">
-                            {receiptData.amount_received}
+                            {parseFloat(receiptData.amount_received).toLocaleString('en-US', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                            })}
                         </td>
                     </tr>
                     <tr>
@@ -201,32 +227,40 @@ const PickList = () => {
                             {formatReceiptDateTime(receiptData.created_at)}
                         </td>
                     </tr>
+                </tbody>
+            </table>
+            <table style={{ width: '300px' }}>
+                <tbody>
                     <tr>
                         <td colSpan={2}>--------------------------------------------------</td>
                     </tr>
                     <tr>
                         <td>CUST NAME:</td>
-                        <td></td>
+                        <td className="text-right">
+                            {receiptData.customer_name?.toUpperCase() ?? '-'}
+                        </td>
                     </tr>
                     <tr>
                         <td>CUST ADDR:</td>
-                        <td></td>
+                        <td className="text-right">
+                            {receiptData.customer_address?.toUpperCase() ?? '-'}
+                        </td>
                     </tr>
                     <tr>
                         <td>CUST TIN:</td>
-                        <td></td>
+                        <td className="text-right">-</td>
                     </tr>
                     <tr>
                         <td>BUS STYLE:</td>
-                        <td></td>
+                        <td className="text-right">-</td>
                     </tr>
                     <tr>
                         <td>SC/PWD/NAAC/SP/MOV ID:</td>
-                        <td></td>
+                        <td className="text-right">{receiptData.id_no ?? '-'}</td>
                     </tr>
                     <tr>
                         <td>SIGNATURE:</td>
-                        <td>__________________________</td>
+                        <td className="text-right">__________________________</td>
                     </tr>
                     <tr>
                         <td colSpan={2}>--------------------------------------------------</td>
@@ -238,37 +272,37 @@ const PickList = () => {
                     </tr>
                     <tr>
                         <td colSpan={2} className="text-center">
-                            {company.company_name.toUpperCase()}
+                            {companyProfile.company_name.toUpperCase()}
                         </td>
                     </tr>
                     <tr>
                         <td colSpan={2} className="text-center">
-                            {company.address}
+                            {companyProfile.address}
                         </td>
                     </tr>
                     <tr>
                         <td className="text-center" colSpan={2}>
-                            NON-VAT REG TIN : {companyDetails.nonVatTin}
+                            NON-VAT REG TIN : {companyProfile.non_vat_tin ?? 'N/A'}
                         </td>
                     </tr>
                     <tr>
                         <td className="text-center" colSpan={2}>
-                            ACCRE. NO.
+                            ACCRE. NO. {companyProfile.accreditation_no ?? 'N/A'}
                         </td>
                     </tr>
                     <tr>
                         <td className="text-center" colSpan={2}>
-                            Date Issued:
+                            Date Issued: {companyProfile.accreditation_date_issued ?? 'N/A'}
                         </td>
                     </tr>
                     <tr>
                         <td className="text-center" colSpan={2}>
-                            PTU NO. :
+                            PTU NO. : {companyProfile.ptu_no ?? 'N/A'}
                         </td>
                     </tr>
                     <tr>
                         <td className="text-center" colSpan={2}>
-                            Date Issued:
+                            Date Issued: {companyProfile.ptu_date_issued ?? 'N/A'}
                         </td>
                     </tr>
                 </tbody>

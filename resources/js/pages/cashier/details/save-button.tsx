@@ -10,7 +10,6 @@ import { Link } from '@inertiajs/react';
 import CompleteCashier from './complete-cashier';
 import { usePage } from '@inertiajs/react';
 import Swal from 'sweetalert2';
-import { sendBackToBilling, sendBackToPharmacy } from '@/routes/cashier/details';
 import SendToBilling from './send-to-billing';
 import SendToPharmacy from './send-to-pharmacy';
 
@@ -68,19 +67,16 @@ const SaveButton = ({
                         <button
                             type="button"
                             className="tooltip-container"
-                            data-title="Changes made arent saved unless the 'Save' button is clicked"
+                            data-title="Changes made arent saved unless the 'Save Payment' button is clicked"
                         >
                             <IconExclamationCircleFilled />
                         </button>
                     </>
                 )}
             </h5>
-            {paymentType === 'Billing' && !isPaid && (
-                <SendToBilling id={paymentId}/>
-            )}
-            {paymentType === 'Pharmacy' && !isPaid && (
-                <SendToPharmacy id={paymentId}/>
-            )}
+            {paymentType === 'Billing' && !isPaid && <SendToBilling id={paymentId} />}
+            {paymentType === 'Pharmacy' && !isPaid && <SendToPharmacy id={paymentId} />}
+            {isPaid && <div></div>}
         </div>
     );
 };

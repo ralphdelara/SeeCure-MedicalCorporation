@@ -120,6 +120,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/{id}/audit-log', [PharmacyController::class, 'getAuditLog'])->name('pharmacy.details.audit-log');
             Route::patch('/', [PharmacyController::class, 'updateDetails'])->name('pharmacy.details.update');
             Route::patch('/complete/{id}', [PharmacyController::class, 'completePharmacy'])->name('pharmacy.completed');
+            Route::post('/pharmacy/item', [PharmacyController::class, 'addItem'])->name('pharmacy.item');
+            Route::delete('{id}', [PharmacyController::class, 'deletePharmacyDetail'])->name('pharmacy.details.delete');
         });
         Route::delete('/{id}', [PharmacyController::class, 'deletePharmacy'])->name('pharmacy.delete');
     });
@@ -155,6 +157,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('system')->group(function () {
         Route::get('/', [SystemController::class, 'index'])->name('system');
         Route::get('/call-out', [SystemController::class, 'callOut'])->name('system.call-out');
+        Route::get('/company-profile', [SystemController::class, 'companyProfile'])->name('system.company-profile');
+        Route::put('/company-profile', [SystemController::class, 'updateCompanyProfile'])->name('system.company-profile.update');
 
         Route::post('/call-out', [SystemController::class, 'callOutPatient'])->name('system.call-out-patient');
     });

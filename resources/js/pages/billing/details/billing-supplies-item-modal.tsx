@@ -4,12 +4,9 @@ import { Modal } from 'react-bootstrap';
 import { Toaster } from 'react-hot-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import type { Options } from '@/types/options';
-import { formSubmitResponse } from '@/lib/utils';
-import {
-    addBillingSuppliesItem,
-    addOrUpdateBillingSupplies,
-} from '@/actions/App/Http/Controllers/BillingSuppliesController';
+import { computeNettPrice, formSubmitResponse } from '@/lib/utils';
+import { addBillingSuppliesItem } from '@/actions/App/Http/Controllers/BillingSuppliesController';
+import { Select } from '@/components/ui/select';
 
 interface ModalProps {
     formType: string;
@@ -24,7 +21,7 @@ export interface ModalFormProps {
 }
 
 const BillingSuppliesModal = ({ formShow, setFormShow, formType, formData }: ModalProps) => {
-    const { billingDetails } = usePage().props;
+    const { billingDetails, discountType } = usePage().props;
 
     const { data, setData, post, processing } = useForm<ModalFormProps>(formData);
     const [selectedSupply, setSelectedSupply] = useState('');
@@ -48,6 +45,11 @@ const BillingSuppliesModal = ({ formShow, setFormShow, formType, formData }: Mod
         setData('cost_price', formData.cost_price);
         setData('quantity', formData.quantity);
         setData('total_price', formData.total_price);
+        setData('discount', formData.discount);
+        setData('discount_type_id', formData.discount_type_id);
+        setData('tax_percent', formData.tax_percent);
+        setData('tax_amount', formData.tax_amount);
+        setData('nett_price', formData.nett_price);
     }, [formData]);
 
     const selectBillingSupply = (e) => {
@@ -62,24 +64,14 @@ const BillingSuppliesModal = ({ formShow, setFormShow, formType, formData }: Mod
             setData('cost_price', '');
             setData('quantity', 1);
             setData('total_price', '');
+            setData('nett_price', '');
         } else {
             setData('name', selectedOption.dataset.itemName);
             setData('billing_supplies_id', selectedValue);
             setData('cost_price', selectedOption.dataset.costPrice);
             setData('quantity', 1);
             setData('total_price', selectedOption.dataset.costPrice);
-        }
-    };
-
-    const calculateTotalPrice = (value: string, column: string) => {
-        setData(column as keyof typeof data, value);
-
-        if (column === 'cost_price') {
-            setData('total_price', value * data.quantity);
-        }
-
-        if (column === 'quantity') {
-            setData('total_price', value * data.cost_price);
+            setData('nett_price', selectedOption.dataset.costPrice);
         }
     };
 
@@ -135,45 +127,155 @@ const BillingSuppliesModal = ({ formShow, setFormShow, formType, formData }: Mod
                                 <label className="form-label" htmlFor="cost_price">
                                     Cost Price *
                                 </label>
-                                <Input
-                                    type="number"
-                                    step="0.0001"
-                                    id="cost_price"
-                                    value={data.cost_price}
-                                    className="form-control"
-                                    onChange={(e) =>
-                                        calculateTotalPrice(e.target.value, 'cost_price')
-                                    }
-                                    required={true}
-                                />
+                                <div className="input-group d-flex flex-nowrap">
+                                    <span className="input-group-text">₱</span>
+                                    <Input
+                                        type="number"
+                                        step="0.0001"
+                                        id="cost_price"
+                                        value={data.cost_price}
+                                        className="form-control"
+                                        onChange={(e) =>
+                                            computeNettPrice(
+                                                setData,
+                                                data,
+                                                'cost_price',
+                                                e.target.value,
+                                            )
+                                        }
+                                        required={true}
+                                        placeholder="0.00"
+                                    />
+                                </div>
                             </div>
                             <div className="form-group">
                                 <label className="form-label" htmlFor="quantity">
                                     Quantity *
                                 </label>
-                                <Input
-                                    type="number"
-                                    step="0.0001"
-                                    id="quantity"
-                                    value={data.quantity}
-                                    className="form-control"
-                                    onChange={(e) =>
-                                        calculateTotalPrice(e.target.value, 'quantity')
-                                    }
-                                    required={true}
-                                />
+                                <div className="input-group d-flex flex-nowrap">
+                                    <span className="input-group-text">#</span>
+                                    <Input
+                                        type="number"
+                                        step="0.0001"
+                                        id="quantity"
+                                        value={data.quantity}
+                                        className="form-control"
+                                        onChange={(e) =>
+                                            computeNettPrice(
+                                                setData,
+                                                data,
+                                                'quantity',
+                                                e.target.value,
+                                            )
+                                        }
+                                        required={true}
+                                        placeholder="0.00"
+                                    />
+                                </div>
                             </div>
                             <div className="form-group">
                                 <label className="form-label" htmlFor="total_price">
                                     Total Price *
                                 </label>
-                                <Input
-                                    type="number"
-                                    value={data.total_price}
-                                    className="form-control"
-                                    readOnly={true}
-                                    required={true}
-                                />
+                                <div className="input-group d-flex flex-nowrap">
+                                    <span className="input-group-text">₱</span>
+                                    <Input
+                                        type="number"
+                                        value={data.total_price}
+                                        className="form-control"
+                                        required={true}
+                                        readOnly={true}
+                                        placeholder="(auto compute)"
+                                    />
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label" htmlFor="discount">
+                                    Discount
+                                </label>
+                                <div className="input-group d-flex flex-nowrap">
+                                    <span className="input-group-text">₱</span>
+                                    <Input
+                                        type="number"
+                                        step="0.0001"
+                                        id="discount"
+                                        value={data.discount}
+                                        className="form-control"
+                                        onChange={(e) =>
+                                            computeNettPrice(
+                                                setData,
+                                                data,
+                                                'discount',
+                                                e.target.value,
+                                            )
+                                        }
+                                        placeholder="0.00"
+                                    />
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label" htmlFor="discount_type_id">
+                                    Discount Type
+                                </label>
+                                <div className="input-group d-flex flex-nowrap">
+                                    <Select
+                                        id="discount_type_id"
+                                        value={data.discount_type_id}
+                                        onChange={(e) =>
+                                            computeNettPrice(
+                                                setData,
+                                                data,
+                                                'discount_type_id',
+                                                e.target.value,
+                                            )
+                                        }
+                                        type=""
+                                        style={{ width: '110px' }}
+                                        options={discountType}
+                                    />
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label" htmlFor="tax_percent">
+                                    Tax
+                                </label>
+                                <div className="input-group d-flex flex-nowrap">
+                                    <span className="input-group-text">%</span>
+                                    <Input
+                                        type="number"
+                                        step="0.0001"
+                                        id="tax_percent"
+                                        value={data.tax_percent}
+                                        className="form-control"
+                                        onChange={(e) =>
+                                            computeNettPrice(
+                                                setData,
+                                                data,
+                                                'tax_percent',
+                                                e.target.value,
+                                            )
+                                        }
+                                        placeholder="0.00"
+                                    />
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label" htmlFor="nett_price">
+                                    Nett Price
+                                </label>
+                                <div className="input-group d-flex flex-nowrap">
+                                    <span className="input-group-text">₱</span>
+                                    <Input
+                                        type="number"
+                                        step="0.0001"
+                                        id="nett_price"
+                                        value={data.nett_price}
+                                        className="form-control"
+                                        required={true}
+                                        readOnly={true}
+                                        placeholder="(auto compute)"
+                                    />
+                                </div>
                             </div>
                         </div>
                     </Modal.Body>

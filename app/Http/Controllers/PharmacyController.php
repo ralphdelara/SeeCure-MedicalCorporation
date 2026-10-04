@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\DiscountType;
+use App\Models\InventoryCategory;
 use App\Models\Pharmacy;
+use App\Models\PharmacyDetail;
 use App\Services\PharmacyService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -30,11 +32,13 @@ class PharmacyController extends Controller
         $pharmacyDetails = app(PharmacyService::class)->getPharmacyDetails($pharmacyId);
         $patientDetails = $pharmacyDetails['visit']['patient'];
         $discountType = DiscountType::all();
+        $inventoryCategories = InventoryCategory::all();
 
         return Inertia::render('pharmacy/details/index', compact(
             'pharmacyDetails',
             'patientDetails',
             'discountType',
+            'inventoryCategories',
         ));
     }
 
@@ -73,6 +77,40 @@ class PharmacyController extends Controller
         return back()->with([
             'paymentDetails' => app(PharmacyService::class)->addOrUpdatePayment($paymentDetails),
         ]);
+    }
+
+    public function addItem(Request $request): void
+    {
+        $request->validate([
+            'pharmacy_id'  => 'required',
+            'inventory_id' => 'required',
+        ]);
+
+        $pharmacyItemDetails = $request->only(
+            'id',
+            'pharmacy_id',
+            'inventory_id',
+            'name',
+            'cost_price',
+            'quantity',
+            'total_price',
+            'discount',
+            'discount_type_id',
+            'tax_percent',
+            'tax_amount',
+            'nett_price',
+        );
+
+        app(PharmacyService::class)->addItem($pharmacyItemDetails);
+    }
+
+    public function deletePharmacyDetail(string $id): void
+    {
+        $pharmacyDetail = PharmacyDetail::find($id);
+        $pharmacyId = $pharmacyDetail->pharmacy_id;
+        $pharmacyDetail->delete();
+
+        app(PharmacyService::class)->recomputePharmacyTotals($pharmacyId);
     }
 
     public function getAuditLog(string $id): array

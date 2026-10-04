@@ -79,7 +79,7 @@ class InventoryService
             'category',
             'unit',
         ])
-            ->select('id', 'name', 'stock', 'inventory_unit_id', 'inventory_category_id');
+            ->select('id', 'name', 'stock', 'inventory_unit_id', 'cost_price', 'inventory_category_id');
 
         if (! empty($requestDetails['keyword'])) {
             $inventory = $inventory->whereLike('name', '%'.$requestDetails['keyword'].'%');

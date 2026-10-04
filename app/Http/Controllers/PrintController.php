@@ -53,7 +53,7 @@ class PrintController extends Controller
     public function printBilling(string $billingId): Response
     {
         $printTitle = 'BILLING';
-        $billing = Billing::with('details', 'visit.patient.suffix')->find($billingId);
+        $billing = Billing::with('details', 'visit.patient.suffix', 'visit.patient.gender')->find($billingId);
         $qrUrl = $this->qrUrl.('Billing|'.$billing->visit->patient->full_name.'||Billing Details|'.$billing->created_at);
         $printedBy = Auth::user()->full_name;
 
@@ -199,14 +199,16 @@ class PrintController extends Controller
         abortIfInvalidUuid($receiptId);
 
         $receiptData = Payment::with([
-            'cashier.billing.details', 'cashier.pharmacy.details', 'method',
+            'cashier.billing.details',
+            'cashier.pharmacy.details',
+            'cashier.pharmacy.pickList',
+            'method',
             'createdBy' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name');
             },
             'createdBy.professions',
             'createdBy.specialties',
         ])->find($receiptId);
-        $company = CompanyProfile::find(1);
 
         if (empty($receiptData)) {
             abort(404);
@@ -216,16 +218,22 @@ class PrintController extends Controller
         $pharmacy = $receiptData['cashier']['pharmacy'];
 
         $itemData = $billing ?? $pharmacy;
-        $transactionNo = $itemData->transaction_no;
+        $transactionType = $billing ? 'BILLING' : 'PHARMACY';
 
-        $companyDetails = config('company');
+        if ($billing) {
+            $transactionNo = $itemData->transaction_header.'-'.sprintf('%08d', $itemData->transaction_no);
+        } else {
+            $transactionNo = $itemData->pickList?->transaction_no;
+        }
+
+        $companyProfile = CompanyProfile::find(1);
 
         return Inertia::render('print-templates/receipt', compact(
             'receiptData',
             'itemData',
-            'company',
+            'transactionType',
             'transactionNo',
-            'companyDetails',
+            'companyProfile',
         ));
     }
 

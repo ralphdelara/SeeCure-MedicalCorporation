@@ -52,6 +52,63 @@ class ConsultationController extends Controller
         $signsOrSymptoms = SignsOrSymptom::all();
         $vitalSigns = VitalSign::with('fields')->get();
         $patientDetails = $consultationDetails['visit']['patient'];
+        $patientDetails['visits'] = Visit::with([
+            // consultation
+            'consultation',
+            'consultation.soap',
+            'consultation.diagnosis',
+            'consultation.diagnosis.icd10Codes.icd10Code',
+            'consultation.prescriptions',
+            'consultation.doctor.professions',
+            'consultation.doctor.specialties',
+            'consultation.signsOrSymptoms',
+            'consultation.guardianRelationship',
+            'consultation.vitalSigns.vitalSign',
+            'consultation.vitalSigns.vitalSignField',
+            'consultation.vitalSigns.createdBy' => function ($query) {
+                $query->select('id', 'first_name', 'middle_name', 'last_name');
+            },
+            'consultation.vitalSigns.createdBy.professions',
+            'consultation.vitalSigns.createdBy.specialties',
+            'consultation.vitalSigns.lastModifiedBy' => function ($query) {
+                $query->select('id', 'first_name', 'middle_name', 'last_name');
+            },
+            'consultation.vitalSigns.lastModifiedBy.professions',
+            'consultation.vitalSigns.lastModifiedBy.specialties',
+            // laboratory
+            'laboratory.remarks',
+            'laboratory.testData',
+            'laboratory.testData.type',
+            'laboratory.testData.test',
+            'laboratory.testData.fields' => function ($query) {
+                $query->orderBy('id');
+            },
+            'laboratory.testData.fields.field',
+            'laboratory.performedBy' => function ($query) {
+                $query->select('id', 'first_name', 'middle_name', 'last_name');
+            },
+            'laboratory.performedBy.professions',
+            'laboratory.performedBy.specialties',
+            'laboratory.createdBy' => function ($query) {
+                $query->select('id', 'first_name', 'middle_name', 'last_name');
+            },
+            'laboratory.createdBy.professions',
+            'laboratory.createdBy.specialties',
+            'laboratory.lastModifiedBy' => function ($query) {
+                $query->select('id', 'first_name', 'middle_name', 'last_name');
+            },
+            'laboratory.lastModifiedBy.professions',
+            'laboratory.lastModifiedBy.specialties',
+            // radiology
+            'radiology',
+            'createdBy',
+            'createdBy.professions',
+            'createdBy.specialties',
+            'priorityTypes',
+            'status',
+        ])->where('patient_id', $patientDetails['id'])
+            ->where('id', '!=', $consultationDetails['visit']['id'])->get();
+
         $laboratory = $consultationDetails['visit']['laboratory'];
         $doctors = app(DoctorService::class)->getDoctorList();
         $relationshipOptions = Relationship::all();

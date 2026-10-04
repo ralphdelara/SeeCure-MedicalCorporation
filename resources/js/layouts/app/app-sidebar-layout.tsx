@@ -80,6 +80,7 @@ export default function NavSidebar({ toggleSidebar }: NavSidebarProps) {
             usersCount: number;
         };
     };
+
     const { first_name, last_name } = auth.user;
     const { url } = usePage();
     const [initSidebarType] = useState<string | null>(
@@ -92,16 +93,19 @@ export default function NavSidebar({ toggleSidebar }: NavSidebarProps) {
             name: 'Dashboard',
             icon: IconChartLine,
             active: url.includes(dashboard().url),
+            count: 0,
             childNav: [
                 {
                     url: dashboard(),
                     name: 'Overview',
                     active: url === dashboard().url,
+                    count: 0,
                 },
                 {
                     url: reports(),
                     name: 'Reports',
                     active: url === reports().url,
+                    count: 0,
                 },
             ],
         },
@@ -435,7 +439,7 @@ export default function NavSidebar({ toggleSidebar }: NavSidebarProps) {
                                                     }
                                                 >
                                                     <div className="round-16 d-flex align-items-center justify-content-center">
-                                                        <IconCircle size={10} />
+                                                        <IconCircle size={10} className="ms-10" />
                                                     </div>
                                                     <span className="hide-menu">
                                                         {childItem.name}

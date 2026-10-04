@@ -238,7 +238,7 @@ export default function CallOut() {
     };
 
     return (
-        <>
+        <div className="call-out">
             <Head title="Call Out" />
             <div className="hidden">
                 <button ref={startButtonRef} onClick={start}>
@@ -373,6 +373,6 @@ export default function CallOut() {
                     </Modal.Footer>
                 </Modal>
             </section>
-        </>
+        </div>
     );
 }

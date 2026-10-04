@@ -1,22 +1,15 @@
 import {
-    IconActivity,
-    IconEye,
     IconFlask,
     IconHistory,
     IconScan,
     IconStethoscope,
-    IconView360,
 } from '@tabler/icons-react';
 import { Button } from '@/components/ui/button';
 import { Modal } from 'react-bootstrap';
 import { useState } from 'react';
-import { Link, router } from '@inertiajs/react';
-import { getConsultationDetails } from '@/actions/App/Http/Controllers/ConsultationController';
-import { getLaboratoryDetails } from '@/actions/App/Http/Controllers/LaboratoryController';
-import DOMPurify from 'dompurify';
-import VisitDetailsConsultation from './visit-details.consultation';
-import VisitDetailsLaboratory from './visit-details-laboratory';
-import VisitDetailsRadiology from './visit-details-radiology';
+import VisitDetailsConsultation from '../../pages/patient/details/visit-details.consultation';
+import VisitDetailsLaboratory from '../../pages/patient/details/visit-details-laboratory';
+import VisitDetailsRadiology from '../../pages/patient/details/visit-details-radiology';
 
 const VisitDetailsModal = ({ visit }) => {
     const [formShow, setFormShow] = useState(false);

@@ -4,6 +4,7 @@ import {
     IconActivity,
     IconFiles,
     IconFlask,
+    IconHistory,
     IconListCheck,
     IconListDetails,
     IconPrescription,
@@ -24,6 +25,7 @@ import { Head, usePage } from '@inertiajs/react';
 import { PatientDetailsProps } from '@/components/patient/patient-details';
 import { getUrlParams } from '@/lib/utils';
 import Documents from '@/components/documents/document';
+import History from './history';
 
 interface InertiaProps {
     patientDetails: PatientDetailsProps;
@@ -63,6 +65,7 @@ const ConsultationDetails = () => {
         { id: 'tab-soap', name: 'S O A P', icon: <IconListCheck /> },
         { id: 'tab-diagnosis', name: 'Diagnosis', icon: <IconStethoscope /> },
         { id: 'tab-prescription', name: 'Prescription', icon: <IconPrescription /> },
+        { id: 'tab-history', name: 'History', icon: <IconHistory /> },
         { id: 'tab-laboratory', name: 'Laboratory', icon: <IconFlask /> },
         { id: 'tab-radiology', name: 'Radiology', icon: <IconScan /> },
         { id: 'tab-vital-signs', name: 'Vital Signs', icon: <IconActivity /> },
@@ -126,6 +129,7 @@ const ConsultationDetails = () => {
             <SOAP showTab={selectedTab === 'tab-soap'} />
             <Diagnosis showTab={selectedTab === 'tab-diagnosis'} />
             <Prescription showTab={selectedTab === 'tab-prescription'} />
+            <History showTab={selectedTab === 'tab-history'} />
             <Laboratory showTab={selectedTab === 'tab-laboratory'} />
             <Radiology showTab={selectedTab === 'tab-radiology'} />
             <VitalSigns showTab={selectedTab === 'tab-vital-signs'} />
