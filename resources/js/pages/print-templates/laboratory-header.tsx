@@ -23,12 +23,13 @@ const HeaderDetails = () => {
             <table
                 style={{
                     width: '700px',
+                    marginTop: '10px',
                 }}
             >
                 <tbody>
                     <tr>
-                        <td>Name:</td>
-                        <td colSpan={5} className="fw-bolder pe-3 text-center">
+                        <td style={{ width: '50px' }}>Name:</td>
+                        <td className="fw-bolder pe-3 text-center">
                             {patient.full_name}
                             <hr
                                 className="border-dark"
@@ -37,8 +38,8 @@ const HeaderDetails = () => {
                                 }}
                             />
                         </td>
-                        <td>Date Requested:</td>
-                        <td className="fw-bolder text-center">
+                        <td style={{ width: '100px' }}>Date Requested:</td>
+                        <td className="fw-bolder text-center" style={{ width: '150px' }}>
                             {new Intl.DateTimeFormat('en-US', {
                                 month: 'short', // "Sep"
                                 day: '2-digit', // "17"
@@ -52,42 +53,47 @@ const HeaderDetails = () => {
                             />
                         </td>
                     </tr>
+                </tbody>
+            </table>
+            <table
+                style={{
+                    width: '700px',
+                }}
+            >
+                <tbody>
                     <tr>
-                        <td>Age:</td>
+                        <td style={{ width: '50px' }}>Age:</td>
                         <td className="fw-bolder text-center">
                             {patient?.age_computed ?? <>&nbsp;</>}
                             <hr
                                 className="border-dark"
                                 style={{
-                                    width: '70px',
                                     margin: '0',
                                 }}
                             />
                         </td>
-                        <td>Sex:</td>
+                        <td style={{ width: '50px', textAlign: 'right' }}>Sex:</td>
                         <td className="fw-bolder text-center">
                             {patient.gender?.name ?? <>&nbsp;</>}
                             <hr
                                 className="border-dark"
                                 style={{
-                                    width: '70px',
                                     margin: '0',
                                 }}
                             />
                         </td>
-                        <td>CS:</td>
-                        <td className="fw-bolder text-center">
+                        <td style={{ width: '50px', textAlign: 'right' }}>CS:</td>
+                        <td className="fw-bolder pe-3 text-center">
                             {patient.civil_status?.name ?? <>&nbsp;</>}
                             <hr
                                 className="border-dark"
                                 style={{
-                                    width: '70px',
                                     margin: '0',
                                 }}
                             />
                         </td>
-                        <td>Date Performed:</td>
-                        <td className="fw-bolder text-center">
+                        <td style={{ width: '100px' }}>Date Performed:</td>
+                        <td className="fw-bolder text-center" style={{ width: '150px' }}>
                             {laboratory.date_performed ?? <>&nbsp;</>}
                             <hr
                                 className="border-dark"
@@ -97,9 +103,17 @@ const HeaderDetails = () => {
                             />
                         </td>
                     </tr>
+                </tbody>
+            </table>
+            <table
+                style={{
+                    width: '700px',
+                }}
+            >
+                <tbody>
                     <tr>
-                        <td>Address:</td>
-                        <td colSpan={5} className="fw-bolder pe-3 text-center">
+                        <td style={{ width: '50px' }}>Address:</td>
+                        <td className="fw-bolder pe-3 text-center" style={{ width: '400px' }}>
                             {patient?.full_address ?? ''}
                             <hr
                                 className="border-dark"
@@ -108,7 +122,7 @@ const HeaderDetails = () => {
                                 }}
                             />
                         </td>
-                        <td>Physician:</td>
+                        <td style={{ width: '100px', textAlign: 'right' }} className="pe-1">Physician:</td>
                         <td className="fw-bolder text-center">
                             &nbsp;
                             <hr

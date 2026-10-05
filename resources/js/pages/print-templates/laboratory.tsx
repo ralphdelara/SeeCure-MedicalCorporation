@@ -1,14 +1,8 @@
 import { useEffect } from 'react';
-import Footer from './laboratory-footer';
 import { usePage } from '@inertiajs/react';
 import '@/assets/css/print.css';
-import { formatMoney, getNormalRange } from '@/lib/utils';
-import Header from './header';
-import { Item } from '@radix-ui/react-dropdown-menu';
 import { Fragment } from 'react';
-import HeaderDetails from './laboratory-header';
 import LaboratoryDefault from './laboratory-default';
-import LaboratoryMultiple from './laboratory-multiple';
 import LaboratoryUri from './laboratory-uri';
 import LaboratoryFeca from './laboratory-feca';
 import LaboratoryHema from './laboratory-hema';

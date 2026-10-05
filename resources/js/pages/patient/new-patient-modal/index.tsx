@@ -31,7 +31,7 @@ const NewPatient = () => {
             street: '',
             barangay_id: '',
             city_id: '',
-            province_id: '1',
+            province_id: '',
 
             photo: '',
 

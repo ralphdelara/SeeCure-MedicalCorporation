@@ -162,12 +162,16 @@ const TableRow = ({ fieldData, fieldIndex }) => (
             className={`fw-bolder text-nowrap ${
                 fieldData.field.field_type === 'label' ? 'text-underline' : ''
             }`}
+            style={{ verticalAlign: 'top' }}
         >
             {fieldData.field.name}
         </td>
         <td className="pe-2 text-center">
             {fieldData.field.field_type !== 'label' && (
                 <>
+                    {fieldData.field.name === 'Entamoeba histolytica/dispar (Cyst)' && (
+                        <div className="mt-3"></div>
+                    )}
                     {fieldData.value ?? <>&nbsp;</>}
                     <hr className="border-dark" style={{ width: '100px', margin: '0' }} />
                 </>
