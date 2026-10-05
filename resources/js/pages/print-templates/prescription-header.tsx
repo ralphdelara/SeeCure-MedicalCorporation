@@ -21,7 +21,7 @@ const PrescriptionHeader = () => {
             >
                 <tbody>
                     <tr>
-                        <td style={{ width: '10%' }}>Name:</td>
+                        <td style={{ width: '62px' }}>Name:</td>
                         <td className="fw-bolder pe-3 text-center" style={{ width: '60%' }}>
                             {patient.full_name}
                             <hr
@@ -54,9 +54,20 @@ const PrescriptionHeader = () => {
                             />
                         </td>
                     </tr>
+                </tbody>
+            </table>
+            <table style={{ width: '250px' }}>
+                <tbody>
                     <tr>
-                        <td>Gender:</td>
-                        <td className="fw-bolder text-center">
+                        <td align="left" style={{ width: '30px' }}>
+                            Gender:
+                        </td>
+                        <td
+                            className="fw-bolder text-center"
+                            style={{
+                                width: '30px',
+                            }}
+                        >
                             {patient.gender?.name ?? <>&nbsp;</>}
                             <hr
                                 className="border-dark"
@@ -65,14 +76,20 @@ const PrescriptionHeader = () => {
                                 }}
                             />
                         </td>
-                        <td>Age:</td>
-                        <td className="fw-bolder text-center">
+                        <td align="left" width="10">
+                            Age:
+                        </td>
+                        <td
+                            className="fw-bolder text-center"
+                            style={{
+                                width: '50px',
+                            }}
+                        >
                             {patient?.age_computed ?? <>&nbsp;</>}
                             <hr
                                 className="border-dark"
                                 style={{
                                     margin: '0',
-                                    width: '83%',
                                 }}
                             />
                         </td>

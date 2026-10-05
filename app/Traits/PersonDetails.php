@@ -13,6 +13,10 @@ trait PersonDetails
     // custom parameters
     public function getAgeComputedAttribute(): ?string
     {
+        if (empty($this->date_of_birth)) {
+            return $this->age;
+        }
+
         return computeExactAge($this->date_of_birth);
     }
 

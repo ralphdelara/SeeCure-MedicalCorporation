@@ -120,7 +120,7 @@ class CashierService
         $cashier = Cashier::with([
             'payment',
             'visit.patient' => function ($query) {
-                $query->select('id', 'first_name', 'middle_name', 'last_name', 'age', 'gender_id', 'patient_suffix_id');
+                $query->select('id', 'first_name', 'middle_name', 'last_name', 'age', 'gender_id', 'patient_suffix_id', 'barangay_id', 'city_id', 'province_id');
             },
             'visit.patient.suffix',
             'visit.patient.gender',

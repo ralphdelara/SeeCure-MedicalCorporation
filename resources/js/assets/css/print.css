@@ -24,3 +24,6 @@ td {
         page-break-before: always; /* Fallback for older browsers */
     }
 }
+table {
+    table-layout: fixed;
+}

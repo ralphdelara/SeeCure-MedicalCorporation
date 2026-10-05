@@ -27,7 +27,7 @@ const BillingHeader = () => {
             >
                 <tbody>
                     <tr>
-                        <td style={{ width: '10%' }} align="left">
+                        <td width="10" align="left">
                             Name:
                         </td>
                         <td className="fw-bolder pe-3 text-center" style={{ width: '60%' }}>
@@ -57,7 +57,9 @@ const BillingHeader = () => {
                         </td>
                     </tr>
                     <tr>
-                        <td align="left">Address:</td>
+                        <td align="left" width="10">
+                            Address:
+                        </td>
                         <td colSpan={3} className="fw-bolder pe-3 text-center">
                             {billing.visit.patient?.full_address ?? <>&nbsp;</>}
                             <hr
@@ -68,9 +70,20 @@ const BillingHeader = () => {
                             />
                         </td>
                     </tr>
+                </tbody>
+            </table>
+            <table style={{ width: '250px' }}>
+                <tbody>
                     <tr>
-                        <td align="left">Gender:</td>
-                        <td className="fw-bolder text-center">
+                        <td align="left" style={{ width: '30px' }}>
+                            Gender:
+                        </td>
+                        <td
+                            className="fw-bolder text-center"
+                            style={{
+                                width: '30px',
+                            }}
+                        >
                             {billing.visit.patient.gender?.name ?? <>&nbsp;</>}
                             <hr
                                 className="border-dark"
@@ -79,14 +92,20 @@ const BillingHeader = () => {
                                 }}
                             />
                         </td>
-                        <td align="left">Age:</td>
-                        <td className="fw-bolder text-center">
+                        <td align="left" width="10">
+                            Age:
+                        </td>
+                        <td
+                            className="fw-bolder text-center"
+                            style={{
+                                width: '50px',
+                            }}
+                        >
                             {billing.visit.patient?.age_computed ?? <>&nbsp;</>}
                             <hr
                                 className="border-dark"
                                 style={{
                                     margin: '0',
-                                    width: '83%',
                                 }}
                             />
                         </td>

@@ -44,8 +44,8 @@ const QueuePatient = () => {
             house_no: '',
             street: '',
             barangay_id: '',
-            city_id: '16',
-            province_id: '1',
+            city_id: '',
+            province_id: '',
 
             photo: '',
 
