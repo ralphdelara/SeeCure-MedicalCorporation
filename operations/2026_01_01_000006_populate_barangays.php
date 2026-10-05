@@ -249,23 +249,23 @@ return new class extends OneTimeOperation
 
             // Makato
             ['name' => 'Agbalogo', 'city_id' => 11, 'province_id' => 1],
-            ['name' => 'Aglalana', 'city_id' => 11, 'province_id' => 1],
-            ['name' => 'Bagto', 'city_id' => 11, 'province_id' => 1],
+            ['name' => 'Aglucay', 'city_id' => 11, 'province_id' => 1],
+            ['name' => 'Alibagon', 'city_id' => 11, 'province_id' => 1],
+            ['name' => 'Bagong Barrio', 'city_id' => 11, 'province_id' => 1],
             ['name' => 'Baybay', 'city_id' => 11, 'province_id' => 1],
-            ['name' => 'Cabulihan', 'city_id' => 11, 'province_id' => 1],
+            ['name' => 'Cabatanga', 'city_id' => 11, 'province_id' => 1],
+            ['name' => 'Cajilo', 'city_id' => 11, 'province_id' => 1],
             ['name' => 'Calangcang', 'city_id' => 11, 'province_id' => 1],
             ['name' => 'Calimbajan', 'city_id' => 11, 'province_id' => 1],
-            ['name' => 'Camanci', 'city_id' => 11, 'province_id' => 1],
-            ['name' => 'Camaligan', 'city_id' => 11, 'province_id' => 1],
             ['name' => 'Castillo', 'city_id' => 11, 'province_id' => 1],
+            ['name' => 'Cayangwan', 'city_id' => 11, 'province_id' => 1],
             ['name' => 'Dumga', 'city_id' => 11, 'province_id' => 1],
-            ['name' => 'Libardos', 'city_id' => 11, 'province_id' => 1],
-            ['name' => 'Maybe', 'city_id' => 11, 'province_id' => 1],
+            ['name' => 'Libang', 'city_id' => 11, 'province_id' => 1],
+            ['name' => 'Mantiguib', 'city_id' => 11, 'province_id' => 1],
             ['name' => 'Poblacion', 'city_id' => 11, 'province_id' => 1],
-            ['name' => 'San Pedro', 'city_id' => 11, 'province_id' => 1],
-            ['name' => 'Tabon', 'city_id' => 11, 'province_id' => 1],
             ['name' => 'Tibiawan', 'city_id' => 11, 'province_id' => 1],
-            ['name' => 'Tinigaw', 'city_id' => 11, 'province_id' => 1],
+            ['name' => 'Tina', 'city_id' => 11, 'province_id' => 1],
+            ['name' => 'Tugas', 'city_id' => 11, 'province_id' => 1],
 
             // Malay
             ['name' => 'Argao', 'city_id' => 12, 'province_id' => 1],
@@ -367,7 +367,7 @@ return new class extends OneTimeOperation
             ['name' => 'Poblacion', 'city_id' => 16, 'province_id' => 1],
             ['name' => 'Pusiw', 'city_id' => 16, 'province_id' => 1],
             ['name' => 'Tabangka', 'city_id' => 16, 'province_id' => 1],
-            ['name' => ' there is no missing', 'city_id' => 16, 'province_id' => 1],
+            ['name' => 'Aliputos', 'city_id' => 16, 'province_id' => 1],
             ['name' => 'Joyao-joyao', 'city_id' => 16, 'province_id' => 1],
 
             // Tangalan
@@ -386,7 +386,6 @@ return new class extends OneTimeOperation
             ['name' => 'Tamalagon', 'city_id' => 17, 'province_id' => 1],
             ['name' => 'Tamokoe', 'city_id' => 17, 'province_id' => 1],
             ['name' => 'Tondog', 'city_id' => 17, 'province_id' => 1],
-
         ]);
     }
 };

@@ -49,7 +49,10 @@ const Default = () => {
             >
                 <tbody>
                     <tr>
-                        <td rowSpan={prescription.length} style={{ verticalAlign: 'top' }}>
+                        <td
+                            rowSpan={prescription.length}
+                            style={{ width: '30px', verticalAlign: 'top' }}
+                        >
                             <img
                                 src={RxIcon}
                                 style={{
@@ -69,7 +72,7 @@ const Default = () => {
                                                     valign="top"
                                                     style={{ fontSize: '15px', color: '#000' }}
                                                 >
-                                                    {item.inventory_name}
+                                                    <b>{item.inventory_name}</b>
                                                 </td>
                                                 <td
                                                     width="5%"

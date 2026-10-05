@@ -101,6 +101,7 @@ class Payment extends Model
             'reference_number' => 'encrypted',
             'customer_name'    => 'encrypted',
             'customer_address' => 'encrypted',
+            'id_no'            => 'encrypted',
             'created_at'       => 'date:M d, Y h:i a',
             'updated_at'       => 'date:M d, Y h:i a',
         ];

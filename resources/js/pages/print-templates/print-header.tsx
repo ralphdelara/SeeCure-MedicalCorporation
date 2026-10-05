@@ -17,7 +17,7 @@ const PrintHeader = () => {
         <table style={{ width: '100%' }}>
             <tbody>
                 <tr>
-                    <td>
+                    <td style={{ width: '110px' }}>
                         <img
                             src={appLogo}
                             style={{
