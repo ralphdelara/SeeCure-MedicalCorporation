@@ -75,7 +75,7 @@ const Details = ({ showTab }: { showTab: boolean }) => {
         { name: 'Discount', align: 'center' },
         { name: 'Discount Type', align: 'center' },
         { name: 'Tax %', align: 'center' },
-        { name: 'Nett Price', className: 'sticky-right-2', align: 'center' },
+        { name: 'Nett Price', align: 'center' },
         { name: 'Added By', align: 'left' },
         { name: 'Last Modified By', align: 'left' },
         { name: '', className: 'sticky-right', align: 'left' },
@@ -376,7 +376,7 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                                             />
                                                         </div>
                                                     </td>
-                                                    <td className="sticky-right-2">
+                                                    <td>
                                                         <div className="input-group d-flex mb-3 flex-nowrap">
                                                             <span className="input-group-text">
                                                                 ₱
@@ -461,7 +461,7 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                             </td>
                                             <td></td>
                                             <td></td>
-                                            <td className="sticky-right-2 text-center">
+                                            <td className="text-center">
                                                 <h6 className="fs-6 fw-semibold">
                                                     {formatMoney(data.total_nett_price ?? '0')}
                                                 </h6>
