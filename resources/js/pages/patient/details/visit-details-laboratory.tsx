@@ -1,9 +1,5 @@
-import { IconEye, IconFlask, IconStethoscope } from '@tabler/icons-react';
-import { Button } from '@/components/ui/button';
-import { router, usePage } from '@inertiajs/react';
-import { getConsultationDetails } from '@/actions/App/Http/Controllers/ConsultationController';
-import DOMPurify from 'dompurify';
-import { getLaboratoryDetails } from '@/actions/App/Http/Controllers/LaboratoryController';
+import { IconFlask } from '@tabler/icons-react';
+import { usePage } from '@inertiajs/react';
 import { Fragment } from 'react';
 import { getNormalRange } from '@/lib/utils';
 
@@ -12,17 +8,17 @@ const VisitDetailsLaboratory = ({ laboratory }) => {
 
     return (
         <>
-            <div className="d-flex justify-content-between">
+            <div className="d-flex justify-content-between mt-3">
                 <h4 className="fw-bolder">
                     <IconFlask /> Laboratory
                 </h4>
             </div>
 
-            <table style={{ width: '100%' }}>
-                <thead>
+            <table className="table" style={{ width: '100%' }}>
+                <thead className="text-dark fs-4 table-success border-success">
                     <tr>
                         <th style={{ width: '30%' }}>Test</th>
-                        <th className="p-2" style={{ width: '20%' }}>
+                        <th style={{ width: '20%' }}>
                             Value
                         </th>
                         <th style={{ width: '25%' }}>Performed By</th>

@@ -50,9 +50,6 @@ const VitalSignsForm = ({ data, setData }: VitalSignsFormProps) => {
 
                                         return (
                                             <div className="input-group">
-                                                <span className="input-group-text">
-                                                    {itemField.unit}
-                                                </span>
                                                 <Input
                                                     type="number"
                                                     min="1"
@@ -67,6 +64,9 @@ const VitalSignsForm = ({ data, setData }: VitalSignsFormProps) => {
                                                     value={vitalSignData}
                                                     step="0.001"
                                                 />
+                                                <span className="input-group-text">
+                                                    {itemField.unit}
+                                                </span>
                                             </div>
                                         );
                                     })}
