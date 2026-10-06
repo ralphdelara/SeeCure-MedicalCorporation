@@ -19,6 +19,10 @@ class PatientVitalSignService
         $vitalSignsData = [];
         foreach ($vitalSignsDetails as $vitalSignId => $vitalSignField) {
             foreach ($vitalSignField as $fieldId => $value) {
+                if (empty($value)) {
+                    continue;
+                }
+
                 $vitalSignsData[] = [
                     'patient_id'          => $patientId,
                     'consultation_id'     => $consultationId,
