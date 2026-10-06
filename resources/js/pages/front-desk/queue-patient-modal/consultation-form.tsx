@@ -18,7 +18,7 @@ const ConsultationForm = ({ data, setData, errors = {} }: QueuePatientFormProps)
     const { doctors, relationshipOptions } = usePage().props as unknown as InertiaProps;
 
     return (
-        <div className="border-bottom border-success">
+        <div>
             <div className="form-group">
                 <FormHeader>Consultation</FormHeader>
                 <div className="row">
