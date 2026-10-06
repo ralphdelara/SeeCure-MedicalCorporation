@@ -157,7 +157,7 @@ class ConsultationController extends Controller
             'consultation_id' => 'required',
             'inventory_name'  => 'required',
             'quantity'        => 'required',
-            'dosage'          => 'required',
+            'sig'             => 'required',
         ]);
 
         $prescriptionDetails = $request->only(
@@ -166,7 +166,7 @@ class ConsultationController extends Controller
             'inventory_id',
             'inventory_name',
             'quantity',
-            'dosage',
+            'sig',
         );
 
         app(ConsultationService::class)->addOrUpdatePrescription($prescriptionDetails);

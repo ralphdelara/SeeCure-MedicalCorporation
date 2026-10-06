@@ -36,7 +36,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read Patient $patient
  * @property-read PaymentStatus $status
  * @property-read Visit $visit
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment query()
@@ -57,15 +56,20 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment whereTotalAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment whereVisitId($value)
- *
  * @property string $transaction_header
  * @property int $transaction_no
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment whereTransactionHeader($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment whereTransactionNo($value)
- *
  * @property-read string $created_date
- *
+ * @property string|null $customer_name
+ * @property string|null $customer_address
+ * @property int|null $discount_type_id
+ * @property string|null $id_no
+ * @property-read \App\Models\DiscountType|null $discountType
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment whereCustomerAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment whereCustomerName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment whereDiscountTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment whereIdNo($value)
  * @mixin \Eloquent
  */
 #[Guarded([

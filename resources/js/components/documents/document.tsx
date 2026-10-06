@@ -1,13 +1,10 @@
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import TableList from '@/components/table';
 import {
-    IconDownload,
-    IconEdit,
     IconFileTypeDocx,
     IconFileTypePdf,
     IconFileTypeXls,
     IconPlus,
-    IconTrash,
 } from '@tabler/icons-react';
 import { Button } from '@/components/ui/button';
 import DocumentModal from './document-modal';
@@ -68,7 +65,7 @@ const Documents = ({ details, department }: InertiaProps) => {
         laboratory_id: department === 'laboratory' ? details.id : null,
         radiology_id: department === 'radiology' ? details.id : null,
         document_id: '',
-        document_type_id: '4',
+        document_type_id: '3',
         data: [],
     };
     const [formShow, setFormShow] = useState(false);

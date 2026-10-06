@@ -18,7 +18,7 @@ interface InertiaProps {
             inventory_id: string;
             inventory_name: string;
             quantity: string;
-            dosage: string;
+            sig: string;
             created_by: {
                 full_name: string;
             };

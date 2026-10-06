@@ -172,6 +172,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail whereTotalPrice($value)
  * @mixin \Eloquent
  * @property int|null $billing_supplies_id
+ * @property-read \App\Models\DiscountType|null $discountType
  * @property-read \App\Models\BillingSupplies|null $supply
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail whereBillingSuppliesId($value)
  */
@@ -342,7 +343,7 @@ namespace App\Models{
  * @property string|null $landmark
  * @property string $last_modified_by
  * @property string $updated_at
- * @property-read \App\Models\User $lastModifiedBy
+ * @property-read User $lastModifiedBy
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyProfile newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyProfile newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyProfile query()
@@ -359,6 +360,20 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyProfile whereTelNo($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyProfile whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property string|null $non_vat_tin
+ * @property string|null $min
+ * @property string|null $sn
+ * @property string|null $accreditation_no
+ * @property string|null $accreditation_date_issued
+ * @property string|null $ptu_no
+ * @property string|null $ptu_date_issued
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyProfile whereAccreditationDateIssued($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyProfile whereAccreditationNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyProfile whereMin($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyProfile whereNonVatTin($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyProfile wherePtuDateIssued($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyProfile wherePtuNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyProfile whereSn($value)
  */
 	class CompanyProfile extends \Eloquent {}
 }
@@ -1424,6 +1439,15 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment whereTransactionNo($value)
  * @property-read string $created_date
  * @mixin \Eloquent
+ * @property string|null $customer_name
+ * @property string|null $customer_address
+ * @property int|null $discount_type_id
+ * @property string|null $id_no
+ * @property-read \App\Models\DiscountType|null $discountType
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment whereCustomerAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment whereCustomerName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment whereDiscountTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Payment whereIdNo($value)
  */
 	class Payment extends \Eloquent {}
 }
@@ -1607,6 +1631,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetail whereTotalPrice($value)
  * @mixin \Eloquent
  * @property string|null $inventory_id
+ * @property-read \App\Models\DiscountType|null $discountType
+ * @property-read \App\Models\Inventory|null $inventory
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetail whereInventoryId($value)
  */
 	class PharmacyDetail extends \Eloquent {}
@@ -1728,6 +1754,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Prescription whereQuantity($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Prescription whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property string $sig
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Prescription whereSig($value)
  */
 	class Prescription extends \Eloquent {}
 }

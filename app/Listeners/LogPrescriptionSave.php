@@ -57,8 +57,8 @@ class LogPrescriptionSave implements ShouldQueue
                     'field' => 'quantity',
                     'to'    => $prescription->quantity,
                 ], [
-                    'field' => 'dosage',
-                    'to'    => $prescription->dosage,
+                    'field' => 'sig',
+                    'to'    => $prescription->sig,
                 ],
             ],
         ];
@@ -127,8 +127,8 @@ class LogPrescriptionSave implements ShouldQueue
                     'field' => 'quantity',
                     'to'    => $prescription->quantity,
                 ], [
-                    'field' => 'dosage',
-                    'to'    => $prescription->dosage,
+                    'field' => 'sig',
+                    'to'    => $prescription->sig,
                 ],
             ],
         ];

@@ -6,6 +6,7 @@ import type { Options } from '@/types/options';
 import { AddOrUpdatePatientFormProps } from './new-patient';
 import { getExactAge } from '@/lib/utils';
 import { useState } from 'react';
+import FormHeader from '../ui/form-header';
 
 interface InertiaProps {
     formOptions: {
@@ -54,7 +55,7 @@ const Personal = ({ data, setData, errors = {} }: AddOrUpdatePatientFormProps) =
 
     return (
         <div className="border-bottom">
-            <h5 className="fw-semibold mt-3">Personal Details</h5>
+            <FormHeader>Personal Details</FormHeader>
             <div className="row">
                 <div className="col-md-6">
                     <div className="form-group">

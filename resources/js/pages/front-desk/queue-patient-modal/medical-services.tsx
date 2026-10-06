@@ -4,6 +4,7 @@ import type { QueuePatientDetailsFormProps, QueuePatientFormProps } from './type
 import ConsultationForm from './consultation-form';
 import LaboratoryForm from './laboratory-form';
 import RadiologyForm from './radiology-form';
+import FormHeader from '@/components/ui/form-header';
 
 const MedicalServices = ({ data, setData, errors = {} }: QueuePatientFormProps) => {
     const medicalServices = [
@@ -18,35 +19,29 @@ const MedicalServices = ({ data, setData, errors = {} }: QueuePatientFormProps) 
     };
 
     return (
-        <section role="tabpanel" className="body current">
-            <div className="form-group">
-                <Label htmlFor="medicalServices" className="form-label fs-5">
-                    Medical Services *
-                </Label>
-                <div className="row">
-                    {medicalServices.map((item, index) => (
-                        <div className="col-md-4" key={'medicalService-' + index}>
-                            <div className="form-check form-check-inline">
-                                <input
-                                    className="form-check-input success"
-                                    type="checkbox"
-                                    id={item.id}
-                                    value={item.value}
-                                    onChange={(e) => updateMedicalServices(e)}
-                                    name={item.id}
-                                    checked={
-                                        data[item.id as keyof QueuePatientDetailsFormProps] === 1
-                                    }
-                                />
-                                <label className="form-check-label" htmlFor={item.id}>
-                                    {item.name}
-                                </label>
-                            </div>
+        <>
+            <FormHeader>Medical Services</FormHeader>
+            <div className="row px-4">
+                {medicalServices.map((item, index) => (
+                    <div className="col-md-4" key={'medicalService-' + index}>
+                        <div className="form-check form-check-inline">
+                            <input
+                                className="form-check-input success"
+                                type="checkbox"
+                                id={item.id}
+                                value={item.value}
+                                onChange={(e) => updateMedicalServices(e)}
+                                name={item.id}
+                                checked={data[item.id as keyof QueuePatientDetailsFormProps] === 1}
+                            />
+                            <label className="form-check-label" htmlFor={item.id}>
+                                <h5 className="fw-semibold">{item.name}</h5>
+                            </label>
                         </div>
-                    ))}
-                    <InputError message={errors.has_consultation} className="mt-2" />
-                </div>
+                    </div>
+                ))}
             </div>
+            <InputError message={errors.has_consultation} className="mt-2" />
 
             {data.has_consultation === 1 && (
                 <ConsultationForm data={data} setData={setData} errors={errors} />
@@ -59,7 +54,7 @@ const MedicalServices = ({ data, setData, errors = {} }: QueuePatientFormProps) 
             {data.has_radiology === 1 && (
                 <RadiologyForm data={data} setData={setData} errors={errors} />
             )}
-        </section>
+        </>
     );
 };
 

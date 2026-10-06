@@ -2,11 +2,12 @@ import { Input } from '@/components/ui/input';
 import type { Options } from '@/types/options';
 import { AddOrUpdatePatientFormProps } from './new-patient';
 import AddressForm from '../address/form';
+import FormHeader from '../ui/form-header';
 
 const Contact = ({ data, setData, errors = {} }: AddOrUpdatePatientFormProps) => {
     return (
         <>
-            <h5 className="fw-semibold mt-3">Contact Details</h5>
+            <FormHeader>Contact Details</FormHeader>
             <div className="row">
                 <div className="col-md-6">
                     <div className="form-group">
@@ -58,7 +59,7 @@ const Contact = ({ data, setData, errors = {} }: AddOrUpdatePatientFormProps) =>
                         />
                     </div>
                 </div>
-                <AddressForm data={data} setData={setData}/>
+                <AddressForm data={data} setData={setData} />
             </div>
         </>
     );

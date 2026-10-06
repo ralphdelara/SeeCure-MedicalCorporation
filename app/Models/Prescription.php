@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $inventory_id
  * @property string $inventory_name
  * @property string $quantity
- * @property string $dosage
+ * @property string $sig
  * @property string $created_by
  * @property string|null $last_modified_by
  * @property CarbonImmutable|null $created_at
@@ -36,6 +36,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Prescription whereInventoryName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Prescription whereQuantity($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Prescription whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Prescription whereSig($value)
  * @mixin \Eloquent
  */
 #[Fillable([
@@ -43,7 +44,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'inventory_id',
     'inventory_name',
     'quantity',
-    'dosage',
+    'sig',
     'created_by',
     'last_modified_by',
 ])]
@@ -55,7 +56,7 @@ class Prescription extends Model
     {
         return [
             'inventory_name' => 'encrypted',
-            'dosage'         => 'encrypted',
+            'sig'            => 'encrypted',
             'inventory_id'   => 'encrypted',
             'created_at'     => 'date:M d, Y h:i a',
             'updated_at'     => 'date:M d, Y h:i a',
