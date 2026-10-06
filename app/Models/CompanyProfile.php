@@ -21,7 +21,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $last_modified_by
  * @property string $updated_at
  * @property-read User $lastModifiedBy
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyProfile newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyProfile newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyProfile query()
@@ -37,7 +36,20 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyProfile wherePhoneNo($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyProfile whereTelNo($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyProfile whereUpdatedAt($value)
- *
+ * @property string|null $non_vat_tin
+ * @property string|null $min
+ * @property string|null $sn
+ * @property string|null $accreditation_no
+ * @property string|null $accreditation_date_issued
+ * @property string|null $ptu_no
+ * @property string|null $ptu_date_issued
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyProfile whereAccreditationDateIssued($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyProfile whereAccreditationNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyProfile whereMin($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyProfile whereNonVatTin($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyProfile wherePtuDateIssued($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyProfile wherePtuNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyProfile whereSn($value)
  * @mixin \Eloquent
  */
 #[Table('company_profile', key: 'id', keyType: 'int', incrementing: false)]

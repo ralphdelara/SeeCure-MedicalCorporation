@@ -4,6 +4,7 @@ import { Options } from '@/types/options';
 import InputError from '@/components/input-error';
 import { AddOrUpdateLaboratoryFormProps } from '@/components/laboratory/new-laboratory';
 import NewLaboratoryForm from '@/components/laboratory/new-laboratory-form';
+import FormHeader from '@/components/ui/form-header';
 
 interface InertiaProps {
     laboratoryFormOptions: Options[];
@@ -16,11 +17,9 @@ const LaboratoryForm = ({ data, setData, errors = {} }: AddOrUpdateLaboratoryFor
 
     return (
         <>
-            <div className="form-group border-bottom border-success mt-3">
-                <Label htmlFor="medicalServices" className="form-label fs-5">
-                    Laboratory Request
-                </Label>
-                <NewLaboratoryForm data={data} setData={setData}/>
+            <div className="form-group border-bottom border-success">
+                <FormHeader>Laboratory Request</FormHeader>
+                <NewLaboratoryForm data={data} setData={setData} />
             </div>
         </>
     );

@@ -8,10 +8,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
 import type { Options } from '@/types/options';
-import { IconPlus } from '@tabler/icons-react';
+import { IconBox, IconEdit, IconPlus, IconSearch } from '@tabler/icons-react';
 import TableList from '@/components/table';
 import { fetchUrl, formSubmitResponse } from '@/lib/utils';
 import { addOrUpdatePrescription } from '@/actions/App/Http/Controllers/ConsultationController';
+import FormHeader from '@/components/ui/form-header';
 
 interface PageProps {
     consultationDetails: {
@@ -33,7 +34,7 @@ export interface ModalFormProps {
     inventory_id: string;
     inventory_name: string;
     quantity: string;
-    dosage: string;
+    sig: string;
 }
 
 interface InventoryListProps {
@@ -98,7 +99,6 @@ const PrescriptionModal = ({ formShow, setFormShow, formType, formData }: ModalP
         setData('inventory_id', formData.inventory_id);
         setData('inventory_name', formData.inventory_name);
         setData('quantity', formData.quantity);
-        setData('dosage', formData.dosage);
         setData('sig', formData.sig);
 
         if (formData.inventory_id === null) {
@@ -111,158 +111,171 @@ const PrescriptionModal = ({ formShow, setFormShow, formType, formData }: ModalP
     return (
         <>
             <Toaster position="top-center" reverseOrder={false} />
-            <Modal show={formShow} size="xl" onHide={() => setFormShow(false)}>
+            <Modal
+                show={formShow}
+                size={existingOrOutside === 'existing' ? 'xl' : 'lg'}
+                onHide={() => setFormShow(false)}
+            >
                 <form onSubmit={submitPrescription}>
                     <Modal.Header closeButton>
                         <Modal.Title>{formType} Prescription</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <div className="wizard clearfix px-4" role="application">
-                            <div className="form-group">(*) Mandatory</div>
-                            <div className="row">
-                                <div className="col-md-8">
-                                    <div className="form-check form-check-inline ms-2">
-                                        <input
-                                            className="form-check-input success"
-                                            type="checkbox"
-                                            id="existingOrOutside-0"
-                                            onChange={() => updateForm('existing')}
-                                            checked={existingOrOutside === 'existing'}
-                                        />
-                                        <label
-                                            className="form-check-label fs-4"
-                                            htmlFor="existingOrOutside-0"
-                                        >
+                            <div className="steps clearfix">
+                                <ul role="tablist">
+                                    <li
+                                        role="tab"
+                                        onClick={() => updateForm('existing')}
+                                        className={
+                                            'first w-50' +
+                                            (existingOrOutside === 'existing'
+                                                ? ' current'
+                                                : ' done')
+                                        }
+                                    >
+                                        <a href="#" className="fs-4 fw-bold">
+                                            <IconBox className="me-2" />
                                             Existing Drug
-                                        </label>
-                                    </div>
-                                    <div className="form-check form-check-inline">
-                                        <input
-                                            className="form-check-input success"
-                                            type="checkbox"
-                                            id="existingOrOutside-1"
-                                            onChange={() => updateForm('outside')}
-                                            checked={existingOrOutside === 'outside'}
-                                        />
-                                        <label
-                                            className="form-check-label fs-4"
-                                            htmlFor="existingOrOutside-1"
-                                        >
+                                        </a>
+                                    </li>
+                                    <li
+                                        role="tab"
+                                        onClick={() => updateForm('outside')}
+                                        className={
+                                            'w-50' +
+                                            (existingOrOutside === 'outside' ? ' current' : ' done')
+                                        }
+                                    >
+                                        <a href="#" className="fs-4 fw-bold">
+                                            <IconBox className="me-2" />
                                             Outside Drug
-                                        </label>
-                                    </div>
-                                </div>
-                                {existingOrOutside === 'existing' && (
-                                    <>
-                                        <div className="col-md-12">
-                                            <label className="form-label" htmlFor="medicine">
-                                                Select Medicine *
-                                            </label>
-                                            <h5 className="fw-semibold mt-2">
-                                                Selected Inventory: {data.inventory_name}
-                                            </h5>
-                                        </div>
-                                        <div className="col-md-6">
-                                            <div className="form-group">
-                                                <Input
-                                                    value={keyword}
-                                                    className="form-control"
-                                                    placeholder="Keyword"
-                                                    maxLength={100}
-                                                    onChange={(e) => setKeyword(e.target.value)}
-                                                    onKeyDown={(e) => {
-                                                        if (e.key === 'Enter') {
-                                                            e.preventDefault(); // Prevents the PARENT form from submitting
-                                                            searchInventory(); // Calls your fetch logic directly
-                                                        }
-                                                    }}
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="col-md-6">
-                                            <Select
-                                                className="mt-1"
-                                                type="Category"
-                                                value={categoryId}
-                                                onChange={(e) =>
-                                                    updateInventoryCategory(e.target.value)
-                                                }
-                                                options={inventoryCategories}
-                                            />
-                                        </div>
-                                        <div className="col-md-12">
-                                            <TableList
-                                                header={[
-                                                    {
-                                                        name: 'Stock',
-                                                        align: 'left',
-                                                    },
-                                                    { name: 'Inventory', align: 'left' },
-                                                    { name: 'Category', align: 'left' },
-                                                ]}
-                                                floatScrollbar={false}
-                                            >
-                                                {inventoryList.map((item, index) => (
-                                                    <tr
-                                                        onClick={() =>
-                                                            selectInventory(item.id, item.name)
-                                                        }
-                                                        className={
-                                                            'cursor-pointer' +
-                                                            (item.id === data.inventory_id
-                                                                ? ' border-success border-2'
-                                                                : '')
-                                                        }
-                                                        key={'inventoryList-' + index}
-                                                    >
-                                                        <td>{item.stock}</td>
-                                                        <td>{item.name}</td>
-                                                        <td>{item.category.name}</td>
-                                                    </tr>
-                                                ))}
-                                                {inventoryList.length === 0 && (
-                                                    <tr>
-                                                        <td
-                                                            colSpan={4}
-                                                            className="fs-5 text-danger text-center"
-                                                        >
-                                                            No records
-                                                        </td>
-                                                    </tr>
-                                                )}
-                                            </TableList>
-                                        </div>
-                                    </>
-                                )}
-                                {existingOrOutside === 'outside' && (
-                                    <div className="col-md-12">
-                                        <div className="form-group">
-                                            <label className="form-label" htmlFor="inventory_name">
-                                                Medicine *
-                                            </label>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div className="row">
+                                <div
+                                    className={
+                                        existingOrOutside === 'existing' ? 'col-md-8' : 'col-md-12'
+                                    }
+                                >
+                                    {existingOrOutside === 'existing' && (
+                                        <>
+                                            <div className="col-md-12">
+                                                <FormHeader>Select Item</FormHeader>
+                                                <h5 className="fw-semibold mt-2">
+                                                    Selected Item: {data.inventory_name}
+                                                </h5>
 
-                                            <Input
-                                                value={data.inventory_name}
-                                                onChange={(e) =>
-                                                    setData('inventory_name', e.target.value)
-                                                }
-                                                id="inventory_name"
-                                                type="text"
-                                                className="form-control"
-                                                placeholder="ex. Biogesic 500mg"
-                                                maxLength={100}
-                                                required={true}
-                                            />
-                                            <InputError
-                                                message={errors.inventory_name}
-                                                className="mt-2"
-                                            />
-                                        </div>
-                                    </div>
-                                )}
-                                <div className="col-md-3">
+                                                <div className="input-group d-flex flex-nowrap">
+                                                    <Input
+                                                        value={keyword}
+                                                        className="form-control form-control-lg"
+                                                        placeholder="Enter keyword"
+                                                        maxLength={100}
+                                                        onChange={(e) => setKeyword(e.target.value)}
+                                                        onKeyDown={(e) => {
+                                                            if (e.key === 'Enter') {
+                                                                e.preventDefault(); // Prevents the PARENT form from submitting
+                                                                searchInventory(); // Calls your fetch logic directly
+                                                            }
+                                                        }}
+                                                    />
+                                                    <Select
+                                                        type="Category"
+                                                        value={categoryId}
+                                                        onChange={(e) =>
+                                                            updateInventoryCategory(e.target.value)
+                                                        }
+                                                        options={inventoryCategories}
+                                                    />
+                                                    <Button
+                                                        variant="default"
+                                                        type="button"
+                                                        onClick={() => searchInventory()}
+                                                        disabled={processing}
+                                                    >
+                                                        <IconSearch />
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                            <div className="col-md-12">
+                                                <TableList
+                                                    header={[
+                                                        {
+                                                            name: 'Stock',
+                                                            align: 'left',
+                                                        },
+                                                        { name: 'Inventory', align: 'left' },
+                                                        { name: 'Category', align: 'left' },
+                                                    ]}
+                                                    floatScrollbar={false}
+                                                >
+                                                    {inventoryList.map((item, index) => (
+                                                        <tr
+                                                            onClick={() =>
+                                                                selectInventory(item.id, item.name)
+                                                            }
+                                                            className={
+                                                                'cursor-pointer' +
+                                                                (item.id === data.inventory_id
+                                                                    ? ' border-success border-2'
+                                                                    : '')
+                                                            }
+                                                            key={'inventoryList-' + index}
+                                                        >
+                                                            <td>{item.stock}</td>
+                                                            <td>{item.name}</td>
+                                                            <td>{item.category.name}</td>
+                                                        </tr>
+                                                    ))}
+                                                    {inventoryList.length === 0 && (
+                                                        <tr>
+                                                            <td
+                                                                colSpan={4}
+                                                                className="fs-5 text-danger text-center"
+                                                            >
+                                                                No records
+                                                            </td>
+                                                        </tr>
+                                                    )}
+                                                </TableList>
+                                            </div>
+                                        </>
+                                    )}
+                                </div>
+                                <div
+                                    className={
+                                        existingOrOutside === 'existing' ? 'col-md-4' : 'col-md-12'
+                                    }
+                                >
+                                    <FormHeader>Prescription Details</FormHeader>
                                     <div className="form-group">
-                                        <label className="form-label" htmlFor="dosage">
+                                        <label className="form-label" htmlFor="inventory_name">
+                                            Medicine *
+                                        </label>
+
+                                        <Input
+                                            value={data.inventory_name}
+                                            onChange={(e) =>
+                                                setData('inventory_name', e.target.value)
+                                            }
+                                            id="inventory_name"
+                                            type="text"
+                                            className="form-control"
+                                            placeholder={existingOrOutside === 'existing' ? 'Select Item from the List' : 'ex. Biogesic 500mg'}
+                                            maxLength={100}
+                                            required={true}
+                                            readOnly={existingOrOutside === 'existing'}
+                                        />
+                                        <InputError
+                                            message={errors.inventory_name}
+                                            className="mt-2"
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label className="form-label" htmlFor="quantity">
                                             Quantity *
                                         </label>
 
@@ -278,43 +291,33 @@ const PrescriptionModal = ({ formShow, setFormShow, formType, formData }: ModalP
                                         />
                                         <InputError message={errors.quantity} className="mt-2" />
                                     </div>
-                                </div>
-                                <div className="col-md-9">
                                     <div className="form-group">
-                                        <label className="form-label" htmlFor="dosage">
-                                            Dosage *
-                                        </label>
-
-                                        <Input
-                                            value={data.dosage}
-                                            onChange={(e) => setData('dosage', e.target.value)}
-                                            id="dosage"
-                                            type="text"
-                                            className="form-control"
-                                            placeholder="ex. 500mg"
-                                            maxLength={100}
-                                            required={true}
-                                        />
-                                        <InputError message={errors.dosage} className="mt-2" />
-                                    </div>
-                                </div>
-                                <div className="col-md-12">
-                                    <div className="form-group">
-                                        <label className="form-label" htmlFor="dosage">
+                                        <label className="form-label" htmlFor="sig">
                                             Sig *
                                         </label>
 
                                         <Input
-                                            value={data.dosage}
-                                            onChange={(e) => setData('dosage', e.target.value)}
-                                            id="dosage"
+                                            value={data.sig}
+                                            onChange={(e) => setData('sig', e.target.value)}
+                                            id="sig"
                                             type="text"
                                             className="form-control"
                                             placeholder="ex. 1 tab every 8 hours"
                                             maxLength={100}
                                             required={true}
                                         />
-                                        <InputError message={errors.dosage} className="mt-2" />
+                                        <InputError message={errors.sig} className="mt-2" />
+                                    </div>
+                                    <div className="d-flex justify-content-end mt-3">
+                                        <Button
+                                            variant="default"
+                                            size="lg"
+                                            type="submit"
+                                            disabled={processing}
+                                        >
+                                            {formType === 'Add' ? <IconPlus /> : <IconEdit />}{' '}
+                                            {formType} Prescription
+                                        </Button>
                                     </div>
                                 </div>
                             </div>
@@ -323,9 +326,6 @@ const PrescriptionModal = ({ formShow, setFormShow, formType, formData }: ModalP
                     <Modal.Footer>
                         <Button variant="light" type="button" onClick={() => setFormShow(false)}>
                             Close
-                        </Button>
-                        <Button variant="default" type="submit" disabled={processing}>
-                            {formType} Prescription
                         </Button>
                     </Modal.Footer>
                 </form>

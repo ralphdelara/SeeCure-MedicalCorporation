@@ -49,19 +49,25 @@ const VitalSignsForm = ({ data, setData }: VitalSignsFormProps) => {
                                         }
 
                                         return (
-                                            <Input
-                                                type="number"
-                                                min="1"
-                                                key={itemField.name.replace(' ', '_') + indexField}
-                                                placeholder={
-                                                    itemField.name + ' (' + itemField.unit + ')'
-                                                }
-                                                onChange={(e) =>
-                                                    setVitalSignData(e, item.id, itemField.id)
-                                                }
-                                                value={vitalSignData}
-                                                step="0.001"
-                                            />
+                                            <div className="input-group">
+                                                <span className="input-group-text">
+                                                    {itemField.unit}
+                                                </span>
+                                                <Input
+                                                    type="number"
+                                                    min="1"
+                                                    key={
+                                                        itemField.name.replace(' ', '_') +
+                                                        indexField
+                                                    }
+                                                    placeholder={itemField.name}
+                                                    onChange={(e) =>
+                                                        setVitalSignData(e, item.id, itemField.id)
+                                                    }
+                                                    value={vitalSignData}
+                                                    step="0.001"
+                                                />
+                                            </div>
                                         );
                                     })}
                                 </div>

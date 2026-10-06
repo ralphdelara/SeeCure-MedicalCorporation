@@ -222,7 +222,7 @@ const VisitDetailsConsultation = ({ consultation }) => {
                                     <div>
                                         {prescription.inventory_name} x {prescription.quantity}
                                     </div>
-                                    <i>{prescription.dosage}</i>
+                                    <i>{prescription.sig}</i>
                                 </li>
                             ))}
                         </ul>

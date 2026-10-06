@@ -55,6 +55,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail whereOrderNo($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail whereQuantity($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail whereTotalPrice($value)
+ * @property int|null $billing_supplies_id
+ * @property-read \App\Models\DiscountType|null $discountType
+ * @property-read \App\Models\BillingSupplies|null $supply
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail whereBillingSuppliesId($value)
  * @mixin \Eloquent
  */
 #[Fillable([

@@ -46,6 +46,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetails whereTaxAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetails whereTaxPercent($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetails whereTotalPrice($value)
+ * @property string|null $inventory_id
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetails whereInventoryId($value)
  * @mixin \Eloquent
  */
 class PharmacyDetails extends Model

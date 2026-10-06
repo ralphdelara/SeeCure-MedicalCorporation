@@ -27,7 +27,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read User|null $createdBy
  * @property-read User|null $lastModifiedBy
  * @property-read Patient|null $patient
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit query()
@@ -40,27 +39,22 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereLastModifiedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit wherePatientId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereUpdatedAt($value)
- *
  * @property bool $consultation_completed
  * @property bool $lab_completed
  * @property bool $radiology_completed
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereConsultationCompleted($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereLabCompleted($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereRadiologyCompleted($value)
- *
  * @property string|null $admitted_at
  * @property string|null $discharged_at
  * @property bool $is_emergency
  * @property int $visit_status_id
  * @property-read VisitStatus $visitStatus
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereAdmittedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereDischargedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereIsEmergency($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit wherePriorityTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereVisitStatusId($value)
- *
  * @property-read Collection<int, PriorityType> $priorityTypes
  * @property-read int|null $priority_types_count
  * @property-read Collection<int, Laboratory> $laboratory
@@ -74,10 +68,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property int $visit_no
  * @property bool $is_walk_in
  * @property-read Pharmacy|null $pharmacy
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereIsWalkIn($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visit whereVisitNo($value)
- *
+ * @property-read \App\Models\VisitStatus $status
  * @mixin \Eloquent
  */
 #[Fillable([

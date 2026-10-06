@@ -33,7 +33,7 @@ export interface ModalFormProps {
     inventory_id: string;
     inventory_name: string;
     quantity: string;
-    dosage: string;
+    sig: string;
 }
 
 const VitalSignsModal = ({ formShow, setFormShow, formType, formData }: ModalProps) => {
@@ -126,7 +126,7 @@ const VitalSignsModal = ({ formShow, setFormShow, formType, formData }: ModalPro
                                 {fields.map((field, fieldIndex) => (
                                     <div className="col-md-12" key={'vitalsigns-' + fieldIndex}>
                                         <div className="form-group">
-                                            <label className="form-label" htmlFor="dosage">
+                                            <label className="form-label" htmlFor={'field_id_' + field.id}>
                                                 {field.name} ({field.unit})
                                             </label>
 

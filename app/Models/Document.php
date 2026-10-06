@@ -10,6 +10,43 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
+/**
+ * @property string $id
+ * @property string $patient_id
+ * @property string|null $consultation_id
+ * @property string|null $laboratory_id
+ * @property string|null $radiology_id
+ * @property int $document_type_id
+ * @property string $created_by
+ * @property string|null $last_modified_by
+ * @property \Carbon\CarbonImmutable|null $created_at
+ * @property \Carbon\CarbonImmutable|null $updated_at
+ * @property-read \App\Models\Consultation|null $consultation
+ * @property-read \App\Models\User $createdBy
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\DocumentFile> $files
+ * @property-read int|null $files_count
+ * @property-read \App\Models\Laboratory|null $laboratory
+ * @property-read \App\Models\User|null $lastModifiedBy
+ * @property-read \App\Models\MedicalCertificate|null $medicalCertificate
+ * @property-read \App\Models\Patient $patient
+ * @property-read \App\Models\Radiology|null $radiology
+ * @property-read \App\Models\ReferralLetter|null $referralLetter
+ * @property-read \App\Models\DocumentType $type
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Document newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Document newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Document query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Document whereConsultationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Document whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Document whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Document whereDocumentTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Document whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Document whereLaboratoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Document whereLastModifiedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Document wherePatientId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Document whereRadiologyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Document whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 #[Fillable([
     'patient_id',
     'consultation_id',

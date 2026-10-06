@@ -23,7 +23,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read User|null $lastModifiedBy
  * @property-read Pharmacy $pharmacy
  * @property-read Prescription $prescription
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetail newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetail newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetail query()
@@ -36,7 +35,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetail wherePrescriptionId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetail wherePrescriptionQuantity($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetail whereUpdatedAt($value)
- *
  * @property string $name
  * @property numeric|null $cost_price
  * @property int $quantity
@@ -47,7 +45,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property numeric|null $tax_amount
  * @property numeric|null $nett_price
  * @property int $order_no
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetail whereCostPrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetail whereDiscount($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetail whereDiscountTypeId($value)
@@ -58,7 +55,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetail whereTaxAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetail whereTaxPercent($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetail whereTotalPrice($value)
- *
+ * @property string|null $inventory_id
+ * @property-read \App\Models\DiscountType|null $discountType
+ * @property-read \App\Models\Inventory|null $inventory
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PharmacyDetail whereInventoryId($value)
  * @mixin \Eloquent
  */
 #[Fillable([

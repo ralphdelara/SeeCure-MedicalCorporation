@@ -4,6 +4,7 @@ import type { QueuePatientDetailsFormProps, QueuePatientFormProps } from './type
 import ConsultationForm from './consultation-form';
 import LaboratoryForm from './laboratory-form';
 import RadiologyForm from './radiology-form';
+import FormHeader from '@/components/ui/form-header';
 
 const MedicalServices = ({ data, setData, errors = {} }: QueuePatientFormProps) => {
     const medicalServices = [
@@ -20,9 +21,7 @@ const MedicalServices = ({ data, setData, errors = {} }: QueuePatientFormProps) 
     return (
         <section role="tabpanel" className="body current">
             <div className="form-group">
-                <Label htmlFor="medicalServices" className="form-label fs-5">
-                    Medical Services *
-                </Label>
+                <FormHeader>Medical Services</FormHeader>
                 <div className="row">
                     {medicalServices.map((item, index) => (
                         <div className="col-md-4" key={'medicalService-' + index}>
@@ -39,7 +38,7 @@ const MedicalServices = ({ data, setData, errors = {} }: QueuePatientFormProps) 
                                     }
                                 />
                                 <label className="form-check-label" htmlFor={item.id}>
-                                    {item.name}
+                                    <h5 className="fw-semibold">{item.name}</h5>
                                 </label>
                             </div>
                         </div>

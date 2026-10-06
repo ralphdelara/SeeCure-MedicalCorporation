@@ -14,6 +14,7 @@ import MedicalServices from './medical-services';
 import InputError from '@/components/input-error';
 import { Label } from '@/components/ui/label';
 import { Options } from '@/types/options';
+import FormHeader from '@/components/ui/form-header';
 
 const QueuePatient = () => {
     const [showModal, setShowModal] = useState(false);
@@ -158,6 +159,7 @@ const QueuePatient = () => {
                                     <NewPatientForm data={data} setData={setData} errors={errors} />
                                 )}
 
+                                <FormHeader>Visit Priority</FormHeader>
                                 <div className="row px-4">
                                     <div className="col-md-4">
                                         <div className="form-check form-check-inline">
@@ -179,7 +181,7 @@ const QueuePatient = () => {
                                                 className="form-check-label"
                                                 htmlFor="is_emergency"
                                             >
-                                                <h5 className="fw-semibold">Emergency?</h5>
+                                                <h5 className="fw-semibold">Emergency</h5>
                                             </Label>
                                         </div>
                                         <InputError
@@ -187,6 +189,38 @@ const QueuePatient = () => {
                                             className="mt-2"
                                         />
                                     </div>
+                                    {priorityTypeOptions.map((item, index) => (
+                                        <>
+                                            {item.id !== 3 && (
+                                                <div
+                                                    className={'col-md-4'}
+                                                    key={'priorityType-' + index}
+                                                >
+                                                    <div className="form-check form-check-inline">
+                                                        <input
+                                                            className="form-check-input success"
+                                                            type="checkbox"
+                                                            id={'priority_type_ids-' + index}
+                                                            value={item.id}
+                                                            onChange={(e) => updatePriorityTypes(e)}
+                                                            name="priority-type"
+                                                            checked={data.priority_type_ids.includes(
+                                                                item.id,
+                                                            )}
+                                                        />
+                                                        <label
+                                                            className="form-check-label"
+                                                            htmlFor={'priority_type_ids-' + index}
+                                                        >
+                                                            <h5 className="fw-semibold">
+                                                                {item.name}
+                                                            </h5>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </>
+                                    ))}
                                     <div className="col-md-4">
                                         <div className="form-check form-check-inline">
                                             <input
@@ -207,48 +241,11 @@ const QueuePatient = () => {
                                                 className="form-check-label"
                                                 htmlFor="is_walk_in"
                                             >
-                                                <h5 className="fw-semibold">Walk In?</h5>
+                                                <h5 className="fw-semibold">Walk In</h5>
                                             </Label>
                                         </div>
                                         <InputError message={errors.is_walk_in} className="mt-2" />
                                     </div>
-                                </div>
-
-                                <div className="row mt-3 px-4">
-                                    <div className="col-md-12">
-                                        <Label htmlFor="priorityType" className="form-label fs-5">
-                                            Priority Type
-                                        </Label>
-                                    </div>
-                                    {priorityTypeOptions.map((item, index) => (
-                                        <div className={'col-md-4'} key={'priorityType-' + index}>
-                                            {item.id !== 3 && (
-                                                <div className="form-check form-check-inline">
-                                                    <input
-                                                        className="form-check-input success"
-                                                        type="checkbox"
-                                                        id={'priority_type_ids-' + index}
-                                                        value={item.id}
-                                                        onChange={(e) => updatePriorityTypes(e)}
-                                                        name="priority-type"
-                                                        checked={data.priority_type_ids.includes(
-                                                            item.id,
-                                                        )}
-                                                    />
-                                                    <label
-                                                        className="form-check-label"
-                                                        htmlFor={'priority_type_ids-' + index}
-                                                    >
-                                                        {item.name}
-                                                    </label>
-                                                </div>
-                                            )}
-                                        </div>
-                                    ))}
-                                    <InputError
-                                        message={errors.priority_type_ids}
-                                        className="mt-2"
-                                    />
                                 </div>
 
                                 <MedicalServices data={data} setData={setData} errors={errors} />

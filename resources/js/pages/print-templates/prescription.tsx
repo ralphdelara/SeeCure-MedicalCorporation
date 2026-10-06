@@ -10,7 +10,6 @@ const Default = () => {
         prescription: {
             inventory_name: string;
             quantity: string;
-            dosage: string;
             sig: string;
         }[];
     };
@@ -89,19 +88,15 @@ const Default = () => {
                                                     style={{ fontSize: '15px', color: '#000' }}
                                                     colSpan={2}
                                                 >
-                                                    <i>{item.dosage}</i>
+                                                    <i>
+                                                        Sig:{' '}
+                                                        {item.sig
+                                                            .replace('Sig:', '')
+                                                            .replace('sig:', '')
+                                                            .replace('SIG:', '')}
+                                                    </i>
                                                 </td>
                                             </tr>
-                                            {item.sig && (
-                                                <tr>
-                                                    <td
-                                                        style={{ fontSize: '14px', color: '#000' }}
-                                                        colSpan={2}
-                                                    >
-                                                        <i>Sig: {item.sig}</i>
-                                                    </td>
-                                                </tr>
-                                            )}
                                         </Fragment>
                                     ))}
                                 </tbody>

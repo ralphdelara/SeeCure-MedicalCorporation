@@ -7,6 +7,7 @@ import type { Options } from '@/types/options';
 import type { QueuePatientFormProps } from './types';
 import SignsOrSymptomsForm from '@/components/consultation/signs-or-symptoms-form';
 import VitalSignsForm from '@/components/vital-signs/vital-signs-form';
+import FormHeader from '@/components/ui/form-header';
 
 interface InertiaProps {
     doctors: Options[];
@@ -19,9 +20,7 @@ const ConsultationForm = ({ data, setData, errors = {} }: QueuePatientFormProps)
     return (
         <div className="border-bottom border-success">
             <div className="form-group">
-                <Label htmlFor="medicalServices" className="form-label fs-5">
-                    Consultation Form
-                </Label>
+                <FormHeader>Consultation</FormHeader>
                 <div className="row">
                     <div className="col-md-6">
                         <Label htmlFor="guardian-name" className="form-label">

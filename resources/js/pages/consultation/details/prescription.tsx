@@ -31,7 +31,7 @@ interface InertiaProps {
             inventory_id: string;
             inventory_name: string;
             quantity: string;
-            dosage: string;
+            sig: string;
             created_by: {
                 full_name: string;
             };
@@ -54,7 +54,7 @@ const Prescription = ({ showTab }: { showTab: boolean }) => {
         inventory_id: '',
         inventory_name: '',
         quantity: '',
-        dosage: '',
+        sig: '',
     };
     const [modalDetails, setModalDetails] = useState({
         formType: 'Add',
@@ -68,7 +68,7 @@ const Prescription = ({ showTab }: { showTab: boolean }) => {
     const header = [
         { name: '#', align: 'right' },
         { name: 'Medicine', align: 'left' },
-        { name: 'Dosage', align: 'left' },
+        { name: 'Sig', align: 'left' },
         { name: 'Quantity', align: 'right' },
         { name: 'Added By', align: 'left' },
         { name: 'Last Modified By', align: 'left' },
@@ -141,7 +141,7 @@ const Prescription = ({ showTab }: { showTab: boolean }) => {
                                         <tr key={'prescription-' + item.id}>
                                             <td className="text-right">{index + 1}</td>
                                             <td>{item.inventory_name}</td>
-                                            <td>{item.dosage}</td>
+                                            <td>{item.sig}</td>
                                             <td className="text-right">{item.quantity}</td>
                                             <td>
                                                 <div className="d-flex align-items-start">
@@ -179,7 +179,7 @@ const Prescription = ({ showTab }: { showTab: boolean }) => {
                                                             inventory_id: item.inventory_id,
                                                             inventory_name: item.inventory_name,
                                                             quantity: item.quantity,
-                                                            dosage: item.dosage,
+                                                            sig: item.sig,
                                                         })
                                                     }
                                                 >
