@@ -99,6 +99,7 @@ const PrescriptionModal = ({ formShow, setFormShow, formType, formData }: ModalP
         setData('inventory_name', formData.inventory_name);
         setData('quantity', formData.quantity);
         setData('dosage', formData.dosage);
+        setData('sig', formData.sig);
 
         if (formData.inventory_id === null) {
             setExistingOrOutside('outside');
@@ -110,7 +111,7 @@ const PrescriptionModal = ({ formShow, setFormShow, formType, formData }: ModalP
     return (
         <>
             <Toaster position="top-center" reverseOrder={false} />
-            <Modal show={formShow} size="lg" onHide={() => setFormShow(false)}>
+            <Modal show={formShow} size="xl" onHide={() => setFormShow(false)}>
                 <form onSubmit={submitPrescription}>
                     <Modal.Header closeButton>
                         <Modal.Title>{formType} Prescription</Modal.Title>
@@ -119,7 +120,7 @@ const PrescriptionModal = ({ formShow, setFormShow, formType, formData }: ModalP
                         <div className="wizard clearfix px-4" role="application">
                             <div className="form-group">(*) Mandatory</div>
                             <div className="row">
-                                <div className="col-md-12">
+                                <div className="col-md-8">
                                     <div className="form-check form-check-inline ms-2">
                                         <input
                                             className="form-check-input success"
@@ -282,6 +283,25 @@ const PrescriptionModal = ({ formShow, setFormShow, formType, formData }: ModalP
                                     <div className="form-group">
                                         <label className="form-label" htmlFor="dosage">
                                             Dosage *
+                                        </label>
+
+                                        <Input
+                                            value={data.dosage}
+                                            onChange={(e) => setData('dosage', e.target.value)}
+                                            id="dosage"
+                                            type="text"
+                                            className="form-control"
+                                            placeholder="ex. 500mg"
+                                            maxLength={100}
+                                            required={true}
+                                        />
+                                        <InputError message={errors.dosage} className="mt-2" />
+                                    </div>
+                                </div>
+                                <div className="col-md-12">
+                                    <div className="form-group">
+                                        <label className="form-label" htmlFor="dosage">
+                                            Sig *
                                         </label>
 
                                         <Input

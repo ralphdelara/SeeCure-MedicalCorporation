@@ -16,6 +16,7 @@ p,
 li,
 td {
     font-family: var(--ms-theme-body);
+    color: #000 !important;
 }
 
 @media print {

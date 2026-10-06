@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read Consultation $consultation
  * @property-read User $createdBy
  * @property-read User|null $lastModifiedBy
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Prescription newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Prescription newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Prescription query()
@@ -36,6 +37,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Prescription whereInventoryName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Prescription whereQuantity($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Prescription whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 #[Fillable([
@@ -44,6 +46,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'inventory_name',
     'quantity',
     'dosage',
+    'sig',
     'created_by',
     'last_modified_by',
 ])]
@@ -56,6 +59,7 @@ class Prescription extends Model
         return [
             'inventory_name' => 'encrypted',
             'dosage'         => 'encrypted',
+            'sig'            => 'encrypted',
             'inventory_id'   => 'encrypted',
             'created_at'     => 'date:M d, Y h:i a',
             'updated_at'     => 'date:M d, Y h:i a',

@@ -167,6 +167,7 @@ class ConsultationController extends Controller
             'inventory_name',
             'quantity',
             'dosage',
+            'sig',
         );
 
         app(ConsultationService::class)->addOrUpdatePrescription($prescriptionDetails);

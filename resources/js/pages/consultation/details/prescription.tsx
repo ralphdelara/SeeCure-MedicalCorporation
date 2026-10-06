@@ -1,6 +1,7 @@
 import { Head, useForm, usePage } from '@inertiajs/react';
 import TableList from '@/components/table';
 import {
+    IconDeviceFloppy,
     IconEdit,
     IconFilePlus,
     IconPencilPlus,
@@ -212,7 +213,7 @@ const Prescription = ({ showTab }: { showTab: boolean }) => {
                                 <TableCounter table={prescriptions} tableTitle="Prescription" />
                             </div>
                             <form onSubmit={submitPrescriptionRemarks}>
-                                <h5>Sig</h5>
+                                <h5>Remarks</h5>
                                 <Input
                                     value={data.prescription_remarks}
                                     onChange={(e) =>
@@ -220,7 +221,7 @@ const Prescription = ({ showTab }: { showTab: boolean }) => {
                                     }
                                 />
                                 <Button size="lg" className="mt-2">
-                                    <IconPlus /> Save Sig
+                                    <IconDeviceFloppy /> Save Remarks
                                 </Button>
                             </form>
                         </div>

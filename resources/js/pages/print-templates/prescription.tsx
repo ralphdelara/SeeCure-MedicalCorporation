@@ -11,6 +11,7 @@ const Default = () => {
             inventory_name: string;
             quantity: string;
             dosage: string;
+            sig: string;
         }[];
     };
     const { prescriptionRemarks, rightFullName, rightPtrNo, rightLicNo } = usePage()
@@ -91,6 +92,16 @@ const Default = () => {
                                                     <i>{item.dosage}</i>
                                                 </td>
                                             </tr>
+                                            {item.sig && (
+                                                <tr>
+                                                    <td
+                                                        style={{ fontSize: '14px', color: '#000' }}
+                                                        colSpan={2}
+                                                    >
+                                                        <i>Sig: {item.sig}</i>
+                                                    </td>
+                                                </tr>
+                                            )}
                                         </Fragment>
                                     ))}
                                 </tbody>
@@ -113,7 +124,7 @@ const Default = () => {
                                     }}
                                     className="fw-bolder"
                                 >
-                                    Sig:
+                                    Remarks:
                                 </p>
                                 <div style={{ marginLeft: '10px', width: '70%' }}>
                                     {prescriptionRemarks ?? <>&nbsp;</>}
@@ -138,7 +149,7 @@ const Default = () => {
                                         {rightFullName && (
                                             <p
                                                 style={{
-                                                    fontSize: '15px',
+                                                    fontSize: '14px',
                                                     color: '#000',
                                                     padding: 0,
                                                     margin: 0,
@@ -152,21 +163,10 @@ const Default = () => {
                                             className="border-dark"
                                             style={{ margin: '0', width: '100%' }}
                                         />
-                                        <p
-                                            style={{
-                                                fontSize: '15px',
-                                                color: '#000',
-                                                padding: 0,
-                                                margin: 0,
-                                            }}
-                                            className="fw-bolder"
-                                        >
-                                            PHYSICIAN
-                                        </p>
                                         {rightLicNo && (
                                             <p
                                                 style={{
-                                                    fontSize: '15px',
+                                                    fontSize: '14px',
                                                     color: '#000',
                                                     padding: 0,
                                                     margin: 0,
@@ -179,7 +179,7 @@ const Default = () => {
                                         {rightPtrNo && (
                                             <p
                                                 style={{
-                                                    fontSize: '15px',
+                                                    fontSize: '14px',
                                                     color: '#000',
                                                     padding: 0,
                                                     margin: 0,
