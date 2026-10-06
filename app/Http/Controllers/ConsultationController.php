@@ -157,7 +157,7 @@ class ConsultationController extends Controller
             'consultation_id' => 'required',
             'inventory_name'  => 'required',
             'quantity'        => 'required',
-            'sig'          => 'required',
+            'sig'             => 'required',
         ]);
 
         $prescriptionDetails = $request->only(

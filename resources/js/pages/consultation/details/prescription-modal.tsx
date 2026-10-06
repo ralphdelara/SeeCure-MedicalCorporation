@@ -73,8 +73,11 @@ const PrescriptionModal = ({ formShow, setFormShow, formType, formData }: ModalP
 
         post(addOrUpdatePrescription().url, {
             ...formSubmitResponse('Prescription'),
-            onFinish: () => {
+            onSuccess: () => {
                 setFormShow(false);
+            },
+            onError: () => {
+                toast.error('Something went wrong.');
             },
         });
     };
@@ -264,7 +267,11 @@ const PrescriptionModal = ({ formShow, setFormShow, formType, formData }: ModalP
                                             id="inventory_name"
                                             type="text"
                                             className="form-control"
-                                            placeholder={existingOrOutside === 'existing' ? 'Select Item from the List' : 'ex. Biogesic 500mg'}
+                                            placeholder={
+                                                existingOrOutside === 'existing'
+                                                    ? 'Select Item from the List'
+                                                    : 'ex. Biogesic 500mg'
+                                            }
                                             maxLength={100}
                                             required={true}
                                             readOnly={existingOrOutside === 'existing'}
