@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\DiscountTypeEnum;
 use App\Enums\LaboratoryTestEnum;
 use App\Enums\LaboratoryTypeEnum;
 use App\Models\Billing;
@@ -52,16 +53,38 @@ class PrintController extends Controller
 
     public function printBilling(string $billingId): Response
     {
-        $printTitle = 'BILLING';
-        $billing = Billing::with('details', 'visit.patient.suffix', 'visit.patient.gender')->find($billingId);
+        $printTitle = '';
+        $billing = Billing::with([
+            'details' => function ($query) {
+                $query->orderBy('nett_price');
+            },
+            'visit.patient.suffix',
+            'visit.patient.gender',
+            'visit.consultation.doctor.professions',
+            'visit.consultation.doctor.specialties',
+        ])->find($billingId);
         $qrUrl = $this->qrUrl.('Billing|'.$billing->visit->patient->full_name.'||Billing Details|'.$billing->created_at);
         $printedBy = Auth::user()->full_name;
+
+        $discountType = match (true) {
+            $billing->visit->patient?->is_senior => DiscountTypeEnum::SENIOR->description(),
+            $billing->visit->patient?->is_pwd    => DiscountTypeEnum::PWD->description(),
+            default                              => null,
+        };
+
+        $discountIdNo = match (true) {
+            $billing->visit->patient?->is_senior => $billing->visit->patient?->senior_citizen_id,
+            $billing->visit->patient?->is_pwd    => $billing->visit->patient?->pwd_id,
+            default                              => null,
+        };
 
         return Inertia::render('print-templates/billing', compact(
             'printTitle',
             'billing',
             'qrUrl',
             'printedBy',
+            'discountType',
+            'discountIdNo',
         ));
     }
 

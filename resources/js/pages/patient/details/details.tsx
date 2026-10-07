@@ -37,6 +37,9 @@ const Details = () => {
             photo: patientDetails.photo ?? '',
 
             philhealth_id: patientDetails.philhealth_id ?? '',
+
+            senior_citizen_id: patientDetails.senior_citizen_id ?? '',
+            pwd_id: patientDetails.pwd_id ?? '',
         });
 
     const saveDetails = (e: React.SubmitEvent<HTMLFormElement>) => {

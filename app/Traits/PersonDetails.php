@@ -20,6 +20,15 @@ trait PersonDetails
         return computeExactAge($this->date_of_birth);
     }
 
+    public function getAgeYearAttribute(): ?string
+    {
+        if (empty($this->date_of_birth)) {
+            return $this->age;
+        }
+
+        return computeExactAge($this->date_of_birth, 'year');
+    }
+
     public function getFullAddressAttribute(): ?string
     {
         $parts = [

@@ -20,7 +20,7 @@ interface InertiaProps {
 const Personal = ({ data, setData, errors = {} }: AddOrUpdatePatientFormProps) => {
     const { formOptions } = usePage().props as unknown as InertiaProps;
     const { genderOptions, civilStatusOptions, nationalityOptions, suffixOptions } = formOptions;
-    const [ showHideSenior, setShowHideSenior ] = useState(false);
+    const [showHideSenior, setShowHideSenior] = useState(false);
 
     const inputAge = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (data.date_of_birth === '') {
@@ -142,23 +142,25 @@ const Personal = ({ data, setData, errors = {} }: AddOrUpdatePatientFormProps) =
                         />
                     </div>
                 </div>
-                {showHideSenior && <div className="col-md-6">
-                    <div className="form-group">
-                        <label className="form-label" htmlFor="middle-name">
-                            Senior Citizen ID
-                        </label>
+                {showHideSenior && (
+                    <div className="col-md-6">
+                        <div className="form-group">
+                            <label className="form-label" htmlFor="middle-name">
+                                Senior Citizen ID
+                            </label>
 
-                        <Input
-                            value={data.senior_citizen_id}
-                            onChange={(e) => setData('senior_citizen_id', e.target.value)}
-                            id="senior_citizen_id"
-                            type="text"
-                            className="form-control"
-                            placeholder="ex. 1234567"
-                            maxLength={50}
-                        />
+                            <Input
+                                value={data.senior_citizen_id}
+                                onChange={(e) => setData('senior_citizen_id', e.target.value)}
+                                id="senior_citizen_id"
+                                type="text"
+                                className="form-control"
+                                placeholder="ex. 1234567"
+                                maxLength={50}
+                            />
+                        </div>
                     </div>
-                </div>}
+                )}
                 <div className="col-md-6">
                     <div className="form-group">
                         <label className="form-label" htmlFor="middle-name">
@@ -236,18 +238,35 @@ const Personal = ({ data, setData, errors = {} }: AddOrUpdatePatientFormProps) =
                 </div>
                 <div className="col-md-6">
                     <div className="form-group">
-                        <label className="form-label" htmlFor="province">
+                        <label className="form-label" htmlFor="philhealth_id">
                             PhilHealth ID
                         </label>
 
                         <Input
                             value={data.philhealth_id}
                             onChange={(e) => setData('philhealth_id', e.target.value)}
-                            id="last-name"
+                            id="philhealth_id"
                             type="text"
                             className="form-control"
                             maxLength={12}
                             placeholder="ex. xx-xxxxxxxxx-x"
+                        />
+                    </div>
+                </div>
+                <div className="col-md-6">
+                    <div className="form-group">
+                        <label className="form-label" htmlFor="pwd_id">
+                            PWD ID (this will auto set patient as pwd)
+                        </label>
+
+                        <Input
+                            value={data.pwd_id}
+                            onChange={(e) => setData('pwd_id', e.target.value)}
+                            id="pwd_id"
+                            type="text"
+                            className="form-control"
+                            maxLength={20}
+                            placeholder="ex. xxxxxxxxxx"
                         />
                     </div>
                 </div>

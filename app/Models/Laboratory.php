@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
@@ -93,6 +94,11 @@ class Laboratory extends Model
     public function remarks(): HasMany
     {
         return $this->hasMany(LaboratoryRemark::class);
+    }
+
+    public function packageData(): BelongsToMany
+    {
+        return $this->belongsToMany(LaboratoryPackage::class, 'laboratory_package_data', 'laboratory_id', 'laboratory_package_id');
     }
 
     public function testData(): HasMany
