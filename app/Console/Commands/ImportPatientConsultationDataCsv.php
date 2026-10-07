@@ -5,10 +5,12 @@ namespace App\Console\Commands;
 use App\Models\Barangay;
 use App\Models\City;
 use App\Models\Province;
+use DB;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Crypt;
 
 #[Signature('patient-consultation:import')]
 #[Description('Imports patient consultation data')]
@@ -19,6 +21,8 @@ class ImportPatientConsultationDataCsv extends Command
      */
     public function handle(): int
     {
+        $this->encryptConsultationFields();
+
         $filePath = base_path('database/data/addresses-upto-zamboanga-sibugay.csv');
 
         if (! file_exists($filePath)) {
@@ -105,23 +109,24 @@ class ImportPatientConsultationDataCsv extends Command
         return self::SUCCESS;
     }
 
-    public function barangayUpdates(): void
+    public function encryptConsultationFields()
     {
-        Barangay::findOrFail(311)->update([
-            'name' => 'Aliputos', // replaces "there is no missing"
-        ]);
+        $this->info('Encrypting consult_reason and prescription_remarks');
 
-        $newMakatoBarangay = [
-            'Agbalogo', 'Aglucay', 'Alibagon', 'Bagong Barrio', 'Baybay',
-            'Cabatanga', 'Cajilo', 'Calangcang', 'Calimbajan', 'Castillo', 'Cayangwan', 'Dumga',
-            'Libang', 'Mantiguib', 'Poblacion', 'Tibiawan', 'Tina', 'Tugas',
-        ];
+        $consultationQuery = DB::table('consultations')->select('id', 'consult_reason', 'prescription_remarks')
+            ->get()->toArray();
 
-        $makatoBrgUpdate = Barangay::where('city_id', 11)->get();
-        foreach ($makatoBrgUpdate as $key => $brg) {
-            Barangay::findOrFail($brg->id)->update([
-                'name' => $newMakatoBarangay[$key],
-            ]);
+        foreach ($consultationQuery as $data) {
+            DB::table('consultations')
+                ->where('id', $data->id)
+                ->update([
+                    'consult_reason'       => ! empty($data->consult_reason) ? Crypt::encryptString($data->consult_reason) : null,
+                    'prescription_remarks' => ! empty($data->prescription_remarks) ? Crypt::encryptString($data->prescription_remarks) : null,
+                ]);
         }
+
+        $this->info('Encrypting successful!');
+
+        dd('');
     }
 }
