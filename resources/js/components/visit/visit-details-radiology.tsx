@@ -16,7 +16,7 @@ const VisitDetailsRadiology = ({ visit }) => {
                     variant="default"
                     title="Open Radiology Details"
                     rounded={true}
-                    onClick={() => router.get(getLaboratoryDetails(visit.consultation.id).url)}
+                    onClick={() => {}}
                 >
                     <i>
                         <IconEye />

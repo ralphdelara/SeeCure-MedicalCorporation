@@ -39,13 +39,13 @@ const VisitDetailsConsultation = ({ consultation }) => {
                     <tr>
                         <td>Attending Doctor:</td>
                         <td className="fs-4 fw-semibold">
-                            {consultation.doctor.full_name ?? 'N/A'}
+                            {consultation.doctor?.full_name ?? 'N/A'}
                         </td>
                     </tr>
                     <tr>
                         <td>Signs / Symptoms:</td>
                         <td className="fs-4 fw-semibold">
-                            {consultation.signs_or_symptoms.map((symptoms, index) => (
+                            {consultation?.signs_or_symptoms?.map((symptoms, index) => (
                                 <Fragment key={'symptoms-' + index}>
                                     {index > 0 && <>, </>}
                                     <span>{symptoms.name}</span>

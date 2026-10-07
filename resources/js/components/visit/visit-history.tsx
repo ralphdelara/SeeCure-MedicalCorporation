@@ -2,6 +2,7 @@ import TableList from '@/components/table';
 import { PatientDetailsProps } from '@/components/patient/patient-details';
 import VisitDetailsModal from './visit-details-modal';
 import { usePage } from '@inertiajs/react';
+import {Fragment} from 'react';
 
 interface InertiaProps {
     patientDetails: PatientDetailsProps;
@@ -53,7 +54,7 @@ const VisitHistory = () => {
 
                                 <td>
                                     {item.priority_types.map((priority, priorityIndex) => (
-                                        <>
+                                        <Fragment key={'priority-' + index + '-' + priorityIndex}>
                                             {priorityIndex > 0 && <br />}
                                             <span
                                                 className={
@@ -63,7 +64,7 @@ const VisitHistory = () => {
                                             >
                                                 {priority.name}
                                             </span>
-                                        </>
+                                        </Fragment>
                                     ))}
                                     {item.priority_types.length === 0 && (
                                         <span className="badge bg-danger">None</span>

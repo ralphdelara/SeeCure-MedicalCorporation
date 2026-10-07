@@ -1,25 +1,44 @@
-import {
-    IconFlask,
-    IconHistory,
-    IconScan,
-    IconStethoscope,
-} from '@tabler/icons-react';
+import { IconFlask, IconHistory, IconScan, IconStethoscope } from '@tabler/icons-react';
 import { Button } from '@/components/ui/button';
 import { Modal } from 'react-bootstrap';
-import { useState } from 'react';
-import VisitDetailsConsultation from '../../pages/patient/details/visit-details.consultation';
-import VisitDetailsLaboratory from '../../pages/patient/details/visit-details-laboratory';
-import VisitDetailsRadiology from '../../pages/patient/details/visit-details-radiology';
+import { useState, Fragment } from 'react';
+import VisitDetailsConsultation from './visit-details.consultation';
+import VisitDetailsLaboratory from './visit-details-laboratory';
+import VisitDetailsRadiology from './visit-details-radiology';
 
 const VisitDetailsModal = ({ visit }) => {
     const [formShow, setFormShow] = useState(false);
+    let defaultTab = '';
 
-    const [selectedTab, setSelectedTab] = useState('tab-consultation');
+    if (visit.has_consultation) {
+        defaultTab = 'tab-consultation';
+    } else if (visit.has_laboratory) {
+        defaultTab = 'tab-laboratory';
+    } else if (visit.has_radiology) {
+        defaultTab = 'tab-radiology';
+    }
+
+    const [selectedTab, setSelectedTab] = useState(defaultTab);
 
     const tabs = [
-        { id: 'tab-consultation', name: 'Consultation', icon: <IconStethoscope /> },
-        { id: 'tab-laboratory', name: 'Laboratory', icon: <IconFlask /> },
-        { id: 'tab-radiology', name: 'Radiology', icon: <IconScan /> },
+        {
+            id: 'tab-consultation',
+            name: 'Consultation',
+            icon: <IconStethoscope />,
+            exist: visit.has_consultation,
+        },
+        {
+            id: 'tab-laboratory',
+            name: 'Laboratory',
+            icon: <IconFlask />,
+            exist: visit.has_laboratory,
+        },
+        {
+            id: 'tab-radiology',
+            name: 'Radiology',
+            icon: <IconScan />,
+            exist: visit.has_radiology,
+        },
     ];
 
     return (
@@ -45,34 +64,34 @@ const VisitDetailsModal = ({ visit }) => {
                             id="pills-tab"
                             role="tablist"
                         >
-                            {tabs.map((item) => {
-                                return (
-                                    <li
-                                        key={'btn-' + item.id}
-                                        className="nav-item"
-                                        role="presentation"
-                                    >
-                                        <button
-                                            className={
-                                                'nav-link hstack rounded-0 gap-2 py-6' +
-                                                (item.id === selectedTab ? ' active' : '')
-                                            }
-                                            id="pills-profile-tab"
-                                            data-bs-toggle="pill"
-                                            data-bs-target="#pills-profile"
-                                            type="button"
-                                            role="tab"
-                                            aria-controls="pills-profile"
-                                            aria-selected="false"
-                                            tabIndex={-1}
-                                            onClick={() => setSelectedTab(item.id)}
-                                        >
-                                            {item.icon}
-                                            <span className="d-none d-md-block">{item.name}</span>
-                                        </button>
-                                    </li>
-                                );
-                            })}
+                            {tabs.map((item) => (
+                                <Fragment key={'btn-' + item.id}>
+                                    {item.exist && (
+                                        <li className="nav-item" role="presentation">
+                                            <button
+                                                className={
+                                                    'nav-link hstack rounded-0 gap-2 py-6' +
+                                                    (item.id === selectedTab ? ' active' : '')
+                                                }
+                                                id="pills-profile-tab"
+                                                data-bs-toggle="pill"
+                                                data-bs-target="#pills-profile"
+                                                type="button"
+                                                role="tab"
+                                                aria-controls="pills-profile"
+                                                aria-selected="false"
+                                                tabIndex={-1}
+                                                onClick={() => setSelectedTab(item.id)}
+                                            >
+                                                {item.icon}
+                                                <span className="d-none d-md-block">
+                                                    {item.name}
+                                                </span>
+                                            </button>
+                                        </li>
+                                    )}
+                                </Fragment>
+                            ))}
                         </ul>
                         {selectedTab === 'tab-consultation' && (
                             <VisitDetailsConsultation consultation={visit.consultation ?? []} />
