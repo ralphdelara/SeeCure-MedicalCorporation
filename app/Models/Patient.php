@@ -153,6 +153,7 @@ use Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted;
 
     'gender_id',
     'senior_citizen_id',
+    'pwd_id',
     'civil_status_id',
     'nationality_id',
     'status_id',
@@ -169,7 +170,7 @@ class Patient extends Model implements CipherSweetEncrypted
 {
     use CorrectTimezone, HasUuids, PersonDetails, UsesCipherSweet;
 
-    protected $appends = ['full_name', 'full_address', 'age_computed', 'is_senior'];
+    protected $appends = ['full_name', 'full_address', 'age_computed', 'age_year', 'is_senior', 'is_pwd'];
 
     protected function casts(): array
     {
@@ -209,6 +210,11 @@ class Patient extends Model implements CipherSweetEncrypted
     public function getIsSeniorAttribute(): bool
     {
         return computeExactAge($this->date_of_birth, 'year') >= 60;
+    }
+
+    public function getIsPwdAttribute(): bool
+    {
+        return !empty($this->pwd_id);
     }
 
     public function suffix(): BelongsTo

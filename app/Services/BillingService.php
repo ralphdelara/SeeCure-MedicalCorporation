@@ -3,7 +3,8 @@
 namespace App\Services;
 
 use App\Enums\BillingTypeEnum;
-use App\Enums\LaboratoryTestEnum;
+use App\Enums\DiscountTypeEnum;
+use App\Enums\LaboratoryPackageEnum;
 use App\Enums\VisitStatusEnum;
 use App\Events\BillingViewed;
 use App\Models\Billing;
@@ -107,6 +108,7 @@ class BillingService
         if (! empty($laboratoryId)) {
             $labCosts = $this->storeLabBilling($billing->id, $laboratoryId);
             $totalPrice += $labCosts['totalPrice'];
+            $totalDiscount += $labCosts['totalDiscount'];
             $totalQuantity += $labCosts['totalQuantity'];
             $totalNettPrice += $labCosts['totalNettPrice'];
         }
@@ -145,23 +147,104 @@ class BillingService
         $totalPrice = 0;
         $totalNettPrice = 0;
         $totalQuantity = 0;
+        $totalDiscount = 0;
 
-        $laboratory = Laboratory::with('testData', 'testData.fields')->find($laboratoryId);
+        $laboratory = Laboratory::with('testData', 'testData.test', 'testData.fields', 'packageData.tests', 'visit')->find($laboratoryId);
+        $packageTestIds = [];
 
-        foreach ($laboratory->testData as $data) {
-            $testEnum = LaboratoryTestEnum::tryFrom($data->laboratory_test_id);
+        if (! empty($laboratory->visit->patient->date_of_birth)) {
+            $isSenior = (int) $laboratory->visit->patient->age_computed >= 60;
+        } else {
+            $isSenior = false;
+        }
 
-            $totalPrice += $testEnum?->price();
-            $totalNettPrice += $testEnum?->price();
+        $isPwd = $laboratory->visit->patient->is_pwd;
+
+        // add lab package price
+
+        foreach ($laboratory->packageData as $package) {
+            if ($package->id === LaboratoryPackageEnum::CUSTOM->value) {
+                continue;
+            }
+
+            if ($isSenior || $isPwd) {
+                $discountPercent = config('amounts.discount_percent');
+                $discount = (float) $package->price * ($discountPercent / 100);
+                $nettPrice = (float) $package->price - $discount;
+
+                $discountTypeId = match (true) {
+                    $isSenior => DiscountTypeEnum::SENIOR->value,
+                    $isPwd    => DiscountTypeEnum::PWD->value,
+                };
+            } else {
+                $discountPercent = null;
+                $discount = null;
+                $discountTypeId = null;
+                $nettPrice = $package->price;
+            }
+
+            $totalPrice += (float) $package->price;
+            $totalNettPrice += (float) $nettPrice;
+            $totalDiscount += $discount ?? 0;
             $totalQuantity += 1;
 
             $labDetails[] = [
                 'billing_id'       => $billingId,
                 'billing_type_id'  => BillingTypeEnum::LABORATORY,
-                'name'             => $testEnum?->description() ?? 'N/A',
-                'cost_price'       => $testEnum?->price(),
-                'total_price'      => $testEnum?->price(),
-                'nett_price'       => $testEnum?->price(),
+                'name'             => $package->name,
+                'cost_price'       => $package->price,
+                'total_price'      => $package->price,
+                'discount_percent' => $discountPercent,
+                'discount'         => $discount,
+                'discount_type_id' => $discountTypeId,
+                'nett_price'       => $nettPrice,
+                'created_by'       => Auth::id(),
+                'last_modified_by' => Auth::id(),
+            ];
+
+            foreach ($package->tests as $test) {
+                $packageTestIds[] = $test->id;
+            }
+        }
+
+        // add lab test price
+
+        foreach ($laboratory->testData as $data) {
+            if (in_array($data->laboratory_test_id, $packageTestIds)) {
+                continue;
+            }
+
+            if ($isSenior || $isPwd) {
+                $discountPercent = config('amounts.discount_percent');
+                $discount = (float) $data->test->price * ($discountPercent / 100);
+                $nettPrice = (float) $data->test->price - $discount;
+
+                $discountTypeId = match (true) {
+                    $isSenior => DiscountTypeEnum::SENIOR->value,
+                    $isPwd    => DiscountTypeEnum::PWD->value,
+                };
+            } else {
+                $discountPercent = null;
+                $discount = null;
+                $discountTypeId = null;
+                $nettPrice = $data->test->price;
+            }
+
+            $totalPrice += (float) $data->test->price;
+            $totalNettPrice += (float) $nettPrice;
+            $totalDiscount += $discount ?? 0;
+            $totalQuantity += 1;
+
+            $labDetails[] = [
+                'billing_id'       => $billingId,
+                'billing_type_id'  => BillingTypeEnum::LABORATORY,
+                'name'             => $data->test->name ?? 'N/A',
+                'cost_price'       => (float) $data->test->price,
+                'total_price'      => (float) $data->test->price,
+                'discount_percent' => $discountPercent,
+                'discount'         => $discount,
+                'discount_type_id' => $discountTypeId,
+                'nett_price'       => $nettPrice,
                 'created_by'       => Auth::id(),
                 'last_modified_by' => Auth::id(),
             ];
@@ -172,6 +255,7 @@ class BillingService
         return [
             'totalPrice'     => $totalPrice,
             'totalQuantity'  => $totalQuantity,
+            'totalDiscount'  => $totalDiscount,
             'totalNettPrice' => $totalNettPrice,
         ];
     }
@@ -212,7 +296,9 @@ class BillingService
             'visit.radiology' => function ($query) {
                 $query->select('id', 'visit_id');
             },
-            'details',
+            'details' => function ($query) {
+                $query->orderBy('nett_price');
+            },
             'details.supply',
             'details.type',
             'details.createdBy' => function ($query) {
@@ -321,6 +407,7 @@ class BillingService
                 'quantity'         => $field['quantity'],
                 'total_price'      => $field['total_price'],
                 'discount'         => $field['discount'],
+                'discount_percent' => $field['discount_percent'],
                 'discount_type_id' => $discountTypeId,
                 'tax_percent'      => $field['tax_percent'],
                 'tax_amount'       => $field['nett_price'] - ($field['cost_price'] - $field['discount']),

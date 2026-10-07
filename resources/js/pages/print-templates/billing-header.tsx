@@ -2,11 +2,13 @@ import { formatReceiptDateTime } from '@/lib/utils';
 import { usePage } from '@inertiajs/react';
 
 const BillingHeader = () => {
-    const { billing } = usePage().props as unknown as {
+    const { billing, discountType, discountIdNo } = usePage().props as unknown as {
         billing: {
+            transaction_no: string;
             visit: {
                 patient: {
                     full_name: string;
+                    control_no: string;
                     computed_age: string;
                     gender: {
                         name: 'string';
@@ -14,56 +16,76 @@ const BillingHeader = () => {
                     full_address: string;
                     age_computed: string;
                 };
+                consultation: {
+                    doctor: {
+                        full_name: string;
+                        physician_last_name: string;
+                    };
+                };
             };
             created_at: string;
         };
+        discountType: string;
+        discountIdNo: string;
     };
     return (
         <>
             <table
                 style={{
-                    width: '600px',
+                    width: '450px',
                 }}
             >
                 <tbody>
                     <tr>
-                        <td width="10" align="left">
-                            Name:
+                        <td style={{ width: '10%' }} className="fs-2" align="left">
+                            <span className="fw-bolder">Bill #:</span>
                         </td>
-                        <td className="fw-bolder pe-3 text-center" style={{ width: '60%' }}>
-                            {billing.visit.patient.full_name}
+                        <td className="fw-bolder fs-2 pe-3 text-center" style={{ width: '40%' }}>
+                            {billing.transaction_no ?? <>&nbsp;</>}
                             <hr
-                                className="border-dark"
+                                className="border-dark border-2"
                                 style={{
                                     margin: '0',
                                 }}
                             />
                         </td>
-                        <td style={{ width: '10%' }} align="left">
-                            Date:
+                        <td style={{ width: '10%' }} className="fs-2" align="left">
+                            <span className="fw-bolder">Physician:</span>
                         </td>
-                        <td className="fw-bolder pe-3 text-center" style={{ width: '20%' }}>
+                        <td className="fw-bolder fs-2 pe-3 text-center" style={{ width: '40%' }}>
+                            {billing.visit.consultation?.doctor?.physician_last_name ?? <>&nbsp;</>}
+                            <hr
+                                className="border-dark border-2"
+                                style={{
+                                    margin: '0',
+                                }}
+                            />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style={{ width: '10%' }} className="fs-2" align="left">
+                            <span className="fw-bolder">Name:</span>
+                        </td>
+                        <td className="fw-bolder fs-2 pe-3 text-center" style={{ width: '40%' }}>
+                            {billing.visit.patient.full_name.toUpperCase()}
+                            <hr
+                                className="border-dark border-2"
+                                style={{
+                                    margin: '0',
+                                }}
+                            />
+                        </td>
+                        <td style={{ width: '10%' }} className="fs-2" align="left">
+                            <span className="fw-bolder">Date:</span>
+                        </td>
+                        <td className="fw-bolder fs-2 pe-3 text-center" style={{ width: '40%' }}>
                             {billing.created_at ? (
                                 formatReceiptDateTime(billing.created_at, 'dateOnly')
                             ) : (
                                 <>&nbsp;</>
                             )}
                             <hr
-                                className="border-dark"
-                                style={{
-                                    margin: '0',
-                                }}
-                            />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td align="left" width="10">
-                            Address:
-                        </td>
-                        <td colSpan={3} className="fw-bolder pe-3 text-center">
-                            {billing.visit.patient?.full_address ?? <>&nbsp;</>}
-                            <hr
-                                className="border-dark"
+                                className="border-dark border-2"
                                 style={{
                                     margin: '0',
                                 }}
@@ -72,38 +94,44 @@ const BillingHeader = () => {
                     </tr>
                 </tbody>
             </table>
-            <table style={{ width: '250px' }}>
+            <table
+                style={{
+                    width: '450px',
+                }}
+            >
                 <tbody>
                     <tr>
-                        <td align="left" style={{ width: '30px' }}>
-                            Gender:
+                        <td style={{ width: '15%' }} className="fs-2 text-nowrap" align="left">
+                            <span className="fw-bolder text-nowrap">Patient No:</span>
                         </td>
-                        <td
-                            className="fw-bolder text-center"
-                            style={{
-                                width: '30px',
-                            }}
-                        >
-                            {billing.visit.patient.gender?.name ?? <>&nbsp;</>}
+                        <td className="fw-bolder fs-2 pe-3 text-center" style={{ width: '20%' }}>
+                            {billing.visit.patient?.control_no ?? <>&nbsp;</>}
                             <hr
-                                className="border-dark"
+                                className="border-dark border-2"
                                 style={{
                                     margin: '0',
                                 }}
                             />
                         </td>
-                        <td align="left" width="10">
-                            Age:
+                        <td style={{ width: '10%' }} className="fs-2" align="left">
+                            <span className="fw-bolder">Gender:</span>
                         </td>
-                        <td
-                            className="fw-bolder text-center"
-                            style={{
-                                width: '50px',
-                            }}
-                        >
-                            {billing.visit.patient?.age_computed ?? <>&nbsp;</>}
+                        <td className="fw-bolder fs-2 pe-3 text-center" style={{ width: '25%' }}>
+                            {billing.visit.patient.gender?.name.toUpperCase() ?? <>&nbsp;</>}
                             <hr
-                                className="border-dark"
+                                className="border-dark border-2"
+                                style={{
+                                    margin: '0',
+                                }}
+                            />
+                        </td>
+                        <td style={{ width: '5%' }} className="fs-2" align="left">
+                            <span className="fw-bolder">Age:</span>
+                        </td>
+                        <td className="fw-bolder fs-2 pe-3 text-center" style={{ width: '25%' }}>
+                            {billing.visit.patient?.age_computed?.toUpperCase() ?? <>&nbsp;</>}
+                            <hr
+                                className="border-dark border-2"
                                 style={{
                                     margin: '0',
                                 }}
@@ -112,6 +140,74 @@ const BillingHeader = () => {
                     </tr>
                 </tbody>
             </table>
+            <table
+                style={{
+                    width: '450px',
+                }}
+            >
+                <tbody>
+                    <tr>
+                        <td style={{ width: '10%' }} className="fs-2" align="left">
+                            <span className="fw-bolder">Address:</span>
+                        </td>
+                        <td
+                            className="fw-bolder fs-2 pe-3 text-center"
+                            style={{ width: '90%' }}
+                            colSpan={3}
+                        >
+                            {billing.visit.patient?.full_address?.toUpperCase() ?? <>&nbsp;</>}
+                            <hr
+                                className="border-dark border-2"
+                                style={{
+                                    margin: '0',
+                                }}
+                            />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            {discountType && (
+                <table
+                    style={{
+                        width: '450px',
+                    }}
+                >
+                    <tbody>
+                        <tr>
+                            <td style={{ width: '18%' }} className="fs-2 text-nowrap" align="left">
+                                <span className="fw-bolder text-nowrap">Discount Type:</span>
+                            </td>
+                            <td
+                                className="fw-bolder fs-2 pe-3 text-center"
+                                style={{ width: '32%' }}
+                            >
+                                {discountType ?? <>&nbsp;</>}
+                                <hr
+                                    className="border-dark border-2"
+                                    style={{
+                                        margin: '0',
+                                    }}
+                                />
+                            </td>
+                            <td style={{ width: '10%' }} className="fs-2" align="left">
+                                <span className="fw-bolder">ID No:</span>
+                            </td>
+                            <td
+                                className="fw-bolder fs-2 pe-3 text-center"
+                                style={{ width: '40%' }}
+                            >
+                                {discountIdNo ?? <>&nbsp;</>}
+                                <hr
+                                    className="border-dark border-2"
+                                    style={{
+                                        margin: '0',
+                                    }}
+                                />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            )}
         </>
     );
 };

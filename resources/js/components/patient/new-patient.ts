@@ -21,6 +21,7 @@ export interface AddOrUpdatePatientDetailsFormProps extends AddressDetailsFormPr
     photo?: string;
 
     philhealth_id: number | string;
+    pwd_id: number | string;
 }
 
 export interface AddOrUpdatePatientFormProps {

@@ -172,7 +172,7 @@ class User extends Authenticatable implements CipherSweetEncrypted
     /** @use HasFactory<UserFactory> */
     use CorrectTimezone, HasFactory, HasUuids, Notifiable, PersonDetails, UsesCipherSweet;
 
-    protected $appends = ['full_name', 'full_address', 'age_computed', 'full_name_receipt', 'is_bot', 'is_admin'];
+    protected $appends = ['physician_last_name', 'full_name', 'full_address', 'age_computed', 'full_name_receipt', 'is_bot', 'is_admin'];
 
     /**
      * Get the attributes that should be cast.
@@ -234,6 +234,22 @@ class User extends Authenticatable implements CipherSweetEncrypted
             $suffix = $this->professions->pluck('suffix')->filter()->implode(', ');
 
             return $prefix.$fullName.($suffix ? ' '.$suffix : '');
+        }
+
+        return $fullName;
+    }
+
+    public function getPhysicianLastNameAttribute(): string
+    {
+        //  Get the base name
+        $fullName = $this->last_name;
+
+        // Check if professions are eager-loaded, then extract the names
+        if ($this->relationLoaded('professions')) {
+            $prefix = $this->professions->pluck('prefix')->filter()->implode(', ');
+            $suffix = $this->professions->pluck('suffix')->filter()->implode(', ');
+
+            return $prefix.$this->last_name.($suffix ? ' '.$suffix : '');
         }
 
         return $fullName;

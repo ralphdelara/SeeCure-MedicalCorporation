@@ -104,6 +104,9 @@ class LaboratoryService
         $testIds = $laboratoryDetails['other_test_ids'];
 
         $packageId = $laboratoryDetails['laboratory_package_id'];
+
+        $laboratory->packageData()->sync([$laboratoryDetails['laboratory_package_id']]);
+
         $packageTestIds = [];
 
         if (! empty($packageId)) {

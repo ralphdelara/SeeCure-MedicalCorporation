@@ -70,6 +70,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'cost_price',
     'quantity',
     'total_price',
+    'discount_percent',
     'discount',
     'discount_type_id',
     'tax_percent',

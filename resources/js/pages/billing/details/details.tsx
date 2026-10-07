@@ -12,15 +12,7 @@ import {
     updateDetails,
 } from '@/actions/App/Http/Controllers/BillingController';
 import TableList from '@/components/table';
-import {
-    IconBuildingBank,
-    IconListCheck,
-    IconPlus,
-    IconPrescription,
-    IconPrinter,
-} from '@tabler/icons-react';
-import { printPrescription } from '@/actions/App/Http/Controllers/PrintController';
-import SuppliesModal from './supplies-modal';
+import { IconPlus, IconPrescription, IconPrinter } from '@tabler/icons-react';
 import BillingSuppliesModal from './billing-supplies-item-modal';
 import DeleteButton from '@/components/delete-button';
 
@@ -36,6 +28,7 @@ interface InertiaProps {
             billing_type_id: number;
             cost_price: string | number;
             discount: string | number;
+            discount_percent: string | number;
             discount_type_id: string | number;
             tax_percent: string | number;
             nett_price: string | number;
@@ -89,9 +82,19 @@ const Details = ({ showTab }: { showTab: boolean }) => {
     const submitDetails = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        updateBillingDetails();
+    };
+
+    const updateBillingDetails = () => {
         patch(updateDetails().url, {
             ...formSubmitResponse('Details'),
         });
+    };
+
+    const printBillingDetails = async () => {
+        await updateBillingDetails();
+
+        printDocument('billing', billingDetails.id);
     };
 
     const totalValues = (tmpData: any) => {
@@ -100,6 +103,7 @@ const Details = ({ showTab }: { showTab: boolean }) => {
         let totalPrice = 0;
         let totalDiscount = 0;
         let totalNettPrice = 0;
+        console.log(tmpData);
 
         Object.values(tmpData).forEach((item) => {
             if (typeof item !== 'object' || item === null) {
@@ -149,6 +153,7 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                 quantity: '',
                 total_price: '',
                 discount: '',
+                discount_percent: '',
                 discount_type_id: '',
                 tax_percent: '',
                 nett_price: '',
@@ -160,11 +165,16 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                 [field]: parsedValue,
             };
 
+            if (field === 'discount_type_id') {
+                updatedItem.discount_percent = parsedValue !== 0 ? 20 : '';
+            }
+
             const allBlank =
                 updatedItem.cost_price === '' &&
                 updatedItem.quantity === '' &&
                 updatedItem.total_price === '' &&
                 updatedItem.discount === '' &&
+                updatedItem.discount_percent === '' &&
                 updatedItem.tax_percent === '' &&
                 updatedItem.nett_price === '';
 
@@ -175,15 +185,20 @@ const Details = ({ showTab }: { showTab: boolean }) => {
             const quantity = isNaN(parseFloat(updatedItem.quantity as string))
                 ? 0
                 : parseFloat(updatedItem.quantity as string);
-            const discount = isNaN(parseFloat(updatedItem.discount as string))
+            const discount_percent = isNaN(parseFloat(updatedItem.discount_percent as string))
                 ? 0.0
-                : parseFloat(updatedItem.discount as string);
+                : parseFloat(updatedItem.discount_percent as string);
             const tax_percent = isNaN(parseFloat(updatedItem.tax_percent as string))
                 ? 0.0
                 : parseFloat(updatedItem.tax_percent as string);
 
             updatedItem.total_price = allBlank ? '' : (cost_price * quantity).toFixed(2);
-            const basePrice = updatedItem.total_price - discount;
+            const discountPrice =
+                updatedItem.total_price === ''
+                    ? '0'
+                    : (parseFloat(updatedItem.total_price) * (discount_percent / 100)).toFixed(2);
+            updatedItem.discount = parseFloat(discountPrice);
+            const basePrice = updatedItem.total_price - parseFloat(discountPrice);
             const totalNettPrice = (basePrice * (1 + tax_percent / 100)).toFixed(2);
             updatedItem.nett_price = allBlank ? '' : totalNettPrice;
 
@@ -210,6 +225,7 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                 quantity: item.quantity ?? '',
                 total_price: item.total_price ?? '',
                 discount: item.discount ?? '',
+                discount_percent: item.discount_percent ?? '',
                 discount_type_id: item.discount_type_id ?? '',
                 tax_percent: item.tax_percent ?? '',
                 nett_price: item.nett_price ?? '',
@@ -237,6 +253,7 @@ const Details = ({ showTab }: { showTab: boolean }) => {
         quantity: '',
         total_price: '',
         discount: '',
+        discount_percent: '',
         discount_type_id: '',
         tax_percent: '',
         tax_amount: '',
@@ -282,7 +299,7 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                 size="lg"
                                 type="button"
                                 className="me-2"
-                                onClick={() => printDocument('billing', billingDetails.id)}
+                                onClick={() => printBillingDetails()}
                             >
                                 <IconPrinter /> Print Billing Details
                             </Button>
@@ -310,7 +327,7 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                             let priceId = 'cost-price-' + item.id;
                                             let quantityId = 'quantity-' + item.id;
                                             let totalPriceId = 'total-price-' + item.id;
-                                            let discountId = 'discount-' + item.id;
+                                            let discountPercentId = 'discount-' + item.id;
                                             let discountTypeId = 'discount-type-' + item.id;
                                             let taxPercentId = 'tax-percent-' + item.id;
                                             let nettPriceId = 'nett-price-' + item.id;
@@ -414,22 +431,22 @@ const Details = ({ showTab }: { showTab: boolean }) => {
                                                     <td>
                                                         <div className="input-group d-flex mb-3 flex-nowrap">
                                                             <span className="input-group-text">
-                                                                ₱
+                                                                %
                                                             </span>
                                                             <Input
                                                                 type="text"
-                                                                id={discountId}
+                                                                id={discountPercentId}
                                                                 value={
                                                                     (
                                                                         data[
                                                                             item.id as keyof typeof data
                                                                         ] as any
-                                                                    )?.discount ?? ''
+                                                                    )?.discount_percent ?? ''
                                                                 }
                                                                 onChange={(e) =>
                                                                     computeNettPrice(
                                                                         item.id,
-                                                                        'discount',
+                                                                        'discount_percent',
                                                                         e.target.value,
                                                                     )
                                                                 }

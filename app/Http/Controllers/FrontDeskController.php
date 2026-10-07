@@ -72,7 +72,7 @@ class FrontDeskController extends Controller
 
         $patientId = $patientDetails['patientId'];
 
-        $visitId = $this->queueVisit($request, $patientId, $patientDetails['isSenior']);
+        $visitId = $this->queueVisit($request, $patientId, $patientDetails['isSenior'], $patientDetails['isPwd']);
 
         $laboratoryId = null;
 
@@ -187,6 +187,7 @@ class FrontDeskController extends Controller
             'nationality_id',
             'patient_suffix_id',
             'senior_citizen_id',
+            'pwd_id',
         );
 
         $patientId = $patientDetails['patient_id'];
@@ -200,6 +201,8 @@ class FrontDeskController extends Controller
             }
         }
 
+        $isPwd = ! empty($patientDetails['pwd_id']);
+
         if ($request->input('form_type') === 'new') {
             $patient = app(PatientService::class)->addOrUpdatePatient($patientDetails);
             $patientId = $patient->id;
@@ -209,15 +212,17 @@ class FrontDeskController extends Controller
             $patient = Patient::find($patientId);
 
             $isSenior = $patient->is_senior;
+            $isPwd = $patient->is_pwd;
         }
 
         return [
             'patientId' => $patientId,
             'isSenior'  => $isSenior,
+            'isPwd'     => $isPwd,
         ];
     }
 
-    public function queueVisit(Request $request, string $patientId, bool $isSenior): string
+    public function queueVisit(Request $request, string $patientId, bool $isSenior, bool $isPwd): string
     {
         $visitDetails = $request->only(
             'patient_id',
@@ -240,6 +245,10 @@ class FrontDeskController extends Controller
 
         if ($isSenior) {
             $visitDetails['priority_type_ids'][] = PriorityTypeEnum::SENIOR_CITIZEN;
+        }
+
+        if ($isPwd && ! in_array(PriorityTypeEnum::PERSONS_WITH_DISABILITY->value, $visitDetails['priority_type_ids'])) {
+            $visitDetails['priority_type_ids'][] = PriorityTypeEnum::PERSONS_WITH_DISABILITY;
         }
 
         return app(VisitService::class)->storeVisit($patientId, $visitDetails);

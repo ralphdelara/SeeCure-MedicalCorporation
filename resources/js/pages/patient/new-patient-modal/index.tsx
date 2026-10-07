@@ -36,6 +36,8 @@ const NewPatient = () => {
             photo: '',
 
             philhealth_id: '',
+            senior_citizen_id: '',
+            pwd_id: '',
         });
 
     const [showModal, setShowModal] = useState(false);

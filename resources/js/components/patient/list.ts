@@ -19,6 +19,8 @@ export interface PatientTableList {
     nationality: Options;
     occupation: string;
     philhealth_id: string;
+    senior_citizen_id: string;
+    pwd_id: string;
     full_address: string;
 
     created_by: {

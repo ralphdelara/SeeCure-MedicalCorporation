@@ -37,6 +37,8 @@ export default function PatientList() {
         { name: 'Nationality', align: 'left' },
         { name: 'Occupation', align: 'left' },
         { name: 'Address', align: 'left' },
+        { name: 'Senior Citizen ID', align: 'left' },
+        { name: 'PWD ID', align: 'left' },
         { name: 'Philhealth ID', align: 'left' },
         { name: 'Added By', align: 'left' },
         { name: 'Last Modified By', align: 'left' },
@@ -155,6 +157,12 @@ export default function PatientList() {
                                         <td>{item.occupation}</td>
                                         <td>
                                             <span className="fw-normal">{item.full_address}</span>
+                                        </td>
+                                        <td>
+                                            <span className="fw-normal">{item.senior_citizen_id}</span>
+                                        </td>
+                                        <td>
+                                            <span className="fw-normal">{item.pwd_id}</span>
                                         </td>
                                         <td>
                                             <span className="fw-normal">{item.philhealth_id}</span>

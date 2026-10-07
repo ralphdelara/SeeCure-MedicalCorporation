@@ -1,4 +1,5 @@
 import { useForm, usePage } from '@inertiajs/react';
+import { Fragment } from 'react';
 import { IconPlus, IconUserDown, IconUserPlus } from '@tabler/icons-react';
 import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
@@ -52,6 +53,7 @@ const QueuePatient = () => {
 
             vital_signs: {},
             philhealth_id: '',
+            pwd_id: '',
 
             guardian_name: '',
             guardian_contact_number: '',
@@ -190,12 +192,9 @@ const QueuePatient = () => {
                                         />
                                     </div>
                                     {priorityTypeOptions.map((item, index) => (
-                                        <>
+                                        <Fragment key={'priorityType-' + index}>
                                             {item.id !== 3 && (
-                                                <div
-                                                    className={'col-md-4'}
-                                                    key={'priorityType-' + index}
-                                                >
+                                                <div className={'col-md-4'}>
                                                     <div className="form-check form-check-inline">
                                                         <input
                                                             className="form-check-input success"
@@ -219,7 +218,7 @@ const QueuePatient = () => {
                                                     </div>
                                                 </div>
                                             )}
-                                        </>
+                                        </Fragment>
                                     ))}
                                     <div className="col-md-4">
                                         <div className="form-check form-check-inline">
