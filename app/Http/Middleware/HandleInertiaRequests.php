@@ -94,6 +94,7 @@ class HandleInertiaRequests extends Middleware
                 'professions'   => $professions,
                 'specialties'   => $specialties,
             ],
+            'isAdmin'     => $user['is_admin'] ?? false,
             'company'     => CompanyProfile::find(1),
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'breadcrumbs' => $breadcrumbs,

@@ -23,7 +23,7 @@ const PrescriptionHeader = () => {
                     <tr>
                         <td style={{ width: '62px' }}>Name:</td>
                         <td className="fw-bolder pe-3 text-center" style={{ width: '60%' }}>
-                            {patient.full_name}
+                            {patient?.full_name?.toUpperCase()}
                             <hr
                                 className="border-dark"
                                 style={{
@@ -45,7 +45,7 @@ const PrescriptionHeader = () => {
                     <tr>
                         <td>Address:</td>
                         <td colSpan={3} className="fw-bolder pe-3 text-center">
-                            {patient?.full_address ?? <>&nbsp;</>}
+                            {patient?.full_address?.toUpperCase() ?? <>&nbsp;</>}
                             <hr
                                 className="border-dark"
                                 style={{
@@ -68,7 +68,7 @@ const PrescriptionHeader = () => {
                                 width: '30px',
                             }}
                         >
-                            {patient.gender?.name ?? <>&nbsp;</>}
+                            {patient?.gender?.name.toUpperCase() ?? <>&nbsp;</>}
                             <hr
                                 className="border-dark"
                                 style={{

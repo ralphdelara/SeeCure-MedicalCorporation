@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\DocumentType;
-use App\Models\Patient;
 use App\Models\VitalSign;
 use App\Services\PatientService;
+use Auth;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -75,7 +75,9 @@ class PatientController extends Controller
 
     public function deletePatient(string $patientId): void
     {
-        Patient::destroy($patientId);
+        abort_if(! Auth::user()->is_admin, 403);
+
+        app(PatientService::class)->deletePatient($patientId);
     }
 
     public function getSmallPatientList(Request $request): array

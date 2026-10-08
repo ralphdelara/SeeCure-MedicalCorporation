@@ -12,6 +12,7 @@ use App\Models\Patient;
 use App\Models\PatientAudit;
 use App\Models\PatientSuffix;
 use App\Models\Province;
+use App\Models\Visit;
 use Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -318,5 +319,15 @@ class PatientService
             ->where('patient_id', $patientId)
             ->orderBy('created_at', 'desc')
             ->get()->toArray();
+    }
+
+    public function deletePatient(string $patientId): void
+    {
+        Visit::where('patient_id', $patientId)->update([
+            'patient_id' => Patient::walkInPatient()->id,
+        ]);
+
+        Patient::destroy($patientId);
+
     }
 }

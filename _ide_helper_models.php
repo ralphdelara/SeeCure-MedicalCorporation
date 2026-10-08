@@ -175,6 +175,8 @@ namespace App\Models{
  * @property-read \App\Models\BillingSupplies|null $supply
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail whereBillingSuppliesId($value)
  * @mixin \Eloquent
+ * @property numeric|null $discount_percent
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BillingDetail whereDiscountPercent($value)
  */
 	class BillingDetail extends \Eloquent {}
 }
@@ -441,8 +443,6 @@ namespace App\Models{
  * @property-read int|null $vital_signs_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation wherePrescriptionRemarks($value)
  * @mixin \Eloquent
- * @property string|null $old_consult_id
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereOldConsultId($value)
  */
 	class Consultation extends \Eloquent {}
 }
@@ -903,6 +903,8 @@ namespace App\Models{
  * @property-read Collection<int, \App\Models\Document> $documents
  * @property-read int|null $documents_count
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LaboratoryPackage> $packageData
+ * @property-read int|null $package_data_count
  */
 	class Laboratory extends \Eloquent {}
 }
@@ -987,9 +989,15 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * @property string $laboratory_id
+ * @property int $laboratory_package_id
+ * @property-read \App\Models\Laboratory $laboratory
+ * @property-read \App\Models\LaboratoryPackage|null $package
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryPackageData newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryPackageData newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryPackageData query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryPackageData whereLaboratoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryPackageData whereLaboratoryPackageId($value)
  */
 	class LaboratoryPackageData extends \Eloquent {}
 }
@@ -1310,6 +1318,10 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereControlNo($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereOldPatientId($value)
  * @mixin \Eloquent
+ * @property string|null $pwd_id
+ * @property-read string|null $age_year
+ * @property-read bool $is_pwd
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient wherePwdId($value)
  */
 	class Patient extends \Eloquent implements \Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted {}
 }
@@ -2046,6 +2058,8 @@ namespace App\Models{
  * @property-read Collection<int, \App\Models\Position> $positions
  * @property-read int|null $positions_count
  * @mixin \Eloquent
+ * @property-read string|null $age_year
+ * @property-read string $physician_last_name
  */
 	class User extends \Eloquent implements \Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted {}
 }

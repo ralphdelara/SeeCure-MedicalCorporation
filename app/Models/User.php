@@ -77,6 +77,7 @@ use Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted;
  * @property-read Province|null $province
  * @property-read Collection<int, UserSpecialty> $specialties
  * @property-read int|null $specialties_count
+ *
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()
@@ -115,17 +116,21 @@ use Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereStreet($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUsername($value)
+ *
  * @property string|null $username_index
  * @property-read string|null $age_computed
  * @property-read string|null $full_address
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUsernameIndex($value)
+ *
  * @property-read string $full_name_receipt
- * @property-read Collection<int, \App\Models\Department> $departments
+ * @property-read Collection<int, Department> $departments
  * @property-read int|null $departments_count
  * @property-read bool $is_admin
  * @property-read bool $is_bot
- * @property-read Collection<int, \App\Models\Position> $positions
+ * @property-read Collection<int, Position> $positions
  * @property-read int|null $positions_count
+ *
  * @mixin \Eloquent
  */
 #[Fillable([
@@ -172,7 +177,7 @@ class User extends Authenticatable implements CipherSweetEncrypted
     /** @use HasFactory<UserFactory> */
     use CorrectTimezone, HasFactory, HasUuids, Notifiable, PersonDetails, UsesCipherSweet;
 
-    protected $appends = ['physician_last_name', 'full_name', 'full_address', 'age_computed', 'full_name_receipt', 'is_bot', 'is_admin'];
+    protected $appends = ['physician_last_name', 'full_name', 'full_address', 'age_computed', 'is_bot', 'is_admin'];
 
     /**
      * Get the attributes that should be cast.
@@ -210,22 +215,6 @@ class User extends Authenticatable implements CipherSweetEncrypted
     public function getFullNameAttribute(): string
     {
         //  Get the base name
-        $fullName = $this->last_name.', '.$this->first_name.($this->middle_name ? ' '.$this->middle_name : '');
-
-        // 2. Check if professions are eager-loaded, then extract the names
-        if ($this->relationLoaded('professions')) {
-            $prefix = $this->professions->pluck('prefix')->filter()->implode(', ');
-            $suffix = $this->professions->pluck('suffix')->filter()->implode(', ');
-
-            return $prefix.$fullName.($suffix ? ' '.$suffix : '');
-        }
-
-        return $fullName;
-    }
-
-    public function getFullNameReceiptAttribute(): string
-    {
-        //  Get the base name
         $fullName = $this->first_name.' '.($this->middle_name ? $this->middle_name.' ' : '').$this->last_name;
 
         // 2. Check if professions are eager-loaded, then extract the names
@@ -233,7 +222,7 @@ class User extends Authenticatable implements CipherSweetEncrypted
             $prefix = $this->professions->pluck('prefix')->filter()->implode(', ');
             $suffix = $this->professions->pluck('suffix')->filter()->implode(', ');
 
-            return $prefix.$fullName.($suffix ? ' '.$suffix : '');
+            return $fullName.($suffix ? ', '.$suffix : '.');
         }
 
         return $fullName;

@@ -121,7 +121,7 @@ const PickList = () => {
                     <tr>
                         <td>CASHIER:</td>
                         <td className="text-right">
-                            {receiptData.created_by.full_name_receipt.toUpperCase()}
+                            {receiptData.created_by.full_name.toUpperCase()}
                         </td>
                     </tr>
                     <tr>
