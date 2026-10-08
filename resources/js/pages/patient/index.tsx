@@ -23,6 +23,7 @@ interface InertiaProps {
         tableData: PatientTableList[];
         pageData: Pages;
     };
+    isAdmin: boolean;
 }
 
 export default function PatientList() {
@@ -49,7 +50,7 @@ export default function PatientList() {
         options: [],
         type: 'All Status',
     };
-    const { patientList } = usePage().props as unknown as InertiaProps;
+    const { patientList, isAdmin } = usePage().props as unknown as InertiaProps;
     const { tableData, pageData } = patientList;
 
     return (
@@ -159,7 +160,9 @@ export default function PatientList() {
                                             <span className="fw-normal">{item.full_address}</span>
                                         </td>
                                         <td>
-                                            <span className="fw-normal">{item.senior_citizen_id}</span>
+                                            <span className="fw-normal">
+                                                {item.senior_citizen_id}
+                                            </span>
                                         </td>
                                         <td>
                                             <span className="fw-normal">{item.pwd_id}</span>
@@ -204,10 +207,12 @@ export default function PatientList() {
                                                 </Button>
                                             </Link>
 
-                                            <DeleteButton
-                                                url={deletePatient(item.id).url}
-                                                msg={'patient <b>' + item.full_name + '</b>.'}
-                                            />
+                                            {isAdmin && item.control_no !== 0 && (
+                                                <DeleteButton
+                                                    url={deletePatient(item.id).url}
+                                                    msg={'patient <b>' + item.full_name + '</b>.'}
+                                                />
+                                            )}
                                         </td>
                                     </tr>
                                 ))}

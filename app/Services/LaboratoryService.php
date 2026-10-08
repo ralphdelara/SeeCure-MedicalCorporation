@@ -556,7 +556,7 @@ class LaboratoryService
 
             // delete patient info if walk in
             if ($laboratory->visit->is_walk_in) {
-                Patient::find($laboratory->visit->patient_id)->delete();
+                app(PatientService::class)->deletePatient($laboratory->visit->patient_id ?? Patient::walkInPatient()->id);
             }
         }
     }

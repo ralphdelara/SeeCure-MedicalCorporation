@@ -220,31 +220,36 @@ const QueuePatient = () => {
                                             )}
                                         </Fragment>
                                     ))}
-                                    <div className="col-md-4">
-                                        <div className="form-check form-check-inline">
-                                            <input
-                                                className="form-check-input success"
-                                                type="checkbox"
-                                                id="is_walk_in"
-                                                value="1"
-                                                onChange={(e) =>
-                                                    setData(
-                                                        'is_walk_in',
-                                                        e.currentTarget.checked ? 1 : 0,
-                                                    )
-                                                }
-                                                name="is_walk_in"
-                                                checked={data.is_walk_in === 1}
+                                    {data.form_type === 'new' && (
+                                        <div className="col-md-4">
+                                            <div className="form-check form-check-inline">
+                                                <input
+                                                    className="form-check-input success"
+                                                    type="checkbox"
+                                                    id="is_walk_in"
+                                                    value="1"
+                                                    onChange={(e) =>
+                                                        setData(
+                                                            'is_walk_in',
+                                                            e.currentTarget.checked ? 1 : 0,
+                                                        )
+                                                    }
+                                                    name="is_walk_in"
+                                                    checked={data.is_walk_in === 1}
+                                                />
+                                                <Label
+                                                    className="form-check-label"
+                                                    htmlFor="is_walk_in"
+                                                >
+                                                    <h5 className="fw-semibold">Walk In</h5>
+                                                </Label>
+                                            </div>
+                                            <InputError
+                                                message={errors.is_walk_in}
+                                                className="mt-2"
                                             />
-                                            <Label
-                                                className="form-check-label"
-                                                htmlFor="is_walk_in"
-                                            >
-                                                <h5 className="fw-semibold">Walk In</h5>
-                                            </Label>
                                         </div>
-                                        <InputError message={errors.is_walk_in} className="mt-2" />
-                                    </div>
+                                    )}
                                 </div>
 
                                 <MedicalServices data={data} setData={setData} errors={errors} />
