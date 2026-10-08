@@ -68,7 +68,7 @@ const BillingHeader = () => {
                         </td>
                         <td className="fw-bolder fs-2 pe-3 text-center" style={{ width: '40%' }}>
                             {billing.visit.patient ? (
-                                <>billing.visit.patient?.full_name.toUpperCase()</>
+                                <>{billing.visit.patient?.full_name.toUpperCase()}</>
                             ) : (
                                 'WALK-IN'
                             )}
@@ -110,7 +110,7 @@ const BillingHeader = () => {
                         </td>
                         <td className="fw-bolder fs-2 pe-3 text-center" style={{ width: '20%' }}>
                             {billing.visit.patient ? (
-                                <>billing.visit.patient?.control_no </>
+                                <>{billing.visit.patient?.control_no}</>
                             ) : (
                                 <>&nbsp;</>
                             )}
