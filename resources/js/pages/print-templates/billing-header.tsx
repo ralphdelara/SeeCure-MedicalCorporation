@@ -67,7 +67,11 @@ const BillingHeader = () => {
                             <span className="fw-bolder">Name:</span>
                         </td>
                         <td className="fw-bolder fs-2 pe-3 text-center" style={{ width: '40%' }}>
-                            {billing.visit.patient.full_name.toUpperCase()}
+                            {billing.visit.patient ? (
+                                <>billing.visit.patient?.full_name.toUpperCase()</>
+                            ) : (
+                                'WALK-IN'
+                            )}
                             <hr
                                 className="border-dark border-2"
                                 style={{
@@ -105,7 +109,11 @@ const BillingHeader = () => {
                             <span className="fw-bolder text-nowrap">Patient No:</span>
                         </td>
                         <td className="fw-bolder fs-2 pe-3 text-center" style={{ width: '20%' }}>
-                            {billing.visit.patient?.control_no ?? <>&nbsp;</>}
+                            {billing.visit.patient ? (
+                                <>billing.visit.patient?.control_no </>
+                            ) : (
+                                <>&nbsp;</>
+                            )}
                             <hr
                                 className="border-dark border-2"
                                 style={{
@@ -117,7 +125,7 @@ const BillingHeader = () => {
                             <span className="fw-bolder">Gender:</span>
                         </td>
                         <td className="fw-bolder fs-2 pe-3 text-center" style={{ width: '25%' }}>
-                            {billing.visit.patient.gender?.name.toUpperCase() ?? <>&nbsp;</>}
+                            {billing.visit.patient?.gender?.name.toUpperCase() ?? <>&nbsp;</>}
                             <hr
                                 className="border-dark border-2"
                                 style={{

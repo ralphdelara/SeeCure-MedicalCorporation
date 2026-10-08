@@ -63,7 +63,7 @@ class PrintController extends Controller
             'visit.consultation.doctor.professions',
             'visit.consultation.doctor.specialties',
         ])->find($billingId);
-        $qrUrl = $this->qrUrl.('Billing|'.$billing->visit->patient->full_name.'||Billing Details|'.$billing->created_at);
+        $qrUrl = $this->qrUrl.('Billing|'.$billing->visit->patient?->full_name.'||Billing Details|'.$billing->created_at);
         $printedBy = Auth::user()->full_name;
 
         $discountType = match (true) {
