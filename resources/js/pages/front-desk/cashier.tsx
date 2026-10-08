@@ -53,20 +53,30 @@ export default () => {
                                                 />
                                             </div>
                                             <div className="ms-3">
-                                                <h6 className="fs-4 fw-semibold mb-0">
-                                                    <Link
-                                                        href={getPatientDetails(item.patient.id)}
-                                                        className="tooltip-container"
-                                                        data-title="Click to View Patient Details"
-                                                    >
-                                                        {item.patient.full_name}
-                                                    </Link>
-                                                </h6>
-                                                <span className="fw-normal">
-                                                    {item.patient.gender
-                                                        ? item.patient.gender.name
-                                                        : 'N/A'}
-                                                </span>
+                                                {item.patient ? (
+                                                    <>
+                                                        <h6 className="fs-4 fw-semibold mb-0">
+                                                            <Link
+                                                                href={getPatientDetails(
+                                                                    item.patient?.id,
+                                                                )}
+                                                                className="tooltip-container"
+                                                                data-title="Click to View Patient Details"
+                                                            >
+                                                                {item.patient?.full_name}
+                                                            </Link>
+                                                        </h6>
+                                                        <span className="fw-normal">
+                                                            {item.patient?.gender
+                                                                ? item.patient.gender.name
+                                                                : 'N/A'}
+                                                        </span>
+                                                    </>
+                                                ) : (
+                                                    <h6 className="fs-4 fw-semibold mb-0">
+                                                        WALK-IN
+                                                    </h6>
+                                                )}
                                             </div>
                                         </div>
                                     </div>
@@ -74,7 +84,7 @@ export default () => {
                                 <td>
                                     <DeleteButton
                                         url={deleteQueue(item.id).url}
-                                        msg={'visit <b>' + item.patient.full_name + '</b>.'}
+                                        msg={'visit <b>' + item.patient?.full_name + '</b>.'}
                                     />
                                 </td>
                             </tr>
