@@ -98,6 +98,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
     'doctor_id',
     'created_by',
     'last_modified_by',
+    'created_at', //added temporary for migration
+    'updated_at', //added temporary for migration
 ])]
 class Consultation extends Model
 {

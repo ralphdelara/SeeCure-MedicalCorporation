@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\VitalSignsEnum;
 use App\Models\VitalSign;
 use TimoKoerber\LaravelOneTimeOperations\OneTimeOperation;
 
@@ -25,13 +26,6 @@ return new class extends OneTimeOperation
      */
     public function process(): void
     {
-        VitalSign::fillAndInsert([
-            ['name' => 'Blood Pressure (BP)'],
-            ['name' => 'Cardiac Rate (CR)'],
-            ['name' => 'Respiratory Rate (RR)'],
-            ['name' => 'Oxygen Saturation (O₂Sat)'],
-            ['name' => 'Body Weight (BW)'],
-            ['name' => 'Temperature (Temp)'],
-        ]);
+        VitalSign::fillAndInsert(VitalSignsEnum::getArrayList());
     }
 };

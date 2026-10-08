@@ -439,7 +439,7 @@ namespace App\Models{
  * @property-read int|null $laboratory_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereConsultReason($value)
  * @property string|null $prescription_remarks
- * @property-read Collection<int, \App\Models\PatientVitalSign> $vitalSigns
+ * @property-read Collection<int, PatientVitalSign> $vitalSigns
  * @property-read int|null $vital_signs_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation wherePrescriptionRemarks($value)
  * @mixin \Eloquent

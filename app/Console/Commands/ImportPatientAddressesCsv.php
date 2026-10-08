@@ -20,7 +20,7 @@ class ImportPatientAddressesCsv extends Command
      */
     public function handle(): int
     {
-        $filePath = base_path('database/data/old-patient-addresses.csv');
+        $filePath = base_path('database/data/missing-patient-addresses.csv');
 
         if (! file_exists($filePath)) {
             $this->error("File not found at: {$filePath}");
