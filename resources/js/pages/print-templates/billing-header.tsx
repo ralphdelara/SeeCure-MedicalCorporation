@@ -32,7 +32,7 @@ const BillingHeader = () => {
         <>
             <table
                 style={{
-                    width: '450px',
+                    width: '557px',
                 }}
             >
                 <tbody>
@@ -100,7 +100,7 @@ const BillingHeader = () => {
             </table>
             <table
                 style={{
-                    width: '450px',
+                    width: '557px',
                 }}
             >
                 <tbody>
@@ -150,7 +150,7 @@ const BillingHeader = () => {
             </table>
             <table
                 style={{
-                    width: '450px',
+                    width: '557px',
                 }}
             >
                 <tbody>
@@ -177,7 +177,7 @@ const BillingHeader = () => {
             {discountType && (
                 <table
                     style={{
-                        width: '450px',
+                        width: '557px',
                     }}
                 >
                     <tbody>

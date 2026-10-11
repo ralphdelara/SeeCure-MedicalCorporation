@@ -34,7 +34,7 @@ const Default = () => {
         <div
             style={{
                 position: 'relative',
-                width: '450px',
+                width: '557px',
                 height: '500px',
             }}
         >
@@ -42,7 +42,7 @@ const Default = () => {
             <PrescriptionHeader />
             <table
                 style={{
-                    width: '450px',
+                    width: '557px',
                     fontSize: '15px',
                 }}
                 className="mt-2"
@@ -105,7 +105,7 @@ const Default = () => {
                     </tr>
                 </tbody>
             </table>
-            <table style={{ width: '450px' }}>
+            <table style={{ width: '557px' }}>
                 <tbody>
                     <tr>
                         <td colSpan={2}>
@@ -133,7 +133,7 @@ const Default = () => {
                     </tr>
                 </tbody>
             </table>
-            <table style={{ width: '450px', marginTop: '30px' }}>
+            <table style={{ width: '557px', marginTop: '30px' }}>
                 <tbody>
                     <tr>
                         <td width="40%"></td>

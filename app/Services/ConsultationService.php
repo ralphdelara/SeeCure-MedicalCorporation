@@ -71,9 +71,15 @@ class ConsultationService
         if (! empty($keyword)) {
             $consultationList = $consultationList->whereHas('visit.patient', function ($query) use ($keyword) {
                 /** @var Builder|Patient $query */
-                $query->whereBlind('last_name_index', 'last_name_index', strtolower($keyword))
-                    ->orWhereBlind('first_name_index', 'first_name_index', strtolower($keyword))
-                    ->orWhereBlind('middle_name_index', 'middle_name_index', strtolower($keyword));
+
+                // Group the OR conditions inside a sub-query callback
+                $query->where(function ($subQuery) use ($keyword) {
+                    $searchKeyword = strtolower($keyword);
+
+                    $subQuery->whereBlind('last_name_index', 'last_name_index', $searchKeyword)
+                        ->orWhereBlind('first_name_index', 'first_name_index', $searchKeyword)
+                        ->orWhereBlind('middle_name_index', 'middle_name_index', $searchKeyword);
+                });
             });
         }
 

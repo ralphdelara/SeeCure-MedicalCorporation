@@ -40,7 +40,7 @@ const Default = () => {
         <>
             <div
                 style={{
-                    width: '450px',
+                    width: '557px',
                 }}
             >
                 <PrintHeader />
@@ -74,7 +74,7 @@ const Default = () => {
                 <BillingHeader />
                 <table
                     style={{
-                        width: '450px',
+                        width: '557px',
                         fontSize: '15px',
                     }}
                     className="fw-semibold mt-2"
