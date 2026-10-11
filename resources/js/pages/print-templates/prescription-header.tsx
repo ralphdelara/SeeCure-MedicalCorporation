@@ -16,7 +16,7 @@ const PrescriptionHeader = () => {
         <>
             <table
                 style={{
-                    width: '450px',
+                    width: '557px',
                 }}
             >
                 <tbody>
