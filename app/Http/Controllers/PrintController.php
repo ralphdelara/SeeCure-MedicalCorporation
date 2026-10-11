@@ -66,6 +66,12 @@ class PrintController extends Controller
         $qrUrl = $this->qrUrl.('Billing|'.$billing->visit->patient?->full_name.'||Billing Details|'.$billing->created_at);
         $printedBy = Auth::user()->full_name;
 
+        $discountPercent = match (true) {
+            $billing->visit->patient?->is_senior => config('amounts.senior_discount_percent'),
+            $billing->visit->patient?->is_pwd    => config('amounts.pwd_discount_percent'),
+            default                              => null,
+        };
+
         $discountType = match (true) {
             $billing->visit->patient?->is_senior => DiscountTypeEnum::SENIOR->description(),
             $billing->visit->patient?->is_pwd    => DiscountTypeEnum::PWD->description(),
@@ -85,6 +91,7 @@ class PrintController extends Controller
             'printedBy',
             'discountType',
             'discountIdNo',
+            'discountPercent',
         ));
     }
 
