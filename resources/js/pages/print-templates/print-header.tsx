@@ -25,7 +25,7 @@ const PrintHeader = () => {
                             }}
                         />
                     </td>
-                    <td align="left">
+                    <td align="left" style={{ lineHeight: '1' }}>
                         <span
                             style={{
                                 fontSize: '22px',
