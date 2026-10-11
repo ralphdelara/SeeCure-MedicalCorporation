@@ -2,7 +2,7 @@ import { formatReceiptDateTime } from '@/lib/utils';
 import { usePage } from '@inertiajs/react';
 
 const BillingHeader = () => {
-    const { billing, discountType, discountIdNo } = usePage().props as unknown as {
+    const { billing, discountType, discountIdNo, discountPercent } = usePage().props as unknown as {
         billing: {
             transaction_no: string;
             visit: {
@@ -27,6 +27,7 @@ const BillingHeader = () => {
         };
         discountType: string;
         discountIdNo: string;
+        discountPercent: string;
     };
     return (
         <>
@@ -189,7 +190,7 @@ const BillingHeader = () => {
                                 className="fw-bolder fs-2 pe-3 text-center"
                                 style={{ width: '32%' }}
                             >
-                                {discountType ?? <>&nbsp;</>}
+                                {discountType} <small>({discountPercent}%)</small>
                                 <hr
                                     className="border-dark border-2"
                                     style={{
