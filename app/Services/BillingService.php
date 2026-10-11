@@ -174,7 +174,10 @@ class BillingService
             }
 
             if ($isSenior || $isPwd) {
-                $discountPercent = config('amounts.discount_percent');
+                $discountPercent = match (true) {
+                    $isSenior => config('amounts.senior_discount_percent'),
+                    $isPwd    => config('amounts.pwd_discount_percent'),
+                };
                 $discount = (float) $package->price * ($discountPercent / 100);
                 $nettPrice = (float) $package->price - $discount;
 
@@ -221,7 +224,10 @@ class BillingService
             }
 
             if ($isSenior || $isPwd) {
-                $discountPercent = config('amounts.discount_percent');
+                $discountPercent = match (true) {
+                    $isSenior => config('amounts.senior_discount_percent'),
+                    $isPwd    => config('amounts.pwd_discount_percent'),
+                };
                 $discount = (float) $data->test->price * ($discountPercent / 100);
                 $nettPrice = (float) $data->test->price - $discount;
 
