@@ -125,7 +125,7 @@ enum LaboratoryTestEnum: int
             self::PREGNANCY_SERUM  => 200,
             self::RPR_ANTI_TP      => 350,
             self::HBSAG            => 290,
-            self::DENGUE_DUO       => 1620,
+            self::DENGUE_DUO       => 1800,
             self::TYPHIDOT         => 1000,
             self::CRP_QUANTITATIVE => 1058,
             self::H_PYLORI         => 1100,
@@ -247,36 +247,36 @@ enum LaboratoryTestEnum: int
             self::FECAL_OCCULT_BLOOD => [
                 LaboratoryFieldEnum::FECA_OCCULT_BLOOD,
             ],
-            self::PREGNANCY_URINE    => [
+            self::PREGNANCY_URINE => [
                 LaboratoryFieldEnum::PREGNANCY_URINE_RESULT_TEXT,
             ],
 
             self::PREGNANCY_SERUM => [
                 LaboratoryFieldEnum::PREGNANCY_SERUM_RESULT_TEXT,
             ],
-            self::RPR_ANTI_TP     => [
+            self::RPR_ANTI_TP => [
                 LaboratoryFieldEnum::RPR_ANTI_TP_RESULT_TEXT,
             ],
-            self::HBSAG           => [
+            self::HBSAG => [
                 LaboratoryFieldEnum::HBSAG_RESULT_TEXT,
             ],
-            self::DENGUE_DUO      => [
+            self::DENGUE_DUO => [
                 LaboratoryFieldEnum::DENGUE_NS1_ANTIGEN,
                 LaboratoryFieldEnum::DENGUE_IGM_ANTIBODY,
                 LaboratoryFieldEnum::DENGUE_IGG_ANTIBODY,
             ],
-            self::TYPHIDOT         => [
+            self::TYPHIDOT => [
                 LaboratoryFieldEnum::SALMONELLA_TYPHI_IGM_ANTIBODY,
                 LaboratoryFieldEnum::SALMONELLA_TYPHI_IGG_ANTIBODY,
             ],
             self::CRP_QUANTITATIVE => [
                 LaboratoryFieldEnum::CRP_QUANTITATIVE_RESULT_TEXT,
             ],
-            self::H_PYLORI         => [
+            self::H_PYLORI => [
                 LaboratoryFieldEnum::H_PYLORI_RESULT_TEXT,
             ],
 
-            self::COMPLETE_BLOOD_COUNT        => [
+            self::COMPLETE_BLOOD_COUNT => [
                 LaboratoryFieldEnum::HEMA_BLOOD_STUDIES,
                 LaboratoryFieldEnum::HEMA_HEMOGLOBIN,
                 LaboratoryFieldEnum::HEMA_HEMATOCRIT,
@@ -292,7 +292,7 @@ enum LaboratoryTestEnum: int
                 LaboratoryFieldEnum::HEMA_LYMPHOCYTES,
                 LaboratoryFieldEnum::HEMA_MONOCYTES,
             ],
-            self::CBC_W_PLATELET_COUNT        => [
+            self::CBC_W_PLATELET_COUNT => [
                 LaboratoryFieldEnum::HEMA_BLOOD_STUDIES,
                 LaboratoryFieldEnum::HEMA_HEMOGLOBIN,
                 LaboratoryFieldEnum::HEMA_HEMATOCRIT,
@@ -309,13 +309,13 @@ enum LaboratoryTestEnum: int
                 LaboratoryFieldEnum::HEMA_LYMPHOCYTES,
                 LaboratoryFieldEnum::HEMA_MONOCYTES,
             ],
-            self::PLATELET_COUNT              => [
+            self::PLATELET_COUNT => [
                 LaboratoryFieldEnum::HEMA_PLATELET_COUNT,
             ],
-            self::ABO_TYPING                  => [
+            self::ABO_TYPING => [
                 LaboratoryFieldEnum::HEMA_BLOOD_TYPE,
             ],
-            self::RH_TYPING                   => [
+            self::RH_TYPING => [
                 LaboratoryFieldEnum::HEMA_BLOOD_TYPE,
             ],
             self::CLOTTING_TIME_BLEEDING_TIME => [
@@ -329,47 +329,47 @@ enum LaboratoryTestEnum: int
 
     public function type(): LaboratoryTypeEnum
     {
-        return match($this) {
+        return match ($this) {
             // CLINICAL CHEMISTRY
-            self::FBS => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
-            self::RBS => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
-            self::BUN => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
-            self::CREATININE => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
-            self::URIC_ACID => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
+            self::FBS               => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
+            self::RBS               => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
+            self::BUN               => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
+            self::CREATININE        => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
+            self::URIC_ACID         => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
             self::TOTAL_CHOLESTEROL => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
-            self::TRIGLYCERIDES => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
-            self::HDL_CHOLESTEROL => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
-            self::LDL_CHOLESTEROL => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
-            self::SGPT_ALT => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
-            self::SGOT_AST => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
-            self::OGTT_75G => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
-            self::SODIUM => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
-            self::POTASSIUM => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
-            self::CHLORIDE => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
-            self::IONIZED_CALCIUM => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
+            self::TRIGLYCERIDES     => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
+            self::HDL_CHOLESTEROL   => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
+            self::LDL_CHOLESTEROL   => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
+            self::SGPT_ALT          => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
+            self::SGOT_AST          => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
+            self::OGTT_75G          => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
+            self::SODIUM            => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
+            self::POTASSIUM         => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
+            self::CHLORIDE          => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
+            self::IONIZED_CALCIUM   => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
             self::IONIZED_MAGNESIUM => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
 
             // CLINICAL MICROSCOPY
-            self::URINALYSIS => LaboratoryTypeEnum::CLINICAL_MICROSCOPY,
-            self::FECALYSIS => LaboratoryTypeEnum::CLINICAL_MICROSCOPY,
+            self::URINALYSIS         => LaboratoryTypeEnum::CLINICAL_MICROSCOPY,
+            self::FECALYSIS          => LaboratoryTypeEnum::CLINICAL_MICROSCOPY,
             self::FECAL_OCCULT_BLOOD => LaboratoryTypeEnum::CLINICAL_MICROSCOPY,
-            self::PREGNANCY_URINE => LaboratoryTypeEnum::CLINICAL_MICROSCOPY,
+            self::PREGNANCY_URINE    => LaboratoryTypeEnum::CLINICAL_MICROSCOPY,
 
             // IMMUNOLOGY SEROLOGY
-            self::PREGNANCY_SERUM => LaboratoryTypeEnum::IMMUNOLOGY_SEROLOGY,
-            self::RPR_ANTI_TP => LaboratoryTypeEnum::IMMUNOLOGY_SEROLOGY,
-            self::HBSAG => LaboratoryTypeEnum::IMMUNOLOGY_SEROLOGY,
-            self::DENGUE_DUO => LaboratoryTypeEnum::IMMUNOLOGY_SEROLOGY,
-            self::TYPHIDOT => LaboratoryTypeEnum::IMMUNOLOGY_SEROLOGY,
+            self::PREGNANCY_SERUM  => LaboratoryTypeEnum::IMMUNOLOGY_SEROLOGY,
+            self::RPR_ANTI_TP      => LaboratoryTypeEnum::IMMUNOLOGY_SEROLOGY,
+            self::HBSAG            => LaboratoryTypeEnum::IMMUNOLOGY_SEROLOGY,
+            self::DENGUE_DUO       => LaboratoryTypeEnum::IMMUNOLOGY_SEROLOGY,
+            self::TYPHIDOT         => LaboratoryTypeEnum::IMMUNOLOGY_SEROLOGY,
             self::CRP_QUANTITATIVE => LaboratoryTypeEnum::IMMUNOLOGY_SEROLOGY,
-            self::H_PYLORI => LaboratoryTypeEnum::IMMUNOLOGY_SEROLOGY,
+            self::H_PYLORI         => LaboratoryTypeEnum::IMMUNOLOGY_SEROLOGY,
 
             // CLINICAL HEMATOLOGY
-            self::COMPLETE_BLOOD_COUNT => LaboratoryTypeEnum::CLINICAL_HEMATOLOGY,
-            self::CBC_W_PLATELET_COUNT => LaboratoryTypeEnum::CLINICAL_HEMATOLOGY,
-            self::PLATELET_COUNT => LaboratoryTypeEnum::CLINICAL_HEMATOLOGY,
-            self::ABO_TYPING => LaboratoryTypeEnum::CLINICAL_HEMATOLOGY,
-            self::RH_TYPING => LaboratoryTypeEnum::CLINICAL_HEMATOLOGY,
+            self::COMPLETE_BLOOD_COUNT        => LaboratoryTypeEnum::CLINICAL_HEMATOLOGY,
+            self::CBC_W_PLATELET_COUNT        => LaboratoryTypeEnum::CLINICAL_HEMATOLOGY,
+            self::PLATELET_COUNT              => LaboratoryTypeEnum::CLINICAL_HEMATOLOGY,
+            self::ABO_TYPING                  => LaboratoryTypeEnum::CLINICAL_HEMATOLOGY,
+            self::RH_TYPING                   => LaboratoryTypeEnum::CLINICAL_HEMATOLOGY,
             self::CLOTTING_TIME_BLEEDING_TIME => LaboratoryTypeEnum::CLINICAL_HEMATOLOGY,
         };
     }

@@ -95,8 +95,8 @@ const Payments = ({ showTab }: { showTab: boolean }) => {
             paymentDetails?.customer_name ?? cashierDetails.visit?.patient?.full_name ?? '',
         customer_address:
             paymentDetails?.customer_address ?? cashierDetails.visit?.patient?.full_address ?? '',
-        discount_type_id: paymentDetails?.discount_type_id ?? '',
-        id_no: paymentDetails?.id_no ?? '',
+        discount_type_id: paymentDetails?.discount_type_id ?? cashierDetails.discount_type_id ?? '',
+        id_no: paymentDetails?.id_no ?? cashierDetails.id_no ?? '',
     });
 
     const submitDetails = async (e: React.SubmitEvent<HTMLFormElement>) => {
