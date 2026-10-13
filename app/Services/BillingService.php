@@ -481,4 +481,36 @@ class BillingService
             'total_nett_price' => $totalNettPrice,
         ]);
     }
+
+    public function getBillingSuppliesList(
+        ?string $keyword,
+        ?string $status,
+        string $path,
+    ): array {
+        $billingList = BillingSupplies::with([
+            'createdBy' => function ($query) {
+                $query->select('id', 'first_name', 'middle_name', 'last_name');
+            },
+            'createdBy.professions',
+            'createdBy.specialties',
+            'lastModifiedBy' => function ($query) {
+                $query->select('id', 'first_name', 'middle_name', 'last_name');
+            },
+            'lastModifiedBy.professions',
+            'lastModifiedBy.specialties',
+        ]);
+
+        $billingList = $billingList->orderBy('created_at')->paginate(50)
+            ->withPath('/'.$path)->withQueryString();
+
+        $tableData = $billingList->collect()->toArray();
+        $pageData = Arr::except($billingList->toArray(), ['data']);
+        $links = app(PageService::class)->limitLinks($billingList, 5);
+        $pageData['links'] = $links;
+
+        return compact(
+            'tableData',
+            'pageData',
+        );
+    }
 }

@@ -84,6 +84,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
     'is_walk_in',
     'visit_status_id',
     'created_by',
+    'created_at',
     'last_modified_by',
 ])]
 class Visit extends Model

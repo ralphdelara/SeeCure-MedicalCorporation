@@ -10,6 +10,10 @@ import { PatientDetailsTabProps } from '@/components/patient/patient-details';
 const Details = () => {
     const { patientDetails } = usePage().props as unknown as PatientDetailsTabProps;
 
+    const dateOfBirth = patientDetails.date_of_birth
+        ? new Date(patientDetails.date_of_birth).toLocaleDateString('en-CA')
+        : '';
+
     const { data, setData, put, processing, errors, reset } =
         useForm<AddOrUpdatePatientDetailsFormProps>({
             patient_id: patientDetails.id,
@@ -17,7 +21,7 @@ const Details = () => {
             first_name: patientDetails.first_name,
             middle_name: patientDetails.middle_name ?? '',
             patient_suffix_id: patientDetails.patient_suffix_id ?? '',
-            date_of_birth: patientDetails.date_of_birth ?? '',
+            date_of_birth: dateOfBirth,
             age: patientDetails.age ?? '',
             contact_number1: patientDetails.contact_number1 ?? '',
             contact_number2: patientDetails.contact_number2 ?? '',
@@ -40,6 +44,7 @@ const Details = () => {
 
             senior_citizen_id: patientDetails.senior_citizen_id ?? '',
             pwd_id: patientDetails.pwd_id ?? '',
+            control_no: patientDetails.control_no ?? '',
         });
 
     const saveDetails = (e: React.SubmitEvent<HTMLFormElement>) => {
@@ -53,7 +58,7 @@ const Details = () => {
                 toast.error('Failed to update patient.');
             },
         });
-    }
+    };
 
     return (
         <>

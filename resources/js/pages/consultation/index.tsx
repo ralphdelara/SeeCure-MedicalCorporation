@@ -32,7 +32,7 @@ export default function Consultation() {
         { name: 'Priority', align: 'left' },
         { name: 'Attending Doctor', align: 'left' },
         { name: 'Symptoms', align: 'left' },
-        { name: 'Vital Signs', align: 'left' },
+        //{ name: 'Vital Signs', align: 'left' },
         { name: 'Guardian', align: 'left' },
         { name: 'Status', align: 'left' },
         { name: 'Added By', align: 'left' },
@@ -179,7 +179,7 @@ export default function Consultation() {
                                         </h6>
                                     ))}
                                 </td>
-                                <td>
+                                {/*<td>
                                     {item.patient_vital_sign?.map((item2, index2) => (
                                         <Fragment
                                             key={
@@ -207,7 +207,7 @@ export default function Consultation() {
                                             </span>
                                         </Fragment>
                                     )) ?? 'N/A'}
-                                </td>
+                                </td>*/}
                                 <td>
                                     <div className="d-flex align-items-center">
                                         <div className="ms-3">

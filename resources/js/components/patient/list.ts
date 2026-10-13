@@ -31,4 +31,5 @@ export interface PatientTableList {
         full_name: string;
     };
     updated_at: string;
+    control_no: string;
 }

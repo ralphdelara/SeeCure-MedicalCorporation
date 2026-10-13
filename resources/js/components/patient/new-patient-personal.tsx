@@ -5,8 +5,9 @@ import { Select } from '@/components/ui/select';
 import type { Options } from '@/types/options';
 import { AddOrUpdatePatientFormProps } from './new-patient';
 import { getExactAge } from '@/lib/utils';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import FormHeader from '../ui/form-header';
+import { IconUserExclamation } from '@tabler/icons-react';
 
 interface InertiaProps {
     formOptions: {
@@ -28,10 +29,14 @@ const Personal = ({ data, setData, errors = {} }: AddOrUpdatePatientFormProps) =
         }
     };
 
-    const computeAge = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const changeDateOfBirth = (e: React.ChangeEvent<HTMLInputElement>) => {
         setData('date_of_birth', e.target.value);
+        computeAge(e.target.value);
+    };
+
+    const computeAge = (dateOfBirth: string) => {
         const currentDate = new Date().toISOString().split('T')[0];
-        const { years, months, days } = getExactAge(e.target.value, currentDate);
+        const { years, months, days } = getExactAge(dateOfBirth, currentDate);
 
         if (isNaN(years) && isNaN(months) && isNaN(days)) {
             setData('age', '');
@@ -52,6 +57,12 @@ const Personal = ({ data, setData, errors = {} }: AddOrUpdatePatientFormProps) =
             setData('age', years + 'y ' + months + 'm ' + days + 'd');
         }
     };
+
+    useEffect(() => {
+        if (data.date_of_birth !== '') {
+            computeAge(data.date_of_birth ?? '');
+        }
+    }, []);
 
     return (
         <div className="border-bottom">
@@ -114,6 +125,24 @@ const Personal = ({ data, setData, errors = {} }: AddOrUpdatePatientFormProps) =
                 </div>
                 <div className="col-md-6">
                     <div className="form-group">
+                        <label className="form-label text-danger" htmlFor="control_no">
+                            Control No <IconUserExclamation size="15" />
+                        </label>
+
+                        <Input
+                            value={data.control_no}
+                            onChange={(e) => setData('control_no', e.target.value)}
+                            id="control_no"
+                            type="text"
+                            className="form-control"
+                            placeholder="123"
+                            maxLength={10}
+                        />
+                        <InputError message={errors.control_no} className="mt-2" />
+                    </div>
+                </div>
+                <div className="col-md-6">
+                    <div className="form-group">
                         <label className="form-label" htmlFor="gender">
                             Gender
                         </label>
@@ -134,7 +163,7 @@ const Personal = ({ data, setData, errors = {} }: AddOrUpdatePatientFormProps) =
 
                         <Input
                             value={data.date_of_birth}
-                            onChange={(e) => computeAge(e)}
+                            onChange={(e) => changeDateOfBirth(e)}
                             id="date-of-birth"
                             type="date"
                             className="form-control"

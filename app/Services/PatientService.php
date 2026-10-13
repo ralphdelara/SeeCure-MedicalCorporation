@@ -109,7 +109,7 @@ class PatientService
             $patientDetails,
         );
 
-        $this->updatePatientOrder();
+        //$this->updatePatientOrder();
 
         return $patient;
     }

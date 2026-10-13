@@ -79,4 +79,17 @@ class BillingController extends Controller
 
         app(BillingService::class)->recomputeBillingTotals($billingId);
     }
+
+    public function getBillingSuppliesList(Request $request, ?string $status = null): Response
+    {
+        $billingSuppliesList = app(BillingService::class)->getBillingSuppliesList(
+            $request->keyword,
+            $status,
+            $request->path(),
+        );
+
+        return Inertia::render('billing/supplies', compact(
+            'billingSuppliesList',
+        ));
+    }
 }

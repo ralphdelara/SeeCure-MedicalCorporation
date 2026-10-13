@@ -16,6 +16,7 @@ export interface QueuePatientDetailsFormProps
     is_walk_in: number;
     has_laboratory: number;
     priority_type_ids: number[];
+    created_at: string;
 }
 
 export interface QueuePatientFormProps {
