@@ -5,6 +5,7 @@ import {
     IconCashRegister,
     IconChartLine,
     IconCircle,
+    IconCircleFilled,
     IconDeviceDesktop,
     IconDots,
     IconFlask,
@@ -44,6 +45,7 @@ import {
 } from '@/routes';
 import personDefault from '@/assets/images/profile/person-default.png';
 import { departments, profile } from '@/routes/user';
+import { getBillingSuppliesList } from '@/actions/App/Http/Controllers/BillingController';
 
 type NavSidebarProps = {
     toggleSidebar: () => void;
@@ -74,6 +76,7 @@ export default function NavSidebar({ toggleSidebar }: NavSidebarProps) {
             billingCount: number;
             billingPendingCount: number;
             billingCompletedCount: number;
+            billingSuppliesCount: number;
             cashierCount: number;
             cashierPendingCount: number;
             cashierCompletedCount: number;
@@ -314,6 +317,12 @@ export default function NavSidebar({ toggleSidebar }: NavSidebarProps) {
                     active: url === billing('completed').url,
                     count: navCounts.billingCompletedCount,
                 },
+                {
+                    url: getBillingSuppliesList(),
+                    name: 'Supplies',
+                    active: url === getBillingSuppliesList().url,
+                    count: navCounts.billingSuppliesCount,
+                },
             ],
         },
         {
@@ -439,7 +448,17 @@ export default function NavSidebar({ toggleSidebar }: NavSidebarProps) {
                                                     }
                                                 >
                                                     <div className="round-16 d-flex align-items-center justify-content-center">
-                                                        <IconCircle size={10} className="ms-10" />
+                                                        {childItem.active ? (
+                                                            <IconCircleFilled
+                                                                size={10}
+                                                                className="ms-10"
+                                                            />
+                                                        ) : (
+                                                            <IconCircle
+                                                                size={10}
+                                                                className="ms-10"
+                                                            />
+                                                        )}
                                                     </div>
                                                     <span className="hide-menu">
                                                         {childItem.name}

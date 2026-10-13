@@ -68,6 +68,7 @@ class PatientController extends Controller
             'patient_suffix_id',
             'senior_citizen_id',
             'pwd_id',
+            'control_no',
         );
 
         app(PatientService::class)->addOrUpdatePatient($patientDetails);

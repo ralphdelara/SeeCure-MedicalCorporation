@@ -1,5 +1,5 @@
 import { useForm, usePage } from '@inertiajs/react';
-import { Fragment } from 'react';
+import { Fragment, useEffect } from 'react';
 import { IconPlus, IconUserDown, IconUserPlus } from '@tabler/icons-react';
 import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
@@ -16,6 +16,7 @@ import InputError from '@/components/input-error';
 import { Label } from '@/components/ui/label';
 import { Options } from '@/types/options';
 import FormHeader from '@/components/ui/form-header';
+import { Input } from '@/components/ui/input';
 
 const QueuePatient = () => {
     const [showModal, setShowModal] = useState(false);
@@ -74,6 +75,7 @@ const QueuePatient = () => {
             other_test_ids: [],
 
             radiology_test_ids: [],
+            created_at: '',
         });
 
     const submitQueue = (e: React.SubmitEvent<HTMLFormElement>) => {
@@ -105,6 +107,23 @@ const QueuePatient = () => {
             );
         }
     };
+
+    useEffect(() => {
+        setData(
+            'created_at',
+            new Date()
+                .toLocaleString('en-CA', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false,
+                })
+                .replace(', ', 'T'),
+        );
+    }, [showModal]);
 
     return (
         <>
@@ -160,6 +179,14 @@ const QueuePatient = () => {
                                 {data.form_type === 'new' && (
                                     <NewPatientForm data={data} setData={setData} errors={errors} />
                                 )}
+
+                                <FormHeader>Visit DateTime</FormHeader>
+
+                                <Input
+                                    type="datetime-local"
+                                    value={data.created_at}
+                                    onChange={(e) => setData('created_at', e.target.value)}
+                                />
 
                                 <FormHeader>Visit Priority</FormHeader>
                                 <div className="row px-4">

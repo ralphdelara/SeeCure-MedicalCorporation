@@ -207,12 +207,16 @@ export default function PatientList() {
                                                 </Button>
                                             </Link>
 
-                                            {isAdmin && item.control_no !== 0 && (
+                                            {/*isAdmin && item.control_no !== 0 && (
                                                 <DeleteButton
                                                     url={deletePatient(item.id).url}
                                                     msg={'patient <b>' + item.full_name + '</b>.'}
                                                 />
-                                            )}
+                                            )*/}
+                                                <DeleteButton
+                                                    url={deletePatient(item.id).url}
+                                                    msg={'patient <b>' + item.full_name + '</b>.'}
+                                                />
                                         </td>
                                     </tr>
                                 ))}

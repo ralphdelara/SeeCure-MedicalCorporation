@@ -180,3 +180,16 @@ if (! function_exists('cipherSweetDecrypt')) {
         return $field->decryptValue($cipherText);
     }
 }
+
+if (! function_exists('camelToPascalWithSpaces')) {
+    function camelToPascalWithSpaces(string $str)
+    {
+        if (empty($str)) {
+            return $str;
+        }
+
+        $spaced = preg_replace('/(?<!^)([A-Z])/', ' $1', $str);
+
+        return ucwords($spaced);
+    }
+}

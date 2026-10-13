@@ -23,7 +23,8 @@ Route::permanentRedirect('/', '/login');
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('dashboard')->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-        Route::get('/reports', [DashboardController::class, 'index'])->name('reports');
+        Route::get('/reports', [DashboardController::class, 'getReports'])->name('reports');
+        Route::get('/reports/data', [DashboardController::class, 'getReportData'])->name('reports.data');
     });
 
     Route::prefix('front-desk')->group(function () {
@@ -83,6 +84,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::prefix('billing')->group(function () {
+        Route::get('/supplies', [BillingController::class, 'getBillingSuppliesList'])->name('billing-supplies');
         Route::get('/{status?}', [BillingController::class, 'getBillingList'])->name('billing');
         Route::get('/package/{id}/tests', [BillingController::class, 'getTests'])->name('billing.package.tests');
         Route::post('/', [BillingController::class, 'addOrUpdateBilling'])->name('billing.add-or-update');
@@ -93,7 +95,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::patch('/complete/{id}', [BillingController::class, 'completeBilling'])->name('billing.completed');
             Route::delete('{id}', [BillingController::class, 'deleteBillingDetail'])->name('billing.details.delete');
         });
-        Route::post('/billing-supplies', [BillingSuppliesController::class, 'addOrUpdateBillingSupplies'])->name('billing-supplies');
+        Route::post('/billing-supplies', [BillingSuppliesController::class, 'addOrUpdateBillingSupplies'])->name('billing-supplies.add-or-update');
         Route::delete('/billing-supplies/{id}', [BillingSuppliesController::class, 'deleteBillingSupply'])->name('billing-supplies.delete');
         Route::post('/billing-supplies/item', [BillingSuppliesController::class, 'addBillingSuppliesItem'])->name('billing-supplies.item');
         Route::delete('/{id}', [BillingController::class, 'deleteBilling'])->name('billing.delete');

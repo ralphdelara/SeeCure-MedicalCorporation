@@ -23,9 +23,10 @@ class VisitService
             'has_laboratory'   => $visitDetails['has_laboratory'],
             'has_radiology'    => $visitDetails['has_radiology'],
             'is_emergency'     => $visitDetails['is_emergency'],
-            'is_walk_in'     => $visitDetails['is_walk_in'],
+            'is_walk_in'       => $visitDetails['is_walk_in'],
             'visit_status_id'  => $visitDetails['visit_status_id'],
             'created_by'       => Auth::id(),
+            'created_at'       => $visitDetails['created_at'],
             'last_modified_by' => Auth::id(),
         ]);
 

@@ -1,5 +1,12 @@
 import { Link, usePage } from '@inertiajs/react';
-import { IconBellRinging, IconDots, IconLogout, IconMenu2, IconSearch } from '@tabler/icons-react';
+import {
+    IconBellRinging,
+    IconChevronLeft,
+    IconDots,
+    IconLogout,
+    IconMenu2,
+    IconSearch,
+} from '@tabler/icons-react';
 import { Fragment, useEffect, useState } from 'react';
 import logoText from '@/assets/images/logos/logo_text.png';
 import { calendar, frontDesk, logout, notes, reminders, guide } from '@/routes';
@@ -132,6 +139,14 @@ export default function NavHeader({ toggleSidebar }: NavHeaderProps) {
                                     <i className="ti ti-align-justified fs-7"></i>
                                 </a>
                                 <ul className="navbar-nav align-items-center justify-content-center ms-auto flex-row">
+                                    <li className="nav-item nav-icon-hover-bg rounded-circle ms-n2">
+                                        <button
+                                            onClick={() => window.history.go(-1)}
+                                            className="nav-link sidebartoggler"
+                                        >
+                                            <IconChevronLeft />
+                                        </button>
+                                    </li>
                                     <li className="nav-item nav-icon-hover-bg rounded-circle dropdown">
                                         <a
                                             className="nav-link position-relative"
