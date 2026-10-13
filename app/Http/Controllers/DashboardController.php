@@ -104,6 +104,40 @@ class DashboardController extends Controller
             $data = $emptyControlNumber;
         }
 
+        if ($request->reportType === 'duplicateControlNumbers') {
+            $duplicateControlNumbers = Patient::select('control_no')
+                ->groupBy('control_no')
+                ->havingRaw('COUNT(*) > 1')
+                ->pluck('control_no');
+
+            $duplicates = Patient::whereIn('control_no', $duplicateControlNumbers)
+                ->get()
+                ->groupBy('control_no')
+                ->map(function ($rows, $controlNo) {
+                    return [
+                        'control_no' => $controlNo,
+                        'names'      => $rows->map(function ($row) {
+                            return "{$row->last_name}, {$row->first_name}";
+                        })->values()->all(),
+                    ];
+                })
+                ->values()
+                ->toArray();
+
+            $tableHeader = [
+                [
+                    'name'  => 'Control No',
+                    'align' => 'left',
+                ],
+                [
+                    'name'  => 'Patient Names',
+                    'align' => 'left',
+                ],
+            ];
+
+            $data = $duplicates;
+        }
+
         return Inertia::render('dashboard/report-data', compact('data', 'reportType', 'tableHeader'));
     }
 }

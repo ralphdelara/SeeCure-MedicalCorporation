@@ -33,6 +33,9 @@ export default function Dashboard() {
                                 <option value="duplicatePatientNames">
                                     Duplicate Patient Names
                                 </option>
+                                <option value="duplicateControlNumbers">
+                                    Duplicate Control Numbers
+                                </option>
                                 <option value="emptyControlNumber">Empty Control Numbers</option>
                                 <option value="dailyPatientVisits">Daily Patient Visits</option>
                                 <option value="dailyRevenue">Daily Revenue</option>

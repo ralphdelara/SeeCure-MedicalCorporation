@@ -1,0 +1,25 @@
+import { Breadcrumbs } from '@/components/breadcrumbs';
+import TableList from '@/components/table';
+import { Head, usePage } from '@inertiajs/react';
+
+export default function DuplicateControlNumbers() {
+    const { data, tableHeader } = usePage().props as unknown as {
+        data: any[];
+        tableHeader: any[];
+    };
+
+    return (
+        <>
+            <TableList header={tableHeader}>
+                {data.map((item, index) => (
+                    <tr key={'tr-' + index}>
+                        <td>{item.control_no}</td>
+                        <td>
+                            <h5>{item.names.join(' - ')}</h5>
+                        </td>
+                    </tr>
+                ))}
+            </TableList>
+        </>
+    );
+}
