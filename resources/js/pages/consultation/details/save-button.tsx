@@ -14,25 +14,13 @@ const SaveButton = ({ type, isDirty }: { type: string; isDirty: boolean }) => {
 
     return (
         <div className="d-flex justify-content-between mt-2 mb-2">
-            {!consultationDetails.is_completed && <CompleteConsultation />}
-            {consultationDetails.is_completed && (
-                <h5 className="text-danger">
-                    Consultation Completed
-                    <button
-                        type="button"
-                        className="tooltip-container"
-                        data-title="This consultation is already completed."
-                    >
-                        <IconExclamationCircleFilled />
-                    </button>
-                </h5>
-            )}
+            <CompleteConsultation />
             <h5 className="text-danger">
                 {isDirty && (
                     <>
                         Unsaved changes{' '}
                         <button
-                        type="button"
+                            type="button"
                             className="tooltip-container"
                             data-title="Changes made arent saved unless the 'Save' button is clicked"
                         >

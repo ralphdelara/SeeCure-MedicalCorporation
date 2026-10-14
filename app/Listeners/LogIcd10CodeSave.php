@@ -30,7 +30,7 @@ class LogSignsOrSymptomsSave
             'consultation_id' => $consultationId,
             'audit_type_id'   => AuditTypeEnum::UPDATE,
             'data'            => json_encode($data),
-            'created_by'      => Auth::id(),
+            'created_by'      => Auth::id() ?? Auth::systemUser()->id,
         ]);
     }
 }

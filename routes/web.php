@@ -16,6 +16,7 @@ use App\Http\Controllers\PharmacyController;
 use App\Http\Controllers\PrintController;
 use App\Http\Controllers\SystemController;
 use App\Http\Controllers\UserController;
+use App\Models\Patient;
 use Illuminate\Support\Facades\Route;
 
 Route::permanentRedirect('/', '/login');

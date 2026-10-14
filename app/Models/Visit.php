@@ -86,6 +86,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
     'created_by',
     'created_at',
     'last_modified_by',
+    'created_at', //added temporary for migration
+    'updated_at', //added temporary for migration
 ])]
 class Visit extends Model
 {

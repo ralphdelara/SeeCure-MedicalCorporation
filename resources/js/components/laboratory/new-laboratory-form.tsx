@@ -7,6 +7,7 @@ import { getTests } from '@/actions/App/Http/Controllers/LaboratoryController';
 import { Label } from '../ui/label';
 import { IconCheck } from '@tabler/icons-react';
 import { Options } from '@/types/options';
+import InputError from '../input-error';
 
 interface InertiaProps {
     laboratoryFormOptions: {
@@ -85,6 +86,7 @@ const NewLaboratoryForm = ({ data, setData, errors = {} }: AddOrUpdateLaboratory
                     options={laboratoryPackageOptions}
                     type="Package"
                 />
+                <InputError message={errors.laboratory_package_id} className="mt-2" />
             </div>
             {Object.keys(selectedPackage).length > 0 && data.laboratory_package_id !== '' && (
                 <div className="mt-2">
@@ -140,6 +142,7 @@ const NewLaboratoryForm = ({ data, setData, errors = {} }: AddOrUpdateLaboratory
                     </div>
                 </div>
             ))}
+            <InputError message={errors.other_test_ids} className="mt-2" />
         </>
     );
 };

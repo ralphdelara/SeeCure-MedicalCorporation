@@ -42,6 +42,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'plan',
     'created_by',
     'last_modified_by',
+    'created_at', //added temporary for migration
+    'updated_at', //added temporary for migration
 ])]
 class ConsultationSoap extends Model
 {

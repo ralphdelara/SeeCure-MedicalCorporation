@@ -19,7 +19,7 @@ const LaboratoryForm = ({ data, setData, errors = {} }: AddOrUpdateLaboratoryFor
         <>
             <div className="form-group">
                 <FormHeader>Laboratory Request</FormHeader>
-                <NewLaboratoryForm data={data} setData={setData} />
+                <NewLaboratoryForm data={data} setData={setData} errors={errors} />
             </div>
         </>
     );

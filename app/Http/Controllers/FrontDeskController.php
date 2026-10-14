@@ -134,13 +134,15 @@ class FrontDeskController extends Controller
     public function validate(Request $request)
     {
         $request->validate([
-            'patient_id'       => 'required_if:form_type,existing',
-            'last_name'        => 'required_if:form_type,new|max:50',
-            'first_name'       => 'required_if:form_type,new|max:50',
-            'doctor_id'        => 'required_if:has_consultation,1',
-            'has_consultation' => [
+            'patient_id'            => 'required_if:form_type,existing',
+            'last_name'             => 'required_if:form_type,new|max:50',
+            'first_name'            => 'required_if:form_type,new|max:50',
+            'doctor_id'             => 'required_if:has_consultation,1',
+            'laboratory_package_id' => 'required_if:has_laboratory,1',
+            'other_test_ids'        => 'required_if:laboratory_package_id,3',
+            'has_consultation'      => [
                 Rule::prohibitedIf(
-                    fn () => (int) request('has_consultation') === 0 && (int) request('has_laboratory') === 0,
+                    fn () => (int) request('has_consultation') === 0 && (int) request('has_laboratory') === 0 && (int) request('has_radiology') === 0,
                 ),
             ],
         ], [
@@ -154,7 +156,9 @@ class FrontDeskController extends Controller
             'first_name.min'         => 'The first name must be at least 3 characters.',
             'first_name.max'         => 'The first name may not be greater than 50 characters.',
 
-            'doctor_id.required_if' => 'Please select a doctor.',
+            'doctor_id.required_if'             => 'Please select a doctor.',
+            'laboratory_package_id.required_if' => 'Please select a laboratory package.',
+            'other_test_ids.required_if'        => 'Please select a laboratory test.',
 
             'has_consultation.prohibited' => 'Please select a medical service.',
 

@@ -23,7 +23,7 @@ class ImportPatientCsv extends Command
      */
     public function handle(): int
     {
-        $filePath = base_path('database/data/old-patients.csv');
+        $filePath = base_path('database/data/missing-patients.csv');
 
         if (! file_exists($filePath)) {
             $this->error("File not found at: {$filePath}");
@@ -49,9 +49,6 @@ class ImportPatientCsv extends Command
         Cache::put('warning', $warning);
 
         foreach ($csvArray as $key => $row) {
-            if ($row[14] < 8375) {
-                continue;
-            }
             DB::transaction(function () use ($row, $bar) {
                 $gender = match ($row[7]) {
                     '0'     => GenderEnum::MALE,

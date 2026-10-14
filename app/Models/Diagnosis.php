@@ -41,6 +41,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
     'diagnosis',
     'created_by',
     'last_modified_by',
+    'created_at', //added temporary for migration
+    'updated_at', //added temporary for migration
 ])]
 class Diagnosis extends Model
 {
