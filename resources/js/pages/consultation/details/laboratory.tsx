@@ -5,7 +5,7 @@ import LaboratoryModal, { ModalFormProps } from './laboratory-modal';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import LaboratoryResultsModal from './laboratory-results-modal';
-import SaveConsultation from './complete-consultation';
+import CompleteConsultation from './complete-consultation';
 import TableCounter from '@/components/table-counter';
 
 interface InertiaProps {
@@ -91,7 +91,7 @@ const Laboratory = ({ showTab }: { showTab: boolean }) => {
                         <div className="card-body">
                             <div className="row w-100">
                                 <div className="d-flex justify-content-between mt-2 mb-2">
-                                    <SaveConsultation />
+                                    <CompleteConsultation />
                                     <Button
                                         size="lg"
                                         onClick={() => toggleModal('Add', defaultData)}

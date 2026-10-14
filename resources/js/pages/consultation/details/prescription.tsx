@@ -18,7 +18,7 @@ import {
     updateDetails,
 } from '@/actions/App/Http/Controllers/ConsultationController';
 import Pagination from '@/components/pagination';
-import SaveConsultation from './complete-consultation';
+import CompleteConsultation from './complete-consultation';
 import { printDocument } from '@/lib/utils';
 import TableCounter from '@/components/table-counter';
 import { Input } from '@/components/ui/input';
@@ -107,7 +107,7 @@ const Prescription = ({ showTab }: { showTab: boolean }) => {
                         <div className="card-body">
                             <div className="row mb-5 w-100">
                                 <div className="d-flex justify-content-between mt-2 mb-2">
-                                    <SaveConsultation />
+                                    <CompleteConsultation />
                                     <Button
                                         size="lg"
                                         onClick={() => toggleModal('Add', defaultData)}

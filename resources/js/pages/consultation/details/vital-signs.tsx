@@ -6,7 +6,7 @@ import VitalSignsModal, { ModalFormProps } from './vital-signs-modal';
 import { useState } from 'react';
 import DeleteButton from '@/components/delete-button';
 import { deleteVitalSigns } from '@/actions/App/Http/Controllers/ConsultationController';
-import SaveConsultation from './complete-consultation';
+import CompleteConsultation from './complete-consultation';
 import TableCounter from '@/components/table-counter';
 
 interface InertiaProps {
@@ -78,7 +78,7 @@ const VitalSigns = ({ showTab }: { showTab: boolean }) => {
                         <div className="card-body">
                             <div className="row mb-5 w-100">
                                 <div className="d-flex justify-content-between mt-2 mb-2">
-                                    <SaveConsultation />
+                                    <CompleteConsultation />
                                     <Button
                                         size="lg"
                                         onClick={() => toggleModal('Add', defaultData)}
