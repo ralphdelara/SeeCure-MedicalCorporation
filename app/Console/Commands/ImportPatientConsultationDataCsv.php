@@ -69,10 +69,6 @@ class ImportPatientConsultationDataCsv extends Command
         $patientIds = array_column($patientIds, 'id', 'old_patient_id');
 
         foreach ($csvArray as $key => $row) {
-            if (empty($patientIds[$row[1]])) {
-                continue;
-            }
-
             // create Visit record
             $visit = Visit::create([
                 'patient_id'       => $patientIds[$row[1]],
