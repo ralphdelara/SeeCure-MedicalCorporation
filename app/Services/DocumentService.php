@@ -225,7 +225,7 @@ class DocumentService
                 'consultation_id' => $departmentId,
                 'audit_type_id'   => $auditType,
                 'data'            => json_encode($data),
-                'created_by'      => Auth::id(),
+                'created_by'      => Auth::id() ?? Auth::systemUser()->id,
             ]);
         }
 

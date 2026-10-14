@@ -443,6 +443,8 @@ namespace App\Models{
  * @property-read int|null $vital_signs_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation wherePrescriptionRemarks($value)
  * @mixin \Eloquent
+ * @property string|null $old_consult_id
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Consultation whereOldConsultId($value)
  */
 	class Consultation extends \Eloquent {}
 }
@@ -1313,7 +1315,7 @@ namespace App\Models{
  * @property-read int|null $vital_signs_count
  * @property string|null $old_patient_id
  * @property int|null $control_no
- * @property-read Collection<int, \App\Models\Document> $documents
+ * @property-read Collection<int, Document> $documents
  * @property-read int|null $documents_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereControlNo($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Patient whereOldPatientId($value)
@@ -2051,11 +2053,11 @@ namespace App\Models{
  * @property-read string|null $full_address
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUsernameIndex($value)
  * @property-read string $full_name_receipt
- * @property-read Collection<int, \App\Models\Department> $departments
+ * @property-read Collection<int, Department> $departments
  * @property-read int|null $departments_count
  * @property-read bool $is_admin
  * @property-read bool $is_bot
- * @property-read Collection<int, \App\Models\Position> $positions
+ * @property-read Collection<int, Position> $positions
  * @property-read int|null $positions_count
  * @mixin \Eloquent
  * @property-read string|null $age_year

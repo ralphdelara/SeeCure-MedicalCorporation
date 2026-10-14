@@ -35,7 +35,7 @@ class LogDiagnosisSave implements ShouldQueue
             'consultation_id' => $diagnosis->consultation_id,
             'audit_type_id'   => $type === 'created' ? AuditTypeEnum::ADD : AuditTypeEnum::UPDATE,
             'data'            => json_encode($data),
-            'created_by'      => Auth::id(),
+            'created_by'      => Auth::id() ?? Auth::systemUser()->id,
         ]);
     }
 

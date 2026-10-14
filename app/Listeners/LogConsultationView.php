@@ -45,7 +45,7 @@ class LogConsultationView implements ShouldQueue
             'consultation_id' => $event->consultation->id,
             'audit_type_id'   => AuditTypeEnum::VIEW,
             'data'            => json_encode($data),
-            'created_by'      => Auth::id(),
+            'created_by'      => Auth::id() ?? Auth::systemUser()->id,
         ]);
     }
 }

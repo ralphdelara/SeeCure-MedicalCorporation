@@ -41,7 +41,7 @@ class LogPrescriptionSave implements ShouldQueue
             'consultation_id' => $prescription->consultation_id,
             'audit_type_id'   => $auditType,
             'data'            => json_encode($data),
-            'created_by'      => Auth::id(),
+            'created_by'      => Auth::id() ?? Auth::systemUser()->id,
         ]);
     }
 
