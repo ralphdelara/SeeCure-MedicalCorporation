@@ -208,6 +208,11 @@ class FrontDeskController extends Controller
             if (empty($patientDetails['control_no'])) {
                 unset($patientDetails['control_no']);
             }
+
+            if ($request->is_walk_in === 1) {
+                $patientDetails['control_no'] = '0';
+            }
+
             $patient = app(PatientService::class)->addOrUpdatePatient($patientDetails);
             $patientId = $patient->id;
         }
