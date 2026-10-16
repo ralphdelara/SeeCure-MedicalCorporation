@@ -15,7 +15,7 @@ jobs:
 
       # Sync only the modified files to your live folder
       - name: Move Updated Files Only
-        shell: powershell
+        shell: powershell -ExecutionPolicy Bypass {0}
         run: |
           $targetFolder = "C:\SeeCure"
           Write-Output "Syncing updated files to $targetFolder..."
@@ -28,31 +28,31 @@ jobs:
           if ($LastExitCode -gt 3) { throw "File sync failed with exit code $LastExitCode" }
 
       - name: Composer install
-        shell: powershell
+        shell: powershell -ExecutionPolicy Bypass {0}
         run: |
           cd "C:\SeeCure"
           composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
       - name: NPM install (ci)
-        shell: powershell
+        shell: powershell -ExecutionPolicy Bypass {0}
         run: |
           cd "C:\SeeCure"
           npm ci
 
       - name: Perform Database Migrate
-        shell: powershell
+        shell: powershell -ExecutionPolicy Bypass {0}
         run: |
           cd "C:\SeeCure"
           php artisan migrate --force
 
       - name: Run Operation Process
-        shell: powershell
+        shell: powershell -ExecutionPolicy Bypass {0}
         run: |
           cd "C:\SeeCure"
           php artisan operations:process
 
       - name: Compile Front End Files
-        shell: powershell
+        shell: powershell -ExecutionPolicy Bypass {0}
         run: |
           cd "C:\SeeCure"
           npm run build
