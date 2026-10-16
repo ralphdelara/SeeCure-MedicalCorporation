@@ -19,15 +19,9 @@ jobs:
         run: |
           cd "C:\SeeCure"
 
-          # Clear the ownership block error
+          # Fixes the Git ownership error
           git config --global --add safe.directory C:/SeeCure
 
-          # Set remote url
-          git remote set-url origin "https://github.com/ralphdelara/SeeCure-MedicalCorporation.git"
-
-          # Synchronize cleanly
-          git fetch origin main
-          git reset --hard origin/main
           git pull origin main
 
       - name: Composer install
