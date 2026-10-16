@@ -15,7 +15,11 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('patient_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('visit_status_id')->constrained();
-            $table->unsignedBigInteger('visit_no')->autoIncrement();
+            if (DB::connection()->getDriverName() !== 'sqlite') {
+                $table->unsignedBigInteger('visit_no')->alwaysIdentity();
+            } else {
+                $table->unsignedBigInteger('visit_no')->nullable();
+            }
 
             $table->dateTime('admitted_at')->nullable();
             $table->dateTime('discharged_at')->nullable();

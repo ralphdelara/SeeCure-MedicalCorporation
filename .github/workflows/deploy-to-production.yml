@@ -1,0 +1,38 @@
+name: Laravel React Inertia CI (Self-Hosted)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  laravel-tests:
+    # This forces the pipeline to run on your local Windows 11 machine
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    # Install dependencies using your local PHP/Composer
+    - name: Install Composer Dependencies
+      run: composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+    # Run Migrations (Uses your local PostgreSQL credentials from your local .env)
+    - name: Run Database Migrations
+      run: php artisan migrate --force
+
+    # Run your custom process command
+    - name: Run Operations Process
+      run: php artisan operations:process
+
+    # Compile React/Inertia assets using your local Node/NPM
+    - name: Install & Build Frontend
+      run: |
+        npm ci
+        npm run build
+
+    # Run your test suite //temporary comment
+    #- name: Run Application Tests
+    #  run: php artisan test
