@@ -20,9 +20,8 @@ jobs:
           $targetFolder = "C:\SeeCure"
           Write-Output "Syncing updated files to $targetFolder..."
 
-          # Robocopy automatically checks file sizes/timestamps and transfers ONLY updated files.
-          # It skips unmodified files, making the transfer extremely fast.
-          robocopy . $targetFolder /Mirror /XD .git node_modules storage .github /R:2 /W:5
+          # FIXED: Changed /Mirror to /MIR for Windows compatibility
+          robocopy . $targetFolder /MIR /XD .git node_modules storage .github /R:2 /W:5
 
           # Robocopy exit codes 0 to 3 indicate a successful transfer/no changes needed.
           if ($LastExitCode -gt 3) { throw "File sync failed with exit code $LastExitCode" }
