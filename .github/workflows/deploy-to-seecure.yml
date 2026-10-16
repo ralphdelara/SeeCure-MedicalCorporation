@@ -22,8 +22,7 @@ jobs:
           # Clear the ownership block error
           git config --global --add safe.directory C:/SeeCure
 
-          # Inject your repository authentication details to prevent hanging prompts
-          # This uses the pipeline's automatic temporary token so you don't have to share passwords
+          # FIXED: Correctly spaced and quoted GitHub expression variables
           git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@://github.com{{ github.repository }}.git"
 
           # Synchronize cleanly
