@@ -17,14 +17,23 @@ jobs:
       - name: Move Updated Files Only
         shell: powershell -ExecutionPolicy Bypass {0}
         run: |
-          $targetFolder = "C:\SeeCure"
+          $targetFolder = "C:\SeeCureTEST"
           Write-Output "Syncing updated files to $targetFolder..."
 
-          # FIXED: Changed /Mirror to /MIR for Windows compatibility
+          # Run robocopy and capture its exit code immediately
           robocopy . $targetFolder /MIR /XD .git node_modules storage .github /R:2 /W:5
+          $robocopyExitCode = $LastExitCode
 
-          # Robocopy exit codes 0 to 3 indicate a successful transfer/no changes needed.
-          if ($LastExitCode -gt 3) { throw "File sync failed with exit code $LastExitCode" }
+          Write-Output "Robocopy finished with exit code: $robocopyExitCode"
+
+          # In Robocopy, any code from 0 to 3 means a successful execution.
+          # Throw an error only if the code is 4 or higher (fatal errors like 8 or 16).
+          if ($robocopyExitCode -gt 3) {
+              throw "Robocopy encountered a fatal error. Code: $robocopyExitCode"
+          } else {
+              Write-Output "File synchronization finished successfully!"
+              exit 0 # Forces PowerShell to return 0 so GitHub Actions knows it succeeded
+          }
 
       - name: Composer install
         shell: powershell -ExecutionPolicy Bypass {0}
