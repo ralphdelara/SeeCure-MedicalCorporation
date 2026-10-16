@@ -14,26 +14,12 @@ jobs:
         uses: actions/checkout@v4
 
       # Sync only the modified files to your live folder
-      - name: Move Updated Files Only
+      - name: Pull Latest Code From GitHub
         shell: powershell -ExecutionPolicy Bypass {0}
         run: |
-          $targetFolder = "C:\SeeCure"
-          Write-Output "Syncing updated files to $targetFolder..."
-
-          # /XD excludes directories from being mirrored or touched
-          # /XF excludes specific files from being deleted or overwritten
-          robocopy . $targetFolder /MIR /XD .git node_modules vendor public storage .github /XF .env /R:2 /W:5
-          $robocopyExitCode = $LastExitCode
-
-          Write-Output "Robocopy finished with exit code: $robocopyExitCode"
-
-          # In Robocopy, any code from 0 to 3 means a successful execution.
-          if ($robocopyExitCode -gt 3) {
-              throw "Robocopy encountered a fatal error. Code: $robocopyExitCode"
-          } else {
-              Write-Output "File synchronization finished successfully!"
-              exit 0
-          }
+          cd "C:\SeeCure"
+          git reset --hard origin/main
+          git pull origin main
 
       - name: Composer install
         shell: powershell -ExecutionPolicy Bypass {0}
