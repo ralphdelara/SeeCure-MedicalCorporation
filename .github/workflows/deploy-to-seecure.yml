@@ -17,14 +17,21 @@ jobs:
       - name: Move Updated Files Only
         shell: powershell -ExecutionPolicy Bypass {0}
         run: |
-          $targetFolder = "C:\SeeCure"
+          $targetFolder = "C:\SeeCureTEST"
           Write-Output "Syncing updated files to $targetFolder..."
 
-          # FIXED: Changed /Mirror to /MIR for Windows compatibility
-          robocopy . $targetFolder /MIR /XD .git node_modules storage .github /R:2 /W:5
+          # FIXED: Added /XF .env to explicitly STOP Robocopy from deleting your config file
+          robocopy . $targetFolder /MIR /XD .git node_modules storage .github /XF .env /R:2 /W:5
+          $robocopyExitCode = $LastExitCode
 
-          # Robocopy exit codes 0 to 3 indicate a successful transfer/no changes needed.
-          if ($LastExitCode -gt 3) { throw "File sync failed with exit code $LastExitCode" }
+          Write-Output "Robocopy finished with exit code: $robocopyExitCode"
+
+          if ($robocopyExitCode -gt 3) {
+              throw "Robocopy encountered a fatal error. Code: $robocopyExitCode"
+          } else {
+              Write-Output "File synchronization finished successfully!"
+              exit 0
+          }
 
       - name: Composer install
         shell: powershell -ExecutionPolicy Bypass {0}
