@@ -20,12 +20,14 @@ jobs:
           $targetFolder = "C:\SeeCure"
           Write-Output "Syncing updated files to $targetFolder..."
 
-          # FIXED: Added /XF .env to explicitly STOP Robocopy from deleting your config file
-          robocopy . $targetFolder /MIR /XD .git node_modules storage .github /XF .env /R:2 /W:5
+          # /XD excludes directories from being mirrored or touched
+          # /XF excludes specific files from being deleted or overwritten
+          robocopy . $targetFolder /MIR /XD .git node_modules vendor public storage .github /XF .env /R:2 /W:5
           $robocopyExitCode = $LastExitCode
 
           Write-Output "Robocopy finished with exit code: $robocopyExitCode"
 
+          # In Robocopy, any code from 0 to 3 means a successful execution.
           if ($robocopyExitCode -gt 3) {
               throw "Robocopy encountered a fatal error. Code: $robocopyExitCode"
           } else {
@@ -37,7 +39,8 @@ jobs:
         shell: powershell -ExecutionPolicy Bypass {0}
         run: |
           cd "C:\SeeCure"
-          composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+          composer config -g disable-tls true
+          composer install --no-interaction --prefer-dist
 
       - name: NPM install (ci)
         shell: powershell -ExecutionPolicy Bypass {0}
