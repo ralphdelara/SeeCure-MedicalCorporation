@@ -22,8 +22,8 @@ jobs:
           # Clear the ownership block error
           git config --global --add safe.directory C:/SeeCure
 
-          # FIXED: Correctly spaced and quoted GitHub expression variables
-          git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@://github.com{{ github.repository }}.git"
+          # Set remote url
+          git remote set-url origin "https://github.com/ralphdelara/SeeCure-MedicalCorporation.git"
 
           # Synchronize cleanly
           git fetch origin main
