@@ -19,10 +19,15 @@ jobs:
         run: |
           cd "C:\SeeCure"
 
-          # FIXED: Add the directory to Git's global safe directory list for NETWORK SERVICE
+          # Clear the ownership block error
           git config --global --add safe.directory C:/SeeCure
 
-          # Now run your Git pull commands safely
+          # Inject your repository authentication details to prevent hanging prompts
+          # This uses the pipeline's automatic temporary token so you don't have to share passwords
+          git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@://github.com{{ github.repository }}.git"
+
+          # Synchronize cleanly
+          git fetch origin main
           git reset --hard origin/main
           git pull origin main
 
