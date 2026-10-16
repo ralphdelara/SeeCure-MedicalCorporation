@@ -7,7 +7,7 @@ use App\Events\Icd10CodeSaved;
 use App\Models\ConsultationAudit;
 use Illuminate\Support\Facades\Auth;
 
-class LogSignsOrSymptomsSave
+class LogIcd10CodeSave
 {
     /**
      * Handle the event.

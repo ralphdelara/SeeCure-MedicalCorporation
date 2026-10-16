@@ -13,8 +13,10 @@ return new class extends Migration
         $databaseName = DB::connection()->getDatabaseName();
 
         // Force PostgreSQL to use Asia/Manila for this database
-        DB::statement("ALTER ROLE CURRENT_USER SET timezone TO 'Asia/Manila';");
-        DB::statement("ALTER DATABASE \"{$databaseName}\" SET timezone TO 'Asia/Manila';");
+        if (DB::connection()->getDriverName() === 'pgsql') {
+            DB::statement("ALTER ROLE CURRENT_USER SET timezone TO 'Asia/Manila';");
+            DB::statement("ALTER DATABASE \"{$databaseName}\" SET timezone TO 'Asia/Manila';");
+        }
     }
 
     /**
