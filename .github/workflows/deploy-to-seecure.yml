@@ -18,6 +18,11 @@ jobs:
         shell: powershell -ExecutionPolicy Bypass {0}
         run: |
           cd "C:\SeeCure"
+
+          # FIXED: Add the directory to Git's global safe directory list for NETWORK SERVICE
+          git config --global --add safe.directory C:/SeeCure
+
+          # Now run your Git pull commands safely
           git reset --hard origin/main
           git pull origin main
 
