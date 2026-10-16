@@ -17,7 +17,7 @@ jobs:
       - name: Move Updated Files Only
         shell: powershell -ExecutionPolicy Bypass {0}
         run: |
-          $targetFolder = "C:\SeeCureTEST"
+          $targetFolder = "C:\SeeCure"
           Write-Output "Syncing updated files to $targetFolder..."
 
           # FIXED: Added /XF .env to explicitly STOP Robocopy from deleting your config file
