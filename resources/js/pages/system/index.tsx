@@ -53,6 +53,14 @@ export default function System() {
                                 Inventory Categories
                             </Link>
                         </div>
+                        <div className="col-md-3 text-center">
+                            <Link
+                                className="btn btn-success btn-lg fs-6 w-100 p-3"
+                                href={callOut().url}
+                            >
+                                Hospital/Clinic
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </div>

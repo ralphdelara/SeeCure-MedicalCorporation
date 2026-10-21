@@ -8,7 +8,10 @@ import Billing from './billing';
 import Radiology from './radiology';
 import Pharmacy from './pharmacy';
 import NotifyFrontDesk from '../notifications/notify-front-desk';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { fetchUrl } from '@/lib/utils';
+import { getQueueList } from '@/actions/App/Http/Controllers/FrontDeskController';
+import { IconFidgetSpinner, IconRefresh } from '@tabler/icons-react';
 
 export default function FrontDesk() {
     const [queueList, setQueueList] = useState<any>({
@@ -20,12 +23,26 @@ export default function FrontDesk() {
         cashierList: [],
     });
 
+    const [loading, setLoading] = useState(false);
+
+    const updateList = async () => {
+        setLoading(true);
+        const listResponse = await fetchUrl(getQueueList().url, 'get', {});
+
+        setQueueList(listResponse);
+        setLoading(false);
+    };
+
+    useEffect(() => {
+        updateList();
+    }, []);
+
     return (
         <>
-            <NotifyFrontDesk setQueueList={setQueueList}/>
+            <NotifyFrontDesk updateList={updateList} />
             <Head title="Front Desk" />
-            <Breadcrumbs title="Front Desk">
-                <QueuePatient />
+            <Breadcrumbs title={<>Front Desk {loading && <IconRefresh className="spin" />}</>}>
+                <QueuePatient updateList={updateList} />
             </Breadcrumbs>
 
             <div className="row w-100">

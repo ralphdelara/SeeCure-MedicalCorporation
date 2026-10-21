@@ -21,7 +21,7 @@ import LaboratoryForm from './laboratory-form';
 import RadiologyForm from './radiology-form';
 import { useWindowSize } from '@/hooks/use-window-size';
 
-const QueuePatient = () => {
+const QueuePatient = ({ updateList }: { updateList: () => Promise<void> }) => {
     const { isLg, isXl } = useWindowSize();
     const [showModal, setShowModal] = useState(false);
     const { priorityTypeOptions } = usePage().props as unknown as {
@@ -94,6 +94,7 @@ const QueuePatient = () => {
                 setShowModal(false);
                 reset();
                 toast.success('Patient placed in queue.');
+                updateList();
             },
             onError: () => {
                 toast.error('Failed to add patient.');
@@ -129,7 +130,10 @@ const QueuePatient = () => {
         );
     }, [showModal]);
 
-    let colXl = data.has_laboratory === 1 || data.has_radiology === 1 ? 'col-xl-4' : 'col-xl-6';
+    let colXl =
+        data.has_laboratory === 1 || (data.has_radiology === 1 && data.has_consultation === 1)
+            ? 'col-xl-4'
+            : 'col-xl-6';
 
     return (
         <>
