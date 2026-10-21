@@ -216,6 +216,9 @@ class FrontDeskController extends Controller
         $isPwd = ! empty($patientDetails['pwd_id']);
 
         if ($request->input('form_type') === 'new') {
+            // this will prevent replacing existing patients if accidentally selected
+            $patientDetails['patient_id'] = null;
+
             if (empty($patientDetails['control_no'])) {
                 unset($patientDetails['control_no']);
             }
@@ -225,6 +228,7 @@ class FrontDeskController extends Controller
             }
 
             $patient = app(PatientService::class)->addOrUpdatePatient($patientDetails);
+            $patientDetails['patient_id'] = $patient->id;
             $patientId = $patient->id;
         }
 
