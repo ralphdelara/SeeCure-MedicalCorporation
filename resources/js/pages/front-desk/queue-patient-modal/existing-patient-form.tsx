@@ -68,14 +68,7 @@ const ExistingPatientForm = ({ data, setData, errors = {} }: QueuePatientFormPro
                         <IconSearch />
                     </Button>
                 </div>
-                <TableList
-                    header={[
-                        { name: 'Patient', align: 'left' },
-                        { name: 'Date Of Birth', align: 'left' },
-                        { name: 'Control No', align: 'left' },
-                    ]}
-                    floatScrollbar={false}
-                >
+                <TableList header={[{ name: 'Patient', align: 'left' }]} floatScrollbar={false}>
                     {patientList.map((item, index) => (
                         <tr
                             key={'existing-patient-' + item.id}
@@ -100,42 +93,19 @@ const ExistingPatientForm = ({ data, setData, errors = {} }: QueuePatientFormPro
                                             <h6 className="fs-4 fw-semibold mb-0">
                                                 {item.full_name}
                                             </h6>
-                                            <span className="fw-normal">
+                                            <h6 className="fw-normal">
+                                                Control No: <b>{item.control_no}</b><br/>
                                                 {item.gender ? item.gender.name : 'N/A'}
-                                            </span>
+                                            </h6>
                                         </div>
                                     </div>
                                 </div>
-                            </td>
-                            <td>
-                                <div className="d-flex align-items-start">
-                                    <div>
-                                        <h6>
-                                            <IconCalendarDot size={20} />
-                                        </h6>
-                                        <span className="fw-normal">
-                                            <IconGenderAgender size={20} />
-                                        </span>
-                                    </div>
-                                    <div className="ms-3">
-                                        <h6 className="fs-4 fw-normal">
-                                            {item.date_of_birth ?? 'N/A'}
-                                        </h6>
-                                        <h6 className="fs-4 fw-normal">
-                                            {item.age_computed ?? item.age ?? 'N/A'}
-                                        </h6>
-                                    </div>
-                                </div>
-                            </td>
-
-                            <td>
-                                <span className="fw-normal">{item.control_no}</span>
                             </td>
                         </tr>
                     ))}
                     {patientList.length === 0 && (
                         <tr>
-                            <td colSpan={4} className="text-center">
+                            <td className="text-center">
                                 <h4 className="text-danger">No records</h4>
                             </td>
                         </tr>

@@ -1,8 +1,6 @@
 import InputError from '@/components/input-error';
-import { Label } from '@/components/ui/label';
 import type { QueuePatientDetailsFormProps, QueuePatientFormProps } from './types';
 import ConsultationForm from './consultation-form';
-import LaboratoryForm from './laboratory-form';
 import RadiologyForm from './radiology-form';
 import FormHeader from '@/components/ui/form-header';
 
@@ -16,14 +14,18 @@ const MedicalServices = ({ data, setData, errors = {} }: QueuePatientFormProps) 
         const checkboxId = e.currentTarget.id as keyof QueuePatientDetailsFormProps;
         const isChecked = (e.target as HTMLInputElement).checked;
         setData(checkboxId, isChecked ? 1 : 0);
+
+        if (checkboxId === 'has_laboratory' && data.laboratory_package_id === '') {
+            setData('laboratory_package_id', 3); // 3 - Custom
+        }
     };
 
     return (
         <>
             <FormHeader>Medical Services</FormHeader>
-            <div className="row px-4">
+            <div className="row">
                 {medicalServices.map((item, index) => (
-                    <div className="col-md-4" key={'medicalService-' + index}>
+                    <div className="col-md-6" key={'medicalService-' + index}>
                         <div className="form-check form-check-inline">
                             <input
                                 className="form-check-input success"
@@ -47,11 +49,7 @@ const MedicalServices = ({ data, setData, errors = {} }: QueuePatientFormProps) 
                 <ConsultationForm data={data} setData={setData} errors={errors} />
             )}
 
-            {data.has_laboratory === 1 && (
-                <LaboratoryForm data={data} setData={setData} errors={errors} />
-            )}
-
-            {data.has_radiology === 1 && (
+            {data.has_radiology === 1 && data.has_consultation === 0 && (
                 <RadiologyForm data={data} setData={setData} errors={errors} />
             )}
         </>

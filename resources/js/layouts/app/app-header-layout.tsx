@@ -65,7 +65,7 @@ export default function NavHeader({ toggleSidebar }: NavHeaderProps) {
 
     return (
         <>
-            <header className="topbar">
+            <header className="topbar no-select">
                 <div className="with-vertical">
                     <nav className="navbar navbar-expand-lg p-0">
                         <ul className="navbar-nav">
@@ -378,7 +378,6 @@ export default function NavHeader({ toggleSidebar }: NavHeaderProps) {
                     {item.name === 'Radiology' && <NotifyRadiology />}
                 </Fragment>
             ))}
-            {url.includes(frontDesk().url) && <NotifyFrontDesk />}
 
             {(warning?.title ?? '') !== '' && (
                 <div

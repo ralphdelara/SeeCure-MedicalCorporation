@@ -7,10 +7,22 @@ import QueuePatient from './queue-patient-modal';
 import Billing from './billing';
 import Radiology from './radiology';
 import Pharmacy from './pharmacy';
+import NotifyFrontDesk from '../notifications/notify-front-desk';
+import { useState } from 'react';
 
 export default function FrontDesk() {
+    const [queueList, setQueueList] = useState<any>({
+        billingList: [],
+        consultationList: [],
+        laboratoryList: [],
+        pharmacyList: [],
+        radiologyList: [],
+        cashierList: [],
+    });
+
     return (
         <>
+            <NotifyFrontDesk setQueueList={setQueueList}/>
             <Head title="Front Desk" />
             <Breadcrumbs title="Front Desk">
                 <QueuePatient />
@@ -18,22 +30,22 @@ export default function FrontDesk() {
 
             <div className="row w-100">
                 <div className="col-lg-6">
-                    <Billing />
+                    <Billing billingList={queueList.billingList} />
                 </div>
                 <div className="col-lg-6">
-                    <Consultation />
+                    <Consultation consultationList={queueList.consultationList} />
                 </div>
                 <div className="col-lg-6">
-                    <Laboratory />
+                    <Laboratory laboratoryList={queueList.laboratoryList} />
                 </div>
                 <div className="col-lg-6">
-                    <Radiology />
+                    <Radiology radiologyList={queueList.radiologyList} />
                 </div>
                 <div className="col-lg-6">
-                    <Cashier />
+                    <Cashier cashierList={queueList.cashierList} />
                 </div>
                 <div className="col-lg-6">
-                    <Pharmacy />
+                    <Pharmacy pharmacyList={queueList.pharmacyList} />
                 </div>
             </div>
         </>

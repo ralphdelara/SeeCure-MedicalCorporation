@@ -30,12 +30,12 @@ const VitalSignsForm = ({ data, setData }: VitalSignsFormProps) => {
     return (
         <section role="tabpanel" className="body current mb-3">
             <Label className="form-label fs-5">Vital Signs</Label>
-            <div className="row g-4">
+            <div className="row g-1">
                 {vitalSigns.map((item, index) => {
                     const vitalSign = data.vital_signs[item.id];
 
                     return (
-                        <div className="col-md-4" key={'vsigns-' + index}>
+                        <div className="col-md-6" key={'vsigns-' + index}>
                             <div className="form-group">
                                 <Label htmlFor={item.name.replace(' ', '_')} className="form-label">
                                     {item.name}
