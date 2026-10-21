@@ -11,7 +11,7 @@ jobs:
     steps:
       # Pull the fresh changes from the merged main branch into the temporary workspace
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       # Sync only the modified files to your live folder
       - name: Move Updated Files Only
