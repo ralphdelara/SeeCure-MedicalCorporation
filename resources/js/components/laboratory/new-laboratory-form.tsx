@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { getTests } from '@/actions/App/Http/Controllers/LaboratoryController';
 import { Label } from '../ui/label';
-import { IconCheck } from '@tabler/icons-react';
+import { IconCheck, IconSquareCheck, IconSquareCheckFilled } from '@tabler/icons-react';
 import { Options } from '@/types/options';
 import InputError from '../input-error';
 
@@ -79,7 +79,7 @@ const NewLaboratoryForm = ({ data, setData, errors = {} }: AddOrUpdateLaboratory
 
     return (
         <>
-            <div className="row mb-3">
+            <div className="mb-3">
                 <Select
                     value={data.laboratory_package_id}
                     onChange={(e) => togglePackage(e.target.value)}
@@ -103,7 +103,7 @@ const NewLaboratoryForm = ({ data, setData, errors = {} }: AddOrUpdateLaboratory
                                     key={'selectedPackageTest-' + indexTest}
                                 >
                                     <Label>
-                                        <IconCheck /> {itemTest.name}
+                                        <IconSquareCheckFilled className="text-success" /> {itemTest.name}
                                     </Label>
                                 </div>
                             ))}

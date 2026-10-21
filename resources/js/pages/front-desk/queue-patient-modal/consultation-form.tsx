@@ -109,7 +109,7 @@ const ConsultationForm = ({ data, setData, errors = {} }: QueuePatientFormProps)
                 <InputError message={errors.consult_reason} className="mt-2" />
             </div>
 
-            <SignsOrSymptomsForm data={data} setData={setData} errors={errors} />
+            <SignsOrSymptomsForm data={data} setData={setData} errors={errors} checkboxDivSize={6} />
             <VitalSignsForm data={data} setData={setData} />
         </div>
     );

@@ -20,8 +20,7 @@ interface InertiaProps {
     }[];
 }
 
-export default () => {
-    const { pharmacyList } = usePage().props as unknown as InertiaProps;
+export default ({ pharmacyList }: { pharmacyList: any[]}) => {
     const header = [
         { name: '#', width: '5%', align: 'right' },
         { name: 'Patient • Gender', className: 'sticky-left', align: 'left' },

@@ -37,12 +37,6 @@ class FrontDeskController extends Controller
         $doctors = app(DoctorService::class)->getDoctorList();
         $laboratoryTestOptions = [];
         $relationshipOptions = Relationship::all();
-        $consultationList = app(ConsultationService::class)->getSmallPendingConsultationList();
-        $laboratoryList = app(LaboratoryService::class)->getSmallPendingLaboratoryList();
-        $billingList = app(BillingService::class)->getSmallPendingBillingList();
-        $cashierList = app(CashierService::class)->getSmallPendingCashierList();
-        $radiologyList = app(RadiologyService::class)->getSmallPendingRadiologyList();
-        $pharmacyList = app(PharmacyService::class)->getSmallPendingPharmacyList();
         $priorityTypeOptions = PriorityType::all();
         $laboratoryFormOptions = app(LaboratoryService::class)->getLaboratoryFormOptions();
 
@@ -53,15 +47,28 @@ class FrontDeskController extends Controller
             'doctors',
             'relationshipOptions',
             'laboratoryTestOptions',
+            'priorityTypeOptions',
+            'laboratoryFormOptions',
+        ));
+    }
+
+    public function getQueueList()
+    {
+        $consultationList = app(ConsultationService::class)->getSmallPendingConsultationList();
+        $laboratoryList = app(LaboratoryService::class)->getSmallPendingLaboratoryList();
+        $billingList = app(BillingService::class)->getSmallPendingBillingList();
+        $cashierList = app(CashierService::class)->getSmallPendingCashierList();
+        $radiologyList = app(RadiologyService::class)->getSmallPendingRadiologyList();
+        $pharmacyList = app(PharmacyService::class)->getSmallPendingPharmacyList();
+
+        return compact(
             'consultationList',
             'laboratoryList',
             'billingList',
             'cashierList',
             'radiologyList',
             'pharmacyList',
-            'priorityTypeOptions',
-            'laboratoryFormOptions',
-        ));
+        );
     }
 
     public function queue(Request $request): void

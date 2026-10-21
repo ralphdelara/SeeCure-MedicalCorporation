@@ -30,6 +30,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('front-desk')->group(function () {
         Route::get('/', [FrontDeskController::class, 'index'])->name('front-desk');
+        Route::get('/queue-list', [FrontDeskController::class, 'getQueueList'])->name('front-desk.queue-list');
         Route::get('/visits', [FrontDeskController::class, 'index'])->name('visits');
         Route::post('/', [FrontDeskController::class, 'queue'])->name('front-desk.queue');
         Route::delete('/{id}', [FrontDeskController::class, 'deleteQueue'])->name('front-desk.delete');

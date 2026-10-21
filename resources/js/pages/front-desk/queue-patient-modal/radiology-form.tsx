@@ -16,11 +16,9 @@ const RadiologyForm = ({ data, setData, errors = {} }: RadiologyFormProps) => {
 
     return (
         <>
-            <div className="form-group">
-                <FormHeader>Radiology Request</FormHeader>
-                <div className="row">
-                    <div className="col-md-4"></div>
-                </div>
+            <FormHeader>Radiology Request</FormHeader>
+            <div className="row">
+                <div className="col-md-4"></div>
             </div>
         </>
     );

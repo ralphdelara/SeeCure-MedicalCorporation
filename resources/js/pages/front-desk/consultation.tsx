@@ -32,9 +32,7 @@ interface InertiaProps {
     }[];
 }
 
-export default () => {
-    const [consultationDisplay, setConsultationDisplay] = useState('');
-    const { consultationList } = usePage().props as unknown as InertiaProps;
+export default ({ consultationList }: { consultationList: any[]}) => {
     const header = [
         { name: '#', width: '5%', align: 'right' },
         { name: 'Patient • Gender', className: 'sticky-left', align: 'left' },

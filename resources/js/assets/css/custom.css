@@ -2,6 +2,14 @@
     background: #ecfcf1 !important;
 }
 
+.no-select {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none;   /* Safari */
+  -moz-user-select: none;      /* Old versions of Firefox */
+  -ms-user-select: none;       /* Internet Explorer/Edge */
+  user-select: none;           /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+}
+
 .sidebar-nav ul .sidebar-item .sidebar-link:hover:not(.active),
 .nav-icon-hover-bg:hover,
 .nav-icon-hover-bg:hover svg {
@@ -171,4 +179,11 @@ nav ul.pagination li:not(.active) > a.page-link:hover {
     to {
         transform: rotate(360deg);
     }
+}
+
+@media (min-width: 1400px) {
+  .modal-xxl {
+    max-width: 1320px; /* Standard Bootstrap 5 XXL container max-width */
+    width: 100%;
+  }
 }

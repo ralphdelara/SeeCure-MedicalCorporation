@@ -17,8 +17,12 @@ import { Label } from '@/components/ui/label';
 import { Options } from '@/types/options';
 import FormHeader from '@/components/ui/form-header';
 import { Input } from '@/components/ui/input';
+import LaboratoryForm from './laboratory-form';
+import RadiologyForm from './radiology-form';
+import { useWindowSize } from '@/hooks/use-window-size';
 
 const QueuePatient = () => {
+    const { isLg, isXl } = useWindowSize();
     const [showModal, setShowModal] = useState(false);
     const { priorityTypeOptions } = usePage().props as unknown as {
         priorityTypeOptions: Options[];
@@ -125,161 +129,225 @@ const QueuePatient = () => {
         );
     }, [showModal]);
 
+    let colXl = data.has_laboratory === 1 || data.has_radiology === 1 ? 'col-xl-4' : 'col-xl-6';
+
     return (
         <>
             <Button onClick={() => setShowModal(true)} hasIcon={true}>
                 <IconPlus className="me-1" size={18} /> Queue Patient
             </Button>
             <Toaster position="top-center" reverseOrder={false} />
-            <Modal show={showModal} size="lg" onHide={() => setShowModal(false)}>
+            <Modal show={showModal} size="xl" onHide={() => setShowModal(false)}>
                 <form onSubmit={submitQueue}>
                     <Modal.Header closeButton>
                         <Modal.Title>Queue Patient</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <div className="wizard clearfix" role="application">
-                            <div className="steps clearfix">
-                                <ul role="tablist">
-                                    <li
-                                        role="tab"
-                                        onClick={() => setData('form_type', 'existing')}
-                                        className={
-                                            'first w-50' +
-                                            (data.form_type === 'existing' ? ' current' : ' done')
-                                        }
-                                    >
-                                        <a href="#" className="fs-4 fw-bold">
-                                            <IconUserDown className="me-2" />
-                                            Existing Patient
-                                        </a>
-                                    </li>
-                                    <li
-                                        role="tab"
-                                        onClick={() => setData('form_type', 'new')}
-                                        className={
-                                            'w-50' +
-                                            (data.form_type === 'new' ? ' current' : ' done')
-                                        }
-                                    >
-                                        <a href="#" className="fs-4 fw-bold">
-                                            <IconUserPlus className="me-2" />
-                                            New Patient
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div className="content clearfix">
-                                {data.form_type === 'existing' && (
-                                    <ExistingPatientForm
-                                        data={data}
-                                        setData={setData}
-                                        errors={errors}
-                                    />
-                                )}
-                                {data.form_type === 'new' && (
-                                    <NewPatientForm data={data} setData={setData} errors={errors} />
-                                )}
-
-                                <FormHeader>Visit DateTime</FormHeader>
-
-                                <Input
-                                    type="datetime-local"
-                                    value={data.created_at}
-                                    onChange={(e) => setData('created_at', e.target.value)}
-                                />
-
-                                <FormHeader>Visit Priority</FormHeader>
-                                <div className="row px-4">
-                                    <div className="col-md-4">
-                                        <div className="form-check form-check-inline">
-                                            <input
-                                                className="form-check-input success"
-                                                type="checkbox"
-                                                id="is_emergency"
-                                                value="1"
-                                                onChange={(e) =>
-                                                    setData(
-                                                        'is_emergency',
-                                                        e.currentTarget.checked ? 1 : 0,
-                                                    )
-                                                }
-                                                name="is_emergency"
-                                                checked={data.is_emergency === 1}
-                                            />
-                                            <Label
-                                                className="form-check-label"
-                                                htmlFor="is_emergency"
-                                            >
-                                                <h5 className="fw-semibold">Emergency</h5>
-                                            </Label>
+                            <div className="row">
+                                <div className={'col-md-12 col-lg-6 ' + colXl}>
+                                    <div className="wizard clearfix" role="application">
+                                        <div className="steps clearfix">
+                                            <ul role="tablist">
+                                                <li
+                                                    role="tab"
+                                                    onClick={() => setData('form_type', 'existing')}
+                                                    className={
+                                                        'first w-50' +
+                                                        (data.form_type === 'existing'
+                                                            ? ' current'
+                                                            : ' done')
+                                                    }
+                                                >
+                                                    <a href="#" className="fs-4 fw-bold">
+                                                        <IconUserDown className="me-2" />
+                                                        Existing
+                                                    </a>
+                                                </li>
+                                                <li
+                                                    role="tab"
+                                                    onClick={() => setData('form_type', 'new')}
+                                                    className={
+                                                        'w-50' +
+                                                        (data.form_type === 'new'
+                                                            ? ' current'
+                                                            : ' done')
+                                                    }
+                                                >
+                                                    <a href="#" className="fs-4 fw-bold">
+                                                        <IconUserPlus className="me-2" />
+                                                        New
+                                                    </a>
+                                                </li>
+                                            </ul>
                                         </div>
-                                        <InputError
-                                            message={errors.is_emergency}
-                                            className="mt-2"
+                                        {data.form_type === 'existing' && (
+                                            <ExistingPatientForm
+                                                data={data}
+                                                setData={setData}
+                                                errors={errors}
+                                            />
+                                        )}
+                                        {data.form_type === 'new' && (
+                                            <NewPatientForm
+                                                data={data}
+                                                setData={setData}
+                                                errors={errors}
+                                            />
+                                        )}
+                                    </div>
+                                </div>
+                                <div className={'col-md-12 col-lg-6 ' + colXl}>
+                                    <FormHeader>Visit Details</FormHeader>
+                                    <div className="form-group">
+                                        <h6>DateTime</h6>
+                                        <Input
+                                            type="datetime-local"
+                                            value={data.created_at}
+                                            onChange={(e) => setData('created_at', e.target.value)}
                                         />
                                     </div>
-                                    {priorityTypeOptions.map((item, index) => (
-                                        <Fragment key={'priorityType-' + index}>
-                                            {item.id !== 3 && (
-                                                <div className={'col-md-4'}>
+                                    <div className="form-group">
+                                        <h6>Priority</h6>
+                                        <div className="row">
+                                            <div className="col-md-6">
+                                                <div className="form-check form-check-inline">
+                                                    <input
+                                                        className="form-check-input success"
+                                                        type="checkbox"
+                                                        id="is_emergency"
+                                                        value="1"
+                                                        onChange={(e) =>
+                                                            setData(
+                                                                'is_emergency',
+                                                                e.currentTarget.checked ? 1 : 0,
+                                                            )
+                                                        }
+                                                        name="is_emergency"
+                                                        checked={data.is_emergency === 1}
+                                                    />
+                                                    <Label
+                                                        className="form-check-label"
+                                                        htmlFor="is_emergency"
+                                                    >
+                                                        <h5 className="fw-semibold">Emergency</h5>
+                                                    </Label>
+                                                </div>
+                                                <InputError
+                                                    message={errors.is_emergency}
+                                                    className="mt-2"
+                                                />
+                                            </div>
+                                            {priorityTypeOptions.map((item, index) => (
+                                                <Fragment key={'priorityType-' + index}>
+                                                    {item.id !== 3 && (
+                                                        <div className={'col-md-6'}>
+                                                            <div className="form-check form-check-inline">
+                                                                <input
+                                                                    className="form-check-input success"
+                                                                    type="checkbox"
+                                                                    id={
+                                                                        'priority_type_ids-' + index
+                                                                    }
+                                                                    value={item.id}
+                                                                    onChange={(e) =>
+                                                                        updatePriorityTypes(e)
+                                                                    }
+                                                                    name="priority-type"
+                                                                    checked={data.priority_type_ids.includes(
+                                                                        item.id,
+                                                                    )}
+                                                                />
+                                                                <label
+                                                                    className="form-check-label"
+                                                                    htmlFor={
+                                                                        'priority_type_ids-' + index
+                                                                    }
+                                                                >
+                                                                    <h5 className="fw-semibold">
+                                                                        {item.name}
+                                                                    </h5>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </Fragment>
+                                            ))}
+                                            {data.form_type === 'new' && (
+                                                <div className="col-md-6">
                                                     <div className="form-check form-check-inline">
                                                         <input
                                                             className="form-check-input success"
                                                             type="checkbox"
-                                                            id={'priority_type_ids-' + index}
-                                                            value={item.id}
-                                                            onChange={(e) => updatePriorityTypes(e)}
-                                                            name="priority-type"
-                                                            checked={data.priority_type_ids.includes(
-                                                                item.id,
-                                                            )}
+                                                            id="is_walk_in"
+                                                            value="1"
+                                                            onChange={(e) =>
+                                                                setData(
+                                                                    'is_walk_in',
+                                                                    e.currentTarget.checked ? 1 : 0,
+                                                                )
+                                                            }
+                                                            name="is_walk_in"
+                                                            checked={data.is_walk_in === 1}
                                                         />
-                                                        <label
+                                                        <Label
                                                             className="form-check-label"
-                                                            htmlFor={'priority_type_ids-' + index}
+                                                            htmlFor="is_walk_in"
                                                         >
-                                                            <h5 className="fw-semibold">
-                                                                {item.name}
-                                                            </h5>
-                                                        </label>
+                                                            <h5 className="fw-semibold">Walk In</h5>
+                                                        </Label>
                                                     </div>
+                                                    <InputError
+                                                        message={errors.is_walk_in}
+                                                        className="mt-2"
+                                                    />
                                                 </div>
                                             )}
-                                        </Fragment>
-                                    ))}
-                                    {data.form_type === 'new' && (
-                                        <div className="col-md-4">
-                                            <div className="form-check form-check-inline">
-                                                <input
-                                                    className="form-check-input success"
-                                                    type="checkbox"
-                                                    id="is_walk_in"
-                                                    value="1"
-                                                    onChange={(e) =>
-                                                        setData(
-                                                            'is_walk_in',
-                                                            e.currentTarget.checked ? 1 : 0,
-                                                        )
-                                                    }
-                                                    name="is_walk_in"
-                                                    checked={data.is_walk_in === 1}
-                                                />
-                                                <Label
-                                                    className="form-check-label"
-                                                    htmlFor="is_walk_in"
-                                                >
-                                                    <h5 className="fw-semibold">Walk In</h5>
-                                                </Label>
-                                            </div>
-                                            <InputError
-                                                message={errors.is_walk_in}
-                                                className="mt-2"
+                                        </div>
+                                    </div>
+
+                                    <MedicalServices
+                                        data={data}
+                                        setData={setData}
+                                        errors={errors}
+                                    />
+                                </div>
+                                <div
+                                    className={'col-md-12 col-lg-6 ' + colXl}
+                                    style={{ maxHeight: '1500px', overflow: 'auto' }}
+                                >
+                                    {data.has_laboratory === 1 && (
+                                        <LaboratoryForm
+                                            data={data}
+                                            setData={setData}
+                                            errors={errors}
+                                        />
+                                    )}
+
+                                    {data.has_radiology === 1 &&
+                                        data.has_consultation === 1 &&
+                                        isXl && (
+                                            <RadiologyForm
+                                                data={data}
+                                                setData={setData}
+                                                errors={errors}
+                                            />
+                                        )}
+                                </div>
+                                {data.has_radiology === 1 &&
+                                    data.has_consultation === 1 &&
+                                    isLg && (
+                                        <div
+                                            className={'col-md-12 col-lg-6 ' + colXl}
+                                            style={{ maxHeight: '1500px', overflow: 'auto' }}
+                                        >
+                                            <RadiologyForm
+                                                data={data}
+                                                setData={setData}
+                                                errors={errors}
                                             />
                                         </div>
                                     )}
-                                </div>
-
-                                <MedicalServices data={data} setData={setData} errors={errors} />
                             </div>
                         </div>
                     </Modal.Body>

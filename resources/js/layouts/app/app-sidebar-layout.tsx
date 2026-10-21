@@ -387,7 +387,7 @@ export default function NavSidebar({ toggleSidebar }: NavSidebarProps) {
     };
 
     return (
-        <aside className="left-sidebar with-vertical">
+        <aside className="left-sidebar with-vertical no-select">
             <div>
                 <div className="brand-logo d-flex align-items-center justify-content-between">
                     <a href="/main/index.html" className="logo-img overflow-hidden text-nowrap">
