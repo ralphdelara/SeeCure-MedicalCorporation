@@ -9,7 +9,7 @@ interface InertiaProps {
     }[];
 }
 
-export function Breadcrumbs({ title, children }: { title: string; children: React.ReactNode }) {
+export function Breadcrumbs({ title, children }: { title: string|React.ReactNode; children: React.ReactNode }) {
     const { breadcrumbs } = usePage().props as unknown as InertiaProps;
 
     return (

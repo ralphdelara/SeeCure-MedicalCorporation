@@ -49,7 +49,10 @@ const VitalSignsForm = ({ data, setData }: VitalSignsFormProps) => {
                                         }
 
                                         return (
-                                            <div className="input-group">
+                                            <div
+                                                className="input-group"
+                                                key={'queue-vsigns-' + indexField + '-' + index}
+                                            >
                                                 <Input
                                                     type="number"
                                                     min="1"

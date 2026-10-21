@@ -1,11 +1,9 @@
-import { Dispatch, SetStateAction, useEffect } from 'react';
+import { useEffect } from 'react';
 import { echo } from '@/components/echo';
-import { router, usePage } from '@inertiajs/react';
+import { usePage } from '@inertiajs/react';
 import { frontDesk } from '@/routes';
-import { fetchUrl } from '@/lib/utils';
-import { getQueueList } from '@/actions/App/Http/Controllers/FrontDeskController';
 
-const NotifyFrontDesk = ({ setQueueList }: { setQueueList: Dispatch<SetStateAction<any[]>> }) => {
+const NotifyFrontDesk = ({ updateList }: { updateList: () => Promise<void> }) => {
     const { url } = usePage();
 
     useEffect(() => {
@@ -24,16 +22,6 @@ const NotifyFrontDesk = ({ setQueueList }: { setQueueList: Dispatch<SetStateActi
             echo.leaveChannel('front-desk');
         };
     }, []);
-
-    const updateList = async () => {
-        const listResponse = await fetchUrl(getQueueList().url, 'get', {});
-        console.log(listResponse);
-        setQueueList(listResponse);
-    };
-
-    useEffect(() => {
-        updateList();
-    },[]);
 
     return <></>;
 };
