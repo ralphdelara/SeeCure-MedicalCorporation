@@ -1,9 +1,11 @@
 import { Head, Link, usePage } from '@inertiajs/react';
-import { IconEdit, IconPackage } from '@tabler/icons-react';
+import { IconEdit, IconEyeCancel, IconPackage } from '@tabler/icons-react';
 import { useState } from 'react';
 import {
     deleteInventory,
     getInventoryDetails,
+    hideItem,
+    showItem,
 } from '@/actions/App/Http/Controllers/InventoryController';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import DeleteButton from '@/components/delete-button';
@@ -17,6 +19,7 @@ import AddInventory from './add-or-update-inventory';
 import type { AddInventoryForm, InventoryList } from './add-or-update-inventory/types';
 import AddOrUpdateModal from './add-or-update-inventory-modal';
 import inventoryDefault from '@/assets/images/inventory/inventory-default.png';
+import ConfirmButton from '@/components/confirm-button';
 
 interface InertiaProps {
     inventoryList: {
@@ -24,10 +27,12 @@ interface InertiaProps {
         pageData: Pages;
     };
     inventoryCategoryOptions: Options[];
+    listType: string;
 }
 
 export default function Inventory() {
-    const { inventoryList, inventoryCategoryOptions } = usePage().props as unknown as InertiaProps;
+    const { inventoryList, inventoryCategoryOptions, listType } = usePage()
+        .props as unknown as InertiaProps;
     const { tableData, pageData } = inventoryList;
     const [showModal, setShowModal] = useState(false);
     const [modalData, setModalData] = useState<AddInventoryForm>();
@@ -151,14 +156,41 @@ export default function Inventory() {
                                         </Button>
                                     </Link>
 
-                                    <DeleteButton
+                                    <ConfirmButton
+                                        requestMethod="PATCH"
+                                        url={
+                                            listType !== 'hidden-items'
+                                                ? hideItem(item.id).url
+                                                : showItem(item.id).url
+                                        }
+                                        msg={
+                                            'This will ' +
+                                            (listType !== 'hidden-items' ? 'hide' : 'show') +
+                                            ' the item <b>' +
+                                            item.name +
+                                            '</b>'
+                                        }
+                                        variant={listType !== 'hidden-items' ? 'danger' : 'default'}
+                                        title={listType !== 'hidden-items' ? 'Hide' : 'Show'}
+                                        successTitle="Updated!"
+                                        successMsg="The record has been updated."
+                                        successUrl={
+                                            window.location.pathname + window.location.search
+                                        }
+                                        rounded={true}
+                                    >
+                                        <i>
+                                            <IconEyeCancel size={20} />
+                                        </i>
+                                    </ConfirmButton>
+                                    {/*<DeleteButton
                                         url={deleteInventory(item.id).url}
                                         msg={
                                             '<b>' +
                                             item.name +
                                             '</b> also the stock movement records'
                                         }
-                                    />
+                                    />*/}
                                 </td>
                             </tr>
                         ))}

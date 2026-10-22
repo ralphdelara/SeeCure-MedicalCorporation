@@ -35,8 +35,6 @@ import {
     cashier,
     reports,
     visits,
-    stockMovement,
-    expiringSoon,
     admitted,
     admissions,
     discharged,
@@ -70,6 +68,7 @@ export default function NavSidebar({ toggleSidebar }: NavSidebarProps) {
             laboratoryPendingCount: number;
             laboratoryCompletedCount: number;
             inventoryCount: number;
+            inventoryHiddenCount: number;
             pharmacyCount: number;
             pharmacyPendingCount: number;
             pharmacyCompletedCount: number;
@@ -264,15 +263,21 @@ export default function NavSidebar({ toggleSidebar }: NavSidebarProps) {
                     count: navCounts.inventoryCount,
                 },
                 {
-                    url: stockMovement(),
+                    url: inventory('hidden-items'),
+                    name: 'Hidden Items',
+                    active: url === inventory('hidden-items').url,
+                    count: navCounts.inventoryHiddenCount,
+                },
+                {
+                    url: inventory('stock-movements'),
                     name: 'Stock Movements',
-                    active: url === stockMovement().url,
+                    active: url === inventory('stock-movements').url,
                     count: 0,
                 },
                 {
-                    url: expiringSoon(),
+                    url: inventory('expiring-soon'),
                     name: 'Expiring Soon',
-                    active: url === expiringSoon().url,
+                    active: url === inventory('expiring-soon').url,
                     count: 0,
                 },
             ],

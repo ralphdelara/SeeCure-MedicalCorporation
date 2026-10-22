@@ -14,11 +14,12 @@ use Inertia\Response;
 
 class InventoryController extends Controller
 {
-    public function index(Request $request): Response
+    public function index(Request $request, ?string $listType = null): Response
     {
         $inventoryCategoryOptions = InventoryCategory::all();
         $inventoryUnitOptions = InventoryUnit::all();
         $inventoryList = app(InventoryService::class)->getInventoryList(
+            $listType,
             $request->keyword,
             $request->selectId,
             $request->path(),
@@ -28,6 +29,7 @@ class InventoryController extends Controller
             'inventoryCategoryOptions',
             'inventoryUnitOptions',
             'inventoryList',
+            'listType',
         ));
     }
 
@@ -109,5 +111,19 @@ class InventoryController extends Controller
     public function getAuditLog(string $id): array
     {
         return app(InventoryService::class)->getAuditLog($id);
+    }
+
+    public function hideItem(string $id): void
+    {
+        Inventory::where('id', $id)->update([
+            'status' => false,
+        ]);
+    }
+
+    public function showItem(string $id): void
+    {
+        Inventory::where('id', $id)->update([
+            'status' => true,
+        ]);
     }
 }

@@ -71,6 +71,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
     'selling_price_vat_exclusive',
     'selling_price_vat_inclusive',
     'photo',
+    'status',
     'created_by',
     'last_modified_by',
 ])]
