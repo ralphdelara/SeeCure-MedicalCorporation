@@ -76,21 +76,27 @@ class BillingService
             });
         }
 
-        // emergency patients first
-        $billingList = $billingList->orderBy(
-            Visit::select('is_emergency')
-                ->whereColumn('visits.id', 'billing.visit_id')
-                ->limit(1),
-            'desc',
-        );
+        if ($status !== 'completed') {
+            // emergency patients first
+            $billingList = $billingList->orderBy(
+                Visit::select('is_emergency')
+                    ->whereColumn('visits.id', 'billing.visit_id')
+                    ->limit(1),
+                'desc',
+            );
 
-        // priority patients first
-        $billingList = $billingList->orderBy(
-            'has_priority',
-            'desc',
-        );
+            // priority patients first
+            $billingList = $billingList->orderBy(
+                'has_priority',
+                'desc',
+            );
 
-        $billingList = $billingList->orderBy('created_at')->paginate(50)
+            $billingList = $billingList->orderBy('created_at');
+        } else {
+            $billingList = $billingList->orderBy('created_at', 'desc');
+        }
+
+        $billingList = $billingList->paginate(50)
             ->withPath('/'.$path)->withQueryString();
 
         $tableData = $billingList->collect()->toArray();

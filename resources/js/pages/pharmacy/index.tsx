@@ -177,9 +177,9 @@ export default function Pharmacy() {
                                         <td className="sticky-right">
                                             <CallPatientButton
                                                 totalCount={pageData.total}
-                                                patientName={item.visit.patient.full_name}
+                                                patientName={item.visit.patient?.full_name}
                                                 upNext={
-                                                    tableData[index + 1]?.visit.patient.full_name ??
+                                                    tableData[index + 1]?.visit.patient?.full_name ??
                                                     'None'
                                                 }
                                                 department="Pharmacy"

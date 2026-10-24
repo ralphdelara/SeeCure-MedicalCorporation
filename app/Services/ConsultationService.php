@@ -96,21 +96,27 @@ class ConsultationService
             });
         }
 
-        // emergency patients first
-        $consultationList = $consultationList->orderBy(
-            Visit::select('is_emergency')
-                ->whereColumn('visits.id', 'consultations.visit_id')
-                ->limit(1),
-            'desc',
-        );
+        if ($status !== 'completed') {
+            // emergency patients first
+            $consultationList = $consultationList->orderBy(
+                Visit::select('is_emergency')
+                    ->whereColumn('visits.id', 'consultations.visit_id')
+                    ->limit(1),
+                'desc',
+            );
 
-        // priority patients first
-        $consultationList = $consultationList->orderBy(
-            'has_priority',
-            'desc',
-        );
+            // priority patients first
+            $consultationList = $consultationList->orderBy(
+                'has_priority',
+                'desc',
+            );
 
-        $consultationList = $consultationList->orderBy('created_at')->paginate(50)
+            $consultationList = $consultationList->orderBy('created_at');
+        } else {
+            $consultationList = $consultationList->orderBy('created_at', 'desc');
+        }
+
+        $consultationList = $consultationList->paginate(50)
             ->withPath('/'.$path)->withQueryString();
 
         $tableData = $consultationList->collect()->toArray();

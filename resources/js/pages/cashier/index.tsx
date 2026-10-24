@@ -166,10 +166,10 @@ export default function Cashier() {
                                         <td className="sticky-right">
                                             <CallPatientButton
                                                 totalCount={pageData.total}
-                                                patientName={item.visit.patient.full_name}
+                                                patientName={item.visit.patient?.full_name}
                                                 upNext={
-                                                    tableData[index + 1]?.visit.patient.full_name ??
-                                                    'None'
+                                                    tableData[index + 1]?.visit.patient
+                                                        ?.full_name ?? 'None'
                                                 }
                                                 department="Cashier"
                                             />

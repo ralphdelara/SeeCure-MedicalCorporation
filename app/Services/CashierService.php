@@ -73,21 +73,27 @@ class CashierService
             });
         }
 
-        // emergency patients first
-        $cashierList = $cashierList->orderBy(
-            Visit::select('is_emergency')
-                ->whereColumn('visits.id', 'cashier.visit_id')
-                ->limit(1),
-            'desc',
-        );
+        if ($status !== 'completed') {
+            // emergency patients first
+            $cashierList = $cashierList->orderBy(
+                Visit::select('is_emergency')
+                    ->whereColumn('visits.id', 'cashier.visit_id')
+                    ->limit(1),
+                'desc',
+            );
 
-        // priority patients first
-        $cashierList = $cashierList->orderBy(
-            'has_priority',
-            'desc',
-        );
+            // priority patients first
+            $cashierList = $cashierList->orderBy(
+                'has_priority',
+                'desc',
+            );
 
-        $cashierList = $cashierList->orderBy('created_at')->paginate(50)
+            $cashierList = $cashierList->orderBy('created_at');
+        } else {
+            $cashierList = $cashierList->orderBy('created_at', 'desc');
+        }
+
+        $cashierList = $cashierList->paginate(50)
             ->withPath('/'.$path)->withQueryString();
 
         $tableData = $cashierList->collect()->toArray();
