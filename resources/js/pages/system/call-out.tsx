@@ -1,10 +1,10 @@
-import { Head, Link, usePage } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import logo from '@/assets/images/logos/logo.png';
 import { useEffect, useRef, useState } from 'react';
-import { Button } from '@/components/ui/button';
 import {
     IconBuildingBank,
     IconFlask,
+    IconHome,
     IconPrescription,
     IconReportMoney,
     IconScan,
@@ -14,8 +14,7 @@ import '@/assets/css/call-out.css';
 import { echo } from '@/components/echo';
 import notificationSound from '@/assets/sounds/ding-dong.mp3';
 import { useSpeech } from 'react-text-to-speech';
-import { dashboard } from '@/routes';
-import { Modal } from 'react-bootstrap';
+import { system } from '@/routes';
 import { Select } from '@/components/ui/select';
 import ad1_1 from '@/assets/images/ads/ad1-1.svg';
 import ad1_2 from '@/assets/images/ads/ad1-2.svg';
@@ -26,13 +25,21 @@ import ad2_3 from '@/assets/images/ads/ad2-3.svg';
 import { item } from '@/routes/billing-supplies';
 
 export default function CallOut() {
-    const { pendingCounts } = usePage().props;
+    const { pendingCounts } = usePage().props as unknown as {
+        pendingCounts: {
+            Consultation: number;
+            Laboratory: number;
+            Radiology: number;
+            Pharmacy: number;
+            Billing: number;
+            Cashier: number;
+        };
+    };
     const [speechText, setSpeechText] = useState('');
     const [maximize, setMaximize] = useState(false);
     const startButtonRef = useRef<HTMLButtonElement>(null);
     const [blinkText, setBlinkText] = useState('blink');
     const [voiceList, setVoiceList] = useState([]);
-    const [showSpeakerModal, setShowSpeakerModal] = useState(false);
     const [selectedSpeaker, setSelectedSpeaker] = useState('');
     const [selectedSpeakerValue, setSelectedSpeakerValue] = useState('');
 
@@ -56,7 +63,7 @@ export default function CallOut() {
     });
     const [dateString, setDateString] = useState('-');
     const [timeString, setTimeString] = useState('--:--:--');
-    const [latestCalled, setLatestCalled] = useState({
+    const [latestCalled, setLatestCalled] = useState<any>({
         Consultation: '',
         Laboratory: '',
         Radiology: '',
@@ -64,7 +71,7 @@ export default function CallOut() {
         Billing: '',
         Cashier: '',
     });
-    const [upNext, setUpNext] = useState({
+    const [upNext, setUpNext] = useState<any>({
         Consultation: '',
         Laboratory: '',
         Radiology: '',
@@ -72,7 +79,7 @@ export default function CallOut() {
         Billing: '',
         Cashier: '',
     });
-    const [waitingPatients, setWaitingPatients] = useState({
+    const [waitingPatients, setWaitingPatients] = useState<any>({
         Consultation: pendingCounts['Cashier'],
         Laboratory: pendingCounts['Laboratory'],
         Radiology: pendingCounts['Radiology'],
@@ -208,17 +215,17 @@ export default function CallOut() {
                     department: e.department,
                 });
 
-                setLatestCalled((prev) => ({
+                setLatestCalled((prev: any) => ({
                     ...prev,
                     [e.department]: e.patientName,
                 }));
 
-                setUpNext((prev) => ({
+                setUpNext((prev: any) => ({
                     ...prev,
                     [e.department]: e.upNext,
                 }));
 
-                setWaitingPatients((prev) => ({
+                setWaitingPatients((prev: any) => ({
                     ...prev,
                     [e.department]: e.departmentCount,
                 }));
@@ -293,10 +300,18 @@ export default function CallOut() {
                     <div className="brand">
                         <img className="logo" src={logo} alt="SEE CURE Medical Corporation logo" />
                         <div className="controls">
+                            <button
+                                className="icon-btn"
+                                type="button"
+                                aria-label="Home"
+                                onClick={() => (window.location.href = system().url)}
+                            >
+                                <IconHome />
+                            </button>
                             <a
                                 className="icon-btn"
                                 href="#sound-modal"
-                                aria-label="Open call announcement settings"
+                                aria-label="Open voice settings"
                             >
                                 <svg
                                     aria-hidden="true"
