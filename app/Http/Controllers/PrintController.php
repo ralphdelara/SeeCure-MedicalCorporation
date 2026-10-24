@@ -38,6 +38,17 @@ class PrintController extends Controller
         $rightPtrNo = $consultation->doctor->ptr_no;
         $prescriptionRemarks = $consultation->prescription_remarks;
         $consultDate = $consultation->created_at->format('m/d/Y');
+        $prescriptionData = [];
+        $prescriptionCount = 0;
+
+        foreach ($prescription->toArray() as $key => $value) {
+            if ($key > 0 && ($key + 1) % 7 === 0) {
+                $prescriptionCount++;
+            }
+            $prescriptionData[$prescriptionCount][] = $value;
+        }
+
+        $prescription = $prescriptionData;
 
         return Inertia::render('print-templates/prescription', compact(
             'printTitle',
@@ -83,6 +94,32 @@ class PrintController extends Controller
             $billing->visit->patient?->is_pwd    => $billing->visit->patient?->pwd_id,
             default                              => null,
         };
+
+        $billing = $billing->toArray();
+        $billingDetails = [];
+        $billingDetailsCount = 0;
+        $billingItemsCounter = 0;
+
+        foreach ($billing['details'] as $key => $value) {
+            $billingDetails[$billingDetailsCount][] = $value;
+
+            if (count($billing['details']) > 16 && ($key + 1) % 16 === 0) {
+                $billingItemsCounter = -1;
+                $billingDetailsCount++;
+            }
+
+            $billingItemsCounter++;
+        }
+
+        if (
+            count($billing['details']) % 16 === 0
+            || ($billing['total_discount'] > 0 && $billingItemsCounter % 14 === 0)
+            || ($billing['total_discount'] > 0 && $billingItemsCounter % 15 === 0)
+        ) {
+            $billingDetails[] = [null];
+        }
+
+        $billing['details'] = $billingDetails;
 
         return Inertia::render('print-templates/billing', compact(
             'printTitle',

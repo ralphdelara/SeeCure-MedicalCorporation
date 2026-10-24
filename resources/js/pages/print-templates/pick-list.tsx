@@ -1,9 +1,7 @@
 import { useEffect } from 'react';
-import Footer from './footer';
-import Header from './header';
 import { usePage } from '@inertiajs/react';
 import '@/assets/css/print-receipt.css';
-import { addZeroes, formatReceiptDateTime } from '@/lib/utils';
+import { formatReceiptDateTime } from '@/lib/utils';
 
 const PickList = () => {
     const { pickListDetails, pickListData } = usePage().props as unknown as {
@@ -19,15 +17,21 @@ const PickList = () => {
     }, []);
     return (
         <>
-            <table>
+            <table style={{ width: '215px' }}>
                 <tbody>
                     <tr>
-                        <td className="text-center" colSpan={2} style={{ fontSize: '13px' }}>
+                        <td
+                            className="text-center"
+                            colSpan={2}
+                            style={{ fontSize: '12px', fontWeight: 'bold' }}
+                        >
                             PICK LIST
                         </td>
                     </tr>
                     <tr>
-                        <td colSpan={2}>-------------------------------------</td>
+                        <td colSpan={2}>
+                            <hr className="text-dark border-dark my-2 border-dashed p-0" />
+                        </td>
                     </tr>
                     <tr>
                         <td className="text-center" colSpan={2}>
@@ -35,7 +39,11 @@ const PickList = () => {
                         </td>
                     </tr>
                     <tr>
-                        <td className="text-center" colSpan={2} style={{ fontSize: '12px' }}>
+                        <td
+                            className="text-center"
+                            colSpan={2}
+                            style={{ fontSize: '12px', fontWeight: 'bold' }}
+                        >
                             {pickListData.transaction_no}
                         </td>
                     </tr>
@@ -50,7 +58,9 @@ const PickList = () => {
                         </td>
                     </tr>
                     <tr>
-                        <td colSpan={2}>-------------------------------------</td>
+                        <td colSpan={2}>
+                            <hr className="text-dark border-dark my-2 border-dashed p-0" />
+                        </td>
                     </tr>
                     <tr>
                         <td colSpan={2}>
@@ -89,13 +99,15 @@ const PickList = () => {
                         </td>
                     </tr>
                     <tr>
-                        <td style={{ fontSize: '12px' }}>TOTAL SALES:</td>
-                        <td style={{ fontSize: '12px' }} className="text-right">
+                        <td style={{ fontSize: '12px', fontWeight: 'bold' }}>TOTAL SALES:</td>
+                        <td style={{ fontSize: '12px', fontWeight: 'bold' }} className="text-right">
                             {pickListDetails.total_nett_price}
                         </td>
                     </tr>
                     <tr>
-                        <td colSpan={2}>-------------------------------------</td>
+                        <td colSpan={2}>
+                            <hr className="text-dark border-dark my-2 border-dashed p-0" />
+                        </td>
                     </tr>
                     <tr>
                         <td colSpan={2} className="text-center">
