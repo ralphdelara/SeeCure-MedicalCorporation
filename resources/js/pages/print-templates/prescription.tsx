@@ -1,9 +1,8 @@
 import { Fragment, useEffect } from 'react';
 import { usePage } from '@inertiajs/react';
-import '@/assets/css/print.css';
-import RxIcon from '@/assets/images/prescription/rx-icon.png';
-import PrescriptionHeader from './prescription-header';
-import PrintHeader from './print-header';
+import '@/assets/css/print-design.css';
+import prescriptionBg from '@/assets/images/print-templates/prescription.png';
+import prescriptionBgWithPtr from '@/assets/images/print-templates/prescription_with_ptr.png';
 
 const Default = () => {
     const { prescription } = usePage().props as unknown as {
@@ -13,184 +12,234 @@ const Default = () => {
             sig: string;
         }[];
     };
-    const { prescriptionRemarks, rightFullName, rightPtrNo, rightLicNo } = usePage()
-        .props as unknown as {
-        prescriptionRemarks: string;
-        leftFullName: string;
-        leftPtrNo: string;
-        leftLicNo: string;
-        rightFullName: string;
-        rightPtrNo: string;
-        rightLicNo: string;
-        controlNo: string;
-    };
+    const { patient, consultDate, prescriptionRemarks, rightFullName, rightPtrNo, rightLicNo } =
+        usePage().props as unknown as {
+            patient: {
+                full_name: string;
+                computed_age: string;
+                gender: {
+                    name: 'string';
+                };
+                full_address: string;
+                age_computed: string;
+            };
+            prescriptionRemarks: string;
+            leftFullName: string;
+            leftPtrNo: string;
+            leftLicNo: string;
+            rightFullName: string;
+            rightPtrNo: string;
+            rightLicNo: string;
+            controlNo: string;
+            consultDate: string;
+        };
 
     useEffect(() => {
         setTimeout(() => {
-            window.print();
+            //    window.print();
         }, 1000);
     }, []);
+
+    const columns = [
+        { label: 'MEDICINE', key: 'inventory_name', align: 'left', width: '1fr', isBold: true },
+        { label: 'QTY', key: 'quantity', align: 'left', width: '60px', prefix: '# ' },
+    ];
+
+    const gridColsTemplate = columns.map((col) => col.width || '1fr').join(' ');
+
     return (
-        <div
-            style={{
-                position: 'relative',
-                width: '557px',
-                height: '500px',
-            }}
-        >
-            <PrintHeader />
-            <PrescriptionHeader />
-            <table
-                style={{
-                    width: '557px',
-                    fontSize: '15px',
-                }}
-                className="mt-2"
-            >
-                <tbody>
-                    <tr>
-                        <td
-                            rowSpan={prescription.length}
-                            style={{ width: '30px', verticalAlign: 'top' }}
+        <div className="print-design">
+            {prescription.map((item, index) => (
+                <div
+                    style={{
+                        width: '557px',
+                        height: '792px',
+                        position: 'relative',
+                        marginTop: '1px',
+                    }}
+                    key={'prescription-' + index}
+                >
+                    <img
+                        src={rightPtrNo != '' ? prescriptionBgWithPtr : prescriptionBg}
+                        style={{ height: '100%', position: 'absolute', zIndex: '-1' }}
+                    />
+                    <div
+                        style={{
+                            position: 'absolute',
+                            marginTop: '110px',
+                            marginLeft: '105px',
+                            fontSize: '11px',
+                        }}
+                    >
+                        <b className="text-dark">{patient.full_name.toUpperCase()}</b>
+                    </div>
+                    <div
+                        style={{
+                            position: 'absolute',
+                            marginTop: '139px',
+                            marginLeft: '105px',
+                            fontSize: '11px',
+                        }}
+                    >
+                        <b className="text-dark">{patient.full_address?.toUpperCase()}</b>
+                    </div>
+                    <div
+                        style={{
+                            position: 'absolute',
+                            marginTop: '168px',
+                            marginLeft: '120px',
+                            fontSize: '11px',
+                        }}
+                    >
+                        <b className="text-dark">{patient.gender?.name.toUpperCase() ?? ''}</b>
+                    </div>
+                    <div
+                        style={{
+                            position: 'absolute',
+                            marginTop: '168px',
+                            marginLeft: '255px',
+                            fontSize: '11px',
+                        }}
+                    >
+                        <b className="text-dark">{patient.age_computed?.toUpperCase() ?? ''}</b>
+                    </div>
+                    <div
+                        style={{
+                            position: 'absolute',
+                            marginTop: '168px',
+                            marginLeft: '410px',
+                            fontSize: '11px',
+                        }}
+                    >
+                        <b className="text-dark">{consultDate?.toUpperCase() ?? ''}</b>
+                    </div>
+
+                    <div
+                        style={{
+                            position: 'absolute',
+                            fontSize: '10px',
+                            marginTop: rightPtrNo != '' ? '625px' : '645px',
+                            marginLeft: '335px',
+                            textWrap: 'nowrap',
+                            textAlign: 'center',
+                            width: '200px',
+                        }}
+                    >
+                        <b className="text-dark">{rightFullName?.toUpperCase() ?? ''}</b>
+                    </div>
+
+                    <div
+                        style={{
+                            position: 'absolute',
+                            fontSize: '10px',
+                            marginTop: rightPtrNo != '' ? '652px' : '672px',
+                            marginLeft: '414px',
+                            textWrap: 'nowrap',
+                            textAlign: 'center',
+                            width: '105px',
+                        }}
+                    >
+                        <b className="text-dark">{rightLicNo?.toUpperCase() ?? ''}</b>
+                    </div>
+
+                    {rightPtrNo && (
+                        <div
+                            style={{
+                                position: 'absolute',
+                                fontSize: '10px',
+                                marginTop: '675px',
+                                marginLeft: '414px',
+                                textWrap: 'nowrap',
+                                textAlign: 'center',
+                                width: '105px',
+                            }}
                         >
-                            <img
-                                src={RxIcon}
-                                style={{
-                                    height: '30px',
-                                }}
-                            />
-                        </td>
-                        <td style={{ padding: '30px' }}>
-                            <table>
-                                <tbody>
-                                    {prescription.map((item, index) => (
-                                        <Fragment key={'tr-' + index}>
-                                            <tr>
-                                                <td
-                                                    width="95%"
-                                                    className="mt-2"
-                                                    valign="top"
-                                                    style={{ fontSize: '15px', color: '#000' }}
-                                                >
-                                                    <b>{item.inventory_name}</b>
-                                                </td>
-                                                <td
-                                                    width="5%"
-                                                    className="mt-2 ps-2 text-right text-nowrap"
-                                                    valign="top"
-                                                    style={{ fontSize: '15px', color: '#000' }}
-                                                >
-                                                    x {item.quantity}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td
-                                                    style={{ fontSize: '15px', color: '#000' }}
-                                                    colSpan={2}
-                                                >
-                                                    <i>
-                                                        Sig:{' '}
-                                                        {item.sig
-                                                            .replace('Sig:', '')
-                                                            .replace('sig:', '')
-                                                            .replace('SIG:', '')}
-                                                    </i>
-                                                </td>
-                                            </tr>
-                                        </Fragment>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <table style={{ width: '557px' }}>
-                <tbody>
-                    <tr>
-                        <td colSpan={2}>
-                            <div className="d-flex">
-                                <p
-                                    style={{
-                                        fontSize: '15px',
-                                        color: '#000',
-                                        padding: 0,
-                                        margin: 0,
-                                    }}
-                                    className="fw-bolder"
+                            <b className="text-dark">{rightPtrNo?.toUpperCase() ?? ''}</b>
+                        </div>
+                    )}
+
+                    {prescriptionRemarks && (
+                        <div
+                            className="text-dark"
+                            style={{
+                                position: 'absolute',
+                                fontSize: '11px',
+                                marginTop: '615px',
+                                marginLeft: '15px',
+                                width: '305px',
+                            }}
+                        >
+                            <b className="text-dark">Remarks:</b> {prescriptionRemarks}
+                        </div>
+                    )}
+                    <div
+                        className="bill-table"
+                        style={{
+                            position: 'absolute',
+                            marginTop: '200px',
+                            right: '0',
+                            width: '420px', // Restrains layout explicitly to your 420px master print bounds
+                            '--grid-cols': gridColsTemplate,
+                        }}
+                    >
+                        {/* Dynamic Table Header */}
+                        <div className="bill-row bill-head">
+                            {columns.map((col, idx) => (
+                                <span key={'th-' + idx} className={col.align || 'left'}>
+                                    {col.label}
+                                </span>
+                            ))}
+                        </div>
+
+                        {/* Dynamic Table Body */}
+                        {item.map((rowItem, rowIndex) => (
+                            <Fragment key={'row-' + rowIndex + '-' + index}>
+                                {/* Primary Data Row */}
+                                <div
+                                    className="bill-row bill-item"
+                                    style={{ border: '0', paddingBottom: '0' }}
                                 >
-                                    Remarks:
-                                </p>
-                                <div style={{ marginLeft: '10px', width: '70%' }}>
-                                    {prescriptionRemarks ?? <>&nbsp;</>}
-                                    <hr
-                                        className="border-dark"
-                                        style={{ margin: '0', width: '100%' }}
-                                    />
+                                    {columns.map((col, colIdx) => {
+                                        const value = rowItem[col.key];
+                                        return (
+                                            <span
+                                                key={`cell-${index}-${colIdx}`}
+                                                className={col.align || 'left'}
+                                            >
+                                                {col.isBold ? (
+                                                    <b>{value}</b>
+                                                ) : (
+                                                    <>
+                                                        {col.prefix}
+                                                        {value}
+                                                    </>
+                                                )}
+                                            </span>
+                                        );
+                                    })}
                                 </div>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <table style={{ width: '557px', marginTop: '30px' }}>
-                <tbody>
-                    <tr>
-                        <td width="40%"></td>
-                        <td style={{ padding: '20px' }}>
-                            {rightFullName && (
-                                <>
-                                    <div className="text-center text-nowrap">
-                                        {rightFullName && (
-                                            <p
-                                                style={{
-                                                    fontSize: '14px',
-                                                    color: '#000',
-                                                    padding: 0,
-                                                    margin: 0,
-                                                }}
-                                                className="fw-bolder"
-                                            >
-                                                {rightFullName.toUpperCase()}
-                                            </p>
-                                        )}
-                                        <hr
-                                            className="border-dark"
-                                            style={{ margin: '0', width: '100%' }}
-                                        />
-                                        {rightLicNo && (
-                                            <p
-                                                style={{
-                                                    fontSize: '14px',
-                                                    color: '#000',
-                                                    padding: 0,
-                                                    margin: 0,
-                                                }}
-                                                className="fw-bolder"
-                                            >
-                                                PRC LICENSE NO. {rightLicNo}
-                                            </p>
-                                        )}
-                                        {rightPtrNo && (
-                                            <p
-                                                style={{
-                                                    fontSize: '14px',
-                                                    color: '#000',
-                                                    padding: 0,
-                                                    margin: 0,
-                                                }}
-                                                className="fw-bolder"
-                                            >
-                                                PTR NO. {rightPtrNo}
-                                            </p>
-                                        )}
+
+                                {/* Secondary Full-Width Instruction Row */}
+                                {rowItem.sig !== null && rowItem.sig !== '' && (
+                                    <div
+                                        className="bill-row bill-item colspan-full"
+                                        style={{ paddingTop: '0' }}
+                                    >
+                                        <span>
+                                            <i>
+                                                Sig:{' '}
+                                                {rowItem.sig
+                                                    .replace(/sig:/i, '') // Cleans prefixes safely using case-insensitive regex
+                                                    .trim()}
+                                            </i>
+                                        </span>
                                     </div>
-                                </>
-                            )}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                                )}
+                            </Fragment>
+                        ))}
+                    </div>
+                </div>
+            ))}
         </div>
     );
 };

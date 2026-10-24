@@ -83,7 +83,7 @@ class UserController extends Controller
 
         if (! empty($userDetails['user_id'])) {
             if (
-                (int) $userDetails['user_id'] !== Auth::id()
+                $userDetails['user_id'] !== Auth::id()
                 && ! Auth::user()->is_admin
             ) {
                 // prevent non admin users from updating other users information

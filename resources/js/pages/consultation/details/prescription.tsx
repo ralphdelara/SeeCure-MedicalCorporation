@@ -22,6 +22,7 @@ import CompleteConsultation from './complete-consultation';
 import { printDocument } from '@/lib/utils';
 import TableCounter from '@/components/table-counter';
 import { Input } from '@/components/ui/input';
+import FormHeader from '@/components/ui/form-header';
 
 interface InertiaProps {
     consultationDetails: {
@@ -67,8 +68,7 @@ const Prescription = ({ showTab }: { showTab: boolean }) => {
 
     const header = [
         { name: '#', align: 'right' },
-        { name: 'Medicine', align: 'left' },
-        { name: 'Sig', align: 'left' },
+        { name: 'Medicine • Sig', align: 'left', className: 'sticky-left' },
         { name: 'Quantity', align: 'right' },
         { name: 'Added By', align: 'left' },
         { name: 'Last Modified By', align: 'left' },
@@ -76,6 +76,7 @@ const Prescription = ({ showTab }: { showTab: boolean }) => {
             name: '',
             width: '15%',
             align: 'right',
+            className: 'sticky-right',
         },
     ];
 
@@ -140,8 +141,24 @@ const Prescription = ({ showTab }: { showTab: boolean }) => {
                                     {prescriptions.map((item, index) => (
                                         <tr key={'prescription-' + item.id}>
                                             <td className="text-right">{index + 1}</td>
-                                            <td>{item.inventory_name}</td>
-                                            <td>{item.sig}</td>
+                                            <td className="sticky-left">
+                                                <div className="d-flex align-items-center">
+                                                    <div className="ms-3">
+                                                        <h6
+                                                            className="fs-4 fw-semibold mb-0 text-wrap"
+                                                            style={{ width: '350px' }}
+                                                        >
+                                                            {item.inventory_name}
+                                                        </h6>
+                                                        <span
+                                                            className="fw-normal"
+                                                            style={{ width: '300px' }}
+                                                        >
+                                                            {item.sig}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </td>
                                             <td className="text-right">{item.quantity}</td>
                                             <td>
                                                 <div className="d-flex align-items-start">
@@ -167,7 +184,7 @@ const Prescription = ({ showTab }: { showTab: boolean }) => {
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td>
+                                            <td className="sticky-right">
                                                 <Button
                                                     rounded={true}
                                                     title="Edit"
@@ -212,8 +229,8 @@ const Prescription = ({ showTab }: { showTab: boolean }) => {
                                 </TableList>
                                 <TableCounter table={prescriptions} tableTitle="Prescription" />
                             </div>
-                            <form onSubmit={submitPrescriptionRemarks}>
-                                <h5>Remarks</h5>
+                            <form onSubmit={submitPrescriptionRemarks} className="mb-5">
+                                <FormHeader align="left">Remarks</FormHeader>
                                 <Input
                                     value={data.prescription_remarks}
                                     onChange={(e) =>
@@ -224,6 +241,7 @@ const Prescription = ({ showTab }: { showTab: boolean }) => {
                                     <IconDeviceFloppy /> Save Remarks
                                 </Button>
                             </form>
+                            &nbsp;
                         </div>
                     </div>
                 </div>

@@ -399,8 +399,14 @@ export default function NavHeader({ toggleSidebar }: NavHeaderProps) {
                         </div>
                         <div>
                             <h4 className="fw-bolder">
-                                {warning.title} - <b>{warning.current}</b> out of{' '}
-                                <b>{warning.total}</b> records
+                                {warning.title}
+                                {warning.total > 0 && (
+                                    <>
+                                        {' '}
+                                        - <b>{warning.current}</b> out of <b>{warning.total}</b>{' '}
+                                        records
+                                    </>
+                                )}
                             </h4>
                             <h5>{warning.msg}</h5>
                         </div>

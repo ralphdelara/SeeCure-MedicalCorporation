@@ -18,6 +18,8 @@ class CallOut implements ShouldBroadcastNow
     public function __construct(
         public string $patientName,
         public string $department,
+        public string $upNext,
+        public string $departmentCount,
     ) {}
 
     /**

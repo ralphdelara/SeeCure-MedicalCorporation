@@ -1,17 +1,16 @@
-@import url('@/assets/css/fonts-ocr-b.css');
+@import url('@/assets/css/fonts-dot-matrix.css');
 
 :root {
     /* Define your "Office Theme" variables */
-    --ms-theme-headings: 'OCR-B' !important;
-    --ms-theme-body: 'OCR-B' !important;
-    font-family: 'OCR-B' !important;
+    --ms-theme-headings: 'Arial' !important;
+    --ms-theme-body: 'Arial' !important;
+    font-family: 'Arial' !important;
 }
 
 table tr td {
-    font-family: 'OCR-B';
+    font-family: 'Arial';
     color: #000;
     font-size: 9px;
-    letter-spacing: -0.2em;
 }
 
 .print-receipt-details tr td {

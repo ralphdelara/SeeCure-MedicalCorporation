@@ -1,34 +1,47 @@
-import { Head, Link } from '@inertiajs/react';
-import logo from '@/assets/images/logos/logo_text.png';
+import { Head, usePage } from '@inertiajs/react';
+import logo from '@/assets/images/logos/logo.png';
 import { useEffect, useRef, useState } from 'react';
-import { Button } from '@/components/ui/button';
 import {
-    IconArrowsMaximize,
-    IconArrowsMinimize,
     IconBuildingBank,
     IconFlask,
+    IconHome,
     IconPrescription,
     IconReportMoney,
     IconScan,
-    IconSpeakerphone,
     IconStethoscope,
 } from '@tabler/icons-react';
 import '@/assets/css/call-out.css';
 import { echo } from '@/components/echo';
 import notificationSound from '@/assets/sounds/ding-dong.mp3';
 import { useSpeech } from 'react-text-to-speech';
-import { dashboard } from '@/routes';
-import { Modal } from 'react-bootstrap';
+import { system } from '@/routes';
 import { Select } from '@/components/ui/select';
+import ad1_1 from '@/assets/images/ads/ad1-1.svg';
+import ad1_2 from '@/assets/images/ads/ad1-2.svg';
+import ad1_3 from '@/assets/images/ads/ad1-3.svg';
+import ad2_1 from '@/assets/images/ads/ad2-1.svg';
+import ad2_2 from '@/assets/images/ads/ad2-2.svg';
+import ad2_3 from '@/assets/images/ads/ad2-3.svg';
+import { item } from '@/routes/billing-supplies';
 
 export default function CallOut() {
+    const { pendingCounts } = usePage().props as unknown as {
+        pendingCounts: {
+            Consultation: number;
+            Laboratory: number;
+            Radiology: number;
+            Pharmacy: number;
+            Billing: number;
+            Cashier: number;
+        };
+    };
     const [speechText, setSpeechText] = useState('');
     const [maximize, setMaximize] = useState(false);
     const startButtonRef = useRef<HTMLButtonElement>(null);
     const [blinkText, setBlinkText] = useState('blink');
     const [voiceList, setVoiceList] = useState([]);
-    const [showSpeakerModal, setShowSpeakerModal] = useState(false);
     const [selectedSpeaker, setSelectedSpeaker] = useState('');
+    const [selectedSpeakerValue, setSelectedSpeakerValue] = useState('');
 
     const { Text, speechStatus, start, pause, stop } = useSpeech({
         text: speechText.split('|')[0],
@@ -50,13 +63,29 @@ export default function CallOut() {
     });
     const [dateString, setDateString] = useState('-');
     const [timeString, setTimeString] = useState('--:--:--');
-    const [lastCalled, setLastCalled] = useState({
+    const [latestCalled, setLatestCalled] = useState<any>({
         Consultation: '',
         Laboratory: '',
         Radiology: '',
         Pharmacy: '',
         Billing: '',
         Cashier: '',
+    });
+    const [upNext, setUpNext] = useState<any>({
+        Consultation: '',
+        Laboratory: '',
+        Radiology: '',
+        Pharmacy: '',
+        Billing: '',
+        Cashier: '',
+    });
+    const [waitingPatients, setWaitingPatients] = useState<any>({
+        Consultation: pendingCounts['Cashier'],
+        Laboratory: pendingCounts['Laboratory'],
+        Radiology: pendingCounts['Radiology'],
+        Pharmacy: pendingCounts['Pharmacy'],
+        Billing: pendingCounts['Billing'],
+        Cashier: pendingCounts['Cashier'],
     });
 
     const departments = [
@@ -151,6 +180,7 @@ export default function CallOut() {
 
     useEffect(() => {
         setSelectedSpeaker(localStorage.getItem('speaker') ?? ('' as any));
+        setSelectedSpeakerValue(localStorage.getItem('speaker-value') ?? ('' as any));
     }, [localStorage]);
 
     const playSound = async () => {
@@ -170,30 +200,48 @@ export default function CallOut() {
     useEffect(() => {
         const channel = echo.channel('call-out');
 
-        channel.listen('CallOut', (e: { patientName: string; department: string }) => {
-            playSound();
+        channel.listen(
+            'CallOut',
+            (e: {
+                patientName: string;
+                department: string;
+                upNext: string;
+                departmentCount: string;
+            }) => {
+                playSound();
 
-            setCalledDepartment({
-                patientName: e.patientName,
-                department: e.department,
-            });
+                setCalledDepartment({
+                    patientName: e.patientName,
+                    department: e.department,
+                });
 
-            setLastCalled((prev) => ({
-                ...prev,
-                [e.department]: e.patientName,
-            }));
+                setLatestCalled((prev: any) => ({
+                    ...prev,
+                    [e.department]: e.patientName,
+                }));
 
-            // adding date ensures the call out will talk even with same patient name and department name
-            setSpeechText(
-                `Patient ${e.patientName}, please proceed to ${e.department}. NOW!!!!|${new Date()}`,
-            );
+                setUpNext((prev: any) => ({
+                    ...prev,
+                    [e.department]: e.upNext,
+                }));
 
-            setBlinkText('blink');
+                setWaitingPatients((prev: any) => ({
+                    ...prev,
+                    [e.department]: e.departmentCount,
+                }));
 
-            setTimeout(() => {
-                setBlinkText('');
-            }, 6000);
-        });
+                // adding date ensures the call out will talk even with same patient name and department name
+                setSpeechText(
+                    `Patient ${e.patientName}, please proceed to ${e.department}. NOW!!!!|${new Date()}`,
+                );
+
+                setBlinkText('blink');
+
+                setTimeout(() => {
+                    setBlinkText('');
+                }, 6000);
+            },
+        );
 
         return () => {
             echo.leaveChannel('call-out');
@@ -234,7 +282,9 @@ export default function CallOut() {
 
     const updateSpeaker = (e: any) => {
         localStorage.setItem('speaker', e.target.options[e.target.selectedIndex].text);
+        localStorage.setItem('speaker-value', e.target.value);
         setSelectedSpeaker(e.target.options[e.target.selectedIndex].text);
+        setSelectedSpeakerValue(e.target.value);
     };
 
     return (
@@ -245,134 +295,194 @@ export default function CallOut() {
                     Start
                 </button>
             </div>
-            <section id="view-display" className="view active">
-                <div className="display">
-                    <div className="display-head">
-                        <div className="left">
-                            <div>
-                                <Link href={dashboard().url}>
-                                    <img src={logo} alt="logo" style={{ width: '300px' }} />
-                                </Link>
-                            </div>
-                            {!maximize && (
-                                <IconArrowsMaximize
-                                    onClick={() => toggleMaximize(true)}
-                                    className="cursor-pointer"
-                                />
-                            )}
-                            {maximize && (
-                                <IconArrowsMinimize
-                                    onClick={() => toggleMaximize(false)}
-                                    className="cursor-pointer"
-                                />
-                            )}
-                            <IconSpeakerphone
-                                size={30}
-                                className="cursor-pointer"
-                                onClick={() => setShowSpeakerModal(true)}
-                            />
-                        </div>
-                        <div className="clock">
-                            <div className="time" id="clock">
-                                {timeString}
-                            </div>
-                            <div className="date" id="date">
-                                {dateString}
-                            </div>
+            <div className="screen">
+                <header className="topbar-call-out">
+                    <div className="brand">
+                        <img className="logo" src={logo} alt="SEE CURE Medical Corporation logo" />
+                        <div className="controls">
+                            <button
+                                className="icon-btn"
+                                type="button"
+                                aria-label="Home"
+                                onClick={() => (window.location.href = system().url)}
+                            >
+                                <IconHome />
+                            </button>
+                            <a
+                                className="icon-btn"
+                                href="#sound-modal"
+                                aria-label="Open voice settings"
+                            >
+                                <svg
+                                    aria-hidden="true"
+                                    width="22"
+                                    height="22"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="#FFFFFF"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+                                    <path d="M11 5 6 9H2v6h4l5 4V5z" />
+                                    <path d="M15.5 8.5a5 5 0 0 1 0 7" />
+                                    <path d="M19 5a10 10 0 0 1 0 14" />
+                                </svg>
+                            </a>
+                            <button
+                                className="icon-btn"
+                                type="button"
+                                aria-label="Full screen"
+                                onClick={() => toggleMaximize(!maximize)}
+                            >
+                                <svg
+                                    aria-hidden="true"
+                                    width="22"
+                                    height="22"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="#FFFFFF"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+                                    <path d="M8 3H5a2 2 0 0 0-2 2v3" />
+                                    <path d="M21 8V5a2 2 0 0 0-2-2h-3" />
+                                    <path d="M3 16v3a2 2 0 0 0 2 2h3" />
+                                    <path d="M16 21h3a2 2 0 0 0 2-2v-3" />
+                                </svg>
+                            </button>
                         </div>
                     </div>
-                    <div className="grid" id="display-grid">
-                        <div className="now-calling">
-                            <div className="calling-label">
-                                <span className="pulse">
-                                    <span className="ping"></span>
-                                    <span></span>
-                                </span>
-                                Now Calling
-                            </div>
-                            {calledDepartment.department !== '' && (
-                                <>
-                                    <div className="dept-chip">
-                                        {calledDepartment.department}
-                                        <span className="num">#1</span>
-                                    </div>
-                                    <h2 className={'patient-name text-white ' + blinkText}>
-                                        {calledDepartment.patientName}
-                                    </h2>
-                                    <p className="proceed fs-9">
-                                        Please proceed to{' '}
-                                        <span className="fw-bolder fs-10">
-                                            {calledDepartment.department}
-                                        </span>
-                                    </p>
-                                </>
-                            )}
-                            {calledDepartment.department === '' && (
-                                <div className="empty">
-                                    <h2 className="text-white">No patient is being called</h2>
-                                    <p>Waiting for the next call…</p>
-                                </div>
-                            )}
+                    <div className="clock">
+                        {dateString} · <strong>{timeString}</strong>
+                    </div>
+                </header>
+
+                <main className="content">
+                    <section className="queue" aria-label="Department queues">
+                        <div className="queue-head row-grid">
+                            <div>DEPARTMENT</div>
+                            <div>NOW SERVING · NEXT UP</div>
+                            <div>WAITING</div>
                         </div>
                         {departments.map((item, index) => (
-                            <div
+                            <article
                                 className={
-                                    'dept-card ' +
-                                    item.ring +
-                                    (item.name === calledDepartment.department ? ' active' : '')
+                                    'row-call-out row-grid' +
+                                    (calledDepartment.department === item.name ? ' is-called' : '')
                                 }
-                                key={'callOut-department-' + index}
+                                key={'department-' + index}
                             >
-                                <div className="dept-top">
-                                    <div className={'dept-icon ' + item.grad}>{item.icon}</div>
-                                    <span className="dept-name">{item.name}</span>
-                                </div>
-                                {lastCalled[item.name as keyof typeof lastCalled] !== '' ? (
-                                    <div className="dept-body">
-                                        <div className="lbl">Latest Called</div>
-                                        <div className="name">
-                                            {lastCalled[item.name as keyof typeof lastCalled]}
+                                <div>
+                                    <div className="dept">
+                                        {item.icon} {item.name}
+                                    </div>
+                                    {calledDepartment.department === item.name && (
+                                        <div className="callout">
+                                            <svg
+                                                aria-hidden="true"
+                                                width="18"
+                                                height="18"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="#F2CB5C"
+                                                strokeWidth="2.2"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            >
+                                                <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+                                                <path d="M13.7 21a2 2 0 0 1-3.4 0" />
+                                            </svg>
+                                            PLEASE PROCEED
                                         </div>
-                                        <div className="qnum">#1</div>
+                                    )}
+                                </div>
+                                <div>
+                                    <div
+                                        className={
+                                            'patient' +
+                                            (calledDepartment.department === item.name
+                                                ? ' ' + blinkText
+                                                : '')
+                                        }
+                                    >
+                                        {latestCalled[item.name] !== ''
+                                            ? latestCalled[item.name]
+                                            : 'No Patients Called'}
                                     </div>
-                                ) : (
-                                    <div className="dept-body dept-empty mt-5">
-                                        <div className="name">No call yet</div>
-                                        <div className="sub">Awaiting patients…</div>
+                                    <div className="next">
+                                        Next up: <strong>{upNext[item.name]}</strong>
                                     </div>
-                                )}
-                            </div>
+                                </div>
+                                <div className="waiting">{waitingPatients[item.name]} patients</div>
+                            </article>
                         ))}
-                    </div>
-                </div>
+                    </section>
 
-                <Modal show={showSpeakerModal} size="sm" onHide={() => setShowSpeakerModal(false)}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Speaker</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <div className="wizard clearfix px-4" role="application">
-                            <h5>{selectedSpeaker}</h5>
-                            <div className="form-group">
-                                <Select
-                                    onChange={(e) => updateSpeaker(e)}
-                                    options={voiceList}
-                                    required={true}
-                                />
+                    <aside className="ads" aria-label="Advertisements">
+                        <a className="ad-tile ad-tile--a" href="#" aria-label="Advertisement 1">
+                            <div className="track">
+                                <img src={ad1_1} alt="Ad image 1-1" />
+                                <img src={ad1_2} alt="Ad image 1-2" />
+                                <img src={ad1_3} alt="Ad image 1-3" />
+                                <img src={ad1_1} alt="" aria-hidden="true" />
                             </div>
-                        </div>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button
-                            variant="light"
-                            type="button"
-                            onClick={() => setShowSpeakerModal(false)}
-                        >
-                            Close
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
-            </section>
+                        </a>
+                        <a className="ad-tile ad-tile--b" href="#" aria-label="Advertisement 2">
+                            <div className="track">
+                                <img src={ad2_1} alt="Ad image 2-1" />
+                                <img src={ad2_2} alt="Ad image 2-2" />
+                                <img src={ad2_3} alt="Ad image 2-3" />
+                                <img src={ad2_1} alt="" aria-hidden="true" />
+                            </div>
+                        </a>
+                    </aside>
+                </main>
+            </div>
+
+            <div
+                className="modal"
+                id="sound-modal"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="sound-title"
+            >
+                <a className="modal-backdrop" href="#" aria-label="Close"></a>
+                <div className="modal-card">
+                    <div className="modal-head">
+                        <h2 id="sound-title">Update Voice</h2>
+                        <a className="modal-x" href="#" aria-label="Close">
+                            <svg
+                                aria-hidden="true"
+                                width="22"
+                                height="22"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2.2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <path d="M18 6 6 18" />
+                                <path d="m6 6 12 12" />
+                            </svg>
+                        </a>
+                    </div>
+                    <div className="field">
+                        <label htmlFor="voice">Voice</label>
+                        <Select
+                            onChange={(e) => updateSpeaker(e)}
+                            value={selectedSpeakerValue}
+                            options={voiceList}
+                            required={true}
+                        />
+                    </div>
+                    <a className="btn" href="#">
+                        Done
+                    </a>
+                </div>
+            </div>
         </div>
     );
 }

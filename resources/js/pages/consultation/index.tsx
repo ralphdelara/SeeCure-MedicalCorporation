@@ -12,6 +12,7 @@ import { fetchUrl } from '@/lib/utils';
 import personDefault from '@/assets/images/profile/person-default.png';
 import { callOutPatient } from '@/routes/system';
 import { ConsultationList } from '@/types/consultation';
+import CallPatientButton from '@/components/call-patient-button';
 
 interface InertiaProps {
     consultationList: {
@@ -23,7 +24,6 @@ interface InertiaProps {
 export default function Consultation() {
     const { consultationList } = usePage().props as unknown as InertiaProps;
     const { tableData, pageData } = consultationList;
-    const [allowCallPatient, setAllowCallPatient] = useState(true);
 
     const header = [
         { name: '#', align: 'right' },
@@ -43,29 +43,6 @@ export default function Consultation() {
     const selectOption = {
         options: [],
         type: 'All Status',
-    };
-
-    const callPatient = async (patientName: string) => {
-        if (!allowCallPatient) return;
-
-        // Lock the button immediately BEFORE the network request starts
-        setAllowCallPatient(false);
-
-        try {
-            const response = await fetchUrl(callOutPatient().url, 'POST', {
-                patientName: patientName,
-                department: 'Consultation',
-            });
-
-            // Handle your response here if needed
-        } catch (error) {
-            console.error('Failed to call patient:', error);
-            setAllowCallPatient(true);
-        } finally {
-            const timer = setTimeout(() => {
-                setAllowCallPatient(true);
-            }, 10000);
-        }
     };
 
     return (
@@ -265,18 +242,14 @@ export default function Consultation() {
                                     </div>
                                 </td>
                                 <td className="sticky-right">
-                                    <Button
-                                        rounded={true}
-                                        className="me-1 mb-1"
-                                        title={allowCallPatient ? 'Call Patient' : 'Please wait...'}
-                                        disabled={!allowCallPatient}
-                                        onClick={() => callPatient(item.visit.patient.full_name)}
-                                    >
-                                        <i>
-                                            {allowCallPatient && <IconVolume size={18} />}
-                                            {!allowCallPatient && <IconVolumeOff size={18} />}
-                                        </i>
-                                    </Button>
+                                    <CallPatientButton
+                                        totalCount={pageData.total}
+                                        patientName={item.visit.patient?.full_name}
+                                        upNext={
+                                            tableData[index + 1]?.visit.patient?.full_name ?? 'None'
+                                        }
+                                        department="Consultation"
+                                    />
                                     <Link href={getConsultationDetails(item.id)}>
                                         <Button
                                             rounded={true}

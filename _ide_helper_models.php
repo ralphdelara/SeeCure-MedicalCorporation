@@ -764,6 +764,8 @@ namespace App\Models{
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\InventoryStockMovement> $stockMovement
  * @property-read int|null $stock_movement_count
  * @mixin \Eloquent
+ * @property bool $status
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Inventory whereStatus($value)
  */
 	class Inventory extends \Eloquent {}
 }
@@ -993,7 +995,7 @@ namespace App\Models{
 /**
  * @property string $laboratory_id
  * @property int $laboratory_package_id
- * @property-read \App\Models\Laboratory $laboratory
+ * @property-read \App\Models\Laboratory|null $laboratory
  * @property-read \App\Models\LaboratoryPackage|null $package
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryPackageData newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryPackageData newQuery()

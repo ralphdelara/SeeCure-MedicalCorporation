@@ -1,0 +1,81 @@
+.print-design {
+    --green: #0fae03;
+    --green-light: #e3f5e0;
+    --green-line: #d3f0cf;
+    --green-dark: #0a6e02;
+    --ink: #1d2b3a;
+}
+
+/* 1. Reset parent table container */
+.bill-table {
+    display: block;
+    box-sizing: border-box;
+    color: var(--ink);
+}
+
+/* 2. Configure a completely flexible grid structure using CSS Variables */
+.bill-row {
+    display: grid;
+    /* Uses --grid-cols variable passed from React, or defaults to 4 columns */
+    grid-template-columns: var(--grid-cols, repeat(4, 1fr));
+    align-items: center;
+    column-gap: 12px;
+    padding: 6px 10px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+/* Fixed column spanning utility classes */
+.bill-row.colspan-2 > :first-child {
+    grid-column: span 2;
+}
+
+.bill-row.colspan-3 > :first-child {
+    grid-column: span 3;
+}
+
+.bill-row.colspan-4 > :first-child {
+    grid-column: span 4;
+}
+
+/* Keep this as a safety fallback to always stretch completely across */
+.bill-row.colspan-full > :first-child {
+    grid-column: 1 / -1;
+}
+
+/* Header */
+.bill-head {
+    min-height: 28px;
+    background: linear-gradient(rgba(0, 0, 0, 0.22), rgba(0, 0, 0, 0.22)), var(--green);
+    color: #fff;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    border-radius: 8px 8px 0 0;
+}
+
+/* Body rows */
+.bill-item {
+    min-height: 26px;
+    border-bottom: 1px solid var(--green-line);
+    font-size: 11px;
+    font-weight: 500;
+}
+
+/* Ensure text elements break lines seamlessly within their grid columns */
+.bill-row span {
+    word-break: break-word;
+    overflow-wrap: break-word;
+    display: inline-block;
+}
+
+/* Text utility classes */
+.left {
+    text-align: left;
+}
+.center {
+    text-align: center;
+}
+.right {
+    text-align: right;
+}

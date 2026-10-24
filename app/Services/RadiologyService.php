@@ -14,7 +14,7 @@ class RadiologyService
     public function getRadiologyList(
         ?string $keyword,
         ?string $status,
-        string $path
+        string $path,
     ): array {
         $billingList = Billing::with([
             'patient' => function ($query) {
@@ -34,6 +34,10 @@ class RadiologyService
             'lastModifiedBy.professions',
             'lastModifiedBy.specialties',
             'visit',
+        ])->withExists([
+            'visit as has_priority' => function ($query) {
+                $query->whereHas('priorityTypes');
+            },
         ]);
 
         if (! empty($keyword)) {
@@ -53,6 +57,20 @@ class RadiologyService
                     ->where('is_completed', false);
             });
         }
+
+        // emergency patients first
+        $billingList = $billingList->orderBy(
+            Visit::select('is_emergency')
+                ->whereColumn('visits.id', 'billing.visit_id')
+                ->limit(1),
+            'desc',
+        );
+
+        // priority patients first
+        $billingList = $billingList->orderBy(
+            'has_priority',
+            'desc',
+        );
 
         $billingList = $billingList->orderBy('created_at')->paginate(50)
             ->withPath('/'.$path)->withQueryString();

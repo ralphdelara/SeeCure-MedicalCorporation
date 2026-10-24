@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 class InventoryService
 {
     public function getInventoryList(
+        ?string $listType,
         ?string $keyword,
         ?string $selectId,
         string $path,
@@ -35,7 +36,7 @@ class InventoryService
             'category' => function ($query) {
                 $query->select('id', 'name');
             },
-        ]);
+        ])->where('status', ! ($listType === 'hidden-items'));
 
         if (! empty($keyword)) {
             $inventoryList = $inventoryList->whereLike('name', '%'.$keyword.'%');
@@ -89,7 +90,7 @@ class InventoryService
             $inventory = $inventory->where('inventory_category_id', '=', $requestDetails['category_id']);
         }
 
-        $inventory = $inventory->where('stock', '>', 0)->orderBy('name')->limit(50)
+        $inventory = $inventory->where('stock', '>', 0)->whereStatus(true)->orderBy('name')->limit(50)
             ->get();
 
         return $inventory->toArray();

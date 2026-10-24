@@ -4,12 +4,7 @@ import '@/assets/css/print-receipt.css';
 import { addZeroes, formatReceiptDateTime } from '@/lib/utils';
 
 const PickList = () => {
-    const {
-        receiptData,
-        itemData,
-        transactionNo,
-        companyProfile,
-    } = usePage().props as unknown as {
+    const { receiptData, itemData, transactionNo, companyProfile } = usePage().props as unknown as {
         receiptData: any;
         itemData: {
             details: {
@@ -45,10 +40,14 @@ const PickList = () => {
     }, []);
     return (
         <>
-            <table style={{ width: '300px' }}>
+            <table style={{ width: '215px' }}>
                 <tbody>
                     <tr>
-                        <td className="text-center" colSpan={2} style={{ fontSize: '15px' }}>
+                        <td
+                            className="text-center"
+                            colSpan={2}
+                            style={{ fontSize: '12px', fontWeight: 'bold' }}
+                        >
                             {companyProfile.company_name.toUpperCase()}
                         </td>
                     </tr>
@@ -92,7 +91,7 @@ const PickList = () => {
                         <td
                             className="text-center"
                             colSpan={2}
-                            style={{ fontSize: '14px', width: '100px' }}
+                            style={{ fontSize: '12px', fontWeight: 'bold', width: '100px' }}
                         >
                             SALES INVOICE
                         </td>
@@ -125,7 +124,9 @@ const PickList = () => {
                         </td>
                     </tr>
                     <tr>
-                        <td colSpan={2}>--------------------------------------------------</td>
+                        <td colSpan={2}>
+                            <hr className="text-dark border-dark my-2 border-dashed p-0" />
+                        </td>
                     </tr>
                     <tr>
                         <td colSpan={2}>
@@ -140,7 +141,7 @@ const PickList = () => {
                                 <tbody>
                                     <tr>
                                         <td colSpan={3}>
-                                            -------------------------------------------------
+                                            <hr className="text-dark border-dark my-2 border-dashed p-0" />
                                         </td>
                                     </tr>
                                     {itemData.details.map((item, index) => (
@@ -175,8 +176,8 @@ const PickList = () => {
                         </td>
                     </tr>
                     <tr>
-                        <td style={{ fontSize: '12px' }}>TOTAL SALES:</td>
-                        <td style={{ fontSize: '12px' }} className="text-right">
+                        <td style={{ fontSize: '12px', fontWeight: 'bold' }}>TOTAL SALES:</td>
+                        <td style={{ fontSize: '12px', fontWeight: 'bold', textAlign: 'right' }} className="text-right">
                             {parseFloat(itemData.total_nett_price).toLocaleString('en-US', {
                                 minimumFractionDigits: 2,
                                 maximumFractionDigits: 2,
@@ -184,11 +185,13 @@ const PickList = () => {
                         </td>
                     </tr>
                     <tr>
-                        <td colSpan={2}>--------------------------------------------------</td>
+                        <td colSpan={2}>
+                            <hr className="text-dark border-dark my-2 border-dashed p-0" />
+                        </td>
                     </tr>
                     <tr>
-                        <td style={{ fontSize: '13px' }}>TOTAL AMOUNT DUE:</td>
-                        <td style={{ fontSize: '13px' }} className="text-right">
+                        <td style={{ fontSize: '12px', fontWeight: 'bold' }}>TOTAL AMOUNT DUE:</td>
+                        <td style={{ fontSize: '12px', fontWeight: 'bold' }} className="text-right">
                             {parseFloat(itemData.total_nett_price).toLocaleString('en-US', {
                                 minimumFractionDigits: 2,
                                 maximumFractionDigits: 2,
@@ -214,13 +217,15 @@ const PickList = () => {
                         </td>
                     </tr>
                     <tr>
-                        <td style={{ fontSize: '13px' }}>CHANGE:</td>
-                        <td style={{ fontSize: '13px' }} className="text-right">
+                        <td style={{ fontSize: '12px', fontWeight: 'bold' }}>CHANGE:</td>
+                        <td style={{ fontSize: '12px', fontWeight: 'bold' }} className="text-right">
                             {receiptData.amount_change}
                         </td>
                     </tr>
                     <tr>
-                        <td colSpan={2}>--------------------------------------------------</td>
+                        <td colSpan={2}>
+                            <hr className="text-dark border-dark my-2 border-dashed p-0" />
+                        </td>
                     </tr>
                     <tr>
                         <td colSpan={2} className="text-center">
@@ -229,10 +234,12 @@ const PickList = () => {
                     </tr>
                 </tbody>
             </table>
-            <table style={{ width: '300px' }}>
+            <table style={{ width: '215px' }}>
                 <tbody>
                     <tr>
-                        <td colSpan={2}>--------------------------------------------------</td>
+                        <td colSpan={2}>
+                            <hr className="text-dark border-dark my-2 border-dashed p-0" />
+                        </td>
                     </tr>
                     <tr>
                         <td>CUST NAME:</td>
@@ -255,7 +262,7 @@ const PickList = () => {
                         <td className="text-right">-</td>
                     </tr>
                     <tr>
-                        <td>SC/PWD/NAAC/SP/MOV ID:</td>
+                        <td>SC/PWD/SP ID:</td>
                         <td className="text-right">{receiptData.id_no ?? '-'}</td>
                     </tr>
                     <tr>
@@ -263,7 +270,9 @@ const PickList = () => {
                         <td className="text-right">__________________________</td>
                     </tr>
                     <tr>
-                        <td colSpan={2}>--------------------------------------------------</td>
+                        <td colSpan={2}>
+                            <hr className="text-dark border-dark my-2 border-dashed p-0" />
+                        </td>
                     </tr>
                     <tr>
                         <td colSpan={2} className="text-center">
