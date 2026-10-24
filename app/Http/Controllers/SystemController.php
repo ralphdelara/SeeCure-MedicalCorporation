@@ -3,7 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Events\CallOut;
+use App\Models\Billing;
+use App\Models\Cashier;
 use App\Models\CompanyProfile;
+use App\Models\Consultation;
+use App\Models\Laboratory;
+use App\Models\Pharmacy;
+use App\Models\Radiology;
 use Auth;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -18,7 +24,16 @@ class SystemController extends Controller
 
     public function callOut(): Response
     {
-        return Inertia::render('system/call-out');
+        $pendingCounts = [
+            'Consultation' => Consultation::where('is_completed', false)->count(),
+            'Laboratory'   => Laboratory::where('is_completed', false)->count(),
+            'Radiology'    => Radiology::where('is_completed', false)->count(),
+            'Billing'      => Billing::where('is_completed', false)->count(),
+            'Pharmacy'     => Pharmacy::where('is_completed', false)->count(),
+            'Cashier'      => Cashier::where('is_completed', false)->count(),
+        ];
+
+        return Inertia::render('system/call-out', compact('pendingCounts'));
     }
 
     public function callOutPatient(Request $request): void
@@ -26,6 +41,8 @@ class SystemController extends Controller
         broadcast(new CallOut(
             $request->patientName ?? '',
             $request->department ?? '',
+            $request->upNext ?? '',
+            $request->departmentCount ?? '',
         ));
     }
 

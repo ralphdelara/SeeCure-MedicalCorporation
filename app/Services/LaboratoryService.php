@@ -56,6 +56,10 @@ class LaboratoryService
             'lastModifiedBy.professions',
             'lastModifiedBy.specialties',
             'lastModifiedBy',
+        ])->withExists([
+            'visit as has_priority' => function ($query) {
+                $query->whereHas('priorityTypes');
+            },
         ]);
 
         if (! empty($keyword)) {
@@ -82,8 +86,21 @@ class LaboratoryService
             });
         }
 
-        $laboratoryList = $laboratoryList
-            ->paginate(50)
+        // emergency patients first
+        $laboratoryList = $laboratoryList->orderBy(
+            Visit::select('is_emergency')
+                ->whereColumn('visits.id', 'laboratory.visit_id')
+                ->limit(1),
+            'desc',
+        );
+
+        // priority patients first
+        $laboratoryList = $laboratoryList->orderBy(
+            'has_priority',
+            'desc',
+        );
+
+        $laboratoryList = $laboratoryList->orderBy('created_at')->paginate(50)
             ->withPath('/'.$path)->withQueryString();
 
         $tableData = $laboratoryList->collect()->toArray();

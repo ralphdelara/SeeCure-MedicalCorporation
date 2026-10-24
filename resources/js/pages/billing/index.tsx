@@ -13,6 +13,7 @@ import personDefault from '@/assets/images/profile/person-default.png';
 import { useState } from 'react';
 import { fetchUrl } from '@/lib/utils';
 import { callOutPatient } from '@/routes/system';
+import CallPatientButton from '@/components/call-patient-button';
 
 interface InertiaProps {
     billingList: {
@@ -36,30 +37,6 @@ export default function Billing() {
     ];
     const { billingList } = usePage().props as unknown as InertiaProps;
     const { tableData, pageData } = billingList;
-    const [allowCallPatient, setAllowCallPatient] = useState(true);
-
-    const callPatient = async (patientName: string) => {
-        if (!allowCallPatient) return;
-
-        // Lock the button immediately BEFORE the network request starts
-        setAllowCallPatient(false);
-
-        try {
-            const response = await fetchUrl(callOutPatient().url, 'POST', {
-                patientName: patientName,
-                department: 'Billing',
-            });
-
-            // Handle your response here if needed
-        } catch (error) {
-            console.error('Failed to call patient:', error);
-            setAllowCallPatient(true);
-        } finally {
-            const timer = setTimeout(() => {
-                setAllowCallPatient(true);
-            }, 10000);
-        }
-    };
 
     return (
         <>
@@ -193,26 +170,15 @@ export default function Billing() {
                                             </div>
                                         </td>
                                         <td className="sticky-right">
-                                            <Button
-                                                rounded={true}
-                                                className="me-1"
-                                                title={
-                                                    allowCallPatient
-                                                        ? 'Call Patient'
-                                                        : 'Please wait...'
+                                            <CallPatientButton
+                                                totalCount={pageData.total}
+                                                patientName={item.visit.patient.full_name}
+                                                upNext={
+                                                    tableData[index + 1]?.visit.patient.full_name ??
+                                                    'None'
                                                 }
-                                                disabled={!allowCallPatient}
-                                                onClick={() =>
-                                                    callPatient(item.visit.patient.full_name)
-                                                }
-                                            >
-                                                <i>
-                                                    {allowCallPatient && <IconVolume size={18} />}
-                                                    {!allowCallPatient && (
-                                                        <IconVolumeOff size={18} />
-                                                    )}
-                                                </i>
-                                            </Button>
+                                                department="Billing"
+                                            />
 
                                             <Link href={getBillingDetails(item.id)}>
                                                 <Button

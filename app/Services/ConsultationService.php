@@ -66,6 +66,10 @@ class ConsultationService
             'signsOrSymptoms',
             'doctor.professions',
             'doctor.specialties',
+        ])->withExists([
+            'visit as has_priority' => function ($query) {
+                $query->whereHas('priorityTypes');
+            },
         ]);
 
         if (! empty($keyword)) {
@@ -91,6 +95,20 @@ class ConsultationService
                     ->where('is_completed', false);
             });
         }
+
+        // emergency patients first
+        $consultationList = $consultationList->orderBy(
+            Visit::select('is_emergency')
+                ->whereColumn('visits.id', 'consultations.visit_id')
+                ->limit(1),
+            'desc',
+        );
+
+        // priority patients first
+        $consultationList = $consultationList->orderBy(
+            'has_priority',
+            'desc',
+        );
 
         $consultationList = $consultationList->orderBy('created_at')->paginate(50)
             ->withPath('/'.$path)->withQueryString();

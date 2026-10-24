@@ -44,6 +44,10 @@ class PharmacyService
             },
             'lastModifiedBy.professions',
             'lastModifiedBy.specialties',
+        ])->withExists([
+            'visit as has_priority' => function ($query) {
+                $query->whereHas('priorityTypes');
+            },
         ]);
 
         if (! empty($keyword)) {
@@ -68,6 +72,20 @@ class PharmacyService
             // removed ->where('visit_status_id', VisitStatusEnum::IN_PHARMACY)
             // to show all pending patients, patient can choose not to purchase medicine
         }
+
+        // emergency patients first
+        $pharmacyList = $pharmacyList->orderBy(
+            Visit::select('is_emergency')
+                ->whereColumn('visits.id', 'pharmacy.visit_id')
+                ->limit(1),
+            'desc',
+        );
+
+        // priority patients first
+        $pharmacyList = $pharmacyList->orderBy(
+            'has_priority',
+            'desc',
+        );
 
         $pharmacyList = $pharmacyList->orderBy('created_at')->paginate(50)
             ->withPath('/'.$path)->withQueryString();
