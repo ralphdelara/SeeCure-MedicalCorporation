@@ -1,0 +1,179 @@
+:root {
+    --green: #0eaf00;
+    --green-deep: #0a6b00;
+    --ink: #12301a;
+    --muted: #4d6654;
+    --gold: #d4b04c;
+    --gold-light: #f6d06a;
+    --tint: #f1fbef;
+    --white: #fff;
+}
+* {
+    box-sizing: border-box;
+    margin: 0;
+}
+html,
+body {
+    height: 100%;
+}
+body {
+    font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    color: var(--ink);
+    background: var(--white);
+    background-image:
+        radial-gradient(circle at 0 0, var(--tint) 0, transparent 38%),
+        radial-gradient(circle at 100% 100%, var(--tint) 0, transparent 38%);
+    display: grid;
+    grid-template-rows: 1fr auto;
+    line-height: 1.55;
+}
+main {
+    display: grid;
+    place-items: center;
+    padding: clamp(24px, 6vw, 64px) 20px;
+}
+.card {
+    width: 100%;
+    max-width: 560px;
+    text-align: center;
+}
+
+.seal {
+    width: clamp(132px, 30vw, 176px);
+    aspect-ratio: 1;
+    margin: 0 auto 8px;
+    padding: 6px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold-light), var(--gold) 55%, #b8993f);
+    position: relative;
+}
+.seal::before,
+.seal::after {
+    /* gold beads, echoing the ring ends on the logo */
+    content: '';
+    position: absolute;
+    bottom: 14%;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--gold-light);
+    box-shadow: 0 0 0 3px #fff6d9;
+}
+.seal::before {
+    left: -2px;
+}
+.seal::after {
+    right: -2px;
+}
+.seal div {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: #fff url('/logo-error-pages.png') center/192% no-repeat;
+}
+
+.code {
+    font-family: 'Arial Black', 'Helvetica Neue', Impact, sans-serif;
+    font-weight: 900;
+    font-size: clamp(76px, 22vw, 148px);
+    line-height: 1;
+    letter-spacing: 0.06em;
+    color: var(--green);
+    margin-top: 10px;
+    padding-left: 0.06em;
+}
+.pulse {
+    display: block;
+    width: min(320px, 80%);
+    height: 48px;
+    margin: 0 auto 6px;
+    overflow: visible;
+}
+.pulse path {
+    fill: none;
+    stroke: var(--gold);
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 520;
+    stroke-dashoffset: 520;
+    animation: draw 1.6s 0.2s ease-out forwards;
+}
+@keyframes draw {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+h1 {
+    font-size: clamp(24px, 5.5vw, 32px);
+    line-height: 1.2;
+    color: var(--green-deep);
+    margin: 14px 0 10px;
+    font-weight: 700;
+}
+p {
+    color: var(--muted);
+    max-width: 46ch;
+    margin: 0 auto;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 30px;
+}
+.btn {
+    display: inline-block;
+    padding: 13px 26px;
+    border-radius: 999px;
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 1rem;
+    border: 2px solid var(--green);
+    transition:
+        background 0.15s,
+        color 0.15s;
+}
+.btn.primary {
+    background: var(--green);
+    color: #fff;
+}
+.btn.primary:hover {
+    background: var(--green-deep);
+    border-color: var(--green-deep);
+}
+.btn.secondary {
+    background: transparent;
+    color: var(--green-deep);
+    border-color: var(--gold);
+}
+.btn.secondary:hover {
+    background: var(--gold-light);
+}
+.btn:focus-visible {
+    outline: 3px solid var(--ink);
+    outline-offset: 3px;
+}
+
+footer {
+    text-align: center;
+    padding: 18px 20px;
+    font-size: 0.85rem;
+    color: var(--muted);
+    border-top: 3px solid var(--gold);
+    background: #fff;
+}
+footer strong {
+    color: var(--green-deep);
+    letter-spacing: 0.04em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pulse path {
+        animation: none;
+        stroke-dashoffset: 0;
+    }
+}
