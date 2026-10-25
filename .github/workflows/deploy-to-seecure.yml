@@ -13,6 +13,12 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v7
 
+      - name: Start Developer update warning
+        shell: powershell -ExecutionPolicy Bypass {0}
+        run: |
+          cd "C:\SeeCure"
+          php artisan system-updates:start
+
       # Sync only the modified files to your live folder
       - name: Move Updated Files Only
         shell: powershell -ExecutionPolicy Bypass {0}
@@ -65,3 +71,9 @@ jobs:
         run: |
           cd "C:\SeeCure"
           npm run build
+
+      - name: Stop Developer update warning
+        shell: powershell -ExecutionPolicy Bypass {0}
+        run: |
+          cd "C:\SeeCure"
+          php artisan system-updates:stop
