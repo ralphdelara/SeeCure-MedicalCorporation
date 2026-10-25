@@ -36,7 +36,7 @@ const Default = () => {
 
     useEffect(() => {
         setTimeout(() => {
-            //    window.print();
+            window.print();
         }, 1000);
     }, []);
 
