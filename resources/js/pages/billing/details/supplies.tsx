@@ -7,6 +7,7 @@ import TableList from '@/components/table';
 import { usePage } from '@inertiajs/react';
 import DeleteButton from '@/components/delete-button';
 import { deleteBilling } from '@/actions/App/Http/Controllers/BillingController';
+import { deleteBillingSupply } from '@/actions/App/Http/Controllers/BillingSuppliesController';
 
 const Supplies = ({ showTab }: { showTab: boolean }) => {
     const { billingDetails } = usePage().props;
@@ -119,7 +120,7 @@ const Supplies = ({ showTab }: { showTab: boolean }) => {
                                                     </Button>
 
                                                     <DeleteButton
-                                                        url={deleteBilling(item.id).url}
+                                                        url={deleteBillingSupply(item.id).url}
                                                         msg={'<b>' + item.name + '</b>'}
                                                         successUrl={
                                                             window.location.pathname +
