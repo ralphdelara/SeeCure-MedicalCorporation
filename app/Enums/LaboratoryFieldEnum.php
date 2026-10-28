@@ -27,6 +27,7 @@ enum LaboratoryFieldEnum: int
     case IONIZED_MAGNESIUM = 17;
     case FIRST_HOUR = 18;
     case SECOND_HOUR = 19;
+    case HBA1C = 97;
 
     // Hematology
     case HEMA_BLOOD_STUDIES = 20;
@@ -140,6 +141,7 @@ enum LaboratoryFieldEnum: int
             self::IONIZED_MAGNESIUM => 'Ionized Magnesium',
             self::FIRST_HOUR        => 'First Hour',
             self::SECOND_HOUR       => 'Second Hour',
+            self::HBA1C             => 'HBA1C',
 
             // Hematology
             self::HEMA_BLOOD_STUDIES      => 'BLOOD STUDIES',
@@ -251,6 +253,7 @@ enum LaboratoryFieldEnum: int
             self::IONIZED_MAGNESIUM => 'numeric',
             self::FIRST_HOUR        => 'numeric',
             self::SECOND_HOUR       => 'numeric',
+            self::HBA1C             => 'numeric',
 
             // Hematology
             self::HEMA_BLOOD_STUDIES      => 'label',
@@ -488,6 +491,14 @@ enum LaboratoryFieldEnum: int
                 'female_min' => null,
                 'female_max' => null,
             ],
+            self::HBA1C => [
+                'both_min'   => null,
+                'both_max'   => 42,
+                'male_min'   => null,
+                'male_max'   => null,
+                'female_min' => null,
+                'female_max' => null,
+            ],
 
             // Hematology
             self::HEMA_BLOOD_STUDIES => null,
@@ -711,6 +722,7 @@ enum LaboratoryFieldEnum: int
             self::IONIZED_MAGNESIUM => 'mmol/L',
             self::FIRST_HOUR        => 'mmol/L',
             self::SECOND_HOUR       => 'mmol/L',
+            self::HBA1C             => 'mmol/mol',
 
             // Hematology
             self::HEMA_BLOOD_STUDIES      => null,

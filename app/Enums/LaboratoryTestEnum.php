@@ -26,6 +26,7 @@ enum LaboratoryTestEnum: int
     case CHLORIDE = 15;
     case IONIZED_CALCIUM = 16;
     case IONIZED_MAGNESIUM = 17;
+    case HBA1C = 35;
 
     // CLINICAL MICROSCOPY
     case URINALYSIS = 18;
@@ -73,6 +74,7 @@ enum LaboratoryTestEnum: int
             self::CHLORIDE          => 'Chloride',
             self::IONIZED_CALCIUM   => 'Ionized Calcium',
             self::IONIZED_MAGNESIUM => 'Ionized Magnesium',
+            self::HBA1C             => 'HBA1C',
 
             self::URINALYSIS         => 'Urinalysis',
             self::FECALYSIS          => 'Fecalysis',
@@ -116,6 +118,7 @@ enum LaboratoryTestEnum: int
             self::CHLORIDE          => 450,
             self::IONIZED_CALCIUM   => 850,
             self::IONIZED_MAGNESIUM => 850,
+            self::HBA1C             => 1200,
 
             self::URINALYSIS         => 120,
             self::FECALYSIS          => 150,
@@ -194,6 +197,9 @@ enum LaboratoryTestEnum: int
             ],
             self::IONIZED_MAGNESIUM => [
                 LaboratoryFieldEnum::IONIZED_MAGNESIUM,
+            ],
+            self::HBA1C => [
+                LaboratoryFieldEnum::HBA1C,
             ],
             self::URINALYSIS => [
                 LaboratoryFieldEnum::URI_PHYSICAL_PROPERTIES,
@@ -348,6 +354,7 @@ enum LaboratoryTestEnum: int
             self::CHLORIDE          => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
             self::IONIZED_CALCIUM   => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
             self::IONIZED_MAGNESIUM => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
+            self::HBA1C             => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
 
             // CLINICAL MICROSCOPY
             self::URINALYSIS         => LaboratoryTypeEnum::CLINICAL_MICROSCOPY,
