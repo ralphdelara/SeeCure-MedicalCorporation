@@ -197,7 +197,7 @@ const Default = () => {
                                                 col.key === 'cost_price' ||
                                                 col.key === 'total_price'
                                             ) {
-                                                value = formatMoney(rowItem[col.key]);
+                                                value = formatMoney(rowItem[col.key] ?? '0');
                                             } else if (col.key === 'name') {
                                                 value = <b>{rowItem[col.key]}</b>;
                                             } else {
@@ -232,7 +232,7 @@ const Default = () => {
                                                 className="right"
                                                 style={{ fontSize: '14px', fontWeight: 'bold' }}
                                             >
-                                                {formatMoney(billing.total_price)}
+                                                {formatMoney(billing.total_price ?? '0')}
                                             </span>
                                         </div>
                                         <div className="bill-row bill-item colspan-3">
@@ -249,7 +249,7 @@ const Default = () => {
                                                 className="right"
                                                 style={{ fontSize: '14px', fontWeight: 'bold' }}
                                             >
-                                                {formatMoney(billing.total_discount)}
+                                                {formatMoney(billing.total_discount ?? '0')}
                                             </span>
                                         </div>
                                     </>
@@ -265,7 +265,7 @@ const Default = () => {
                                         className="right"
                                         style={{ fontSize: '14px', fontWeight: 'bold' }}
                                     >
-                                        {formatMoney(billing.total_nett_price)}
+                                        {formatMoney(billing.total_nett_price ?? '0')}
                                     </span>
                                 </div>
                             </>
