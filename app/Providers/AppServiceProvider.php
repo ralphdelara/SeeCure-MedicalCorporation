@@ -33,15 +33,21 @@ use App\Observers\PrescriptionObserver;
 use App\Observers\UserObserver;
 use App\Observers\VisitObserver;
 use Carbon\CarbonImmutable;
+use Google\Client;
+use Google\Service\Drive;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\Grammars\PostgresGrammar;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Fluent;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
+use League\Flysystem\Filesystem;
+use Masbug\Flysystem\GoogleDriveAdapter;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -98,6 +104,44 @@ class AppServiceProvider extends ServiceProvider
         Payment::observe(PaymentObserver::class);
         Patient::observe(PatientObserver::class);
         User::observe(UserObserver::class);
+
+        Storage::extend('google', function ($app, $config) {
+            $client = new Client;
+            $client->setClientId($config['clientId']);
+            $client->setClientSecret($config['clientSecret']);
+            $client->refreshToken($config['refreshToken']);
+
+            $service = new Drive($client);
+
+            // This is the core fix: We catch Spatie's directory queries dynamically
+            $adapter = new class($service, $config['folderId']) extends GoogleDriveAdapter
+            {
+                public function listContents(string $path, bool $deep): iterable
+                {
+                    // If Spatie looks for the string name, clear it out to read the real folder ID
+                    if ($path === config('backup.backup.name')) {
+                        return parent::listContents('', $deep);
+                    }
+
+                    return parent::listContents($path, $deep);
+                }
+
+                public function directoryExists(string $path): bool
+                {
+                    if ($path === config('backup.backup.name')) {
+                        return true; // Lie to Spatie so it thinks the folder exists
+                    }
+
+                    return parent::directoryExists($path);
+                }
+            };
+
+            return new FilesystemAdapter(
+                new Filesystem($adapter),
+                $adapter,
+                $config,
+            );
+        });
     }
 
     /**

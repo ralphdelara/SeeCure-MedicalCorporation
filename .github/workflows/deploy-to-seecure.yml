@@ -72,6 +72,12 @@ jobs:
           cd "C:\SeeCure"
           npm run build
 
+      - name: Restart Scheduler
+        shell: powershell -ExecutionPolicy Bypass {0}
+        run: |
+          cd "C:\SeeCure"
+          nssm restart SeeCureScheduler
+
       - name: Stop Developer update warning
         shell: powershell -ExecutionPolicy Bypass {0}
         run: |

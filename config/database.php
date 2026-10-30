@@ -98,6 +98,14 @@ return [
             'search_path'    => 'public',
             'sslmode'        => env('DB_SSLMODE', 'prefer'),
             'timezone'       => 'Asia/Manila',
+
+            'dump' => [
+                'dump_binary_path' => 'C:\Program Files\PostgreSQL\18\bin',
+                'use_single_transaction',
+                'timeout' => 60 * 5,
+                // pg_dump to custom compressed binary format
+                'add_extra_option' => '--format=c',
+            ],
         ],
 
         'sqlsrv' => [

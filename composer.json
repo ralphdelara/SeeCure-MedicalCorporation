@@ -12,6 +12,8 @@
         "php": "^8.3",
         "diglactic/laravel-breadcrumbs": "^10.1",
         "erag/laravel-pwa": "^2.1",
+        "google/apiclient": "^2.20",
+        "hassan-shahriar-1/laravel-google-drive-backup": "^2.2",
         "inertiajs/inertia-laravel": "^3.0",
         "laravel/chisel": "^0.1.0",
         "laravel/fortify": "^1.37.2",
@@ -19,7 +21,9 @@
         "laravel/reverb": "^1.11",
         "laravel/tinker": "^3.0",
         "laravel/wayfinder": "^0.1.14",
+        "masbug/flysystem-google-drive-ext": "^2.5",
         "pusher/pusher-php-server": "^7.3",
+        "spatie/laravel-backup": "^10.3",
         "spatie/laravel-ciphersweet": "^1.8",
         "stevebauman/purify": "^6.3",
         "timokoerber/laravel-one-time-operations": "^1.4"
