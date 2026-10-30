@@ -75,8 +75,7 @@ jobs:
       - name: Restart Scheduler
         shell: powershell -ExecutionPolicy Bypass {0}
         run: |
-          cd "C:\SeeCure"
-          nssm restart SeeCureScheduler
+          C:\SeeCureTools\nssm\nssm.exe restart Scheduler
 
       - name: Stop Developer update warning
         shell: powershell -ExecutionPolicy Bypass {0}
