@@ -5,7 +5,7 @@ import billingBg from '@/assets/images/print-templates/billing.png';
 import { formatMoney } from '@/lib/utils';
 
 const Default = () => {
-    const { printTitle, billing, discountType, discountIdNo, discountPercent } = usePage()
+    const { printTitle, billing, discountType, discountIdNo, discountPercent, billType } = usePage()
         .props as unknown as {
         printTitle: string;
         billing: {
@@ -50,6 +50,7 @@ const Default = () => {
         discountType: string;
         discountIdNo: string;
         discountPercent: string;
+        billType: string;
     };
 
     useEffect(() => {
@@ -120,8 +121,10 @@ const Default = () => {
                         style={{
                             position: 'absolute',
                             marginTop: '163px',
-                            marginLeft: '470px',
+                            marginLeft: '460px',
                             fontSize: '11px',
+                            textAlign: 'center',
+                            width: '75px',
                         }}
                     >
                         <b className="text-dark">{billing.visit.patient?.age_computed ?? ''}</b>
@@ -157,13 +160,47 @@ const Default = () => {
                         style={{
                             position: 'absolute',
                             marginTop: '105px',
-                            marginLeft: '375px',
+                            marginLeft: '380px',
                             fontSize: '11px',
                         }}
                     >
                         <b className="text-dark">
-                            {billing.visit.consultation?.doctor?.full_name ?? ''}
+                            {billing.visit.consultation?.doctor?.physician_last_name ?? ''}
                         </b>
+                    </div>
+
+                    <div
+                        style={{
+                            position: 'absolute',
+                            marginTop: '68px',
+                            marginLeft: '37px',
+                            fontSize: '11px',
+                        }}
+                    >
+                        <span>
+                            <b
+                                style={{
+                                    color: '#fff',
+                                }}
+                            >
+                                {billType}
+                            </b>
+                        </span>
+                    </div>
+                    <div
+                        style={{
+                            position: 'absolute',
+                            marginTop: '68px',
+                            marginLeft: '165px',
+                            fontSize: '11px',
+                        }}
+                    >
+                        <span className="text-white">
+                            Bill Date:{' '}
+                            <u>
+                                <b>{billing.created_at}</b>
+                            </u>
+                        </span>
                     </div>
 
                     <div
