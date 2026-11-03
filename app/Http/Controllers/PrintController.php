@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\BillingTypeEnum;
 use App\Enums\DiscountTypeEnum;
 use App\Enums\LaboratoryTestEnum;
 use App\Enums\LaboratoryTypeEnum;
@@ -99,9 +100,22 @@ class PrintController extends Controller
         $billingDetails = [];
         $billingDetailsCount = 0;
         $billingItemsCounter = 0;
+        $billType = '';
 
         foreach ($billing['details'] as $key => $value) {
             $billingDetails[$billingDetailsCount][] = $value;
+
+            if ($value['billing_type_id'] === BillingTypeEnum::CONSULTATION->value) {
+                $billType = 'Consultation Bill';
+            }
+
+            if ($value['billing_type_id'] === BillingTypeEnum::LABORATORY->value) {
+                $billType = 'Laboratory Bill';
+            }
+
+            if ($value['billing_type_id'] === BillingTypeEnum::RADIOLOGY->value) {
+                $billType = 'Radiology Bill';
+            }
 
             if (count($billing['details']) > 16 && ($key + 1) % 16 === 0) {
                 $billingItemsCounter = -1;
@@ -129,6 +143,7 @@ class PrintController extends Controller
             'discountType',
             'discountIdNo',
             'discountPercent',
+            'billType',
         ));
     }
 
