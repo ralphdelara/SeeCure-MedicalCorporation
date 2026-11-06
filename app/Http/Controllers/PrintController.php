@@ -175,6 +175,7 @@ class PrintController extends Controller
         ])
             ->where('laboratory_id', $laboratoryId)
             ->where('laboratory_type_id', LaboratoryTypeEnum::CLINICAL_CHEMISTRY)
+            ->orderByRaw('ROW_NUMBER() OVER (ORDER BY created_at DESC, id ASC) ASC')
             ->get()
             ->toArray();
         $hematology = LaboratoryTestData::with([
@@ -184,7 +185,8 @@ class PrintController extends Controller
             },
             'fields.field',
         ])->where('laboratory_id', $laboratoryId)
-            ->where('laboratory_type_id', LaboratoryTypeEnum::CLINICAL_HEMATOLOGY)->get()->toArray();
+            ->where('laboratory_type_id', LaboratoryTypeEnum::CLINICAL_HEMATOLOGY)
+            ->orderByRaw('ROW_NUMBER() OVER (ORDER BY created_at DESC, id ASC) ASC')->get()->toArray();
         // Urinalysis
         $urinalysis = LaboratoryTestData::with([
             'test',
@@ -193,7 +195,8 @@ class PrintController extends Controller
             },
             'fields.field',
         ])->where('laboratory_id', $laboratoryId)
-            ->where('laboratory_test_id', LaboratoryTestEnum::URINALYSIS)->get()->toArray();
+            ->where('laboratory_test_id', LaboratoryTestEnum::URINALYSIS)
+            ->orderByRaw('ROW_NUMBER() OVER (ORDER BY created_at DESC, id ASC) ASC')->get()->toArray();
         // Fecalysis
         $fecalysis = LaboratoryTestData::with([
             'test',
@@ -202,7 +205,8 @@ class PrintController extends Controller
             },
             'fields.field',
         ])->where('laboratory_id', $laboratoryId)
-            ->where('laboratory_test_id', LaboratoryTestEnum::FECALYSIS)->get()->toArray();
+            ->where('laboratory_test_id', LaboratoryTestEnum::FECALYSIS)
+            ->orderByRaw('ROW_NUMBER() OVER (ORDER BY created_at DESC, id ASC) ASC')->get()->toArray();
 
         $miscellaneous = LaboratoryTestData::with([
             'test',
@@ -215,7 +219,7 @@ class PrintController extends Controller
             ->whereNotIn('laboratory_test_id', array_column($hematology, 'laboratory_test_id'))
             ->whereNotIn('laboratory_test_id', array_column($urinalysis, 'laboratory_test_id'))
             ->whereNotIn('laboratory_test_id', array_column($fecalysis, 'laboratory_test_id'))
-            ->get()->toArray();
+            ->orderByRaw('ROW_NUMBER() OVER (ORDER BY created_at DESC, id ASC) ASC')->get()->toArray();
 
         if (! empty($clinicalChemistry)) {
             $printData[] = [

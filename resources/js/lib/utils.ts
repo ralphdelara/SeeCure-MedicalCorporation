@@ -125,12 +125,16 @@ export function convertSnakeToTitleCase(word: string) {
 }
 
 const parseNormalRange = (min: string, max: string) => {
+    if (min === '' && max === '') {
+        return '';
+    }
+
     if (min === '') {
-        return max;
+        return '< ' + max;
     }
 
     if (max === '') {
-        return max;
+        return '> ' + min;
     }
 
     return min + ' - ' + max;
@@ -147,9 +151,15 @@ export function getNormalRange(field: NormalRangeProps, gender_id: number) {
 
     if (gender_id === 1) {
         // 1 - Female
+        if (normalRangeFemaleMin === '' && normalRangeFemaleMax === '') {
+            return parseNormalRange(normalRangeBothMin, normalRangeBothMax);
+        }
         return parseNormalRange(normalRangeFemaleMin, normalRangeFemaleMax);
     } else if (gender_id === 2) {
         // 2 - Male
+        if (normalRangeMaleMin === '' && normalRangeMaleMax === '') {
+            return parseNormalRange(normalRangeBothMin, normalRangeBothMax);
+        }
         return parseNormalRange(normalRangeMaleMin, normalRangeMaleMax);
     } else {
         return parseNormalRange(normalRangeBothMin, normalRangeBothMax);
