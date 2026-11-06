@@ -42,7 +42,7 @@ const LaboratoryHema = ({ item, index }) => {
     return (
         <>
             <Header />
-            <center>
+            <center style={{ marginBottom: '100px' }}>
                 <div
                     className="text-dark position-relative mt-3 mb-12 text-center"
                     style={{ width: '700px' }}
@@ -78,7 +78,7 @@ const LaboratoryHema = ({ item, index }) => {
                         <HeaderDetails />
                         <table
                             style={{
-                                width: '350px',
+                                width: '320px',
                                 fontSize: '15px',
                             }}
                             className="fw-semibold mt-4"
@@ -109,26 +109,31 @@ const LaboratoryHema = ({ item, index }) => {
                                         fieldIndex={fieldData.fieldIndex}
                                     />
                                 ))}
+                                <tr>
+                                    <td colSpan={2}>
+                                        Remarks
+                                        <br />
+                                        {remarksType[item.type_id] ?? <>&nbsp;</>}
+                                        <hr
+                                            className="border-dark"
+                                            style={{
+                                                width: '100%',
+                                                margin: '0',
+                                            }}
+                                        />
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
-                        <div
-                            style={{ width: '700px', textAlign: 'left' }}
-                            className="text-dark mt-2"
-                        >
-                            <div className="d-flex">
-                                <div className="fw-bolder">Remarks</div>
-                                <div className="fw-bolder ms-2 text-center">
-                                    {remarksType[item.type_id] ?? <>&nbsp;</>}
-                                    <hr
-                                        className="border-dark"
-                                        style={{
-                                            width: '240px',
-                                            margin: '0',
-                                        }}
-                                    />
-                                </div>
-                            </div>
-                        </div>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>&nbsp;
                     </center>
                 </div>
             </center>
@@ -137,24 +142,52 @@ const LaboratoryHema = ({ item, index }) => {
     );
 };
 
-const TableRow = ({ fieldData, fieldIndex }) => (
-    <tr>
-        <td
-            className={`fw-bolder ${
-                fieldData.field.field_type === 'label' ? 'text-underline' : ''
-            }`}
-        >
-            {fieldData.field.name}
-        </td>
-        <td className="text-center">
-            {fieldData.field.field_type !== 'label' && (
-                <>
-                    {fieldData.value ?? <>&nbsp;</>}
-                    <hr className="border-dark" style={{ width: '180px', margin: '0' }} />
-                </>
-            )}
-        </td>
-    </tr>
-);
+const TableRow = ({ fieldData, fieldIndex }) => {
+    const { patient } = usePage().props as unknown as {
+        patient: { gender: { id: number } };
+    };
+    return (
+        <tr>
+            <td
+                className={`fw-bolder ${
+                    fieldData.field.field_type === 'label' ? 'text-underline' : ''
+                }`}
+            >
+                {fieldData.field.name}
+            </td>
+            <td className="text-center">
+                {fieldData.field.field_type !== 'label' && (
+                    <div style={{ position: 'relative' }}>
+                        {fieldData.value ?? <>&nbsp;</>}
+                        <small style={{ fontSize: '10px' }}>{fieldData.field.unit ?? ''}</small>
+                        {getNormalRange(fieldData.field, patient.gender.id) !== '' && (
+                            <small
+                                style={{
+                                    fontSize: '8px',
+                                    position: 'absolute',
+                                    marginTop: '8px',
+                                    right: '0',
+                                    whiteSpace: 'pre-line',
+                                    lineHeight: '0.9',
+                                }}
+                            >
+                                (N:{' '}
+                                {getNormalRange(fieldData.field, patient.gender.id).replace(
+                                    ' - ',
+                                    ' - \n',
+                                )}
+                                )
+                            </small>
+                        )}
+                        <hr
+                            className="border-dark"
+                            style={{ width: '100%', margin: '0', position: 'absolute' }}
+                        />
+                    </div>
+                )}
+            </td>
+        </tr>
+    );
+};
 
 export default LaboratoryHema;

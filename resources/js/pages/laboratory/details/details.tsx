@@ -51,9 +51,19 @@ const Details = ({
     const submitDetails = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        updateLabDetails();
+    };
+
+    const updateLabDetails = async () => {
         patch(updateDetails().url, {
             ...formSubmitResponse('Details'),
         });
+    };
+
+    const printLabDocument = async (docType: string, docId: string) => {
+        await updateLabDetails();
+
+        printDocument(docType, docId);
     };
 
     useEffect(() => {
@@ -85,7 +95,7 @@ const Details = ({
                             <Button
                                 size="lg"
                                 type="button"
-                                onClick={() => printDocument('laboratory', laboratoryDetails.id)}
+                                onClick={() => printLabDocument('laboratory', laboratoryDetails.id)}
                             >
                                 <IconFlask />
                                 Print Laboratory Results
