@@ -61,6 +61,7 @@ class Laboratory extends Model
     use CorrectTimezone, HasUuids;
 
     public $table = 'laboratory';
+    protected $appends = ['date_requested'];
 
     protected function casts(): array
     {
@@ -114,5 +115,10 @@ class Laboratory extends Model
     public function documents(): HasMany
     {
         return $this->hasMany(Document::class);
+    }
+
+    public function getDateRequestedAttribute(): string
+    {
+        return $this->created_at?->format('M d, Y') ?? '';
     }
 }

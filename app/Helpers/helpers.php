@@ -77,7 +77,16 @@ if (! function_exists('computeExactAge')) {
         $diff = $dob->diff($currentDate);
 
         if ($type === 'year') {
-            return $diff->y;
+            if ($diff->y <= 0) {
+                if ($diff->m <= 0) {
+                    if ($diff->d <= 0) {
+                        return 'N/A';
+                    }
+                    return $diff->d . 'D';
+                }
+                return $diff->m . 'M';
+            }
+            return $diff->y . 'Y';
         }
 
         return $diff->format('%yy %mm %dd');

@@ -260,10 +260,15 @@ class LaboratoryService
             'testData',
             'testData.type',
             'testData.test',
+
             'testData.fields' => function ($query) {
-                $query->orderBy('id');
+                $query->join('laboratory_fields', 'laboratory_test_field_data.laboratory_field_id', '=', 'laboratory_fields.id') // Replace table names / keys if different
+                    ->orderBy('laboratory_fields.order', 'asc')
+                    ->select('laboratory_test_field_data.*'); // Keeps original model attributes intact
             },
+
             'testData.fields.field',
+
             'performedBy' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name');
             },

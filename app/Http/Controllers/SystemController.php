@@ -10,6 +10,7 @@ use App\Models\Consultation;
 use App\Models\Laboratory;
 use App\Models\Pharmacy;
 use App\Models\Radiology;
+use App\Services\LaboratoryFieldService;
 use Auth;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -78,5 +79,15 @@ class SystemController extends Controller
             'landmark'                  => $request->landmark,
             'last_modified_by'          => Auth::id(),
         ]);
+    }
+
+    public function refreshTestFieldOrder(): void
+    {
+        app(LaboratoryFieldService::class)->orderTestFields();
+    }
+
+    public function refreshTestFieldNormalRanges(): void
+    {
+        app(LaboratoryFieldService::class)->refreshNormalRanges();
     }
 }

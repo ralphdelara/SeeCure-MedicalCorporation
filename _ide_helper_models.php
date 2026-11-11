@@ -951,7 +951,7 @@ namespace App\Models{
  * @property numeric|null $normal_range_male_max
  * @property numeric|null $normal_range_female_min
  * @property numeric|null $normal_range_female_max
- * @property int $sort_order
+ * @property int $order
  * @property-read \App\Models\LaboratoryTest $laboratoryTest
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestField newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LaboratoryTestField newQuery()

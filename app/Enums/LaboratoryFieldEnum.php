@@ -91,8 +91,9 @@ enum LaboratoryFieldEnum: int
     case FECA_TRICHURIS = 72;
     case FECA_STRONGYLOIDES = 73;
     case FECA_ENTAMOEBA_HISTOLYTICA_DISPAR_CYST = 74;
-    case FECA_TROPHOZOITE = 75;
+    case FECA_ENTAMOEBA_HISTOLYTICA_DISPAR_CYST_TROPHOZOITE = 75;
     case FECA_ENTAMOEBA_COLI_CYST = 76;
+    case FECA_ENTAMOEBA_COLI_CYST_TROPHOZOITE = 98;
     case FECA_BLASTOCYSTIS_SPP = 77;
     case FECA_MICROSCOPIC_OTHERS = 78;
     case FECA_CELLULAR_ELEMENTS = 79;
@@ -203,8 +204,9 @@ enum LaboratoryFieldEnum: int
             self::FECA_TRICHURIS                         => 'Trichuris',
             self::FECA_STRONGYLOIDES                     => 'Strongyloides',
             self::FECA_ENTAMOEBA_HISTOLYTICA_DISPAR_CYST => 'Entamoeba histolytica/dispar (Cyst)',
-            self::FECA_TROPHOZOITE                       => 'Trophozoite',
+            self::FECA_ENTAMOEBA_HISTOLYTICA_DISPAR_CYST_TROPHOZOITE => 'Trophozoite (histolytica)',
             self::FECA_ENTAMOEBA_COLI_CYST               => 'Entamoeba coli (Cyst)',
+            self::FECA_ENTAMOEBA_COLI_CYST_TROPHOZOITE => 'Trophozoite (coli)',
             self::FECA_BLASTOCYSTIS_SPP                  => 'Blastocystis spp.',
             self::FECA_MICROSCOPIC_OTHERS                => 'Others',
             self::FECA_CELLULAR_ELEMENTS                 => 'CELLULAR ELEMENTS',
@@ -315,8 +317,9 @@ enum LaboratoryFieldEnum: int
             self::FECA_TRICHURIS                         => 'text',
             self::FECA_STRONGYLOIDES                     => 'text',
             self::FECA_ENTAMOEBA_HISTOLYTICA_DISPAR_CYST => 'numeric',
-            self::FECA_TROPHOZOITE                       => 'numeric',
+            self::FECA_ENTAMOEBA_HISTOLYTICA_DISPAR_CYST_TROPHOZOITE => 'numeric',
             self::FECA_ENTAMOEBA_COLI_CYST               => 'numeric',
+            self::FECA_ENTAMOEBA_COLI_CYST_TROPHOZOITE => 'numeric',
             self::FECA_BLASTOCYSTIS_SPP                  => 'numeric',
             self::FECA_MICROSCOPIC_OTHERS                => 'numeric',
             self::FECA_CELLULAR_ELEMENTS                 => 'label',
@@ -405,7 +408,7 @@ enum LaboratoryFieldEnum: int
             self::LIPID_PROFILE     => null,
             self::TOTAL_CHOLESTEROL => [
                 'both_min'   => null,
-                'both_max'   => 5.1,
+                'both_max'   => 5.2,
                 'male_min'   => null,
                 'male_max'   => null,
                 'female_min' => null,
@@ -413,7 +416,7 @@ enum LaboratoryFieldEnum: int
             ],
             self::TRIGLYCERIDES => [
                 'both_min'   => null,
-                'both_max'   => 1.693,
+                'both_max'   => 1.694,
                 'male_min'   => null,
                 'male_max'   => null,
                 'female_min' => null,
@@ -422,9 +425,9 @@ enum LaboratoryFieldEnum: int
             self::HDL_CHOLESTEROL => [
                 'both_min'   => null,
                 'both_max'   => null,
-                'male_min'   => 1.04,
+                'male_min'   => 1.03,
                 'male_max'   => null,
-                'female_min' => 1.3,
+                'female_min' => 1.29,
                 'female_max' => null,
             ],
             self::LDL_CHOLESTEROL => [
@@ -492,8 +495,8 @@ enum LaboratoryFieldEnum: int
                 'female_max' => null,
             ],
             self::HBA1C => [
-                'both_min'   => null,
-                'both_max'   => 42,
+                'both_min'   => 4.0,
+                'both_max'   => 6.5,
                 'male_min'   => null,
                 'male_max'   => null,
                 'female_min' => null,
@@ -672,8 +675,9 @@ enum LaboratoryFieldEnum: int
             self::FECA_TRICHURIS                         => null,
             self::FECA_STRONGYLOIDES                     => null,
             self::FECA_ENTAMOEBA_HISTOLYTICA_DISPAR_CYST => ['both_min' => null, 'both_max' => null, 'male_min' => null, 'male_max' => null, 'female_min' => null, 'female_max' => null],
-            self::FECA_TROPHOZOITE                       => ['both_min' => null, 'both_max' => null, 'male_min' => null, 'male_max' => null, 'female_min' => null, 'female_max' => null],
+            self::FECA_ENTAMOEBA_HISTOLYTICA_DISPAR_CYST_TROPHOZOITE => ['both_min' => null, 'both_max' => null, 'male_min' => null, 'male_max' => null, 'female_min' => null, 'female_max' => null],
             self::FECA_ENTAMOEBA_COLI_CYST               => ['both_min' => null, 'both_max' => null, 'male_min' => null, 'male_max' => null, 'female_min' => null, 'female_max' => null],
+            self::FECA_ENTAMOEBA_COLI_CYST_TROPHOZOITE => ['both_min' => null, 'both_max' => null, 'male_min' => null, 'male_max' => null, 'female_min' => null, 'female_max' => null],
             self::FECA_BLASTOCYSTIS_SPP                  => ['both_min' => null, 'both_max' => null, 'male_min' => null, 'male_max' => null, 'female_min' => null, 'female_max' => null],
             self::FECA_MICROSCOPIC_OTHERS                => ['both_min' => null, 'both_max' => null, 'male_min' => null, 'male_max' => null, 'female_min' => null, 'female_max' => null],
             self::FECA_CELLULAR_ELEMENTS                 => null,
@@ -722,7 +726,7 @@ enum LaboratoryFieldEnum: int
             self::IONIZED_MAGNESIUM => 'mmol/L',
             self::FIRST_HOUR        => 'mmol/L',
             self::SECOND_HOUR       => 'mmol/L',
-            self::HBA1C             => 'mmol/mol',
+            self::HBA1C             => '%',
 
             // Hematology
             self::HEMA_BLOOD_STUDIES      => null,
@@ -784,8 +788,9 @@ enum LaboratoryFieldEnum: int
             self::FECA_TRICHURIS                         => null,
             self::FECA_STRONGYLOIDES                     => null,
             self::FECA_ENTAMOEBA_HISTOLYTICA_DISPAR_CYST => '/hpf',
-            self::FECA_TROPHOZOITE                       => '/hpf',
+            self::FECA_ENTAMOEBA_HISTOLYTICA_DISPAR_CYST_TROPHOZOITE => '/hpf',
             self::FECA_ENTAMOEBA_COLI_CYST               => '/hpf',
+            self::FECA_ENTAMOEBA_COLI_CYST_TROPHOZOITE => '/hpf',
             self::FECA_BLASTOCYSTIS_SPP                  => '/hpf',
             self::FECA_MICROSCOPIC_OTHERS                => '/hpf',
             self::FECA_CELLULAR_ELEMENTS                 => null,

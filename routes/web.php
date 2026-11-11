@@ -16,6 +16,8 @@ use App\Http\Controllers\PharmacyController;
 use App\Http\Controllers\PrintController;
 use App\Http\Controllers\SystemController;
 use App\Http\Controllers\UserController;
+use App\Services\LaboratoryFieldService;
+use App\Services\LaboratoryService;
 use Illuminate\Support\Facades\Route;
 
 Route::permanentRedirect('/', '/login');
@@ -162,6 +164,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/call-out', [SystemController::class, 'callOut'])->name('system.call-out');
         Route::get('/company-profile', [SystemController::class, 'companyProfile'])->name('system.company-profile');
         Route::put('/company-profile', [SystemController::class, 'updateCompanyProfile'])->name('system.company-profile.update');
+        Route::get('/laboratory/refresh-test-field-order', [SystemController::class, 'refreshTestFieldOrder'])->name('system.laboratory.refresh-test-field-order');
+        Route::get('/laboratory/refresh-test-field-normal-range', [SystemController::class, 'refreshTestFieldNormalRanges'])->name('system.laboratory.refresh-test-field-normal-range');
 
         Route::post('/call-out', [SystemController::class, 'callOutPatient'])->name('system.call-out-patient');
     });

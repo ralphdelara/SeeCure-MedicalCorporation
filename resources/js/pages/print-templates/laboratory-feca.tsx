@@ -1,183 +1,119 @@
-import { useEffect } from 'react';
-import Footer from './laboratory-footer';
 import { usePage } from '@inertiajs/react';
-import '@/assets/css/print.css';
-import { formatMoney, getNormalRange } from '@/lib/utils';
-import Header from './header';
-import { Item } from '@radix-ui/react-dropdown-menu';
-import { Fragment } from 'react';
-import HeaderDetails from './laboratory-header';
+import '@/assets/css/print-laboratory.css';
+import LaboratoryHeader from './laboratory-header';
+import fecalysisBg from '@/assets/images/print-templates/fecalysis.png';
 
-const LaboratoryFeca = ({ item, index }) => {
-    const { printData, patient, remarksTest } = usePage().props as unknown as {
-        printTitle: string;
-        printData: {
-            name: string;
-            cost_price: string;
-            quantity: string;
-        }[];
-    };
-    const leftTableFields = [];
-    const centerTableFields = [];
-    const rightTableFields = [];
-    let labelCount = 0;
+const LaboratoryFeca = ({ item, index }: {item: {data: any[]}, index: number}) => {
+    const { leftFullName, leftLicNo, remarksTest } =
+        usePage().props as unknown as {
+            leftFullName: string;
+            leftLicNo: string;
+            remarksTest: string;
+        };
+    let incrementMarginTopFirst = 21;
+    let marginTopFirst = 262;
+    let marginLeftFirst = 178;
+    let widthFirst = 156;
+    let marginTop = marginTopFirst;
+    let marginLeft = marginLeftFirst;
+    let width = widthFirst;
+    let incrementMarginTop = incrementMarginTopFirst;
 
-    item.data.forEach((itemData) => {
-        if (itemData.fields && itemData.fields.length > 0) {
-            itemData.fields.forEach((fieldData, fieldIndex) => {
-                if (fieldData.field.field_type === 'label') {
-                    labelCount += 1;
-                }
-
-                // Store the field data and its original index for conditional classes
-                const fieldWithMeta = { ...fieldData, fieldIndex };
-
-                if (labelCount === 3) {
-                    centerTableFields.push(fieldWithMeta);
-                } else if (labelCount > 3) {
-                    rightTableFields.push(fieldWithMeta);
-                } else {
-                    leftTableFields.push(fieldWithMeta);
-                }
-            });
-        }
-    });
     return (
-        <>
-            <Header />
-            <center>
-                <div
-                    className="text-dark position-relative mt-3 mb-12 text-center"
-                    style={{ width: '700px' }}
-                >
-                    <center>
-                        <table
-                            style={{
-                                width: '700px',
-                            }}
-                        >
-                            <tbody>
-                                <tr>
-                                    <td
-                                        className="text-center"
-                                        style={{ position: 'relative' }}
-                                        colSpan={3}
-                                    >
-                                        <span
-                                            style={{
-                                                fontSize: '20px',
-                                                color: '#000',
-                                                padding: 0,
-                                                fontWeight: 'bold',
-                                            }}
-                                            className="fw-bolder text-nowrap"
-                                        >
-                                            {item.name}
-                                        </span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <HeaderDetails />
-                        <div className="d-flex justify-content-between">
-                            <table
-                                style={{
-                                    width: '240px',
-                                    fontSize: '15px',
-                                }}
-                                className="fw-semibold mt-4"
-                            >
-                                <tbody>
-                                    {leftTableFields.map((fieldData, index) => (
-                                        <TableRow
-                                            key={`left-${index}`}
-                                            fieldData={fieldData}
-                                            fieldIndex={fieldData.fieldIndex}
-                                        />
-                                    ))}
-                                </tbody>
-                            </table>
-                            <table
-                                style={{
-                                    width: '240px',
-                                    fontSize: '15px',
-                                }}
-                                className="fw-semibold mt-4"
-                            >
-                                <tbody>
-                                    {centerTableFields.map((fieldData, index) => (
-                                        <TableRow
-                                            key={`right-${index}`}
-                                            fieldData={fieldData}
-                                            fieldIndex={fieldData.fieldIndex}
-                                        />
-                                    ))}
-                                </tbody>
-                            </table>
+        <div style={{ position: 'relative', width: '1000px' }}>
+            <img src={fecalysisBg} />
+            <LaboratoryHeader />
+            {item.data[0].fields.map((fecaItem, fecaIndex) => {
+                if (fecaItem.field.field_type === 'label') {
+                    if (fecaItem.field.name === 'CHEMICAL') {
+                        marginTop += 46;
+                    }
+                    if (fecaItem.field.name === 'MICROSCOPIC') {
+                        marginTop = marginTopFirst;
+                        marginLeft += 272;
+                        incrementMarginTop = incrementMarginTopFirst;
+                    }
+                    if (fecaItem.field.name === 'CELLULAR ELEMENTS') {
+                        marginTop = marginTopFirst;
+                        marginLeft += 342;
+                        width -= 31;
+                        incrementMarginTop = incrementMarginTopFirst;
+                    }
+                    return;
+                }
 
-                            <table
-                                style={{
-                                    width: '240px',
-                                    fontSize: '15px',
-                                }}
-                                className="fw-semibold mt-4"
-                            >
-                                <tbody>
-                                    {rightTableFields.map((fieldData, index) => (
-                                        <TableRow
-                                            key={`right-${index}`}
-                                            fieldData={fieldData}
-                                            fieldIndex={fieldData.fieldIndex}
-                                        />
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                        <div style={{ width: '700px', textAlign: 'left' }} className="mt-2">
-                            <div className="d-flex">
-                                <div className="fw-bolder">Remarks</div>
-                                <div className="fw-bolder ms-2 text-center">
-                                    {remarksTest[item.test_id] ?? <>&nbsp;</>}
-                                    <hr
-                                        className="border-dark"
-                                        style={{
-                                            width: '500px',
-                                            margin: '0',
-                                        }}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </center>
-                </div>
-            </center>
-            <Footer />
-        </>
+                if (fecaItem.field.id === 74) { //Entamoeba histolytica/dispar (Cyst)
+                    marginTop += 45;
+                } else if (fecaItem.field.id === 76) { //Entamoeba coli (Cyst)
+                    marginTop += 45;
+                    incrementMarginTop += 2;
+                } else {
+                    marginTop += incrementMarginTop;
+                }
+
+
+                return (
+                    <span key={'feca-' + fecaIndex} style={{
+                        position: 'absolute',
+                        zIndex: 1,
+                        top: 0,
+                        left: 0,
+                        marginTop: marginTop + 'px',
+                        marginLeft: marginLeft + 'px',
+                        fontSize: '19px',
+                        width: width + 'px',
+                        textAlign: 'center',
+                        whiteSpace: 'nowrap',
+                    }}>
+                        <b style={{ color: fecaItem.value?.toUpperCase() === 'POSITIVE' ? '#ff0000' : '' }}>{fecaItem.value?.toUpperCase()}</b>
+                    </span>
+                )
+            })}
+
+            <span style={{
+                position: 'absolute',
+                zIndex: 1,
+                bottom: 0,
+                left: 0,
+                marginBottom: '131px',
+                marginLeft: '177px',
+                fontSize: '19px',
+                width: '453px',
+                textAlign: 'center',
+                whiteSpace: 'nowrap',
+            }}>
+                <b>{remarksTest[19]?.toUpperCase() ?? ''}</b>
+            </span>
+            <span style={{
+                position: 'absolute',
+                zIndex: 1,
+                bottom: 0,
+                left: 0,
+                marginBottom: '50px',
+                marginLeft: '57px',
+                fontSize: '19px',
+                width: '395px',
+                textAlign: 'center',
+                whiteSpace: 'nowrap',
+            }}>
+                <b>{leftFullName}</b>
+            </span>
+            <span style={{
+                position: 'absolute',
+                zIndex: 1,
+                bottom: 0,
+                left: 0,
+                marginBottom: '10px',
+                marginLeft: '57px',
+                fontSize: '14px',
+                width: '395px',
+                textAlign: 'center',
+                whiteSpace: 'nowrap',
+            }}>
+                License No. {leftLicNo}
+            </span>
+        </div>
     );
 };
-
-const TableRow = ({ fieldData, fieldIndex }) => (
-    <tr>
-        <td
-            className={`fw-bolder text-nowrap ${
-                fieldData.field.field_type === 'label' ? 'text-underline' : ''
-            }`}
-            style={{ verticalAlign: 'top' }}
-        >
-            {fieldData.field.name}
-        </td>
-        <td className="pe-2 text-center">
-            {fieldData.field.field_type !== 'label' && (
-                <>
-                    {fieldData.field.name === 'Entamoeba histolytica/dispar (Cyst)' && (
-                        <div className="mt-3"></div>
-                    )}
-                    {fieldData.value ?? <>&nbsp;</>}
-                    <hr className="border-dark" style={{ width: '100px', margin: '0' }} />
-                </>
-            )}
-        </td>
-    </tr>
-);
 
 export default LaboratoryFeca;

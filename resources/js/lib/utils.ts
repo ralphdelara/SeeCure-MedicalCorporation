@@ -166,6 +166,65 @@ export function getNormalRange(field: NormalRangeProps, gender_id: number) {
     }
 }
 
+export function getHighOrLowNormalRange(field: NormalRangeProps, gender_id: number, value: number) {
+    const normalRangeBothMin = field.normal_range_both_min ?? '';
+    const normalRangeFemaleMin = field.normal_range_female_min ?? '';
+    const normalRangeMaleMin = field.normal_range_male_min ?? '';
+
+    const normalRangeBothMax = field.normal_range_both_max ?? '';
+    const normalRangeFemaleMax = field.normal_range_female_max ?? '';
+    const normalRangeMaleMax = field.normal_range_male_max ?? '';
+
+    let normalRangeMin = '';
+    let normalRangeMax = '';
+
+    if (gender_id === 1) {
+        // 1 - Female
+        if (normalRangeFemaleMin === '' && normalRangeFemaleMax === '') {
+            normalRangeMin = normalRangeBothMin;
+            normalRangeMax = normalRangeBothMax;
+        } else {
+            normalRangeMin = normalRangeFemaleMin;
+            normalRangeMax = normalRangeFemaleMax;
+        }
+    } else if (gender_id === 2) {
+        // 2 - Male
+        if (normalRangeMaleMin === '' && normalRangeMaleMax === '') {
+            normalRangeMin = normalRangeBothMin;
+            normalRangeMax = normalRangeBothMax;
+        } else {
+            normalRangeMin = normalRangeMaleMin;
+            normalRangeMax = normalRangeMaleMax;
+        }
+    } else {
+        normalRangeMin = normalRangeBothMin;
+        normalRangeMax = normalRangeBothMax;
+    }
+
+    
+    if (normalRangeMin === '' && normalRangeMax === '') {
+        return '';
+    }
+
+    if (normalRangeMin === '') {
+        return (value >= parseFloat(normalRangeMax)) ? 'HIGH' : '';
+    }
+
+    if (normalRangeMax === '') {
+        return (value <= parseFloat(normalRangeMin)) ? 'LOW' : '';
+    }
+
+    if (value < parseFloat(normalRangeMin)) {
+        return 'LOW';
+    }
+
+    if (value > parseFloat(normalRangeMax)) {
+        return 'HIGH';
+    }
+
+    return '';
+}
+
 export function printDocument(type: string, id: string) {
     if (type === 'prescription') {
         window.open(printPrescription(id).url);

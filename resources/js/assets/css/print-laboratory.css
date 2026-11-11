@@ -1,0 +1,47 @@
+* {
+    font-family: Calibri !important;
+    font-variant-ligatures: none;
+    color: #000;
+
+    /*disable select highlight*/
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none;   /* Safari */
+    -khtml-user-select: none; 
+    -moz-user-select: none;      /* Firefox */
+    -ms-user-select: none;       /* Internet Explorer/Edge */
+    user-select: none;
+
+    /*disable drag*/
+    -webkit-user-drag: none;  /* Safari and Chrome */
+    khtml-user-drag: none;
+    -moz-user-drag: none;     /* Firefox */
+    -o-user-drag: none;
+    user-drag: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+h1,
+h2,
+h3 {
+    font-family: var(--ms-theme-headings);
+}
+
+p,
+li,
+td {
+    font-family: var(--ms-theme-body);
+    color: #000 !important;
+}
+
+@media print {
+    .page-break {
+        break-before: page; /* Modern standard */
+        page-break-before: always; /* Fallback for older browsers */
+    }
+}
+table {
+    table-layout: fixed;
+}
