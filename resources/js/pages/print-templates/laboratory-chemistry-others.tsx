@@ -2,7 +2,7 @@ import { usePage } from '@inertiajs/react';
 import LaboratoryHeader from './laboratory-header';
 import clinicalChemistryPartialBg from '@/assets/images/print-templates/clinical_chemistry_partial.png';
 import { Fragment } from 'react';
-import { getNormalRange } from '@/lib/utils';
+import { getHighOrLowNormalRange, getNormalRange } from '@/lib/utils';
 
 const LaboratoryChemOthers = ({ item, index }: { item: { data: any[] }, index: number }) => {
     const { patient, leftFullName, leftLicNo, remarksType } =
@@ -10,6 +10,7 @@ const LaboratoryChemOthers = ({ item, index }: { item: { data: any[] }, index: n
             leftFullName: string;
             leftLicNo: string;
             remarksType: string;
+            patient: {gender: {id: number}};
         };
     let marginTopFirst = 268;
     let marginTop = marginTopFirst;
@@ -27,9 +28,15 @@ const LaboratoryChemOthers = ({ item, index }: { item: { data: any[] }, index: n
                         showOgtt = true;
                     }
                 }
-                
+
                 if (chemItem.test_data.test.id === 12 && !showOgtt) {
-                    marginTop+= 22;
+                    marginTop += 22;
+                }
+
+                let highOrLow = '';
+
+                if (!isNaN(parseFloat(chemItem.value))) {
+                    highOrLow = getHighOrLowNormalRange(chemItem?.field, patient?.gender?.id, parseFloat(chemItem.value?.toUpperCase()))
                 }
 
                 return (
@@ -78,8 +85,12 @@ const LaboratoryChemOthers = ({ item, index }: { item: { data: any[] }, index: n
                             lineHeight: 0.9,
                         }}>
                             <b style={{ color: chemItem.value?.toUpperCase() === 'POSITIVE' ? '#ff0000' : '' }}>{chemItem.value?.toUpperCase() ?? <>&nbsp;</>}</b>
-                        </span>
                         
+                            <small style={{ fontSize: '10px', right: 0, marginTop: '5px', color: '#ff0000', position: 'absolute' }}>
+                                {highOrLow}
+                            </small>
+                        </span>
+
                         <span style={{
                             position: 'absolute',
                             zIndex: 1,

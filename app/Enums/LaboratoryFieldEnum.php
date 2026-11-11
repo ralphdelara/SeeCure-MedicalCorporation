@@ -408,7 +408,7 @@ enum LaboratoryFieldEnum: int
             self::LIPID_PROFILE     => null,
             self::TOTAL_CHOLESTEROL => [
                 'both_min'   => null,
-                'both_max'   => 5.1,
+                'both_max'   => 5.2,
                 'male_min'   => null,
                 'male_max'   => null,
                 'female_min' => null,
@@ -416,7 +416,7 @@ enum LaboratoryFieldEnum: int
             ],
             self::TRIGLYCERIDES => [
                 'both_min'   => null,
-                'both_max'   => 1.693,
+                'both_max'   => 1.694,
                 'male_min'   => null,
                 'male_max'   => null,
                 'female_min' => null,
@@ -425,9 +425,9 @@ enum LaboratoryFieldEnum: int
             self::HDL_CHOLESTEROL => [
                 'both_min'   => null,
                 'both_max'   => null,
-                'male_min'   => 1.04,
+                'male_min'   => 1.03,
                 'male_max'   => null,
-                'female_min' => 1.3,
+                'female_min' => 1.29,
                 'female_max' => null,
             ],
             self::LDL_CHOLESTEROL => [

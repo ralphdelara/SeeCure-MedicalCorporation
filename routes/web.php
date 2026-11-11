@@ -164,6 +164,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/call-out', [SystemController::class, 'callOut'])->name('system.call-out');
         Route::get('/company-profile', [SystemController::class, 'companyProfile'])->name('system.company-profile');
         Route::put('/company-profile', [SystemController::class, 'updateCompanyProfile'])->name('system.company-profile.update');
+        Route::get('/laboratory/refresh-test-field-order', [SystemController::class, 'refreshTestFieldOrder'])->name('system.laboratory.refresh-test-field-order');
+        Route::get('/laboratory/refresh-test-field-normal-range', [SystemController::class, 'refreshTestFieldNormalRanges'])->name('system.laboratory.refresh-test-field-normal-range');
 
         Route::post('/call-out', [SystemController::class, 'callOutPatient'])->name('system.call-out-patient');
     });
@@ -194,10 +196,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/addOrUpdate', [DocumentController::class, 'addOrUpdateDocument'])->name('documents.add-or-update');
         Route::get('/download/{departmentId}/{fileName}/{department}', [DocumentController::class, 'downloadDocument'])->name('documents.download');
         Route::delete('/delete/{documentId}/{departmentId}/{department}', [DocumentController::class, 'deleteDocument'])->name('documents.delete');
-    });
-
-    Route::get('order', function () {
-        app(LaboratoryFieldService::class)->orderTestFields();
     });
 });
 

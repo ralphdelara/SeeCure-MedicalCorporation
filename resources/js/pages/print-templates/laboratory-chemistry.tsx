@@ -2,13 +2,15 @@ import { usePage } from '@inertiajs/react';
 import LaboratoryHeader from './laboratory-header';
 import bloodChemistryBg from '@/assets/images/print-templates/blood_chemistry.png';
 import { Fragment } from 'react';
+import { getHighOrLowNormalRange, getNormalRange } from '@/lib/utils';
 
 const LaboratoryChem = ({ item, index }: { item: { data: any[] }, index: number }) => {
-    const { leftFullName, leftLicNo, remarksType } =
+    const { patient, leftFullName, leftLicNo, remarksType } =
         usePage().props as unknown as {
             leftFullName: string;
             leftLicNo: string;
             remarksType: string;
+            patient: {gender: {id: number}};
         };
     let marginTopArr = {
         1: 290,
@@ -33,6 +35,12 @@ const LaboratoryChem = ({ item, index }: { item: { data: any[] }, index: number 
             <img src={bloodChemistryBg} />
             <LaboratoryHeader />
             {item.data.map((chemItem, chemIndex) => {
+                let highOrLow = '';
+
+                if (!isNaN(parseFloat(chemItem.value))) {
+                    highOrLow = getHighOrLowNormalRange(chemItem?.field, patient?.gender?.id, parseFloat(chemItem.value?.toUpperCase()))
+                }
+
                 return (
                     <Fragment key={'chem-' + chemIndex}>
                         <span style={{
@@ -47,7 +55,12 @@ const LaboratoryChem = ({ item, index }: { item: { data: any[] }, index: number 
                             textAlign: 'center',
                             whiteSpace: 'nowrap',
                         }}>
-                            <b style={{ color: chemItem.value?.toUpperCase() === 'POSITIVE' ? '#ff0000' : '' }}>{chemItem.value?.toUpperCase()}</b>
+                            <b style={{ color: chemItem.value?.toUpperCase() === 'POSITIVE' ? '#ff0000' : '' }}>
+                                {chemItem.value?.toUpperCase()}
+                            </b>
+                            <small style={{ fontSize: '10px', right: 0, marginTop: '5px', color: '#ff0000', position: 'absolute' }}>
+                                {highOrLow}
+                            </small>
                         </span>
                     </Fragment>
                 )
