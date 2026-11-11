@@ -219,8 +219,8 @@ class CashierService
             Visit::find($cashier->visit->id)->update([
                 'visit_status_id' => VisitStatusEnum::IN_RADIOLOGY,
             ]);
-        } else {
-            // complete the patient visit
+        } elseif(!empty($cashier->billing_id)) {
+            // complete the patient visit if the transaction is billing
             Visit::find($cashier->visit->id)->update([
                 'visit_status_id' => VisitStatusEnum::COMPLETED,
             ]);
