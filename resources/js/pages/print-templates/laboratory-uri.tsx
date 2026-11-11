@@ -1,157 +1,116 @@
-import { useEffect } from 'react';
-import Footer from './laboratory-footer';
 import { usePage } from '@inertiajs/react';
-import '@/assets/css/print.css';
-import { formatMoney, getNormalRange } from '@/lib/utils';
-import Header from './header';
-import { Item } from '@radix-ui/react-dropdown-menu';
-import { Fragment } from 'react';
-import HeaderDetails from './laboratory-header';
+import LaboratoryHeader from './laboratory-header';
+import urinalisysBg from '@/assets/images/print-templates/urinalysis.png';
 
-const LaboratoryUri = ({ item, index }) => {
-    const { printData, patient, remarksTest } = usePage().props as unknown as {
-        printTitle: string;
-        printData: {
-            name: string;
-            cost_price: string;
-            quantity: string;
-        }[];
-    };
-    const leftTableFields = [];
-    const rightTableFields = [];
-    let labelCount = 0;
+const LaboratoryUri = ({ item, index }: {item: {data: any[]}, index: number}) => {
+    const { leftFullName, leftLicNo, remarksTest } =
+        usePage().props as unknown as {
+            leftFullName: string;
+            leftLicNo: string;
+            remarksTest: string;
+        };
+    let incrementMarginTopFirst = 21;
+    let marginTopFirst = 262;
+    let marginLeftFirst = 178;
+    let widthFirst = 226;
+    let marginTop = marginTopFirst;
+    let marginLeft = marginLeftFirst;
+    let width = widthFirst;
+    let incrementMarginTop = incrementMarginTopFirst;
 
-    item.data.forEach((itemData) => {
-        if (itemData.fields && itemData.fields.length > 0) {
-            itemData.fields.forEach((fieldData, fieldIndex) => {
-                if (fieldData.field.field_type === 'label') {
-                    labelCount += 1;
-                }
-
-                // Store the field data and its original index for conditional classes
-                const fieldWithMeta = { ...fieldData, fieldIndex };
-
-                if (labelCount > 2) {
-                    rightTableFields.push(fieldWithMeta);
-                } else {
-                    leftTableFields.push(fieldWithMeta);
-                }
-            });
-        }
-    });
     return (
-        <>
-            <Header />
-            <center>
-                <div
-                    className="text-dark position-relative mt-3 mb-12 text-center"
-                    style={{ width: '700px' }}
-                >
-                    <center>
-                        <table
-                            style={{
-                                width: '700px',
-                            }}
-                        >
-                            <tbody>
-                                <tr>
-                                    <td
-                                        className="text-center"
-                                        style={{ position: 'relative' }}
-                                        colSpan={3}
-                                    >
-                                        <span
-                                            style={{
-                                                fontSize: '20px',
-                                                color: '#000',
-                                                padding: 0,
-                                                fontWeight: 'bold',
-                                            }}
-                                            className="fw-bolder"
-                                        >
-                                            {item.name}
-                                        </span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <HeaderDetails />
-                        <table
-                            style={{
-                                width: '350px',
-                                fontSize: '15px',
-                            }}
-                            className="fw-semibold mt-4"
-                            align="left"
-                        >
-                            <tbody>
-                                {leftTableFields.map((fieldData, index) => (
-                                    <TableRow
-                                        key={`left-${index}`}
-                                        fieldData={fieldData}
-                                        fieldIndex={fieldData.fieldIndex}
-                                    />
-                                ))}
-                            </tbody>
-                        </table>
-                        <table
-                            style={{
-                                width: '350px',
-                                fontSize: '15px',
-                            }}
-                            className="fw-semibold mt-4"
-                        >
-                            <tbody>
-                                {rightTableFields.map((fieldData, index) => (
-                                    <TableRow
-                                        key={`right-${index}`}
-                                        fieldData={fieldData}
-                                        fieldIndex={fieldData.fieldIndex}
-                                    />
-                                ))}
-                            </tbody>
-                        </table>
-                        <div style={{ width: '700px', textAlign: 'left' }} className="mt-2">
-                            <div className="d-flex">
-                                <div className="fw-bolder">Remarks</div>
-                                <div className="fw-bolder ms-2 text-center">
-                                    {remarksTest[item.test_id] ?? <>&nbsp;</>}
-                                    <hr
-                                        className="border-dark"
-                                        style={{
-                                            width: '500px',
-                                            margin: '0',
-                                        }}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </center>
-                </div>
-            </center>
-            <Footer />
-        </>
+        <div style={{ position: 'relative', width: '1000px' }}>
+            <img src={urinalisysBg} />
+            <LaboratoryHeader />
+            {item.data[0].fields.map((uriItem, uriIndex) => {
+                if (uriItem.field.field_type === 'label') {
+                    if (uriItem.field.id === 46) { // CHEMICAL PROPERTIES
+                        marginTop += 66;
+                        incrementMarginTop = incrementMarginTopFirst + 1;
+                    }
+                    if (uriItem.field.id === 50) { // MICROSCOPIC FINDINGS
+                        marginTop = marginTopFirst;
+                        marginLeft += 507;
+                        incrementMarginTop = incrementMarginTopFirst;
+                    }
+
+                    return;
+                }
+
+                if (uriItem.field.id === 54) { //Cast
+                    marginTop += 43;
+                } else if (uriItem.field.id === 55) { // Amourphous Urate/Phosphate
+                    marginTop += 43;
+                    incrementMarginTop += 2;
+                    marginLeft += 120;
+                    width = 160;
+                } else {
+                    marginTop += incrementMarginTop;
+                }
+
+
+                return (
+                    <span key={'uri-' + uriIndex} style={{
+                        position: 'absolute',
+                        zIndex: 1,
+                        top: 0,
+                        left: 0,
+                        marginTop: marginTop + 'px',
+                        marginLeft: marginLeft + 'px',
+                        fontSize: '19px',
+                        width: width + 'px',
+                        textAlign: 'center',
+                        whiteSpace: 'nowrap',
+                    }}>
+                        <b style={{ color: uriItem.value?.toUpperCase() === 'POSITIVE' ? '#ff0000' : '' }}>{uriItem.value?.toUpperCase()}</b>
+                    </span>
+                )
+            })}
+
+            <span style={{
+                position: 'absolute',
+                zIndex: 1,
+                bottom: 0,
+                left: 0,
+                marginBottom: '138px',
+                marginLeft: '123px',
+                fontSize: '19px',
+                width: '280px',
+                textAlign: 'center',
+                whiteSpace: 'nowrap',
+            }}>
+                <b>{remarksTest[18]?.toUpperCase() ?? ''}</b>
+            </span>
+            <span style={{
+                position: 'absolute',
+                zIndex: 1,
+                bottom: 0,
+                left: 0,
+                marginBottom: '54px',
+                marginLeft: '57px',
+                fontSize: '19px',
+                width: '395px',
+                textAlign: 'center',
+                whiteSpace: 'nowrap',
+            }}>
+                <b>{leftFullName}</b>
+            </span>
+            <span style={{
+                position: 'absolute',
+                zIndex: 1,
+                bottom: 0,
+                left: 0,
+                marginBottom: '10px',
+                marginLeft: '57px',
+                fontSize: '16px',
+                width: '430px',
+                textAlign: 'center',
+                whiteSpace: 'nowrap',
+            }}>
+                PRC LICENSE NO. {leftLicNo}
+            </span>
+        </div>
     );
 };
-
-const TableRow = ({ fieldData, fieldIndex }) => (
-    <tr>
-        <td
-            className={`fw-bolder ${
-                fieldData.field.field_type === 'label' ? 'text-underline' : ''
-            }`}
-        >
-            {fieldData.field.name}
-        </td>
-        <td className="text-center">
-            {fieldData.field.field_type !== 'label' && (
-                <>
-                    {fieldData.value ?? <>&nbsp;</>}
-                    <hr className="border-dark" style={{ width: '150px', margin: '0' }} />
-                </>
-            )}
-        </td>
-    </tr>
-);
 
 export default LaboratoryUri;

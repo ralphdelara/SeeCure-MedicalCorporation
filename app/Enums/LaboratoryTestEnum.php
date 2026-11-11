@@ -10,22 +10,22 @@ enum LaboratoryTestEnum: int
 
     // CLINICAL CHEMISTRY
     case FBS = 1;
-    case RBS = 2;
     case BUN = 3;
     case CREATININE = 4;
     case URIC_ACID = 5;
+    case SGPT_ALT = 10;
+    case SGOT_AST = 11;
     case TOTAL_CHOLESTEROL = 6;
     case TRIGLYCERIDES = 7;
     case HDL_CHOLESTEROL = 8;
     case LDL_CHOLESTEROL = 9;
-    case SGPT_ALT = 10;
-    case SGOT_AST = 11;
     case OGTT_75G = 12;
     case SODIUM = 13;
     case POTASSIUM = 14;
     case CHLORIDE = 15;
     case IONIZED_CALCIUM = 16;
     case IONIZED_MAGNESIUM = 17;
+    case RBS = 2;
     case HBA1C = 35;
 
     // CLINICAL MICROSCOPY
@@ -44,12 +44,12 @@ enum LaboratoryTestEnum: int
     case H_PYLORI = 28;
 
     // CLINICAL HEMATOLOGY
+    case CBC_W_PLATELET_COUNT = 34;
     case COMPLETE_BLOOD_COUNT = 29;
     case PLATELET_COUNT = 30;
     case ABO_TYPING = 31;
     case RH_TYPING = 32;
     case CLOTTING_TIME_BLEEDING_TIME = 33;
-    case CBC_W_PLATELET_COUNT = 34;
 
     /**
      * Get the clean display name for each laboratory test.
@@ -148,9 +148,6 @@ enum LaboratoryTestEnum: int
             self::FBS => [
                 LaboratoryFieldEnum::FBS,
             ],
-            self::RBS => [
-                LaboratoryFieldEnum::RBS,
-            ],
             self::BUN => [
                 LaboratoryFieldEnum::BUN,
             ],
@@ -159,6 +156,12 @@ enum LaboratoryTestEnum: int
             ],
             self::URIC_ACID => [
                 LaboratoryFieldEnum::URIC_ACID,
+            ],
+            self::SGPT_ALT => [
+                LaboratoryFieldEnum::SGPT_ALT,
+            ],
+            self::SGOT_AST => [
+                LaboratoryFieldEnum::SGOT_AST,
             ],
             self::TOTAL_CHOLESTEROL => [
                 LaboratoryFieldEnum::TOTAL_CHOLESTEROL,
@@ -171,17 +174,6 @@ enum LaboratoryTestEnum: int
             ],
             self::LDL_CHOLESTEROL => [
                 LaboratoryFieldEnum::LDL_CHOLESTEROL,
-            ],
-            self::SGPT_ALT => [
-                LaboratoryFieldEnum::SGPT_ALT,
-            ],
-            self::SGOT_AST => [
-                LaboratoryFieldEnum::SGOT_AST,
-            ],
-            self::OGTT_75G => [
-                LaboratoryFieldEnum::FBS,
-                LaboratoryFieldEnum::FIRST_HOUR,
-                LaboratoryFieldEnum::SECOND_HOUR,
             ],
             self::SODIUM => [
                 LaboratoryFieldEnum::SODIUM,
@@ -198,8 +190,16 @@ enum LaboratoryTestEnum: int
             self::IONIZED_MAGNESIUM => [
                 LaboratoryFieldEnum::IONIZED_MAGNESIUM,
             ],
+            self::RBS => [
+                LaboratoryFieldEnum::RBS,
+            ],
             self::HBA1C => [
                 LaboratoryFieldEnum::HBA1C,
+            ],
+            self::OGTT_75G => [
+                LaboratoryFieldEnum::FBS,
+                LaboratoryFieldEnum::FIRST_HOUR,
+                LaboratoryFieldEnum::SECOND_HOUR,
             ],
             self::URINALYSIS => [
                 LaboratoryFieldEnum::URI_PHYSICAL_PROPERTIES,
@@ -238,8 +238,9 @@ enum LaboratoryTestEnum: int
                 LaboratoryFieldEnum::FECA_TRICHURIS,
                 LaboratoryFieldEnum::FECA_STRONGYLOIDES,
                 LaboratoryFieldEnum::FECA_ENTAMOEBA_HISTOLYTICA_DISPAR_CYST,
-                LaboratoryFieldEnum::FECA_TROPHOZOITE,
+                LaboratoryFieldEnum::FECA_ENTAMOEBA_HISTOLYTICA_DISPAR_CYST_TROPHOZOITE,
                 LaboratoryFieldEnum::FECA_ENTAMOEBA_COLI_CYST,
+                LaboratoryFieldEnum::FECA_ENTAMOEBA_COLI_CYST_TROPHOZOITE,
                 LaboratoryFieldEnum::FECA_BLASTOCYSTIS_SPP,
                 LaboratoryFieldEnum::FECA_MICROSCOPIC_OTHERS,
                 LaboratoryFieldEnum::FECA_CELLULAR_ELEMENTS,
@@ -253,10 +254,10 @@ enum LaboratoryTestEnum: int
             self::FECAL_OCCULT_BLOOD => [
                 LaboratoryFieldEnum::FECA_OCCULT_BLOOD,
             ],
+
             self::PREGNANCY_URINE => [
                 LaboratoryFieldEnum::PREGNANCY_URINE_RESULT_TEXT,
             ],
-
             self::PREGNANCY_SERUM => [
                 LaboratoryFieldEnum::PREGNANCY_SERUM_RESULT_TEXT,
             ],
@@ -282,12 +283,13 @@ enum LaboratoryTestEnum: int
                 LaboratoryFieldEnum::H_PYLORI_RESULT_TEXT,
             ],
 
-            self::COMPLETE_BLOOD_COUNT => [
+            self::CBC_W_PLATELET_COUNT => [
                 LaboratoryFieldEnum::HEMA_BLOOD_STUDIES,
                 LaboratoryFieldEnum::HEMA_HEMOGLOBIN,
                 LaboratoryFieldEnum::HEMA_HEMATOCRIT,
                 LaboratoryFieldEnum::HEMA_RBC_COUNT,
                 LaboratoryFieldEnum::HEMA_WBC_COUNT,
+                LaboratoryFieldEnum::HEMA_PLATELET_COUNT,
                 LaboratoryFieldEnum::HEMA_NUCLEATED_RBCS,
                 LaboratoryFieldEnum::HEMA_DIFFERENTIAL_COUNT,
                 LaboratoryFieldEnum::HEMA_NEUTROPHILS,
@@ -298,13 +300,13 @@ enum LaboratoryTestEnum: int
                 LaboratoryFieldEnum::HEMA_LYMPHOCYTES,
                 LaboratoryFieldEnum::HEMA_MONOCYTES,
             ],
-            self::CBC_W_PLATELET_COUNT => [
+
+            self::COMPLETE_BLOOD_COUNT => [
                 LaboratoryFieldEnum::HEMA_BLOOD_STUDIES,
                 LaboratoryFieldEnum::HEMA_HEMOGLOBIN,
                 LaboratoryFieldEnum::HEMA_HEMATOCRIT,
                 LaboratoryFieldEnum::HEMA_RBC_COUNT,
                 LaboratoryFieldEnum::HEMA_WBC_COUNT,
-                LaboratoryFieldEnum::HEMA_PLATELET_COUNT,
                 LaboratoryFieldEnum::HEMA_NUCLEATED_RBCS,
                 LaboratoryFieldEnum::HEMA_DIFFERENTIAL_COUNT,
                 LaboratoryFieldEnum::HEMA_NEUTROPHILS,

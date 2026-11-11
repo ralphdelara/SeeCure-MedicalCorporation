@@ -1,14 +1,21 @@
 import { usePage } from '@inertiajs/react';
 
-const HeaderDetails = () => {
+const LaboratoryHeader = () => {
     const { patient, laboratory } = usePage().props as unknown as {
         laboratory: {
-            created_at: string;
+            date_requested: string;
             date_performed: string;
+            visit: {
+                consultation: {
+                    doctor: {
+                        physician_last_name: string;
+                    }
+                }
+            };
         };
         patient: {
             full_name: string;
-            computed_age: string;
+            age_year: string;
             gender: {
                 name: 'string';
             };
@@ -20,123 +27,119 @@ const HeaderDetails = () => {
     };
     return (
         <>
-            <table
-                style={{
-                    width: '700px',
-                    marginTop: '10px',
-                }}
-            >
-                <tbody>
-                    <tr>
-                        <td style={{ width: '50px' }}>Name:</td>
-                        <td className="fw-bolder pe-3 text-center">
-                            {patient.full_name}
-                            <hr
-                                className="border-dark"
-                                style={{
-                                    margin: '0',
-                                }}
-                            />
-                        </td>
-                        <td style={{ width: '100px' }}>Date Requested:</td>
-                        <td className="fw-bolder text-center" style={{ width: '150px' }}>
-                            {new Intl.DateTimeFormat('en-US', {
-                                month: 'short', // "Sep"
-                                day: '2-digit', // "17"
-                                year: 'numeric', // "2026"
-                            }).format(new Date(laboratory.created_at))}
-                            <hr
-                                className="border-dark"
-                                style={{
-                                    margin: '0',
-                                }}
-                            />
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <table
-                style={{
-                    width: '700px',
-                }}
-            >
-                <tbody>
-                    <tr>
-                        <td style={{ width: '50px' }}>Age:</td>
-                        <td className="fw-bolder text-center">
-                            {patient?.age_computed ?? <>&nbsp;</>}
-                            <hr
-                                className="border-dark"
-                                style={{
-                                    margin: '0',
-                                }}
-                            />
-                        </td>
-                        <td style={{ width: '50px', textAlign: 'right' }}>Sex:</td>
-                        <td className="fw-bolder text-center">
-                            {patient.gender?.name ?? <>&nbsp;</>}
-                            <hr
-                                className="border-dark"
-                                style={{
-                                    margin: '0',
-                                }}
-                            />
-                        </td>
-                        <td style={{ width: '50px', textAlign: 'right' }}>CS:</td>
-                        <td className="fw-bolder pe-3 text-center">
-                            {patient.civil_status?.name ?? <>&nbsp;</>}
-                            <hr
-                                className="border-dark"
-                                style={{
-                                    margin: '0',
-                                }}
-                            />
-                        </td>
-                        <td style={{ width: '100px' }}>Date Performed:</td>
-                        <td className="fw-bolder text-center" style={{ width: '150px' }}>
-                            {laboratory.date_performed ?? <>&nbsp;</>}
-                            <hr
-                                className="border-dark"
-                                style={{
-                                    margin: '0',
-                                }}
-                            />
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <table
-                style={{
-                    width: '700px',
-                }}
-            >
-                <tbody>
-                    <tr>
-                        <td style={{ width: '50px' }}>Address:</td>
-                        <td className="fw-bolder pe-3 text-center" style={{ width: '400px' }}>
-                            {patient?.full_address ?? ''}
-                            <hr
-                                className="border-dark"
-                                style={{
-                                    margin: '0',
-                                }}
-                            />
-                        </td>
-                        <td style={{ width: '100px', textAlign: 'right' }} className="pe-1">Physician:</td>
-                        <td className="fw-bolder text-center">
-                            &nbsp;
-                            <hr
-                                className="border-dark"
-                                style={{
-                                    margin: '0',
-                                }}
-                            />
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <span style={{
+                position: 'absolute',
+                zIndex: 1,
+                top: 0,
+                left: 0,
+                marginTop: '170px',
+                marginLeft: '145px',
+                fontSize: '19px',
+                width: '358px',
+                textAlign: 'center'
+            }}>
+                <b>{patient?.full_name.toUpperCase() ?? 'WALK-IN PATIENT'}</b>
+            </span>
+            <span style={{
+                position: 'absolute',
+                zIndex: 1,
+                top: 0,
+                left: 0,
+                marginTop: '193px',
+                marginLeft: '145px',
+                fontSize: '19px',
+                width: '50px',
+                textAlign: 'center',
+                whiteSpace: 'nowrap',
+            }}>
+                <b>{patient?.age_year?.toUpperCase() ?? ''}</b>
+            </span>
+            <span style={{
+                position: 'absolute',
+                zIndex: 1,
+                top: 0,
+                left: 0,
+                marginTop: '193px',
+                marginLeft: '239px',
+                fontSize: '19px',
+                width: '75px',
+                textAlign: 'center'
+            }}>
+                <b>{patient?.gender?.name.toUpperCase() ?? ''}</b>
+            </span>
+            <span style={{
+                position: 'absolute',
+                zIndex: 1,
+                top: 0,
+                left: 0,
+                marginTop: '193px',
+                marginLeft: '379px',
+                fontSize: '19px',
+                width: '123px',
+                textAlign: 'center',
+                whiteSpace: 'nowrap'
+            }}>
+                <b>{patient?.civil_status?.name.toUpperCase() ?? ''}</b>
+            </span>
+            <span style={{
+                position: 'absolute',
+                zIndex: 1,
+                top: 0,
+                left: 0,
+                marginTop: '215px',
+                marginLeft: '145px',
+                fontSize: '19px',
+                width: '358px',
+                textAlign: 'center',
+                whiteSpace: 'nowrap'
+            }}>
+                <b>{patient?.full_address?.toUpperCase() ?? ''}</b>
+            </span>
+
+            <span style={{
+                position: 'absolute',
+                zIndex: 1,
+                top: 0,
+                left: 0,
+                marginTop: '170px',
+                marginLeft: '718px',
+                fontSize: '19px',
+                width: '208px',
+                textAlign: 'center',
+                whiteSpace: 'nowrap',
+            }}>
+                <b>{laboratory?.date_requested.toUpperCase() ?? ''}</b>
+            </span>
+            <span style={{
+                position: 'absolute',
+                zIndex: 1,
+                top: 0,
+                left: 0,
+                marginTop: '193px',
+                marginLeft: '718px',
+                fontSize: '19px',
+                width: '208px',
+                textAlign: 'center',
+                whiteSpace: 'nowrap',
+            }}>
+                <b>{laboratory?.date_performed?.toUpperCase() ?? ''}</b>
+            </span>
+            <span style={{
+                position: 'absolute',
+                zIndex: 1,
+                top: 0,
+                left: 0,
+                marginTop: '215px',
+                marginLeft: '718px',
+                fontSize: '19px',
+                width: '208px',
+                textAlign: 'center',
+                whiteSpace: 'nowrap',
+            }}>
+                <b>{laboratory?.visit.consultation?.doctor?.physician_last_name.toUpperCase() ?? ''}</b>
+            </span>
         </>
     );
 };
 
-export default HeaderDetails;
+export default LaboratoryHeader;

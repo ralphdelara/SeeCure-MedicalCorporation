@@ -10,7 +10,9 @@ use App\Models\Billing;
 use App\Models\CompanyProfile;
 use App\Models\Consultation;
 use App\Models\Laboratory;
+use App\Models\LaboratoryField;
 use App\Models\LaboratoryTestData;
+use App\Models\LaboratoryTestFieldData;
 use App\Models\Payment;
 use App\Models\Pharmacy;
 use App\Services\PrintService;
@@ -160,66 +162,110 @@ class PrintController extends Controller
             'visit.patient.civilStatus',
             'performedBy.professions',
             'performedBy.specialties',
+            'visit.consultation.doctor.professions',
+            'visit.consultation.doctor.specialties',
             'remarks',
         )->find($laboratoryId);
 
         $patient = $laboratory?->visit->patient;
 
+        $chemOthers = [
+            LaboratoryTestEnum::RBS,
+            LaboratoryTestEnum::HBA1C,
+            LaboratoryTestEnum::OGTT_75G,
+        ];
+
         // Clinical Chemistry
-        $clinicalChemistry = LaboratoryTestData::with([
-            'test',
-            'fields' => function ($query) {
-                $query->orderBy('id');
-            },
-            'fields.field',
-        ])
-            ->where('laboratory_id', $laboratoryId)
-            ->where('laboratory_type_id', LaboratoryTypeEnum::CLINICAL_CHEMISTRY)
-            ->orderByRaw('ROW_NUMBER() OVER (ORDER BY created_at DESC, id ASC) ASC')
-            ->get()
-            ->toArray();
-        $hematology = LaboratoryTestData::with([
-            'test',
-            'fields' => function ($query) {
-                $query->orderBy('id');
-            },
-            'fields.field',
-        ])->where('laboratory_id', $laboratoryId)
-            ->where('laboratory_type_id', LaboratoryTypeEnum::CLINICAL_HEMATOLOGY)
-            ->orderByRaw('ROW_NUMBER() OVER (ORDER BY created_at DESC, id ASC) ASC')->get()->toArray();
+        $clinicalChemistry = LaboratoryTestFieldData::with('field', 'testData', 'testData.test')
+            ->where('laboratory_test_field_data.laboratory_id', $laboratoryId)
+            ->whereRelation('testData', 'laboratory_type_id', LaboratoryTypeEnum::CLINICAL_CHEMISTRY)
+            ->whereDoesntHave('testData.test', function ($query) use ($chemOthers) {
+                $query->whereIn('id', $chemOthers);
+            })
+            ->orderBy(
+                LaboratoryField::select('order')
+                    ->whereColumn('laboratory_fields.id', 'laboratory_test_field_data.laboratory_field_id')
+                    ->limit(1), 
+                'asc')
+            ->get()->toArray();
+
+        $clinicalChemistryOthers = LaboratoryTestFieldData::with('field', 'testData', 'testData.test')
+            ->where('laboratory_test_field_data.laboratory_id', $laboratoryId)
+            ->whereRelation('testData', 'laboratory_type_id', LaboratoryTypeEnum::CLINICAL_CHEMISTRY)
+            ->whereHas('testData.test', function ($query) use ($chemOthers) {
+                $query->whereIn('id', $chemOthers);
+            })
+            ->orderBy(
+                LaboratoryField::select('order')
+                    ->whereColumn('laboratory_fields.id', 'laboratory_test_field_data.laboratory_field_id')
+                    ->limit(1), 
+                'asc')
+            ->get()->toArray();
+
+        // Hematology
+        $hematology = LaboratoryTestFieldData::with('field', 'testData', 'testData.test')
+            ->where('laboratory_test_field_data.laboratory_id', $laboratoryId)
+            ->whereRelation('testData', 'laboratory_type_id', LaboratoryTypeEnum::CLINICAL_HEMATOLOGY)
+            ->orderBy(
+                LaboratoryField::select('order')
+                    ->whereColumn('laboratory_fields.id', 'laboratory_test_field_data.laboratory_field_id')
+                    ->limit(1), 
+                'asc')
+            ->get()->toArray();
+        
         // Urinalysis
         $urinalysis = LaboratoryTestData::with([
             'test',
             'fields' => function ($query) {
-                $query->orderBy('id');
+                $query->join('laboratory_fields', 'laboratory_test_field_data.laboratory_field_id', '=', 'laboratory_fields.id') // Replace table names / keys if different
+                    ->orderBy('laboratory_fields.order', 'asc')
+                    ->select('laboratory_test_field_data.*'); // Keeps original model attributes intact
             },
             'fields.field',
         ])->where('laboratory_id', $laboratoryId)
             ->where('laboratory_test_id', LaboratoryTestEnum::URINALYSIS)
             ->orderByRaw('ROW_NUMBER() OVER (ORDER BY created_at DESC, id ASC) ASC')->get()->toArray();
+        
         // Fecalysis
+        $fecalysisPartial = [];
         $fecalysis = LaboratoryTestData::with([
             'test',
             'fields' => function ($query) {
-                $query->orderBy('id');
+                $query->join('laboratory_fields', 'laboratory_test_field_data.laboratory_field_id', '=', 'laboratory_fields.id') // Replace table names / keys if different
+                    ->orderBy('laboratory_fields.order', 'asc')
+                    ->select('laboratory_test_field_data.*'); // Keeps original model attributes intact
             },
+
             'fields.field',
         ])->where('laboratory_id', $laboratoryId)
-            ->where('laboratory_test_id', LaboratoryTestEnum::FECALYSIS)
-            ->orderByRaw('ROW_NUMBER() OVER (ORDER BY created_at DESC, id ASC) ASC')->get()->toArray();
+            ->whereIn('laboratory_test_id', [LaboratoryTestEnum::FECALYSIS, LaboratoryTestEnum::FECAL_OCCULT_BLOOD])
+            ->get()->toArray();
+        
+        if (count($fecalysis) === 1) {
+            if ($fecalysis[0]['test']['id'] === LaboratoryTestEnum::FECAL_OCCULT_BLOOD->value) {
+                $fecalysisPartial = $fecalysis;
+                $fecalysis = [];
+            }
+        }
+
+        if (count($fecalysis) > 1) {
+            // inserts occult blood in array[6] if both fecalysis and fecal occult blood is checked
+            array_splice($fecalysis[0]['fields'], 6, 0, [$fecalysis[1]['fields'][0]]);
+            unset($fecalysis[1]);
+        }
 
         $miscellaneous = LaboratoryTestData::with([
             'test',
-            'fields' => function ($query) {
-                $query->orderBy('id');
-            },
+            'fields',
             'fields.field',
         ])->where('laboratory_id', $laboratoryId)
-            ->whereNotIn('laboratory_test_id', array_column($clinicalChemistry, 'laboratory_test_id'))
-            ->whereNotIn('laboratory_test_id', array_column($hematology, 'laboratory_test_id'))
-            ->whereNotIn('laboratory_test_id', array_column($urinalysis, 'laboratory_test_id'))
-            ->whereNotIn('laboratory_test_id', array_column($fecalysis, 'laboratory_test_id'))
-            ->orderByRaw('ROW_NUMBER() OVER (ORDER BY created_at DESC, id ASC) ASC')->get()->toArray();
+            ->where(function ($query) {
+                $query->whereRelation('test', 'laboratory_type_id', LaboratoryTypeEnum::IMMUNOLOGY_SEROLOGY)
+                    ->orWhereIn('laboratory_test_id', [
+                        LaboratoryTestEnum::PREGNANCY_URINE,
+                    ]);
+            })
+            ->get()->toArray();
 
         if (! empty($clinicalChemistry)) {
             $printData[] = [
@@ -228,11 +274,22 @@ class PrintController extends Controller
                 'type_id' => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
             ];
         }
+        if (! empty($clinicalChemistryOthers)) {
+            $printData[] = [
+                'name'    => 'CLINICAL CHEMISTRY OTHERS',
+                'data'    => $clinicalChemistryOthers,
+                'type_id' => LaboratoryTypeEnum::CLINICAL_CHEMISTRY,
+            ];
+        }
+
         if (! empty($hematology)) {
+            $testIds = array_column(array_column(array_column($hematology, 'test_data'), 'test'), 'id');
             $printData[] = [
                 'name'    => 'HEMATOLOGY',
                 'data'    => $hematology,
                 'type_id' => LaboratoryTypeEnum::CLINICAL_HEMATOLOGY,
+                'showPartial' => !in_array(LaboratoryTestEnum::CBC_W_PLATELET_COUNT->value, $testIds)
+                    && !in_array(LaboratoryTestEnum::COMPLETE_BLOOD_COUNT->value, $testIds)
             ];
         }
         if (! empty($fecalysis)) {
@@ -242,6 +299,14 @@ class PrintController extends Controller
                 'test_id' => LaboratoryTestEnum::FECALYSIS,
             ];
         }
+        if (! empty($fecalysisPartial)) {
+            $printData[] = [
+                'name'    => 'FECALYSIS PARTIAL',
+                'data'    => $fecalysisPartial,
+                'test_id' => LaboratoryTestEnum::FECALYSIS,
+            ];
+        }
+
         if (! empty($urinalysis)) {
             $printData[] = [
                 'name'    => 'URINALYSIS',
@@ -249,6 +314,7 @@ class PrintController extends Controller
                 'test_id' => LaboratoryTestEnum::URINALYSIS,
             ];
         }
+
         if (! empty($miscellaneous)) {
             $printData[] = [
                 'name'    => 'MISCELLANEOUS',
@@ -257,7 +323,7 @@ class PrintController extends Controller
             ];
         }
 
-        $remarks = $laboratory->remarks->toArray();
+        $remarks = $laboratory?->remarks?->toArray() ?? [];
         $remarksTest = array_column($remarks, 'remarks', 'laboratory_test_id');
         $remarksType = array_column($remarks, 'remarks', 'laboratory_type_id');
 

@@ -16,6 +16,8 @@ use App\Http\Controllers\PharmacyController;
 use App\Http\Controllers\PrintController;
 use App\Http\Controllers\SystemController;
 use App\Http\Controllers\UserController;
+use App\Services\LaboratoryFieldService;
+use App\Services\LaboratoryService;
 use Illuminate\Support\Facades\Route;
 
 Route::permanentRedirect('/', '/login');
@@ -192,6 +194,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/addOrUpdate', [DocumentController::class, 'addOrUpdateDocument'])->name('documents.add-or-update');
         Route::get('/download/{departmentId}/{fileName}/{department}', [DocumentController::class, 'downloadDocument'])->name('documents.download');
         Route::delete('/delete/{documentId}/{departmentId}/{department}', [DocumentController::class, 'deleteDocument'])->name('documents.delete');
+    });
+
+    Route::get('order', function () {
+        app(LaboratoryFieldService::class)->orderTestFields();
     });
 });
 
