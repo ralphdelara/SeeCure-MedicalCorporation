@@ -62,7 +62,7 @@ const BillingDetails = () => {
         url.searchParams.set('tab', selectedTab);
 
         // Updates the browser URL bar without triggering a page reload or router request
-        window.history.pushState({}, '', url);
+        window.history.replaceState(window.history.state, '', url.toString());
     }, [selectedTab]);
 
     return (

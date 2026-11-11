@@ -4,7 +4,7 @@ import { router, usePage } from '@inertiajs/react';
 import toast, { Toaster } from 'react-hot-toast';
 import notificationSound from '@/assets/sounds/notification.mp3';
 import { IconBellRinging } from '@tabler/icons-react';
-import { laboratory } from '@/routes';
+import { laboratoryList } from '@/routes';
 
 interface User {
     id: string;
@@ -63,8 +63,8 @@ const NotifyLaboratory = () => {
                 // Trigger the reactive notification toast to match the sound
                 showNotifications(e.name, e.message);
 
-                if (url === laboratory().url) {
-                    router.get(laboratory().url);
+                if (url === laboratoryList('pending-today').url) {
+                    router.get(laboratoryList('pending-today').url);
                 }
             },
         );

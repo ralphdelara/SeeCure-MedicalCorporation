@@ -79,6 +79,14 @@ class LaboratoryService
 
         if ($status === 'completed') {
             $laboratoryList = $laboratoryList->where('is_completed', true);
+        } elseif ($status === 'pending-today') {
+            $laboratoryList = $laboratoryList->whereHas('visit', function ($query) {
+                $query->where('visit_status_id', VisitStatusEnum::IN_LABORATORY)
+                    ->whereMonth('created_at', now()->format('m'))
+                    ->whereDay('created_at', now()->format('d'))
+                    ->whereYear('created_at', now()->format('Y'))
+                    ->where('is_completed', false);
+            });
         } else {
             $laboratoryList = $laboratoryList->whereHas('visit', function ($query) {
                 $query->where('visit_status_id', VisitStatusEnum::IN_LABORATORY)

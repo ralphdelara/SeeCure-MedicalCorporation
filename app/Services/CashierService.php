@@ -66,11 +66,15 @@ class CashierService
 
         if ($status === 'completed') {
             $cashierList = $cashierList->where('is_completed', true);
+        } elseif ($status === 'pending-today') {
+            // Dont add IN_CASHIER filter because it contradicts with billing and pharmacy status
+            $cashierList = $cashierList->whereMonth('created_at', now()->format('m'))
+                ->whereDay('created_at', now()->format('d'))
+                ->whereYear('created_at', now()->format('Y'))
+                ->where('is_completed', false);
         } else {
-            $cashierList = $cashierList->whereHas('visit', function ($query) {
-                $query->where('visit_status_id', VisitStatusEnum::IN_CASHIER)
-                    ->where('is_completed', false);
-            });
+            // Dont add IN_CASHIER filter because it contradicts with billing and pharmacy status
+            $cashierList = $cashierList->where('is_completed', false);
         }
 
         if ($status !== 'completed') {
@@ -198,6 +202,10 @@ class CashierService
             abort(404);
         }
 
+        $cashier->update([
+            'is_completed' => true,
+        ]);
+
         $lab = app(VisitService::class)->getPendingData($cashier->visit->laboratory?->toArray() ?? []);
         $radio = app(VisitService::class)->getPendingData($cashier->radiology?->toArray() ?? []);
 
@@ -217,10 +225,6 @@ class CashierService
                 'visit_status_id' => VisitStatusEnum::COMPLETED,
             ]);
         }
-
-        $cashier->update([
-            'is_completed' => true,
-        ]);
     }
 
     public function addOrUpdatePayment(array $paymentDetails): array

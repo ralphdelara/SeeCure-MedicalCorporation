@@ -89,6 +89,14 @@ class ConsultationService
 
         if ($status === 'completed') {
             $consultationList = $consultationList->where('is_completed', true);
+        } elseif ($status === 'pending-today') {
+            $consultationList = $consultationList->whereHas('visit', function ($query) {
+                $query->where('visit_status_id', VisitStatusEnum::IN_CONSULTATION)
+                    ->whereMonth('created_at', now()->format('m'))
+                    ->whereDay('created_at', now()->format('d'))
+                    ->whereYear('created_at', now()->format('Y'))
+                    ->where('is_completed', false);
+            });
         } else {
             $consultationList = $consultationList->whereHas('visit', function ($query) {
                 $query->where('visit_status_id', VisitStatusEnum::IN_CONSULTATION)

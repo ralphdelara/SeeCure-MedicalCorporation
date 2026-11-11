@@ -1,6 +1,7 @@
 import { completeConsultation } from '@/actions/App/Http/Controllers/ConsultationController';
 import ConfirmButton from '@/components/confirm-button';
-import { consultations } from '@/routes';
+import { formatReceiptDateTime, isToday } from '@/lib/utils';
+import { consultationList } from '@/routes';
 import { usePage } from '@inertiajs/react';
 import { IconChecklist, IconExclamationCircleFilled } from '@tabler/icons-react';
 
@@ -9,8 +10,13 @@ const CompleteConsultation = () => {
         consultationDetails: {
             id: string;
             is_completed: boolean;
+            created_at: string;
         };
     };
+
+    const redirectPending = isToday(new Date(formatReceiptDateTime(consultationDetails.created_at)))
+        ? 'pending-today'
+        : '';
 
     return (
         <>
@@ -24,7 +30,7 @@ const CompleteConsultation = () => {
                     title="Complete Consultation"
                     successTitle="Success!"
                     successMsg="The consultation record has been completed."
-                    successUrl={consultations().url}
+                    successUrl={consultationList(redirectPending).url}
                     size="lg"
                 >
                     <IconChecklist />

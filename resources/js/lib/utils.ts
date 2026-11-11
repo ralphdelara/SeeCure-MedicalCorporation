@@ -201,7 +201,7 @@ export function getHighOrLowNormalRange(field: NormalRangeProps, gender_id: numb
         normalRangeMax = normalRangeBothMax;
     }
 
-    
+
     if (normalRangeMin === '' && normalRangeMax === '') {
         return '';
     }
@@ -436,3 +436,12 @@ const totalValues = (tmpData: any) => {
         totalNettPrice: totalNettPrice.toFixed(2),
     };
 };
+
+export function isToday(someDate: Date) {
+    const today = new Date();
+    return (
+        someDate.getDate() === today.getDate() &&
+        someDate.getMonth() === today.getMonth() &&
+        someDate.getFullYear() === today.getFullYear()
+    );
+}

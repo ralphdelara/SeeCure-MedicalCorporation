@@ -67,6 +67,12 @@ class PharmacyService
 
         if ($status === 'completed') {
             $pharmacyList = $pharmacyList->where('is_completed', true);
+        } elseif ($status === 'pending-today') {
+            // Dont add IN_PHARMACY filter because it contradicts with billing
+            $pharmacyList = $pharmacyList->whereMonth('created_at', now()->format('m'))
+                ->whereDay('created_at', now()->format('d'))
+                ->whereYear('created_at', now()->format('Y'))
+                ->where('is_completed', false);
         } else {
             $pharmacyList = $pharmacyList->where('is_completed', false);
             // removed ->where('visit_status_id', VisitStatusEnum::IN_PHARMACY)

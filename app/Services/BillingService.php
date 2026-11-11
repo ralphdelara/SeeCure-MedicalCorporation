@@ -69,11 +69,15 @@ class BillingService
 
         if ($status === 'completed') {
             $billingList = $billingList->where('is_completed', true);
+        } elseif ($status === 'pending-today') {
+            // Dont add IN_BILLING filter because it contradicts with pharmacy
+            $billingList = $billingList->whereMonth('created_at', now()->format('m'))
+                ->whereDay('created_at', now()->format('d'))
+                ->whereYear('created_at', now()->format('Y'))
+                ->where('is_completed', false);
         } else {
-            $billingList = $billingList->whereHas('visit', function ($query) {
-                $query->where('visit_status_id', VisitStatusEnum::IN_BILLING)
-                    ->where('is_completed', false);
-            });
+            // Dont add IN_BILLING filter because it contradicts with pharmacy
+            $billingList = $billingList->where('is_completed', false);
         }
 
         if ($status !== 'completed') {
@@ -386,15 +390,15 @@ class BillingService
             'visit.consultation.prescriptions',
         )->find($id);
 
+        $billing->update([
+            'is_completed' => true,
+        ]);
+
         // create cashier details
         app(CashierService::class)->storeCashier(
             visitId: $billing->visit_id,
             billingId: $billing->id,
         );
-
-        $billing->update([
-            'is_completed' => true,
-        ]);
 
         // move to cashier
         $billing->visit->update([
