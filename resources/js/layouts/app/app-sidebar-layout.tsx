@@ -21,10 +21,10 @@ import {
 import { useState } from 'react';
 import logoText from '@/assets/images/logos/logo_text.png';
 import {
-    consultations,
+    consultationList,
     dashboard,
     frontDesk,
-    laboratory,
+    laboratoryList,
     patients,
     inventory,
     radiology,
@@ -62,21 +62,26 @@ export default function NavSidebar({ toggleSidebar }: NavSidebarProps) {
             visitsPendingCount: number;
             patientCount: number;
             consultationCount: number;
+            consultationPendingTodayCount: number;
             consultationPendingCount: number;
             consultationCompletedCount: number;
             laboratoryCount: number;
+            laboratoryPendingTodayCount: number;
             laboratoryPendingCount: number;
             laboratoryCompletedCount: number;
             inventoryCount: number;
             inventoryHiddenCount: number;
             pharmacyCount: number;
+            pharmacyPendingTodayCount: number;
             pharmacyPendingCount: number;
             pharmacyCompletedCount: number;
             billingCount: number;
+            billingPendingTodayCount: number;
             billingPendingCount: number;
             billingCompletedCount: number;
             billingSuppliesCount: number;
             cashierCount: number;
+            cashierPendingTodayCount: number;
             cashierPendingCount: number;
             cashierCompletedCount: number;
             usersCount: number;
@@ -187,54 +192,72 @@ export default function NavSidebar({ toggleSidebar }: NavSidebarProps) {
             ],
         },
         {
-            url: consultations(),
+            url: consultationList('pending-today'),
             name: 'Consultation',
             icon: IconStethoscope,
-            active: url.includes(consultations().url.slice(0, -1)),
+            active: url.includes(consultationList().url.slice(0, -1)),
             count: navCounts.consultationCount,
             childNav: [
                 {
-                    url: consultations(),
+                    url: consultationList('pending-today'),
+                    name: 'Pending (Today)',
+                    active: url === consultationList('pending-today').url,
+                    count: navCounts.consultationPendingTodayCount,
+                },
+                {
+                    url: consultationList(),
                     name: 'Pending',
-                    active: url === consultations().url,
+                    active: url === consultationList().url,
                     count: navCounts.consultationPendingCount,
                 },
                 {
-                    url: consultations('completed'),
+                    url: consultationList('completed'),
                     name: 'Completed',
-                    active: url === consultations('completed').url,
+                    active: url === consultationList('completed').url,
                     count: navCounts.consultationCompletedCount,
                 },
             ],
         },
         {
-            url: laboratory(),
+            url: laboratoryList('pending-today'),
             name: 'Laboratory',
             icon: IconFlask,
-            active: url.includes(laboratory().url),
+            active: url.includes(laboratoryList().url),
             count: navCounts.laboratoryCount,
             childNav: [
                 {
-                    url: laboratory(),
+                    url: laboratoryList('pending-today'),
+                    name: 'Pending (Today)',
+                    active: url === laboratoryList('pending-today').url,
+                    count: navCounts.laboratoryPendingTodayCount,
+                },
+                {
+                    url: laboratoryList(),
                     name: 'Pending',
-                    active: url === laboratory().url,
+                    active: url === laboratoryList().url,
                     count: navCounts.laboratoryPendingCount,
                 },
                 {
-                    url: laboratory('completed'),
+                    url: laboratoryList('completed'),
                     name: 'Completed',
-                    active: url === laboratory('completed').url,
+                    active: url === laboratoryList('completed').url,
                     count: navCounts.laboratoryCompletedCount,
                 },
             ],
         },
         {
-            url: radiology(),
+            url: radiology('pending-today'),
             name: 'Radiology',
             icon: IconScan,
             active: url.includes(radiology().url),
             count: 0,
             childNav: [
+                {
+                    url: radiology('pending-today'),
+                    name: 'Pending (Today)',
+                    active: url === radiology('pending-today').url,
+                    count: 0,
+                },
                 {
                     url: radiology(),
                     name: 'Pending',
@@ -283,12 +306,18 @@ export default function NavSidebar({ toggleSidebar }: NavSidebarProps) {
             ],
         },
         {
-            url: pharmacy(),
+            url: pharmacy('pending-today'),
             name: 'Pharmacy',
             icon: IconPrescription,
             active: url.includes(pharmacy().url),
             count: navCounts.pharmacyCount,
             childNav: [
+                {
+                    url: pharmacy('pending-today'),
+                    name: 'Pending (Today)',
+                    active: url === pharmacy('pending-today').url,
+                    count: navCounts.pharmacyPendingTodayCount,
+                },
                 {
                     url: pharmacy(),
                     name: 'Pending',
@@ -304,12 +333,18 @@ export default function NavSidebar({ toggleSidebar }: NavSidebarProps) {
             ],
         },
         {
-            url: billing(),
+            url: billing('pending-today'),
             name: 'Billing',
             icon: IconBuildingBank,
             active: url.includes(billing().url),
             count: navCounts.billingCount,
             childNav: [
+                {
+                    url: billing('pending-today'),
+                    name: 'Pending (Today)',
+                    active: url === billing('pending-today').url,
+                    count: navCounts.billingPendingTodayCount,
+                },
                 {
                     url: billing(),
                     name: 'Pending',
@@ -331,12 +366,18 @@ export default function NavSidebar({ toggleSidebar }: NavSidebarProps) {
             ],
         },
         {
-            url: cashier(),
+            url: cashier('pending-today'),
             name: 'Cashier',
             icon: IconCashRegister,
             active: url.includes(cashier().url),
             count: navCounts.cashierCount,
             childNav: [
+                {
+                    url: cashier('pending-today'),
+                    name: 'Pending (Today)',
+                    active: url === cashier('pending-today').url,
+                    count: navCounts.cashierPendingTodayCount,
+                },
                 {
                     url: cashier(),
                     name: 'Pending',

@@ -12,9 +12,9 @@ Breadcrumbs::for('consultations', function (BreadcrumbTrail $trail, ?string $sta
             abort(404);
         }
         $trail->parent('consultations');
-        $trail->push(ucfirst($status), route('consultations', ['status' => $status]));
+        $trail->push(ucfirst($status), route('consultation-list', ['status' => $status]));
     } else {
-        $trail->push('Consultation', route('consultations'));
+        $trail->push('Consultation', route('consultation-list'));
     }
 
 });
@@ -54,13 +54,13 @@ Breadcrumbs::for('laboratory', function (BreadcrumbTrail $trail, ?string $status
             abort(404);
         }
         $trail->parent('laboratory');
-        $trail->push(ucfirst($status), route('laboratory', ['status' => $status]));
+        $trail->push(ucfirst($status), route('laboratory-list', ['status' => $status]));
     } else {
-        $trail->push('Laboratory', route('laboratory'));
+        $trail->push('Laboratory', route('laboratory-list'));
     }
 
 });
 Breadcrumbs::for('laboratory.details', function (BreadcrumbTrail $trail, string $id) {
-    $trail->parent('laboratory');
+    $trail->parent('laboratory-list');
     $trail->push('Laboratory Details', route('laboratory.details', ['id' => $id]));
 });

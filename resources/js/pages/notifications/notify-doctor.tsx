@@ -4,7 +4,7 @@ import { router, usePage } from '@inertiajs/react';
 import toast, { Toaster } from 'react-hot-toast';
 import notificationSound from '@/assets/sounds/notification.mp3';
 import { IconBellRinging } from '@tabler/icons-react';
-import { consultations } from '@/routes';
+import { consultationList } from '@/routes';
 
 interface User {
     id: string;
@@ -63,8 +63,8 @@ const NotifyDoctor = () => {
                 // Trigger the reactive notification toast to match the sound
                 showNotifications(e.name, e.message);
 
-                if (url === consultations().url) {
-                    router.get(consultations().url);
+                if (url === consultationList().url) {
+                    router.get(consultationList().url);
                 }
             },
         );

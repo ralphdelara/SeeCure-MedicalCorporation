@@ -16,8 +16,6 @@ use App\Http\Controllers\PharmacyController;
 use App\Http\Controllers\PrintController;
 use App\Http\Controllers\SystemController;
 use App\Http\Controllers\UserController;
-use App\Services\LaboratoryFieldService;
-use App\Services\LaboratoryService;
 use Illuminate\Support\Facades\Route;
 
 Route::permanentRedirect('/', '/login');
@@ -55,8 +53,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::prefix('/consultations')->group(function () {
-        Route::get('/{status?}', [ConsultationController::class, 'getConsultationList'])->name('consultations');
+        Route::get('/{status?}', [ConsultationController::class, 'getConsultationList'])->name('consultation-list');
     });
+
     Route::prefix('consultation')->group(function () {
         Route::prefix('/details')->group(function () {
             Route::get('/{consultationId}', [ConsultationController::class, 'getConsultationDetails'])->name('consultation.details');
@@ -74,7 +73,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::prefix('laboratory')->group(function () {
-        Route::get('/{status?}', [LaboratoryController::class, 'getLaboratoryList'])->name('laboratory');
+        Route::get('/{status?}', [LaboratoryController::class, 'getLaboratoryList'])->name('laboratory-list');
         Route::get('/package/{id}/tests', [LaboratoryController::class, 'getTests'])->name('laboratory.package.tests');
         Route::post('/', [LaboratoryController::class, 'addOrUpdateLaboratory'])->name('laboratory.add-or-update');
         Route::prefix('/details')->group(function () {

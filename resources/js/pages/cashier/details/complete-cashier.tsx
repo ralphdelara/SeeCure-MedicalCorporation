@@ -9,6 +9,7 @@ const CompleteCashier = () => {
         cashierDetails: {
             id: string;
             moveToText: string;
+            billing_id?: string|null
         };
     };
 
@@ -19,7 +20,9 @@ const CompleteCashier = () => {
             msg={
                 cashierDetails.moveToText !== 'Completed'
                 ? 'This will move the patient to "' + cashierDetails.moveToText + '" and the cashier will be marked as completed!'
-                : 'This will complete the patient\'s visit. They are free to proceed to the pharmacy if they wish to purchase their medication.'
+                : (cashierDetails.billing_id !== null
+                    ? 'This will complete the patient\'s visit. They are free to proceed to the pharmacy if they wish to purchase their medication.'
+                    : 'This will complete the pharmacy transaction.')
             }
             title="Complete Cashier"
             successTitle="Success!"
