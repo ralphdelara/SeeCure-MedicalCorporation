@@ -61,6 +61,6 @@ Breadcrumbs::for('laboratory', function (BreadcrumbTrail $trail, ?string $status
 
 });
 Breadcrumbs::for('laboratory.details', function (BreadcrumbTrail $trail, string $id) {
-    $trail->parent('laboratory-list');
+    $trail->parent('laboratory');
     $trail->push('Laboratory Details', route('laboratory.details', ['id' => $id]));
 });
