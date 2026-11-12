@@ -538,8 +538,8 @@ enum LaboratoryFieldEnum: int
                 'female_max' => null,
             ],
             self::HEMA_PLATELET_COUNT => [
-                'both_min'   => 150000,
-                'both_max'   => 450000,
+                'both_min'   => 150,
+                'both_max'   => 450,
                 'male_min'   => null,
                 'male_max'   => null,
                 'female_min' => null,
