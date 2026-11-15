@@ -31,7 +31,7 @@ export default function Guide() {
     ];
 
     useEffect(() => {
-        const initTab = getUrlParams('tab', 'tab-details');
+        const initTab = getUrlParams('tab', 'tab-purpose-and-scope');
         setSelectedTab(initTab);
     }, []);
 
