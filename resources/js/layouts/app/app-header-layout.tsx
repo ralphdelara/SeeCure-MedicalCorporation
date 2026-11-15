@@ -9,7 +9,7 @@ import {
 } from '@tabler/icons-react';
 import { Fragment, useEffect, useState } from 'react';
 import logoText from '@/assets/images/logos/logo_text.png';
-import { calendar, frontDesk, logout, notes, reminders, guide } from '@/routes';
+import { calendar, frontDesk, logout, notes, reminders, guidelines, privacyPolicy } from '@/routes';
 import NotifyDoctor from '@/pages/notifications/notify-doctor';
 import personDefault from '@/assets/images/profile/person-default.png';
 import NotifyBilling from '@/pages/notifications/notify-billing';
@@ -43,10 +43,11 @@ export default function NavHeader({ toggleSidebar }: NavHeaderProps) {
     const { user, professions, specialties } = auth;
     const { full_name } = user;
     const routes = [
-        { url: guide(), name: 'Guide' },
         { url: notes(), name: 'Notes' },
         { url: reminders(), name: 'Reminders' },
         { url: calendar(), name: 'Calendar' },
+        { url: guidelines(), name: 'Guidelines' },
+        { url: privacyPolicy(), name: 'Privacy Policy' },
     ];
 
     useEffect(() => {

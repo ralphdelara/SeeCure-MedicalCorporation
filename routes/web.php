@@ -14,6 +14,7 @@ use App\Http\Controllers\LaboratoryController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\PharmacyController;
 use App\Http\Controllers\PrintController;
+use App\Http\Controllers\PrivacyPolicyController;
 use App\Http\Controllers\SystemController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -169,7 +170,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/call-out', [SystemController::class, 'callOutPatient'])->name('system.call-out-patient');
     });
 
-    Route::inertia('guide', 'guide')->name('guide');
+    Route::inertia('guidelines', 'guidelines/index')->name('guidelines');
     Route::inertia('notes', 'notes')->name('notes');
     Route::inertia('reminders', 'reminders')->name('reminders');
     Route::inertia('calendar', 'calendar')->name('calendar');
@@ -195,6 +196,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/addOrUpdate', [DocumentController::class, 'addOrUpdateDocument'])->name('documents.add-or-update');
         Route::get('/download/{departmentId}/{fileName}/{department}', [DocumentController::class, 'downloadDocument'])->name('documents.download');
         Route::delete('/delete/{documentId}/{departmentId}/{department}', [DocumentController::class, 'deleteDocument'])->name('documents.delete');
+    });
+
+    Route::prefix('privacy-policy')->group(function () {
+        Route::get('/', [PrivacyPolicyController::class, 'privacyPolicy'])->name('privacy-policy');
+        Route::post('/update', [PrivacyPolicyController::class, 'updatePrivacyPolicy'])->name('privacy-policy.update');
     });
 });
 
