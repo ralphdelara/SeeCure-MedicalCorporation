@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Casts\EncryptedDate;
 use App\Enums\DepartmentEnum;
 use App\Enums\PositionEnum;
+use App\Enums\ProfessionEnum;
 use App\Traits\CorrectTimezone;
 use App\Traits\PersonDetails;
 use Carbon\CarbonImmutable;
@@ -177,7 +178,7 @@ class User extends Authenticatable implements CipherSweetEncrypted
     /** @use HasFactory<UserFactory> */
     use CorrectTimezone, HasFactory, HasUuids, Notifiable, PersonDetails, UsesCipherSweet;
 
-    protected $appends = ['physician_last_name', 'full_name', 'full_address', 'age_computed', 'is_bot', 'is_admin'];
+    protected $appends = ['physician_last_name', 'full_name', 'full_address', 'age_computed', 'is_bot', 'is_admin', 'is_physician', 'is_medtech'];
 
     /**
      * Get the attributes that should be cast.
@@ -299,6 +300,50 @@ class User extends Authenticatable implements CipherSweetEncrypted
         }
 
         return false;
+    }
+
+    public function getIsPhysicianAttribute(): bool
+    {
+        $noSpecialty = $this->specialties->count() === 0;
+        $physicianDepartment = false;
+        $physicianProfession = false;
+
+        foreach ($this->departments as $department) {
+            if (DepartmentEnum::tryFrom($department->id) === DepartmentEnum::CONSULTATION) {
+                $physicianDepartment = true;
+            }
+        }
+
+        foreach ($this->professions as $profession) {
+            if (ProfessionEnum::tryFrom($profession->id) === ProfessionEnum::DOCTOR) {
+                $physicianProfession = true;
+            }
+        }
+
+        return $physicianDepartment && $physicianProfession && $noSpecialty;
+    }
+
+    public function getIsMedTechAttribute(): bool
+    {
+        $medTech = false;
+        $medTechPosition = false;
+
+        foreach ($this->professions as $profession) {
+            if (ProfessionEnum::tryFrom($profession->id) === ProfessionEnum::MEDICAL_TECHNOLOGIST) {
+                $medTech = true;
+            }
+        }
+
+        foreach ($this->positions as $position) {
+            if (
+                PositionEnum::tryFrom($position->id) === PositionEnum::MEDICAL_TECHNOLOGIST
+                || PositionEnum::tryFrom($position->id) === PositionEnum::MEDICAL_TECHNOLOGIST_SUPERVISOR
+            ) {
+                $medTechPosition = true;
+            }
+        }
+
+        return $medTech || $medTechPosition;
     }
 
     /**

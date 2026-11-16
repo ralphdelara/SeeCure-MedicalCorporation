@@ -1,5 +1,5 @@
 import { useForm, usePage } from '@inertiajs/react';
-import { Fragment, useEffect } from 'react';
+import { Fragment, useEffect, useMemo } from 'react';
 import { IconPlus, IconUserDown, IconUserPlus } from '@tabler/icons-react';
 import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
@@ -20,6 +20,7 @@ import { Input } from '@/components/ui/input';
 import LaboratoryForm from './laboratory-form';
 import RadiologyForm from './radiology-form';
 import { useWindowSize } from '@/hooks/use-window-size';
+import OnlineUsers from '@/pages/sockets/online-users';
 
 const QueuePatient = ({ updateList }: { updateList: () => Promise<void> }) => {
     const { isLg, isXl } = useWindowSize();
@@ -27,6 +28,16 @@ const QueuePatient = ({ updateList }: { updateList: () => Promise<void> }) => {
     const { priorityTypeOptions } = usePage().props as unknown as {
         priorityTypeOptions: Options[];
     };
+
+    const [onlineUsers, setOnlineUsers] = useState([]);
+    const onlineDoctors = useMemo(() => {
+        return onlineUsers
+            .filter((user: {is_physician: boolean;}) => user.is_physician)
+            .map((user: {id: string; full_name: string;}) => ({
+                id: user.id,
+                name: user.full_name,
+            }));
+    }, [onlineUsers]);
 
     const { data, setData, post, processing, errors, reset } =
         useForm<QueuePatientDetailsFormProps>({
@@ -128,6 +139,8 @@ const QueuePatient = ({ updateList }: { updateList: () => Promise<void> }) => {
                 })
                 .replace(', ', 'T'),
         );
+
+        setData('doctor_id', onlineDoctors.length > 0 ? onlineDoctors[0].id : '');
     }, [showModal]);
 
     let colXl =
@@ -137,6 +150,7 @@ const QueuePatient = ({ updateList }: { updateList: () => Promise<void> }) => {
 
     return (
         <>
+            <OnlineUsers setOnlineUsers={setOnlineUsers}/>
             <Button onClick={() => setShowModal(true)} hasIcon={true}>
                 <IconPlus className="me-1" size={18} /> Queue Patient
             </Button>

@@ -123,6 +123,10 @@ nav ul.pagination li:not(.active) > a.page-link:hover {
     animation: spin-counter-clockwise 2s linear infinite;
 }
 
+.dropdown-menu a:hover {
+    color: var(--bs-success-bg-subtle);
+}
+
 @keyframes spin-clockwise {
     from {
         transform: rotate(0deg);

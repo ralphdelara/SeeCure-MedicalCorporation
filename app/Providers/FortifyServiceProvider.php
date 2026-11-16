@@ -98,6 +98,10 @@ class FortifyServiceProvider extends ServiceProvider
                     'created_by' => $user->id,
                 ]);
 
+                if ($user->is_physician) {
+                    
+                }
+
                 return $user;
             }
 

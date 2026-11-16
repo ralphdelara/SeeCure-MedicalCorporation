@@ -202,6 +202,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/', [PrivacyPolicyController::class, 'privacyPolicy'])->name('privacy-policy');
         Route::post('/update', [PrivacyPolicyController::class, 'updatePrivacyPolicy'])->name('privacy-policy.update');
     });
+
+    Route::inertia('/online-users', 'online-users-page')->name('online-users-page');
 });
 
 Route::get('/ping', function () {

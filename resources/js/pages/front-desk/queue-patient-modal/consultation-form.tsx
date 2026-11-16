@@ -8,6 +8,8 @@ import type { QueuePatientFormProps } from './types';
 import SignsOrSymptomsForm from '@/components/consultation/signs-or-symptoms-form';
 import VitalSignsForm from '@/components/vital-signs/vital-signs-form';
 import FormHeader from '@/components/ui/form-header';
+import { useEffect, useState } from 'react';
+import OnlineUsers from '@/pages/sockets/online-users';
 
 interface InertiaProps {
     doctors: Options[];
