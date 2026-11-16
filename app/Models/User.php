@@ -223,7 +223,7 @@ class User extends Authenticatable implements CipherSweetEncrypted
             $prefix = $this->professions->pluck('prefix')->filter()->implode(', ');
             $suffix = $this->professions->pluck('suffix')->filter()->implode(', ');
 
-            return $fullName.($suffix ? ', '.$suffix : '.');
+            return $fullName.($suffix ? ', '.$suffix : '');
         }
 
         return $fullName;
