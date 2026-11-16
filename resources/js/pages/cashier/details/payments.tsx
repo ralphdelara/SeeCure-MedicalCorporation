@@ -79,7 +79,7 @@ const Payments = ({ showTab }: { showTab: boolean }) => {
     const paymentType = pharmacy ? 'Pharmacy' : 'Billing';
 
     const totalAmount = paymentDetails?.total_amount ?? paymentData.total_nett_price ?? 0;
-    console.log(cashierDetails);
+
     const { data, setData, post, isDirty, setDefaults } = useForm<PaymentDetailsProps>({
         visit_id: cashierDetails.visit_id,
         cashier_id: cashierDetails.id,

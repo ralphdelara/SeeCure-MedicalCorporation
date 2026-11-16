@@ -37,29 +37,29 @@ export default function UserList() {
     const header =
         tableData.length !== 0
             ? [
-                  { name: '#', width: '5%', align: 'right' },
-                  { name: 'User • Gender', className: 'sticky-left', align: 'left' },
-                  { name: 'Department', align: 'left' },
-                  { name: 'Position', align: 'left' },
-                  { name: 'Profession', align: 'left' },
-                  { name: 'Specialty', align: 'left' },
-                  { name: 'Contact', align: 'left' },
-                  { name: 'Status', align: 'left' },
-                  { name: 'PRC License No', align: 'right' },
-                  { name: 'PTR No', align: 'right' },
-                  { name: 'Date Hired', align: 'left' },
-                  { name: 'Date Resigned', align: 'left' },
-                  { name: 'Date of Birth', align: 'left' },
-                  { name: 'Address', align: 'left' },
-                  { name: 'Added by', align: 'left' },
-                  { name: '', className: 'sticky-right', align: 'right' },
-              ]
+                { name: '#', width: '5%', align: 'right' },
+                { name: 'User • Gender', className: 'sticky-left', align: 'left' },
+                { name: 'Department', align: 'left' },
+                { name: 'Position', align: 'left' },
+                { name: 'Profession', align: 'left' },
+                { name: 'Specialty', align: 'left' },
+                { name: 'Contact', align: 'left' },
+                { name: 'Status', align: 'left' },
+                { name: 'PRC License No', align: 'right' },
+                { name: 'PTR No', align: 'right' },
+                { name: 'Date Hired', align: 'left' },
+                { name: 'Date Resigned', align: 'left' },
+                { name: 'Date of Birth', align: 'left' },
+                { name: 'Address', align: 'left' },
+                { name: 'Added by', align: 'left' },
+                { name: '', className: 'sticky-right', align: 'right' },
+            ]
             : [
-                  { name: '#', width: '5%', align: 'right' },
-                  { name: 'User • Gender', className: 'sticky-left', align: 'left' },
-                  { name: '', className: 'sticky-right', align: 'right' },
-              ];
-    console.log(tableData);
+                { name: '#', width: '5%', align: 'right' },
+                { name: 'User • Gender', className: 'sticky-left', align: 'left' },
+                { name: '', className: 'sticky-right', align: 'right' },
+            ];
+
     return (
         <>
             <Head title="User List" />
@@ -91,7 +91,7 @@ export default function UserList() {
                                                     <div className="ms-3">
                                                         <h6 className="fs-4 fw-semibold mb-0">
                                                             {(auth.user.is_admin && !item.is_bot) ||
-                                                            auth.user.id === item.id ? (
+                                                                auth.user.id === item.id ? (
                                                                 <Link
                                                                     href={getUserDetails(item.id)}
                                                                     className="tooltip-container"
@@ -224,25 +224,25 @@ export default function UserList() {
                                         <td className="sticky-right">
                                             {((auth.user.is_admin && !item.is_bot) ||
                                                 auth.user.id === item.id) && (
-                                                <>
-                                                    <Link href={getUserDetails(item.id)}>
-                                                        <Button
-                                                            rounded={true}
-                                                            className="me-1"
-                                                            title="User Details"
-                                                        >
-                                                            <i>
-                                                                <IconUserEdit size={18} />
-                                                            </i>
-                                                        </Button>
-                                                    </Link>
+                                                    <>
+                                                        <Link href={getUserDetails(item.id)}>
+                                                            <Button
+                                                                rounded={true}
+                                                                className="me-1"
+                                                                title="User Details"
+                                                            >
+                                                                <i>
+                                                                    <IconUserEdit size={18} />
+                                                                </i>
+                                                            </Button>
+                                                        </Link>
 
-                                                    <DeleteButton
-                                                        url={deleteUser(item.id).url}
-                                                        msg={'user <b>' + item.full_name + '</b>.'}
-                                                    />
-                                                </>
-                                            )}
+                                                        <DeleteButton
+                                                            url={deleteUser(item.id).url}
+                                                            msg={'user <b>' + item.full_name + '</b>.'}
+                                                        />
+                                                    </>
+                                                )}
                                         </td>
                                     </tr>
                                 ))}

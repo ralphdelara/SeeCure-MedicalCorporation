@@ -1,16 +1,14 @@
 import { Head, Link, usePage } from '@inertiajs/react';
-import { IconStethoscope, IconTrash, IconVolume, IconVolumeOff } from '@tabler/icons-react';
+import { IconStethoscope } from '@tabler/icons-react';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import SearchField from '@/components/search-field';
 import TableList from '@/components/table';
 import type { Pages } from '@/types/pagination';
 import { Button } from '@/components/ui/button';
-import { Fragment, useState } from 'react';
+import { Fragment } from 'react';
 import { getPatientDetails } from '@/actions/App/Http/Controllers/PatientController';
 import { getConsultationDetails } from '@/actions/App/Http/Controllers/ConsultationController';
-import { fetchUrl } from '@/lib/utils';
 import personDefault from '@/assets/images/profile/person-default.png';
-import { callOutPatient } from '@/routes/system';
 import { ConsultationList } from '@/types/consultation';
 import CallPatientButton from '@/components/call-patient-button';
 

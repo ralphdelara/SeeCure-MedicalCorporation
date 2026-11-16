@@ -1,5 +1,5 @@
 import { Input } from '@/components/ui/input';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import { useForm, usePage } from '@inertiajs/react';
 import { formSubmitResponse, printDocument } from '@/lib/utils';
 import React from 'react';
@@ -10,6 +10,7 @@ import { IconFlask } from '@tabler/icons-react';
 import { Button } from '@/components/ui/button';
 import { Select } from '@/components/ui/select';
 import DetailsRemarks from './details-remarks';
+import OnlineUsers from '@/pages/sockets/online-users';
 
 interface InertiaProps {
     laboratoryDetails: {
@@ -39,6 +40,16 @@ const Details = ({
     dataFields: object;
     setDataFields: React.Dispatch<React.SetStateAction<{}>>;
 }) => {
+    const [onlineUsers, setOnlineUsers] = useState([]);
+    const onlineMedTech = useMemo(() => {
+        return onlineUsers
+            .filter((user: { is_medtech: boolean; }) => user.is_medtech)
+            .map((user: { id: string; full_name: string; }) => ({
+                id: user.id,
+                name: user.full_name,
+            }));
+    }, [onlineUsers]);
+
     const { laboratoryDetails, staffOptions } = usePage().props as unknown as InertiaProps;
     const { data, patch, setData } = useForm({
         id: laboratoryDetails.id,
@@ -47,6 +58,12 @@ const Details = ({
             'sv-SE',
         ),
     });
+
+    useEffect(() => {
+        if (!data.performed_by) {
+            setData('performed_by', onlineMedTech.length > 0 ? onlineMedTech[0].id : '');
+        }
+    }, [onlineMedTech]);
 
     const submitDetails = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -85,6 +102,7 @@ const Details = ({
 
     return (
         <>
+            <OnlineUsers setOnlineUsers={setOnlineUsers} />
             <div className={'tab-content mt-3' + (!showTab ? ' hidden' : '')}>
                 <div className="tab-pane fade show active" role="tabpanel" tabIndex={1}>
                     <form onSubmit={submitDetails}>
@@ -168,12 +186,12 @@ const Details = ({
                                                         <div className="col-md-3">
                                                             {test.fields[0].field.name ===
                                                                 'Result' && (
-                                                                <div className="d-flex justify-content-between">
-                                                                    <h6 className="fw-semibold">
-                                                                        {test.test.name}
-                                                                    </h6>
-                                                                </div>
-                                                            )}
+                                                                    <div className="d-flex justify-content-between">
+                                                                        <h6 className="fw-semibold">
+                                                                            {test.test.name}
+                                                                        </h6>
+                                                                    </div>
+                                                                )}
                                                             <DetailsTestFields
                                                                 test={test}
                                                                 index={index}

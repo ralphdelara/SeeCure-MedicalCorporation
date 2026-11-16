@@ -10,11 +10,13 @@ use App\Models\Consultation;
 use App\Models\Laboratory;
 use App\Models\Pharmacy;
 use App\Models\Radiology;
+use App\Models\User;
 use App\Services\LaboratoryFieldService;
 use Auth;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Pusher\Pusher;
 
 class SystemController extends Controller
 {

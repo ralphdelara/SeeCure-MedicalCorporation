@@ -11,7 +11,7 @@ import { deleteBillingSupply } from '@/actions/App/Http/Controllers/BillingSuppl
 
 const Supplies = ({ showTab }: { showTab: boolean }) => {
     const { billingDetails } = usePage().props;
-    console.log(billingDetails);
+
     const [formShow, setFormShow] = useState(false);
     const defaultSuppliesData = {
         id: '',

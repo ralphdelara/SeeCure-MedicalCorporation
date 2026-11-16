@@ -29,8 +29,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::prefix('front-desk')->group(function () {
-        Route::get('/', [FrontDeskController::class, 'index'])->name('front-desk');
-        Route::get('/queue-list', [FrontDeskController::class, 'getQueueList'])->name('front-desk.queue-list');
+        Route::get('/queue-list/{type?}', [FrontDeskController::class, 'getQueueList'])->name('front-desk.queue-list');
+        Route::get('/{type?}', [FrontDeskController::class, 'index'])->name('front-desk');
         Route::get('/visits', [FrontDeskController::class, 'index'])->name('visits');
         Route::post('/', [FrontDeskController::class, 'queue'])->name('front-desk.queue');
         Route::delete('/{id}', [FrontDeskController::class, 'deleteQueue'])->name('front-desk.delete');
@@ -202,6 +202,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/', [PrivacyPolicyController::class, 'privacyPolicy'])->name('privacy-policy');
         Route::post('/update', [PrivacyPolicyController::class, 'updatePrivacyPolicy'])->name('privacy-policy.update');
     });
+
+    Route::inertia('/online-users', 'online-users-page')->name('online-users-page');
 });
 
 Route::get('/ping', function () {

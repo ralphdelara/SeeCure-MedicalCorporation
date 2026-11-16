@@ -103,7 +103,6 @@ const Details = ({ showTab }: { showTab: boolean }) => {
         let totalPrice = 0;
         let totalDiscount = 0;
         let totalNettPrice = 0;
-        console.log(tmpData);
 
         Object.values(tmpData).forEach((item) => {
             if (typeof item !== 'object' || item === null) {

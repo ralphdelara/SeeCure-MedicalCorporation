@@ -11,7 +11,6 @@ export default function Dashboard() {
         data: any[];
         tableHeader: any[];
     };
-    console.log(data);
 
     return (
         <>
