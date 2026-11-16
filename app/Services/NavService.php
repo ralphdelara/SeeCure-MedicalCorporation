@@ -24,6 +24,15 @@ class NavService
                 VisitStatusEnum::COMPLETED,
                 VisitStatusEnum::CANCELLED,
             ])->count(),
+            'visitsPendingTodayCount' => Visit::whereNotIn('visit_status_id', [
+                VisitStatusEnum::ADMITTED,
+                VisitStatusEnum::DISCHARGED,
+                VisitStatusEnum::COMPLETED,
+                VisitStatusEnum::CANCELLED,
+            ])->whereMonth('created_at', now()->format('m'))
+                ->whereDay('created_at', now()->format('d'))
+                ->whereYear('created_at', now()->format('Y'))
+                ->count(),
             'visitsCount'       => Visit::count(),
             'patientCount'      => Patient::count(),
             'consultationCount' => Consultation::with('visit')->where('is_completed', true)

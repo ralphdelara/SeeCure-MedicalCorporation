@@ -94,9 +94,9 @@ class RadiologyService
         return '';
     }
 
-    public function getSmallPendingRadiologyList(): array
+    public function getSmallPendingRadiologyList(?string $type = ''): array
     {
-        return Visit::with([
+        $visit = Visit::with([
             'patient' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name', 'patient_suffix_id', 'age', 'gender_id');
             },
@@ -106,6 +106,14 @@ class RadiologyService
             'patient.suffix' => function ($query) {
                 $query->select('id', 'name');
             },
-        ])->whereVisitStatusId(VisitStatusEnum::IN_RADIOLOGY)->get()->toArray();
+        ])->whereVisitStatusId(VisitStatusEnum::IN_RADIOLOGY);
+    
+        if ($type === 'today') {
+            $visit = $visit->whereMonth('created_at', now()->format('m'))
+                ->whereDay('created_at', now()->format('d'))
+                ->whereYear('created_at', now()->format('Y'));
+        }
+
+        return $visit->get()->toArray();
     }
 }

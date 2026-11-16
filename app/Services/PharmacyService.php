@@ -113,9 +113,9 @@ class PharmacyService
         );
     }
 
-    public function getSmallPendingPharmacyList(): array
+    public function getSmallPendingPharmacyList(?string $type = ''): array
     {
-        return Visit::with([
+        $visit = Visit::with([
             'patient' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name', 'patient_suffix_id', 'age', 'gender_id');
             },
@@ -125,7 +125,15 @@ class PharmacyService
             'patient.suffix' => function ($query) {
                 $query->select('id', 'name');
             },
-        ])->whereVisitStatusId(VisitStatusEnum::IN_PHARMACY)->get()->toArray();
+        ])->whereVisitStatusId(VisitStatusEnum::IN_PHARMACY);
+    
+        if ($type === 'today') {
+            $visit = $visit->whereMonth('created_at', now()->format('m'))
+                ->whereDay('created_at', now()->format('d'))
+                ->whereYear('created_at', now()->format('Y'));
+        }
+
+        return $visit->get()->toArray();
     }
 
     public function getPharmacyDetails(string $pharmacyId): ?array

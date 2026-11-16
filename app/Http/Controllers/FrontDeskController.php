@@ -29,7 +29,7 @@ use Inertia\Response;
 
 class FrontDeskController extends Controller
 {
-    public function index(): Response
+    public function index(?string $type = ''): Response
     {
         $formOptions = app(PatientService::class)->getPatientFormOptions();
         $signsOrSymptoms = SignsOrSymptom::all();
@@ -39,8 +39,8 @@ class FrontDeskController extends Controller
         $relationshipOptions = Relationship::all();
         $priorityTypeOptions = PriorityType::all();
         $laboratoryFormOptions = app(LaboratoryService::class)->getLaboratoryFormOptions();
-
-        return Inertia::render('front-desk/index', compact(
+        
+        $compact = compact(
             'formOptions',
             'signsOrSymptoms',
             'vitalSigns',
@@ -49,17 +49,24 @@ class FrontDeskController extends Controller
             'laboratoryTestOptions',
             'priorityTypeOptions',
             'laboratoryFormOptions',
-        ));
+        );
+
+        $compact['frontDeskType'] = $type;
+
+        return Inertia::render(
+            'front-desk/index',
+            $compact
+        );
     }
 
-    public function getQueueList()
+    public function getQueueList(?string $type = '')
     {
-        $consultationList = app(ConsultationService::class)->getSmallPendingConsultationList();
-        $laboratoryList = app(LaboratoryService::class)->getSmallPendingLaboratoryList();
-        $billingList = app(BillingService::class)->getSmallPendingBillingList();
-        $cashierList = app(CashierService::class)->getSmallPendingCashierList();
-        $radiologyList = app(RadiologyService::class)->getSmallPendingRadiologyList();
-        $pharmacyList = app(PharmacyService::class)->getSmallPendingPharmacyList();
+        $consultationList = app(ConsultationService::class)->getSmallPendingConsultationList($type);
+        $laboratoryList = app(LaboratoryService::class)->getSmallPendingLaboratoryList($type);
+        $billingList = app(BillingService::class)->getSmallPendingBillingList($type);
+        $cashierList = app(CashierService::class)->getSmallPendingCashierList($type);
+        $radiologyList = app(RadiologyService::class)->getSmallPendingRadiologyList($type);
+        $pharmacyList = app(PharmacyService::class)->getSmallPendingPharmacyList($type);
 
         return compact(
             'consultationList',
