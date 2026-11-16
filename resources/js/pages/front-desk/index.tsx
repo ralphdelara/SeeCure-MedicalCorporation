@@ -1,4 +1,4 @@
-import { Head } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import Cashier from './cashier';
 import Consultation from './consultation';
@@ -11,9 +11,12 @@ import NotifyFrontDesk from '../notifications/notify-front-desk';
 import { useEffect, useState } from 'react';
 import { fetchUrl } from '@/lib/utils';
 import { getQueueList } from '@/actions/App/Http/Controllers/FrontDeskController';
-import { IconFidgetSpinner, IconRefresh } from '@tabler/icons-react';
+import { IconRefresh } from '@tabler/icons-react';
 
 export default function FrontDesk() {
+    const { frontDeskType } = usePage().props as unknown as {
+        frontDeskType: string;
+    }
     const [queueList, setQueueList] = useState<any>({
         billingList: [],
         consultationList: [],
@@ -27,7 +30,7 @@ export default function FrontDesk() {
 
     const updateList = async () => {
         setLoading(true);
-        const listResponse = await fetchUrl(getQueueList().url, 'get', {});
+        const listResponse = await fetchUrl(getQueueList(frontDeskType).url, 'get', {});
 
         setQueueList(listResponse);
         setLoading(false);

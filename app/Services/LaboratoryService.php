@@ -603,9 +603,9 @@ class LaboratoryService
         }
     }
 
-    public function getSmallPendingLaboratoryList(): array
+    public function getSmallPendingLaboratoryList(?string $type = ''): array
     {
-        return Visit::with([
+        $visit = Visit::with([
             'patient' => function ($query) {
                 $query->select('id', 'first_name', 'middle_name', 'last_name', 'patient_suffix_id', 'age', 'gender_id');
             },
@@ -618,7 +618,15 @@ class LaboratoryService
             'laboratory',
             'laboratory.testData',
             'laboratory.testData.fields',
-        ])->whereVisitStatusId(VisitStatusEnum::IN_LABORATORY)->get()->toArray();
+        ])->whereVisitStatusId(VisitStatusEnum::IN_LABORATORY);
+    
+        if ($type === 'today') {
+            $visit = $visit->whereMonth('created_at', now()->format('m'))
+                ->whereDay('created_at', now()->format('d'))
+                ->whereYear('created_at', now()->format('Y'));
+        }
+
+        return $visit->get()->toArray();
     }
 
     public function logAudit(

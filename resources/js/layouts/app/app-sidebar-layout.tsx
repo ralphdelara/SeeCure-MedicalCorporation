@@ -60,6 +60,7 @@ export default function NavSidebar({ toggleSidebar }: NavSidebarProps) {
         navCounts: {
             visitsCount: number;
             visitsPendingCount: number;
+            visitsPendingTodayCount: number;
             patientCount: number;
             consultationCount: number;
             consultationPendingTodayCount: number;
@@ -117,21 +118,27 @@ export default function NavSidebar({ toggleSidebar }: NavSidebarProps) {
             ],
         },
         {
-            url: frontDesk(),
+            url: frontDesk('today'),
             name: 'Front Desk',
             icon: IconDeviceDesktop,
             active: url.includes(frontDesk().url),
             count: navCounts.visitsPendingCount,
             childNav: [
                 {
+                    url: frontDesk('today'),
+                    name: 'Visits (Today)',
+                    active: url === frontDesk('today').url,
+                    count: navCounts.visitsPendingTodayCount,
+                },
+                {
                     url: frontDesk(),
-                    name: 'Overview',
+                    name: 'Pending',
                     active: url === frontDesk().url,
                     count: navCounts.visitsPendingCount,
                 },
                 {
                     url: visits(),
-                    name: 'Visits',
+                    name: 'Total Visits',
                     active: url === visits().url,
                     count: navCounts.visitsCount,
                 },
