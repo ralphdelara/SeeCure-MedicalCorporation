@@ -6,6 +6,7 @@ import AuthLayout from '@/layouts/auth-layout';
 import '@/assets/css/styles.css';
 import '@/assets/css/custom.css';
 import '@/assets/css/tooltip.css';
+import '@/assets/css/banner.css';
 import '@/assets/js/theme/app.min.js';
 import '@/assets/libs/simplebar/dist/simplebar.min.js';
 //favicon

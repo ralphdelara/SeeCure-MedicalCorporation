@@ -55,7 +55,7 @@ interface User {
 }
 
 export default function NavSidebar({ toggleSidebar }: NavSidebarProps) {
-    const { auth, navCounts } = usePage().props as unknown as {
+    const { auth, navCounts, env } = usePage().props as unknown as {
         auth: { user: User };
         navCounts: {
             visitsCount: number;
@@ -81,6 +81,7 @@ export default function NavSidebar({ toggleSidebar }: NavSidebarProps) {
             cashierCompletedCount: number;
             usersCount: number;
         };
+        env: string;
     };
 
     const { first_name, last_name } = auth.user;
@@ -394,6 +395,9 @@ export default function NavSidebar({ toggleSidebar }: NavSidebarProps) {
     return (
         <aside className="left-sidebar with-vertical no-select">
             <div>
+                {env === 'dev' &&
+                    <div className="corner-ribbon">DEVELOPMENT</div>
+                }
                 <div className="brand-logo d-flex align-items-center justify-content-between">
                     <a href="/main/index.html" className="logo-img overflow-hidden text-nowrap">
                         <img src={logoText} width="180" />

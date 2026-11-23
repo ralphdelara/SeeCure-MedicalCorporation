@@ -100,6 +100,7 @@ class HandleInertiaRequests extends Middleware
             'breadcrumbs' => $breadcrumbs,
             'navCounts'   => app(NavService::class)->getCount(),
             'warning'     => $warning,
+            'env'         => config('app.env'),
         ];
     }
 }

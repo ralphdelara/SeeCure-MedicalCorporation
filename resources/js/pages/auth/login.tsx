@@ -10,9 +10,10 @@ import { store } from '@/routes/login';
 
 type Props = {
     status?: string;
+    env?: string;
 };
 
-export default function Login({ status }: Props) {
+export default function Login({ status, env }: Props) {
     return (
         <>
             <Head title="Login" />
@@ -24,7 +25,9 @@ export default function Login({ status }: Props) {
                             <div className="auth-max-width d-flex align-items-center mx-auto h-100 w-100">
                                 <div className="card-body">
                                     <div className="mb-5">
-                                        <h2 className="fw-bolder fs-7 mb-3">Welcome back</h2>
+                                        <h2 className="fw-bolder fs-7 mb-3">Welcome back
+                                            {env === 'dev' ? <b className="text-danger"> DEV</b> : ''}
+                                        </h2>
                                         <p className="mb-0">
                                             Enter your credentials to access the admin.
                                         </p>
