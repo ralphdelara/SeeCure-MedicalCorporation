@@ -5,8 +5,6 @@ use Illuminate\Support\Facades\Broadcast;
 Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
-<<<<<<< Updated upstream
-=======
 
 Broadcast::channel('online-users', function (User $user) {
     if ($user && config('app.env') === 'production') {
@@ -22,4 +20,3 @@ Broadcast::channel('online-users', function (User $user) {
 
     return false;
 });
->>>>>>> Stashed changes
